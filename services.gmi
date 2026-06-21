@@ -1,0 +1,37 @@
+# other protocols on dreamstation.systems
+
+(more comprehensive explainer coming soon)
+
+this box runs a few retro/fun/quirky internet services. here's everything it speaks:
+
+## Gemini
+
+=> /   you're here
+
+## Gopher
+
+mostly the same content as this capsule, over Gopher.
+
+=> gopher://dreamstation.systems   gopher://dreamstation.systems
+
+## DICT
+
+a dictionary server (RFC 2229), port 2628.
+
+=> dict://dreamstation.systems   dict://dreamstation.systems
+
+## QOTD
+
+quote of the day (RFC 865), TCP/UDP port 17. in your terminal: nc dreamstation.systems 17
+
+```
+nc dreamstation.systems 17
+```
+
+## FTP
+
+an anonymous, read-only file archive.
+
+=> ftp://dreamstation.systems   ftp://dreamstation.systems
+
+=> /   back to home
