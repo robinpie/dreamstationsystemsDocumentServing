@@ -7,4 +7,5 @@
 # Editor/OS cruft
 *~
 .*.swp
+*.kate-swp
 .DS_Store
