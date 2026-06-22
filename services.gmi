@@ -28,6 +28,14 @@ quote of the day (RFC 865), TCP/UDP port 17. in your terminal: nc dreamstation.s
 nc dreamstation.systems 17
 ```
 
+## Daytime
+
+the current date and time (RFC 867), TCP/UDP port 13. in your terminal: nc dreamstation.systems 13
+
+```
+nc dreamstation.systems 13
+```
+
 ## FTP
 
 an anonymous, read-only file archive.
