@@ -1,5 +1,6 @@
 # blog
 
-=> gzipt.gmi   Playing with the language modeling abilities of gzip — 2026-06-17
+=> slowqotd.gmi   Quirky but compliant QOTDs; or, a really slow QOTD server | 2026-06-22
+=> gzipt.gmi   Playing with the language modeling abilities of gzip | 2026-06-17
 
 => /            back to home
