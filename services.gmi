@@ -20,7 +20,7 @@ mostly the same content as this capsule, over Gopher.
 
 a dictionary server (RFC 2229), port 2628.
 
-=> dict://dreamstation.systems   dict://dreamstation.systems
+=> dict://dreamstation.systems   in your favorite graphical dictd frontend, or in your terminal with dictd: dict -h dreamstation.systems -d jargon "amiga persecution complex" (or similar commands)
 
 ## QOTD
 
