@@ -4,7 +4,9 @@
 
 this box runs a few retro/fun/quirky internet services. here's everything it speaks:
 
-## Gemini
+## Gemini / Spartan
+
+identical content served on Gemini and Spartan. you're here.
 
 => /   you're here
 
@@ -34,6 +36,30 @@ the current date and time (RFC 867), TCP/UDP port 13. in your terminal: nc dream
 
 ```
 nc dreamstation.systems 13
+```
+
+## Echo
+
+whatever you type sent straight back to you (RFC 862), TCP/UDP port 7. in your terminal: nc dreamstation.systems 7
+
+```
+nc dreamstation.systems 7
+```
+
+## Discard
+
+everything you send is thrown away (RFC 863), TCP/UDP port 9. in your terminal: nc dreamstation.systems 9
+
+```
+nc dreamstation.systems 9
+```
+
+## Chargen
+
+an endless stream of ASCII (RFC 864), TCP/UDP port 19. in your terminal, ctrl-C to escape: nc dreamstation.systems 19
+
+```
+nc dreamstation.systems 19
 ```
 
 ## FTP
