@@ -18,6 +18,9 @@ this box runs a few retro/fun/quirky internet services. here's everything it spe
   QOTD     in your terminal: nc dreamstation.systems 17
            quote of the day (RFC 865), TCP/UDP port 17.
 
+  Daytime  in your terminal: nc dreamstation.systems 13
+           the current date and time (RFC 867), TCP/UDP port 13.
+
   FTP      ftp://dreamstation.systems
            an anonymous, read-only file archive.
 
