@@ -13,6 +13,9 @@ this box runs a few retro/fun/quirky internet services. here's everything it spe
                  mostly the same content as this gopher hole, over Gemini or Spartan.
 
   DICT           dict://dreamstation.systems
+                 in your favorite graphical dictd frontend, or in your terminal
+                 with dictd: dict -h dreamstation.systems -d jargon
+                 "amiga persecution complex" (or similar commands)
                  a dictionary server (RFC 2229), port 2628.
 
   QOTD           in your terminal: nc dreamstation.systems 17
