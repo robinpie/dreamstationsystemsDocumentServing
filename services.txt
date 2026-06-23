@@ -12,6 +12,9 @@ this box runs a few retro/fun/quirky internet services. here's everything it spe
   Gemini/Spartan gemini://dreamstation.systems, spartan://dreamstation.systems
                  mostly the same content as this gopher hole, over Gemini or Spartan.
 
+  Finger         in your terminal: finger @dreamstation.systems
+                 currently being set up.
+
   DICT           dict://dreamstation.systems
                  in your favorite graphical dictd frontend, or in your terminal
                  with dictd: dict -h dreamstation.systems -d jargon
