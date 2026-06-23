@@ -16,6 +16,10 @@ mostly the same content as this capsule, over Gopher.
 
 => gopher://dreamstation.systems   gopher://dreamstation.systems
 
+## Finger
+
+currently being set up. in your terminal: finger @dreamstation.systems
+
 ## DICT
 
 a dictionary server (RFC 2229), port 2628.
