@@ -46,7 +46,7 @@ By default, TCP on Linux has Nagle's algorithm enabled, which is a kernel featur
 
 ### The .sqotd DSL
 
-To make animation scripts easy to write, I added a tiny line-oriented DSL. A .sqotd file is mostly text, with a few inline directives:
+To make animation scripts easy to write, I invented a tiny line-oriented DSL. A .sqotd file is mostly text, with a few inline directives:
 
 * [type N] (delays each character by N seconds, applies to all single characters and persists until changed)
 * [wait N] (pauses N seconds)
@@ -56,7 +56,37 @@ To make animation scripts easy to write, I added a tiny line-oriented DSL. A .sq
 * [up N] / [down N] (moves the cursor instantly via escape codes)
 * [[ (a literal [)
 
-I may add more if I ever decide to do more with this. Right now it's basically just what's needed for Still Alive.
+I may add more if I ever decide to do more with this. Right now it's basically just what's needed for *Still Alive*:
+
+```
+[type 0.15]This was a triumph.[wait 1]
+I'm making a note here:
+HUGE SUCCESS.[wait 1]
+It's hard to overstate
+my satisfaction.[wait 1][type 0]
+
+
+
+[spawn aperture][up 17][type 0.15]Aperture Science[type 0][down 17]
+[art aperture]
+          #######
+     ####  ####### ###
+   #########  ####  ####
+  #######        ## #####
+     ##             ####
+#######              ## ###
+#####                # ####
+#### #                #####
+### ###             #######
+   ####             ##
+  #####  #        #######
+   ##### ####  #########
+     ### #######  ####
+          ########
+[end]
+```
+
+(Also archived at ftp://dreamstation.systems/qotdArchive/20260623.sqotd.)
 
 => ftp://dreamstation.systems/qotdArchive/20260623.sqotd   the Still Alive .sqotd script
 

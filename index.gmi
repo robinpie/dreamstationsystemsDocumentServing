@@ -1,25 +1,58 @@
-# robin's page
+# robin's page 🌠🏰🚀
 
-my name is robin! thinkpad enthusiast, tokiponist, programmer.
+my name is robin. thinkpad enthusiast. tokiponist. programmer.
 
-this box runs a variety of internet services, but not a website: i want to make the point that the internet is more than the web.
+=> /blog/   check out my blog please!
 
-=> /services.gmi                   other protocols (Gopher, DICT, QOTD, FTP...)
-=> /blog/                          blog
+## services this box runs
+
+=> /services.gmi   other protocols, explained (Gopher, DICT, QOTD, FTP...)
+=> https://dreamstation.systems/professional/status   status page (HTTP only)
+
+* a NTP/NTS-KE server in the NTP Pool
+* this capsule, including OpenGET
+* Gopher
+* Gemini
+* Spartan
+* finger (try: finger @dreamstation.systems)
+* DICT
+* a FTP archive
+* QOTD
+* Daytime
+* Echo
+* Discard
+* Chargen
+
+=> /ntpuserinfo.gmi                how to use the dreamstation.systems NTP server
+=> /ntpstats.gmi                   NTP server stats (auto-regenerating)
+=> /ge/                            OpenGET
 => gopher://dreamstation.systems   the same place, over Gopher
+=> spartan://dreamstation.systems  the same place, over Spartan
+=> ftp://dreamstation.systems      the FTP archive
 
-## my other projects
+## my projects
 
 => ftp://dreamstation.systems/robinsSoftware/ath             !~ATH | my Homestuck-inspired esoteric programming language
 => ftp://dreamstation.systems/robinsSoftware/viewpoint       viewpoint | a WIMPy terminal emulator
 => ftp://dreamstation.systems/robinsSoftware/fontliberator   fontliberator | a fully automatic font clean-room reimplementor
 => ftp://dreamstation.systems/robinsSoftware/xcaca           xcaca | an X server in ASCII art
+=> https://dreamstation.systems/hsptohtml/README/pages/README.html   convert Hypnospace Outlaw pages to real webpages
+=> https://github.com/OboeLang/oboe                          Oboe, a general-purpose programming language I'm co-creating with Jade K.
+=> https://sushii64.com/                                     Jade K.
 
 ## contact
 
-email:   robin413@protonmail.com
+please send me an email, even just to say hi! i love hearing from people visiting my site
+
+email:   robin@dreamstation.systems
 signal:  g9ij.47
 discord: g9ij
+
+## friends
+
+=> https://nnycap.neocities.org/   https://nnycap.neocities.org/
+=> https://sushii64.com/           https://sushii64.com
+
 ```
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ::                                                    ::
