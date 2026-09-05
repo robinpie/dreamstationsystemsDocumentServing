@@ -1,0 +1,43 @@
+# Fletching
+Logs into bows, and bows into strung bows.
+
+```table
+Method                                           Cost  Profit     ROI
+---------------------------------------------  ------  ------  ------
+String Magic longbow (u) into Magic longbow       995     129   13.0%
+String Yew longbow (u) into Yew longbow           395     110   27.8%
+Cut Maple logs into Maple longbow (u)              11      55  500.0%
+Cut Yew logs into Yew longbow (u)                 109      45   41.3%
+Cut Yew logs into Yew shortbow (u)                109      16   14.7%
+Cut Maple logs into Maple shortbow (u)             11       9   81.8%
+Cut Magic logs into Magic longbow (u)             760     -18   -2.4%
+String Magic shortbow (u) into Magic shortbow     753     -32   -4.2%
+String Maple longbow (u) into Maple longbow       305     -36  -11.8%
+String Maple shortbow (u) into Maple shortbow     258     -89  -34.5%
+String Yew shortbow (u) into Yew shortbow         365    -152  -41.6%
+Cut Magic logs into Magic shortbow (u)            760    -255  -33.6%
+Make Mithril darts                              1,180  -1,070  -90.7%
+Make Adamant darts                              1,860  -1,530  -82.3%
+Make Rune darts                                10,530  -7,850  -74.5%
+```
+=> /ge/calc-fletching/fletch-magic-longbow-string String Magic longbow (u) into Magic longbow
+=> /ge/calc-fletching/fletch-yew-longbow-string String Yew longbow (u) into Yew longbow
+=> /ge/calc-fletching/fletch-maple-longbow-cut Cut Maple logs into Maple longbow (u)
+=> /ge/calc-fletching/fletch-yew-longbow-cut Cut Yew logs into Yew longbow (u)
+=> /ge/calc-fletching/fletch-yew-shortbow-cut Cut Yew logs into Yew shortbow (u)
+=> /ge/calc-fletching/fletch-maple-shortbow-cut Cut Maple logs into Maple shortbow (u)
+=> /ge/calc-fletching/fletch-magic-longbow-cut Cut Magic logs into Magic longbow (u)
+=> /ge/calc-fletching/fletch-magic-shortbow-string String Magic shortbow (u) into Magic shortbow
+=> /ge/calc-fletching/fletch-maple-longbow-string String Maple longbow (u) into Maple longbow
+=> /ge/calc-fletching/fletch-maple-shortbow-string String Maple shortbow (u) into Maple shortbow
+=> /ge/calc-fletching/fletch-yew-shortbow-string String Yew shortbow (u) into Yew shortbow
+=> /ge/calc-fletching/fletch-magic-shortbow-cut Cut Magic logs into Magic shortbow (u)
+=> /ge/calc-fletching/fletch-mithril-dart Make Mithril darts
+=> /ge/calc-fletching/fletch-adamant-dart Make Adamant darts
+=> /ge/calc-fletching/fletch-rune-dart Make Rune darts
+
+## Notes
+* gp/hour uses a typical action rate for the method and assumes you never wait on a buy offer. Treat it as an upper bound.
+* Rows marked "no price" reference an item nobody has traded recently, so no profit can be computed for them honestly.
+
+=> https://grandexchange.dreamstation.systems/calc/fletching This page on the web

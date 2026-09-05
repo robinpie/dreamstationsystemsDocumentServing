@@ -1,0 +1,48 @@
+# Potion decanting
+Buy potions at one dose count, decant, sell at another.
+
+```table
+Method                                              Cost  Profit     ROI
+------------------------------------------------  ------  ------  ------
+Decant Battlemage potion(3) into Battlemage pot…  29,820  12,810   43.0%
+Decant Bastion potion(3) into Bastion potion(4)   44,548   2,813    6.3%
+Decant Prayer potion(3) into Prayer potion(4)     27,328     602    2.2%
+Decant Super restore(3) into Super restore(4)     29,980     476    1.6%
+Decant Super attack(3) into Super attack(4)        5,384     409    7.6%
+Decant Super strength(3) into Super strength(4)    9,760     149    1.5%
+Decant Ranging potion(3) into Ranging potion(4)    6,200     100    1.6%
+Decant Antifire potion(3) into Antifire potion(…   2,588      58    2.2%
+Decant Super defence(3) into Super defence(4)     10,220      28    0.3%
+Decant Magic potion(3) into Magic potion(4)          440     -32   -7.3%
+Decant Super energy(3) into Super energy(4)        7,416     -66   -0.9%
+Decant Extended antifire(3) into Extended antif…   1,224    -324  -26.5%
+Decant Saradomin brew(3) into Saradomin brew(4)   21,512    -422   -2.0%
+Decant Stamina potion(3) into Stamina potion(4)   12,272    -998   -8.1%
+Decant Antidote++(3) into Antidote++(4)           29,820  -2,079   -7.0%
+Decant Super antifire potion(3) into Super anti…  65,924  -2,981   -4.5%
+Decant Divine super combat potion(3) into Divin…  56,792  -3,188   -5.6%
+Decant Super combat potion(3) into Super combat…  44,980  -8,026  -17.8%
+```
+=> /ge/calc-decanting/decant-battlemage-potion Decant Battlemage potion(3) into Battlemage potion(4)
+=> /ge/calc-decanting/decant-bastion-potion Decant Bastion potion(3) into Bastion potion(4)
+=> /ge/calc-decanting/decant-prayer-potion Decant Prayer potion(3) into Prayer potion(4)
+=> /ge/calc-decanting/decant-super-restore Decant Super restore(3) into Super restore(4)
+=> /ge/calc-decanting/decant-super-attack Decant Super attack(3) into Super attack(4)
+=> /ge/calc-decanting/decant-super-strength Decant Super strength(3) into Super strength(4)
+=> /ge/calc-decanting/decant-ranging-potion Decant Ranging potion(3) into Ranging potion(4)
+=> /ge/calc-decanting/decant-antifire-potion Decant Antifire potion(3) into Antifire potion(4)
+=> /ge/calc-decanting/decant-super-defence Decant Super defence(3) into Super defence(4)
+=> /ge/calc-decanting/decant-magic-potion Decant Magic potion(3) into Magic potion(4)
+=> /ge/calc-decanting/decant-super-energy Decant Super energy(3) into Super energy(4)
+=> /ge/calc-decanting/decant-extended-antifire Decant Extended antifire(3) into Extended antifire(4)
+=> /ge/calc-decanting/decant-saradomin-brew Decant Saradomin brew(3) into Saradomin brew(4)
+=> /ge/calc-decanting/decant-stamina-potion Decant Stamina potion(3) into Stamina potion(4)
+=> /ge/calc-decanting/decant-antidote Decant Antidote++(3) into Antidote++(4)
+=> /ge/calc-decanting/decant-super-antifire-potion Decant Super antifire potion(3) into Super antifire potion(4)
+=> /ge/calc-decanting/decant-divine-super-combat-potion Decant Divine super combat potion(3) into Divine super combat potion(4)
+=> /ge/calc-decanting/decant-super-combat-potion Decant Super combat potion(3) into Super combat potion(4)
+
+## Notes
+* Rows marked "no price" reference an item nobody has traded recently, so no profit can be computed for them honestly.
+
+=> https://grandexchange.dreamstation.systems/calc/decanting This page on the web

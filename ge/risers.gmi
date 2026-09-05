@@ -1,0 +1,109 @@
+# Biggest 24h risers
+Largest upward price moves.
+
+```table
+Item                               Buy   Sell  Margin       ROI  Vol 24h
+-------------------------------  -----  -----  ------  --------  -------
+Poison ivy seed ●                  120    213      89    +74.2%    16.6k
+Marigold seed ●                      5     21      16   +320.0%    45.1k
+Raw wild kebbit ●                   10    197     184  +1840.0%    1,453
+Raw beast meat ●                   117     86     -32    -27.4%    1,638
+Steel chainbody                    260    485     216    +83.1%    1,274
+Mithril med helm                   400  1,444   1,016   +254.0%    3,121
+Jangerberry seed ●                   9     29      20   +222.2%    8,107
+Whiteberry seed ●                   15     24       9    +60.0%    18.3k
+Apple tree seed ●                   20     30      10    +50.0%    11.8k
+Unblessed symbol                     1     36      35  +3500.0%    2,063
+Waterskin(0) ●                       5      9       4    +80.0%    1,053
+Orange tree seed ●                  55     55      -1     -1.8%    6,422
+Pineapple seed ●                    72    315     237   +329.2%    8,286
+Hardleather body                    11     20       9    +81.8%    12.5k
+Cadavaberry seed ●                   9     20      11   +122.2%    29.4k
+Cod ●                                7     21      14   +200.0%    7,635
+Potato cactus seed ●                15     30      15   +100.0%    7,780
+Marrentill seed ●                   20     52      31   +155.0%    13.4k
+Purple firelighter ●                70    199     126   +180.0%      13k
+Dareeyak teleport (tablet) ●     1,355  3,797   2,367   +174.7%    2,047
+Black salamander ●                 256    899     626   +244.5%    1,097
+Guam tar ●                          18     30      12    +66.7%    43.7k
+Apple sapling ●                    212    602     378   +178.3%    2,932
+White firelighter ●                 80    180      97   +121.2%    11.7k
+Antifire potion(1) ●                17    261     239  +1405.9%    1,185
+Death talisman ●                 1,100  3,899   2,722   +247.5%    4,514
+Swamp toad (item) ●                130    340     204   +156.9%    8,064
+Iron dagger                         31     75      43   +138.7%    3,838
+Magic shield ●                     500    825     309    +61.8%    4,931
+Garden pie ●                        48     70      21    +43.8%    13.7k
+Banana tree seed ●                  35     59      23    +65.7%    8,925
+Leather cowl                         3     21      18   +600.0%    3,413
+Golden scarab ●                    997  2,222   1,181   +118.5%    1,599
+Orange dye                         778  1,025     227    +29.2%    1,129
+Empty fishbowl ●                    64    113      47    +73.4%    6,458
+Mithril axe                        215    298      78    +36.3%    2,290
+Sapphire bolts (e) ●                27     54      26    +96.3%   210.3k
+Proboscis ●                        609    655      33     +5.4%    1,068
+Adamant incendiary cannonball ●  1,013  1,179     143    +14.1%    41.5k
+Monkey nuts ●                      274    300      20     +7.3%    20.4k
+Combat potion(4) ●                 320    490     161    +50.3%    20.4k
+Bronze scimitar                     66    195     126   +190.9%    1,771
+Fire tiara                           2      2       0     +0.0%    2,799
+Oak bird house ●                   413    797     369    +89.3%    1,224
+Dwellberry seed ●                   22     33      11    +50.0%    11.9k
+Weeds ●                            205    204      -5     -2.4%      49k
+Saw ●                              303    307       4     +1.3%    1,161
+Tomatoes(5) ●                      601    729     114    +19.0%    5,187
+Ensouled horror head ●           1,580  2,915   1,277    +80.8%    2,093
+Eclipse red ●                      700  1,226     502    +71.7%    1,323
+```
+=> /ge/cgi-bin/ge/item/5106 Poison ivy seed ●
+=> /ge/cgi-bin/ge/item/5096 Marigold seed ●
+=> /ge/cgi-bin/ge/item/29104 Raw wild kebbit ●
+=> /ge/cgi-bin/ge/item/9986 Raw beast meat ●
+=> /ge/cgi-bin/ge/item/1105 Steel chainbody
+=> /ge/cgi-bin/ge/item/1143 Mithril med helm
+=> /ge/cgi-bin/ge/item/5104 Jangerberry seed ●
+=> /ge/cgi-bin/ge/item/5105 Whiteberry seed ●
+=> /ge/cgi-bin/ge/item/5283 Apple tree seed ●
+=> /ge/cgi-bin/ge/item/1716 Unblessed symbol
+=> /ge/cgi-bin/ge/item/1831 Waterskin(0) ●
+=> /ge/cgi-bin/ge/item/5285 Orange tree seed ●
+=> /ge/cgi-bin/ge/item/5287 Pineapple seed ●
+=> /ge/cgi-bin/ge/item/1131 Hardleather body
+=> /ge/cgi-bin/ge/item/5102 Cadavaberry seed ●
+=> /ge/cgi-bin/ge/item/339 Cod ●
+=> /ge/cgi-bin/ge/item/22873 Potato cactus seed ●
+=> /ge/cgi-bin/ge/item/5292 Marrentill seed ●
+=> /ge/cgi-bin/ge/item/10326 Purple firelighter ●
+=> /ge/cgi-bin/ge/item/12777 Dareeyak teleport (tablet) ●
+=> /ge/cgi-bin/ge/item/10148 Black salamander ●
+=> /ge/cgi-bin/ge/item/10142 Guam tar ●
+=> /ge/cgi-bin/ge/item/5496 Apple sapling ●
+=> /ge/cgi-bin/ge/item/10327 White firelighter ●
+=> /ge/cgi-bin/ge/item/2458 Antifire potion(1) ●
+=> /ge/cgi-bin/ge/item/1456 Death talisman ●
+=> /ge/cgi-bin/ge/item/2150 Swamp toad (item) ●
+=> /ge/cgi-bin/ge/item/1203 Iron dagger
+=> /ge/cgi-bin/ge/item/22263 Magic shield ●
+=> /ge/cgi-bin/ge/item/7178 Garden pie ●
+=> /ge/cgi-bin/ge/item/5284 Banana tree seed ●
+=> /ge/cgi-bin/ge/item/1167 Leather cowl
+=> /ge/cgi-bin/ge/item/9028 Golden scarab ●
+=> /ge/cgi-bin/ge/item/1769 Orange dye
+=> /ge/cgi-bin/ge/item/6667 Empty fishbowl ●
+=> /ge/cgi-bin/ge/item/1355 Mithril axe
+=> /ge/cgi-bin/ge/item/9240 Sapphire bolts (e) ●
+=> /ge/cgi-bin/ge/item/6319 Proboscis ●
+=> /ge/cgi-bin/ge/item/31940 Adamant incendiary cannonball ●
+=> /ge/cgi-bin/ge/item/4012 Monkey nuts ●
+=> /ge/cgi-bin/ge/item/9739 Combat potion(4) ●
+=> /ge/cgi-bin/ge/item/1321 Bronze scimitar
+=> /ge/cgi-bin/ge/item/5537 Fire tiara
+=> /ge/cgi-bin/ge/item/21515 Oak bird house ●
+=> /ge/cgi-bin/ge/item/5103 Dwellberry seed ●
+=> /ge/cgi-bin/ge/item/6055 Weeds ●
+=> /ge/cgi-bin/ge/item/8794 Saw ●
+=> /ge/cgi-bin/ge/item/5968 Tomatoes(5) ●
+=> /ge/cgi-bin/ge/item/13487 Ensouled horror head ●
+=> /ge/cgi-bin/ge/item/29415 Eclipse red ●
+
+=> https://grandexchange.dreamstation.systems/flips/risers This page on the web

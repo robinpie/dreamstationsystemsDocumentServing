@@ -1,0 +1,41 @@
+# Spell conversions
+Items transmuted in the inventory, paid for in runes.
+
+```table
+Method                                Cost  Profit     ROI
+----------------------------------  ------  ------  ------
+Superglass Make with giant seaweed     698     886  126.9%
+Superglass Make with seaweed           541     603  111.5%
+Plank Make Mahogany plank            1,608     497   30.9%
+Bones to Bananas                     1,190     403   33.9%
+Superheat Runite bar                11,658     346    3.0%
+Superheat Adamantite bar             1,604     247   15.4%
+Superheat Mithril bar                  893      76    8.5%
+Superheat Steel bar                    523      44    8.4%
+Superheat Iron bar                     237     -75  -31.6%
+Superheat Silver bar                   227    -112  -49.3%
+Plank Make Oak plank                   666    -160  -24.0%
+Plank Make Teak plank                  932    -187  -20.1%
+Superheat Gold bar                     318    -243  -76.4%
+Plank Make Plank                       543    -402  -74.0%
+```
+=> /ge/calc-spell/spell-superglass-giant Superglass Make with giant seaweed
+=> /ge/calc-spell/spell-superglass-seaweed Superglass Make with seaweed
+=> /ge/calc-spell/spell-plank-mahogany Plank Make Mahogany plank
+=> /ge/calc-spell/spell-bones-bananas Bones to Bananas
+=> /ge/calc-spell/spell-superheat-rune Superheat Runite bar
+=> /ge/calc-spell/spell-superheat-addy Superheat Adamantite bar
+=> /ge/calc-spell/spell-superheat-mithril Superheat Mithril bar
+=> /ge/calc-spell/spell-superheat-steel Superheat Steel bar
+=> /ge/calc-spell/spell-superheat-iron Superheat Iron bar
+=> /ge/calc-spell/spell-superheat-silver Superheat Silver bar
+=> /ge/calc-spell/spell-plank-oak Plank Make Oak plank
+=> /ge/calc-spell/spell-plank-teak Plank Make Teak plank
+=> /ge/calc-spell/spell-superheat-gold Superheat Gold bar
+=> /ge/calc-spell/spell-plank-plank Plank Make Plank
+
+## Notes
+* gp/hour uses a typical action rate for the method and assumes you never wait on a buy offer. Treat it as an upper bound.
+* Rows marked "no price" reference an item nobody has traded recently, so no profit can be computed for them honestly.
+
+=> https://grandexchange.dreamstation.systems/calc/spell This page on the web

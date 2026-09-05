@@ -1,0 +1,109 @@
+# Highest margins
+Profit per item after the 2% GE tax.
+
+```table
+Item                     Buy           Sell     Margin      ROI  Vol 24h
+-------------  -------------  -------------  ---------  -------  -------
+Armadyl ches…     35,709,009     40,000,000  3,490,991    +9.8%      130
+Harmonised o…    467,088,407    475,413,355  3,324,948    +0.7%      108
+Blade of Sae…    113,327,021    118,536,342  2,838,595    +2.5%       59
+Elysian spir…    496,076,726    503,699,996  2,623,270    +0.5%       98
+Scythe of Vi…  1,232,777,132  1,240,000,000  2,222,868    +0.2%      161
+Tumeken's sh…    789,501,001    796,599,992  2,098,991    +0.3%      242
+Ankou top ●       13,500,000     15,247,371  1,442,424   +10.7%       52
+Volatile orb…     32,492,431     34,431,837  1,250,770    +3.8%       95
+Twisted bow ●  1,394,006,000  1,400,056,752  1,050,752    +0.1%      201
+Armageddon w…     13,502,000     14,800,000  1,002,000    +7.4%       70
+Eldritch orb…    112,500,002    115,800,000    983,998    +0.9%      104
+Oathplate ar…    252,250,000    258,200,000    950,000    +0.4%      150
+Inquisitor's…    308,944,483    314,852,721    908,238    +0.3%      169
+Torva full h…    206,861,981    211,996,013    894,112    +0.4%      155
+Enhanced cry…    112,869,104    116,000,000    810,896    +0.7%       89
+Ancestral ro…     90,465,853     93,018,497    692,275    +0.8%      252
+Staff of Lig…      4,800,000      5,591,623    679,791   +14.2%      130
+Arcane sigil…    134,588,471    138,021,977    673,067    +0.5%       97
+Kodai wand ●      53,666,451     55,448,284    672,868    +1.3%      360
+Twisted buck…     11,042,056     11,938,162    657,343    +6.0%      844
+Dragon hunte…     48,192,995     49,800,000    611,005    +1.3%      766
+Inquisitor's…    117,000,000    119,999,997    599,998    +0.5%      134
+Torva armour…    490,599,000    496,169,000    570,000    +0.1%       73
+Masori armou…    152,371,142    155,974,999    484,358    +0.3%      174
+Virtus armou…     59,780,000     61,415,000    406,700    +0.7%      255
+Zaryte cross…    357,250,000    362,650,000    400,000    +0.1%      241
+Ultor ring ●     106,001,223    108,560,000    387,577    +0.4%      309
+Torva platel…    108,689,000    111,300,000    385,000    +0.4%      176
+Crystal tool…     22,850,000     23,699,896    375,899    +1.6%      143
+Armadyl cros…     34,516,367     35,582,176    354,166    +1.0%      513
+Master wand ●      6,899,601      7,389,000    341,619    +5.0%      354
+Ancestral ro…     64,011,000     65,618,778    295,403    +0.5%      214
+Venator ring…     45,768,255     46,996,385    288,203    +0.6%      307
+Ancestral ha…     46,055,999     47,251,956    250,918    +0.5%      248
+Draconic vis…      3,179,122      3,483,901    235,101    +7.4%      125
+Masori chaps…     55,707,439     57,042,916    194,619    +0.3%      250
+Avernic defe…     30,255,184     31,068,438    191,886    +0.6%      243
+Gilded 2h sw…      4,021,604      4,293,883    186,402    +4.6%      209
+Spectral spi…     25,556,589     26,261,728    179,905    +0.7%      223
+Trailblazer …      3,017,210      3,252,058    169,807    +5.6%       70
+Saradomin go…     25,311,857     25,995,317    163,554    +0.6%      469
+Saradomin pl…         38,076        200,000    157,924  +414.8%       59
+Pegasian boo…     34,808,685     35,679,234    156,965    +0.5%      524
+Justiciar ar…     34,432,335     35,290,000    151,865    +0.4%      231
+Echo venator…      2,128,688      2,321,455    146,338    +6.9%       69
+Hueycoatl hi…      4,013,542      4,243,333    144,925    +3.6%       74
+Justiciar fa…     13,238,389     13,656,159    144,647    +1.1%      272
+Ancestral ro…    206,073,190    210,424,567    142,886    +0.1%      160
+Bellator rin…     19,374,832     19,915,965    142,814    +0.7%      299
+Chugging bar…      8,912,013      9,236,260    139,522    +1.6%      170
+```
+=> /ge/cgi-bin/ge/item/11828 Armadyl chestplate ●
+=> /ge/cgi-bin/ge/item/24511 Harmonised orb ●
+=> /ge/cgi-bin/ge/item/23997 Blade of Saeldor (inactive) ●
+=> /ge/cgi-bin/ge/item/12817 Elysian spirit shield ●
+=> /ge/cgi-bin/ge/item/22486 Scythe of Vitur (uncharged) ●
+=> /ge/cgi-bin/ge/item/27277 Tumeken's shadow (uncharged) ●
+=> /ge/cgi-bin/ge/item/20098 Ankou top ●
+=> /ge/cgi-bin/ge/item/24514 Volatile orb ●
+=> /ge/cgi-bin/ge/item/20997 Twisted bow ●
+=> /ge/cgi-bin/ge/item/29625 Armageddon weapon scroll ●
+=> /ge/cgi-bin/ge/item/24517 Eldritch orb ●
+=> /ge/cgi-bin/ge/item/30744 Oathplate armour set ●
+=> /ge/cgi-bin/ge/item/24417 Inquisitor's mace ●
+=> /ge/cgi-bin/ge/item/26382 Torva full helm ●
+=> /ge/cgi-bin/ge/item/25859 Enhanced crystal weapon seed ●
+=> /ge/cgi-bin/ge/item/21021 Ancestral robe top ●
+=> /ge/cgi-bin/ge/item/22296 Staff of Light ●
+=> /ge/cgi-bin/ge/item/12827 Arcane sigil ●
+=> /ge/cgi-bin/ge/item/21006 Kodai wand ●
+=> /ge/cgi-bin/ge/item/21000 Twisted buckler ●
+=> /ge/cgi-bin/ge/item/22978 Dragon hunter lance ●
+=> /ge/cgi-bin/ge/item/24421 Inquisitor's plateskirt ●
+=> /ge/cgi-bin/ge/item/31145 Torva armour set ●
+=> /ge/cgi-bin/ge/item/27355 Masori armour set (f) ●
+=> /ge/cgi-bin/ge/item/31148 Virtus armour set ●
+=> /ge/cgi-bin/ge/item/26374 Zaryte crossbow ●
+=> /ge/cgi-bin/ge/item/28307 Ultor ring ●
+=> /ge/cgi-bin/ge/item/26386 Torva platelegs ●
+=> /ge/cgi-bin/ge/item/23953 Crystal tool seed ●
+=> /ge/cgi-bin/ge/item/11785 Armadyl crossbow ●
+=> /ge/cgi-bin/ge/item/6914 Master wand ●
+=> /ge/cgi-bin/ge/item/21024 Ancestral robe bottom ●
+=> /ge/cgi-bin/ge/item/28310 Venator ring ●
+=> /ge/cgi-bin/ge/item/21018 Ancestral hat ●
+=> /ge/cgi-bin/ge/item/11286 Draconic visage ●
+=> /ge/cgi-bin/ge/item/27241 Masori chaps (f) ●
+=> /ge/cgi-bin/ge/item/22477 Avernic defender hilt ●
+=> /ge/cgi-bin/ge/item/20155 Gilded 2h sword
+=> /ge/cgi-bin/ge/item/12821 Spectral spirit shield ●
+=> /ge/cgi-bin/ge/item/28684 Trailblazer reloaded bulwark ornament kit ●
+=> /ge/cgi-bin/ge/item/11806 Saradomin godsword ●
+=> /ge/cgi-bin/ge/item/3479 Saradomin plateskirt
+=> /ge/cgi-bin/ge/item/13237 Pegasian boots ●
+=> /ge/cgi-bin/ge/item/22438 Justiciar armour set ●
+=> /ge/cgi-bin/ge/item/30432 Echo venator bow ornament kit ●
+=> /ge/cgi-bin/ge/item/31169 Hueycoatl hide armour set ●
+=> /ge/cgi-bin/ge/item/22326 Justiciar faceguard ●
+=> /ge/cgi-bin/ge/item/21049 Ancestral robes set ●
+=> /ge/cgi-bin/ge/item/28316 Bellator ring ●
+=> /ge/cgi-bin/ge/item/30002 Chugging barrel (disassembled) ●
+
+=> https://grandexchange.dreamstation.systems/flips/margin This page on the web

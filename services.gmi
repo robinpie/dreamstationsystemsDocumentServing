@@ -20,6 +20,22 @@ mostly the same content as this capsule, over Gopher.
 
 currently being set up. in your terminal: finger @dreamstation.systems
 
+## FTP
+
+an anonymous, read-only file archive. plain FTP or explicit FTPS
+
+=> ftp://dreamstation.systems   ftp://dreamstation.systems
+
+## NTP
+
+part of pool.ntp.org. i also serve NTS on TCP/4460
+
+=> /ntpstats.gmi   NTP server stats (auto-regenerating)
+
+## Email
+
+i also run a small personal-only email server here - email me at robin@dreamstation.systems 
+
 ## DICT
 
 a dictionary server (RFC 2229), port 2628.
@@ -65,11 +81,5 @@ an endless stream of ASCII (RFC 864), TCP/UDP port 19. in your terminal, ctrl-C 
 ```
 nc dreamstation.systems 19
 ```
-
-## FTP
-
-an anonymous, read-only file archive.
-
-=> ftp://dreamstation.systems   ftp://dreamstation.systems
 
 => /   back to home

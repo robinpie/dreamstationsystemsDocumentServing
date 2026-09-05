@@ -1,0 +1,25 @@
+# OpenGET — OSRS Grand Exchange prices
+Live margins, ROI and money-making calculators. Free, no accounts.
+
+## Flip finders
+=> /ge/margin Highest margins — profit per item after tax
+=> /ge/roi Highest ROI — profit per gp invested
+=> /ge/potential Potential profit — margin x buy limit
+=> /ge/volume High volume — what is actually trading
+=> /ge/risers Biggest risers — 24 hour movers
+=> /ge/fallers Biggest fallers — 24 hour movers
+=> /ge/alch High alchemy — alch profit, untaxed
+=> /ge/alch-low Low alchemy — the level 21 spell
+
+## Reference
+=> /ge/indices Market indices
+=> /ge/calc Money makers
+=> /ge/about About and credits
+
+=> /ge/cgi-bin/ge/search Search for an item by name
+
+You can also look an item up over finger: finger abyssal_whip@dreamstation.systems
+
+## Notes
+* Price data from the OSRS Wiki real-time prices API, run by the OSRS Wiki in partnership with RuneLite.
+

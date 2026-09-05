@@ -1,0 +1,47 @@
+# About OpenGET
+
+OpenGET is a Grand Exchange price tracker and flipping tool for Old School RuneScape.
+
+## Download source code
+
+OpenGET is licensed under the GNU GPL version 2:
+
+=> ftp://dreamstation.systems/robinsSoftware/openget/ View directory over FTP
+=> https://github.com/robinpie/openget View on GitHub
+
+## Where the data comes from
+
+Price data from the OSRS Wiki real-time prices API, run by the OSRS Wiki in partnership with RuneLite.
+
+Shop inventories come from a second source: Bucket, the wiki's structured-data extension, which publishes what every shop in the game stocks and at what price. Only /store-profit uses it, and only because no price feed carries what a shopkeeper has on the shelf.
+
+=> https://oldschool.runescape.wiki/w/RuneScape:Real-time_Prices OSRS Wiki real-time prices documentation
+=> https://oldschool.runescape.wiki/w/RuneScape:Bucket The wiki's Bucket API
+=> https://oldschool.runescape.wiki/ The OSRS Wiki
+=> https://runelite.net/ RuneLite
+
+## How the numbers are worked out
+
+"Buy" is the instant-sell price and "sell" is the instant-buy price, matching the API. Margin is the sell price minus the 2% Grand Exchange tax minus the buy price. The tax is paid by the seller only, is capped at 5,000,000 gp per item, rounds down to the whole coin, and does not apply to a fixed list of exempt items.
+
+=> /ge/about GE tax calculator, including the full exempt list
+=> /ge/indices Market indices and their published constituents
+=> /ge/status Service status and archive size
+
+## Other ways to read this
+
+The same data is served over Gopher, Gemini, Spartan and finger. Try: finger abyssal_whip@dreamstation.systems
+
+=> gopher://dreamstation.systems/1/ge gopher://dreamstation.systems/1/ge
+=> gemini://dreamstation.systems/ge/ gemini://dreamstation.systems/ge/
+=> spartan://dreamstation.systems/ge/ spartan://dreamstation.systems/ge/
+
+## Contact
+
+=> mailto:robin@dreamstation.systems robin@dreamstation.systems
+
+## Legal
+
+Old School RuneScape is a trademark of Jagex Limited. OpenGET is an unofficial fan tool with no affiliation with or endorsement from Jagex.
+
+=> https://grandexchange.dreamstation.systems/about This page on the web
