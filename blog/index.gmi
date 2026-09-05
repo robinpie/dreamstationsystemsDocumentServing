@@ -1,8 +1,9 @@
 # blog
 
-=> ntppost.gmi     Internet centralization and the original sin of NAT | 2026-08-30
-=> hypnospace.gmi  Porting Hypnospace Outlaw's webpages to the real Web | 2026-08-27 | edited 2026-08-29
-=> slowqotd.gmi    Quirky but compliant QOTDs; or, a really slow QOTD server | 2026-06-22
-=> gzipt.gmi       Playing with the language modeling abilities of gzip | 2026-06-17
+=> lanfalsehoods.gmi Falsehoods Programmers Believe About LANs | 2026-09-05
+=> ntppost.gmi       Internet centralization and the original sin of NAT | 2026-08-30
+=> hypnospace.gmi    Porting Hypnospace Outlaw's webpages to the real Web | 2026-08-27 | edited 2026-08-29
+=> slowqotd.gmi      Quirky but compliant QOTDs; or, a really slow QOTD server | 2026-06-22
+=> gzipt.gmi         Playing with the language modeling abilities of gzip | 2026-06-17
 
 => /            back to home
