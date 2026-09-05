@@ -1,0 +1,60 @@
+iAbout OpenGET	fake	(NULL)	0
+i=============	fake	(NULL)	0
+i	fake	(NULL)	0
+iOpenGET is a Grand Exchange price tracker and flipping tool for Old	fake	(NULL)	0
+iSchool RuneScape.	fake	(NULL)	0
+i	fake	(NULL)	0
+iDOWNLOAD SOURCE CODE	fake	(NULL)	0
+i--------------------	fake	(NULL)	0
+iOpenGET is licensed under the GNU GPL version 2:	fake	(NULL)	0
+i	fake	(NULL)	0
+hView directory over FTP	URL:ftp://dreamstation.systems/robinsSoftware/openget/	dreamstation.systems	70
+hView on GitHub	URL:https://github.com/robinpie/openget	dreamstation.systems	70
+i	fake	(NULL)	0
+iWHERE THE DATA COMES FROM	fake	(NULL)	0
+i-------------------------	fake	(NULL)	0
+iPrice data from the OSRS Wiki real-time prices API, run by the OSRS	fake	(NULL)	0
+iWiki in partnership with RuneLite.	fake	(NULL)	0
+i	fake	(NULL)	0
+iShop inventories come from a second source: Bucket, the wiki's	fake	(NULL)	0
+istructured-data extension, which publishes what every shop in the game	fake	(NULL)	0
+istocks and at what price. Only /store-profit uses it, and only because	fake	(NULL)	0
+ino price feed carries what a shopkeeper has on the shelf.	fake	(NULL)	0
+i	fake	(NULL)	0
+hOSRS Wiki real-time prices documentation	URL:https://oldschool.runescape.wiki/w/RuneScape:Real-time_Prices	dreamstation.systems	70
+hThe wiki's Bucket API	URL:https://oldschool.runescape.wiki/w/RuneScape:Bucket	dreamstation.systems	70
+hThe OSRS Wiki	URL:https://oldschool.runescape.wiki/	dreamstation.systems	70
+hRuneLite	URL:https://runelite.net/	dreamstation.systems	70
+i	fake	(NULL)	0
+iHOW THE NUMBERS ARE WORKED OUT	fake	(NULL)	0
+i------------------------------	fake	(NULL)	0
+i"Buy" is the instant-sell price and "sell" is the instant-buy price,	fake	(NULL)	0
+imatching the API. Margin is the sell price minus the 2% Grand Exchange	fake	(NULL)	0
+itax minus the buy price. The tax is paid by the seller only, is capped	fake	(NULL)	0
+iat 5,000,000 gp per item, rounds down to the whole coin, and does not	fake	(NULL)	0
+iapply to a fixed list of exempt items.	fake	(NULL)	0
+i	fake	(NULL)	0
+1GE tax calculator, including the full exempt list	/ge/about	dreamstation.systems	70
+1Market indices and their published constituents	/ge/indices	dreamstation.systems	70
+1Service status and archive size	/ge/status	dreamstation.systems	70
+i	fake	(NULL)	0
+iOTHER WAYS TO READ THIS	fake	(NULL)	0
+i-----------------------	fake	(NULL)	0
+iThe same data is served over Gopher, Gemini, Spartan and finger. Try:	fake	(NULL)	0
+ifinger abyssal_whip@dreamstation.systems	fake	(NULL)	0
+i	fake	(NULL)	0
+hgopher://dreamstation.systems/1/ge	URL:gopher://dreamstation.systems/1/ge	dreamstation.systems	70
+hgemini://dreamstation.systems/ge/	URL:gemini://dreamstation.systems/ge/	dreamstation.systems	70
+hspartan://dreamstation.systems/ge/	URL:spartan://dreamstation.systems/ge/	dreamstation.systems	70
+i	fake	(NULL)	0
+iCONTACT	fake	(NULL)	0
+i-------	fake	(NULL)	0
+hrobin@dreamstation.systems	URL:mailto:robin@dreamstation.systems	dreamstation.systems	70
+i	fake	(NULL)	0
+iLEGAL	fake	(NULL)	0
+i-----	fake	(NULL)	0
+iOld School RuneScape is a trademark of Jagex Limited. OpenGET is an	fake	(NULL)	0
+iunofficial fan tool with no affiliation with or endorsement from	fake	(NULL)	0
+iJagex.	fake	(NULL)	0
+i	fake	(NULL)	0
+.

@@ -15,6 +15,15 @@ this box runs a few retro/fun/quirky internet services. here's everything it spe
   Finger         in your terminal: finger @dreamstation.systems
                  currently being set up.
 
+  FTP            ftp://dreamstation.systems
+                 an anonymous, read-only file archive. plain FTP or
+                 explicit FTPS for the same archive encrypted.
+
+  NTP            part of pool.ntp.org. i also serve NTS on TCP/4460
+                 
+  E-mail         i run a small personal-only email server here - email me at
+                 robin@dreamstation.systems
+
   DICT           dict://dreamstation.systems
                  in your favorite graphical dictd frontend, or in your terminal
                  with dictd: dict -h dreamstation.systems -d jargon
@@ -32,12 +41,9 @@ this box runs a few retro/fun/quirky internet services. here's everything it spe
 
   Discard        in your terminal: nc dreamstation.systems 9
                  everything you send is thrown away (RFC 863), port 9.
-
+                 
   Chargen        in your terminal: nc dreamstation.systems 19
-                 an endless stream of ASCII (RFC 864), port 19. ctrl-C to escape.
-
-  FTP            ftp://dreamstation.systems
-                 an anonymous, read-only file archive.
-
+                 an endless stream of ASCII (RFC 864), port 19.
+  
 --
 back to home: gopher://dreamstation.systems
