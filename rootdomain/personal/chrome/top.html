@@ -30,14 +30,13 @@
     <!-- The home link lives on the panel's window-list entry, not on the
          title-bar icon below: in Hardy that icon opened metacity's window
          menu, whereas clicking the panel entry was already "go to that
-         window". Same reasoning as ubuntu804/chrome.html. -->
+         window". -->
     <a class="winlist" href="/personal/" title="dreamstation.systems home"><img src="/personal/themes/ubuntu804/i/firefox24.png" width="24" height="24" alt="Home"></a>
     <span class="who">dreamstation.systems</span>
     <!-- nginx renders the clock in-worker: no CGI, no fork, nothing on disk.
          date_gmt is UTC and the suffix says so. %e is space-padded so
          "Sep  4" keeps its double space; %-l is UNpadded so "3:19 PM" keeps
-         its single one. Verbatim from ubuntu804/chrome.html, where the format
-         was checked against this same nginx. -->
+         its single one. The format was checked against this same nginx. -->
     <span class="clock"><!--#config timefmt="%a %b %e, %-l:%M %p" --><!--#echo var="date_gmt" --><span class="zone"> UTC</span></span>
   </div>
 

@@ -6,11 +6,12 @@
  * split and the one real trap in it (nginx variables do not survive an
  * `#include virtual`); ubuntu804theme.txt in the repo root explains the rest.
  *
- * WHERE THIS CAME FROM. The desktop half is ubuntu804/site.css, which built
- * the tmp-ubuntu804 tree, and its measurements are load-bearing — every one
- * came off a 1280x720 reference screenshot with ImageMagick, pixel row by
- * pixel row. Those rules are carried over unchanged and their reasoning with
- * them, because a number that looks arbitrary here was measured there:
+ * WHERE THIS CAME FROM. The desktop half began as the stylesheet of a
+ * standalone template, since removed, that lived at /tmp-ubuntu804/. Its
+ * measurements are load-bearing — every one came off a 1280x720 reference
+ * screenshot with ImageMagick, pixel row by pixel row. Those rules were
+ * carried over unchanged and their reasoning with them, because a number that
+ * looks arbitrary here was measured there, and this is now the only record:
  *
  *   13.33px   the chrome font. Ubuntu 8.04's default was "Sans 10", and 10pt
  *             at the X server's 96dpi is exactly 13.333px.
@@ -20,7 +21,7 @@
  *   454px     the masthead logotype slot, the footprint of the Ubuntu 8.04
  *             headerlogo.png this site replaces.
  *
- * WHAT IS NEW HERE. tmp-ubuntu804's pages were generated around the chrome, so
+ * WHAT IS NEW HERE. That template's pages were generated around the chrome, so
  * every hook the stylesheet wanted was in the markup. These pages are hand
  * written and predate the theme by years, so three of their existing elements
  * are re-cast rather than restyled, and that mapping is the whole trick:
@@ -37,7 +38,7 @@
 
 /* ------------------------------------------------------------------ fonts */
 
-/* The full faces, not the subset pair tmp-ubuntu804 ships, and that is a
+/* The full faces, not the subset pair the old template shipped, and that is a
  * decision rather than an oversight. A subset is declared with a
  * unicode-range, and the browser consults that range BEFORE it looks inside
  * the file: a codepoint in range but absent from the font does not fall
@@ -97,7 +98,7 @@
   /* Geometry */
   --panel-h:  24px;
   --strip-h:  48px;            /* the reference shows 85px; 48 gives more
-                                * window, and matches tmp-ubuntu804/site.conf */
+                                * window. Single source of truth. */
   --chrome-font: 13.33px;      /* "Sans 10" at 96dpi */
   --masthead-h: 90px;
   --logo-w: 454px;
@@ -130,7 +131,7 @@ body {
 
 /* Short by exactly the strip, because the badge shelf that fills that gap is
  * the page's <footer> and is position:fixed — it is not a flex child of this
- * element the way it was in tmp-ubuntu804, so it reserves no space here. */
+ * element the way it was in the old template, so it reserves no space here. */
 .desktop {
   height: calc(100% - var(--strip-h));
   display: flex;
@@ -760,10 +761,10 @@ footer .badges img {
 }
 footer .badges a { display: block; line-height: 0; }
 footer .badges a:focus { outline: 2px solid #fff; outline-offset: 1px; }
-/* tmp-ubuntu804 ends this row with a line of white text explaining that the
- * window stops short of the screen on purpose. Not carried over: there it was
- * a note on a template being shown off, and here the desktop is just how the
- * site looks. The strip reads as wallpaper without being told it is. */
+/* The old template ended this row with a line of white text explaining that
+ * the window stops short of the screen on purpose. Not carried over: there it
+ * was a note on a template being shown off, and here the desktop is just how
+ * the site looks. The strip reads as wallpaper without being told it is. */
 
 /* -------------------------------------------------------- skip link (a11y) */
 

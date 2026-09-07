@@ -183,7 +183,6 @@ deploy-site.sh:
     nginx/snippets/clacks.conf
     nginx/snippets/pgp-key.conf
     nginx/snippets/status-cgi.conf
-    nginx/snippets/tmp-ubuntu804.conf
     nginx/snippets/wkd.conf
 
 DO NOT HAND-EDIT /etc/nginx for any of these. The next commit reinstalls them

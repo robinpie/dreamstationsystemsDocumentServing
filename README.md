@@ -6,14 +6,13 @@ mta-sts.dreamstation.systems and openpgpkey.dreamstation.systems are separate vh
 
 `unicodePedanticism.txt` is the rules I try to follow for prose.
 
-Some scripting and layout is AI-assisted, and there’s some AI‐slop documentation at `nginx.txt`, `site-assets.txt`, `githooks.txt`, and `ubuntu804/ubuntu804template.txt` (i’ll try to clean the documentation up eventually). The served prose is mine, of course.
+Some scripting and layout is AI-assisted, and there’s some AI‐slop documentation at `nginx.txt`, `site-assets.txt`, `githooks.txt`, and `ubuntu804theme.txt` (i’ll try to clean the documentation up eventually). The served prose is mine, of course.
 
 | Subtree          | Domain / destination                             | License        |
 |------------------|--------------------------------------------------|----------------|
 | `openget/`       | https://grandexchange.dreamstation.systems       | GPL-2.0-only   |
 | `rootdomain/`    | https://dreamstation.systems                     | mixed / messy  |
 | `cgi/`           | https://dreamstation.systems/professional/status | mixed / messy  |
-| `ubuntu804/`     | https://dreamstation.systems/tmp-ubuntu804       | mixed / messy  |
 | `nginx/`         | `/etc/nginx`                                     | mixed / messy  |
 | `status-sample/` | `/usr/local/bin` + systemd                       | mixed / messy  |
 | `assets-build/`  | build-time only, not served                      | mixed / messy  |

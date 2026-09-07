@@ -53,7 +53,6 @@ server {
     index index.html;
 
     include snippets/status-cgi.conf;
-    include snippets/tmp-ubuntu804.conf;
     include snippets/pgp-key.conf;
     include snippets/theme.conf;
     include snippets/feeds.conf;
@@ -90,7 +89,6 @@ server {
     index index.html;
 
     include snippets/status-cgi.conf;
-    include snippets/tmp-ubuntu804.conf;
     include snippets/wkd.conf;
     include snippets/pgp-key.conf;
     include snippets/theme.conf;

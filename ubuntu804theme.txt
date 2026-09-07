@@ -16,15 +16,19 @@ Being the default also means this theme is now the first thing a stranger sees,
 so a mistake in the chrome is no longer confined to people who went looking
 for it.
 
-It is the same desktop as the standalone template under /tmp-ubuntu804/ — see
-ubuntu804/ubuntu804template.txt for that one — but reached a different way, and
-the difference is the whole point of this file.
+It began as a port of a standalone template that lived at /tmp-ubuntu804/,
+built by a generator out of http/ubuntu804/. That template and its source tree
+were REMOVED in September 2026 (archived off the server); this theme is now the
+only surviving copy of the desktop, and this file the only documentation of it.
 
-  /tmp-ubuntu804/   build.pl generates complete pages around chrome.html.
-                    Every hook the stylesheet wants is in the generated markup.
-  this theme        the pages are hand-written, predate the theme by years, and
-                    must still render under four other stylesheets. Nothing may
-                    be generated and nothing may be permanently restructured.
+The distinction the two were built on still explains why this one is shaped the
+way it is:
+
+  the template   a generator emitted complete pages around one chrome.html, so
+                 every hook the stylesheet wanted was in the generated markup.
+  this theme     the pages are hand-written, predate the theme by years, and
+                 must still render under four other stylesheets. Nothing may
+                 be generated and nothing may be permanently restructured.
 
 WHERE EVERYTHING IS
 -------------------
@@ -39,11 +43,12 @@ WHERE EVERYTHING IS
   nginx/snippets/theme.conf                     the internal chrome location
   nginx/sites-available/dreamstation.systems    ubuntu804 in both theme maps
 
-The asset copies are byte-identical to what /tmp-ubuntu804/ ships and were
-taken from the same sources build.pl's @ASSETS table uses. They are DUPLICATED
-rather than shared on purpose: ubuntu804template.txt documents removing that
-tree with a `git rm -r`, and a theme that dies when a temporary template is
-deleted is a theme with a trapdoor under it. 464 kB, most of it the two fonts.
+Those assets were duplicated out of the template's tree rather than shared with
+it, on purpose: that tree documented its own removal with a `git rm -r`, and a
+theme that dies when a temporary template is deleted is a theme with a trapdoor
+under it. The removal happened and the theme did not notice, which was the
+point. 464 kB, most of it the two fonts, and now the only copy in the repo —
+CREDITS.txt carries the full attribution and says where the originals went.
 
 HOW IT WORKS
 ------------
@@ -154,8 +159,8 @@ THINGS THAT WILL BITE
     others, parse that page before suspecting the theme.
 
   - THE VIEWPORT IS A NESTED SCROLLER. body has overflow:hidden and the
-    document scrolls inside .viewport, which is deliberate and matches
-    /tmp-ubuntu804/. The long posts (gzipt, ntppost, slowqotd) therefore scroll
+    document scrolls inside .viewport, which is deliberate — a real browser
+    window scrolls its content, not the desktop behind it. The long posts (gzipt, ntppost, slowqotd) therefore scroll
     inside the window rather than moving the page. Correct, but it is a
     different feel from the other four themes and is the thing most likely to
     be reported as a bug.
@@ -171,33 +176,35 @@ THINGS THAT WILL BITE
     faces cost one fetch, need no build step, and cannot rot when a page gains
     a character.
 
-RELATIONSHIP TO ubuntu804/chrome.html
--------------------------------------
-The two carry the same menus and the same window furniture and are maintained
-by hand in parallel. They are NOT generated from a common source, and a look at
-what actually differs says why that would have bought little: the menu
-destinations differ (this one's View and Bookmarks menus mirror /personal/'s
-nav, its Help menu points at this theme's own CREDITS.txt), the per-page values
-arrive by a completely different mechanism, and this one is split in three
-around markup the other does not have. What is genuinely shared is the artwork
-and the measurements, and those are shared — the images are byte copies and the
-stylesheet's chrome rules came over from ubuntu804/site.css with their
-reasoning attached.
+WHAT CAME FROM THE TEMPLATE'S CHROME
+------------------------------------
+The template carried the same menus and the same window furniture in a single
+chrome.html, and the two were maintained by hand in parallel rather than
+generated from a common source — a look at what differed says why sharing would
+have bought little: the menu destinations differ (this one's View and Bookmarks
+menus mirror /personal/'s nav, its Help menu points at this theme's own
+CREDITS.txt), the per-page values arrive by a completely different mechanism,
+and this one is split in three around markup the other did not have. What was
+genuinely shared is the artwork and the measurements: the images are byte
+copies, and the stylesheet's chrome rules came over from the template's
+site.css with their reasoning attached.
 
-If the menus change in one, change them in the other.
+That parallel is now gone, and with it the obligation to change the menus in
+two places. Nothing outside rootdomain/personal/ needs touching when this
+theme changes.
 
 CHANGING THE STRIP HEIGHT
 -------------------------
---strip-h in ubuntu804.css, and nowhere else. /tmp-ubuntu804/ carries the same
-number in site.conf; the two do not have to agree, because they are separate
-trees.
+--strip-h in ubuntu804.css, and nowhere else. It was already the single source
+of truth before the template went, and now there is not even a second tree
+carrying the same number in its own config.
 
-That tree ends its badge row with a line of white text saying the window is
-short of the screen on purpose. This theme deliberately does not: there the
-note explains a template being shown off, here the desktop is simply how the
-site looks, and a page does not need to narrate its own layout. Dropping it
-also took --strip-h down to a single source of truth, since the note was
-generated content and could not read the custom property.
+The template ended its badge row with a line of white text saying the window
+was short of the screen on purpose. This theme deliberately does not: there the
+note explained a template being shown off, here the desktop is simply how the
+site looks, and a page does not need to narrate its own layout. Dropping it is
+also what took --strip-h down to one place, since the note was generated
+content and could not read the custom property.
 
 TESTING IT
 ----------
@@ -207,7 +214,8 @@ URL fetched for a 200, every theme fetched to confirm the fragments expand to
 nothing under the other four and that an unknown theme id falls back to the
 default.
 The look itself has NOT been eyeballed on the server and cannot be. Do that on
-a workstation. ubuntu804/devserver.sh is the model for a loopback nginx that
-serves the repo without committing anything; the same trick works here by
-pointing the root at rootdomain/ and including nginx/snippets/theme.conf plus
-the two map blocks out of the vhost.
+a workstation. Run a loopback nginx that serves the repo without committing
+anything: point the root at rootdomain/ and include nginx/snippets/theme.conf
+plus the two map blocks out of the vhost. (The template's devserver.sh was the
+model for this and went with it; it is in the archived copy if you want it
+back.)

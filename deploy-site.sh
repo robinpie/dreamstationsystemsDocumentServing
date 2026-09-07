@@ -39,7 +39,6 @@ NGINX_SNIPPETS=(
 	pgp-key.conf
 	status-cgi.conf
 	theme.conf
-	tmp-ubuntu804.conf
 	wkd.conf
 )
 

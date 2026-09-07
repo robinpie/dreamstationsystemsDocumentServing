@@ -8,6 +8,3 @@ README.local.md
 
 # Editor artifacts
 *.kate-swp
-# ubuntu804/build.pl default output dir when no target is named; the
-# committed output is rootdomain/tmp-ubuntu804, written to explicitly.
-/build-output/
