@@ -39,16 +39,33 @@ the next edit.
 
 WHY THE MARGIN
 --------------
-The census cannot see everything. slowqotd.html builds a "×" (U+00D7) in
-JavaScript, and CSS content: could inject a glyph that appears in no HTML
-source at all. So the census is taken over the RAW file bytes — markup,
-scripts and styles included, not a stripped text extraction — and then a fixed
-margin of ranges is added on top. The margin costs about 10 kB and removes a
-whole category of silent breakage; a tight census-only subset saves that and
-buys a bug that only shows up on one page, in one browser, months later.
+THE CENSUS CANNOT SEE THE CLOCK. chrome/top.html renders the GNOME panel's
+clock with SSI —
+
+    <!--#config timefmt="%a %b %e, %-l:%M %p" --><!--#echo var="date_gmt" -->
+
+— so the characters actually painted there ("Sun Sep 7, 2:15 PM") are produced
+by nginx at request time and appear in no source file this script can read. A
+census-only subset would be cut from text that does not include the day and
+month abbreviations on every visitor's screen.
+
+They are ASCII, so the margin's U+0020-007E covers them, which is the whole
+point: the margin is what makes the census's blind spots harmless. The same
+goes for anything a CSS content: rule injects, and for the theme's other two
+SSI values (the window title and $document_uri).
+
+So: census over RAW file bytes — markup, styles and any script included, not a
+stripped text extraction — plus a fixed margin. Together they cost about 10 kB
+over a tight subset and remove a category of bug that would otherwise surface
+on one page, in one browser, months later.
 
 A character outside both is not tofu — it falls back to another font, so the
 failure mode is a visible style mismatch rather than a missing glyph.
+
+(The themed pages carry NO JavaScript at all — slowqotd.html has a "Proudly
+ZERO JavaScript!" badge and means it — so script-built text is not among the
+blind spots here. Reading raw bytes is still the right call: it is robust to
+that changing, and to markup this script would otherwise have to parse.)
 """
 
 import subprocess
@@ -93,10 +110,13 @@ MARGIN = ("U+0020-007E,U+00A0-00FF,U+2000-206F,U+20AC,U+2122,"
 def census() -> set[str]:
     """Every character appearing in any source that the theme renders.
 
-    Raw bytes, not extracted text: a stripped extraction would miss the
-    JavaScript-built "×" in slowqotd.html and anything a CSS content: rule
-    injects. Over-inclusive by design — the extra characters are markup, which
-    is ASCII, which the margin covers anyway.
+    Raw bytes, not extracted text: a stripped extraction has to parse HTML to
+    decide what is content, and would miss anything a CSS content: rule
+    injects. Over-inclusive by design — it picks up characters from comments
+    and attributes that are never painted, which costs a few glyphs and cannot
+    cause a wrong result.
+
+    It does NOT see SSI output; see WHY THE MARGIN in the module docstring.
     """
     chars: set[str] = set()
     sources = [PERSONAL / f"{n}.html" for n in THEMED]
