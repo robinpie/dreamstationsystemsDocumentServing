@@ -6,17 +6,25 @@
 
 /* ------------------------------------------------------------------ fonts */
 
-/* Full faces, not a unicode-range subset: these pages are full of emoji that
- * DejaVu doesn't have, and a subset range would make the browser stop looking
- * for them in the next @font-face instead of falling through. See
- * ubuntu804theme.txt for why that's a decision, not an oversight. */
+/* Subsets, built by assets-build/make-font-subset.py from the census of these
+ * pages on every commit. 382 kB of full faces down to 45 kB.
+ *
+ * DO NOT ADD A unicode-range HERE. Its absence is what makes the subset safe:
+ * without it the browser does per-glyph fallback, so the eight emoji in these
+ * pages — which DejaVu lacks at every weight, and which therefore already fell
+ * through to a system font when the full faces shipped — keep rendering. Add a
+ * range and the browser stops looking past this @font-face for anything inside
+ * it, and they turn to tofu.
+ *
+ * A character these files lack is not tofu either, just a fallback font. See
+ * make-font-subset.py's header, and ubuntu804theme.txt. */
 @font-face {
   font-family: "DejaVu Web"; font-style: normal; font-weight: 400;
-  font-display: swap; src: url(ubuntu804/f/dejavu-full.woff2) format("woff2");
+  font-display: swap; src: url(ubuntu804/f/dejavu.woff2) format("woff2");
 }
 @font-face {
   font-family: "DejaVu Web"; font-style: normal; font-weight: 700;
-  font-display: swap; src: url(ubuntu804/f/dejavu-full-bold.woff2) format("woff2");
+  font-display: swap; src: url(ubuntu804/f/dejavu-bold.woff2) format("woff2");
 }
 
 /* ----------------------------------------------------------------- tokens */

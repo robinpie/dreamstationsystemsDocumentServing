@@ -63,13 +63,20 @@ i/throbber.png
     chrome/classic.jar. (c) Mozilla Foundation, MPL/GPL/LGPL tri-license.
     Unmodified.
 
-f/dejavu-full.woff2, f/dejavu-full-bold.woff2
+f/dejavu.woff2, f/dejavu-bold.woff2
     DejaVu Sans and DejaVu Sans Bold, a Bitstream Vera derivative.
     Bitstream Vera Fonts Copyright (c) 2003 Bitstream, Inc.; DejaVu changes in
     the public domain. The licence permits redistribution and modification;
     subsetting and container changes are explicitly allowed. The name
-    "Bitstream Vera" is not used, as the licence requires. These are the
-    complete faces rather than a subset; ubuntu804.css says why.
+    "Bitstream Vera" is not used, as the licence requires.
+
+    MODIFIED: these are SUBSETS, not the complete faces. Each carries the
+    characters these pages actually use plus a margin of Latin-1, punctuation,
+    arrows and box drawing — about 45 kB for the pair against 382 kB for the
+    full faces. Rebuilt from the upstream TTFs on every commit by
+    assets-build/make-font-subset.py; glyph metrics are unchanged, so this is
+    a reduction in coverage and nothing else. The unmodified originals are in
+    the repo at assets-build/fonts-src/.
 
 CSS DERIVED FROM SOMEBODY ELSE'S STYLESHEET
 -------------------------------------------
@@ -123,4 +130,4 @@ FILES THIS THEME SHIPS
   i/heron.webp, i/header.png, i/mark.svg, i/favicon16.png
   i/firefox16.png, i/firefox24.png, i/go-home.png, i/throbber.png
   i/wb-minimize.png, i/wb-maximize.png, i/wb-close.png
-  f/dejavu-full.woff2, f/dejavu-full-bold.woff2
+  f/dejavu.woff2, f/dejavu-bold.woff2
