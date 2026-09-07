@@ -22,11 +22,31 @@ pre-commit was a symlink straight to datestamp-hook.pl until there was a
 second step to run. git runs exactly ONE pre-commit hook, so it now points at
 pre-commit.sh, which calls each step in turn:
 
-    datestamp-hook.pl           schema.org dateModified stamp   (below)
-    assets-build/make-feed.py   Atom + RSS for the blog         (feeds.txt)
+    datestamp-hook.pl                 schema.org dateModified stamp    (below)
+    assets-build/make-feed.py         Atom + RSS for the blog       (feeds.txt)
+    assets-build/make-font-subset.py  ubuntu804 DejaVu subsets
+                                                          (ubuntu804theme.txt)
 
 Any step added there must re-stage what it rewrites, or the commit will not
 match what the hook computed.
+
+The last two produce COMMITTED ARTIFACTS, and for the same reason: promote is
+a plain rsync of rootdomain/ with no build step, so anything served has to
+exist in the repo. (That invariant is why the font subsetting went here rather
+than into stage-site.sh, where it would have been just as easy to run and
+would have left the live docroot holding files that exist in no commit.)
+
+Both are no-ops when their inputs have not changed, so an unrelated commit
+does not list feeds or fonts among its changes. For the fonts that is
+load-bearing rather than cosmetic: without it every commit would put two new
+20 kB binaries into git history.
+
+THE UNSTAGED GUARD IS ON THE FEEDS ONLY, deliberately. A feed built from a
+half-finished working tree makes a false claim to readers who cache it — it
+announces posts the commit does not contain. A font subset built from the same
+tree is merely generous: it carries glyphs for text that is not committed yet,
+which costs bytes and breaks nothing. Same tree, different failure modes,
+different guard.
 
 DO NOT set core.hooksPath. It replaces .git/hooks wholesale, which would
 silently disable the deploy hooks and both git-lfs hooks. Symlink instead.

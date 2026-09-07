@@ -34,7 +34,12 @@ WHERE EVERYTHING IS
 -------------------
   rootdomain/personal/themes/ubuntu804.css      the stylesheet
   rootdomain/personal/themes/ubuntu804/i/       11 images (wallpaper, icons)
-  rootdomain/personal/themes/ubuntu804/f/       two DejaVu woff2 faces
+  rootdomain/personal/themes/ubuntu804/f/       two DejaVu woff2 faces,
+                                                SUBSETS, generated - see below
+  assets-build/fonts-src/                       the full DejaVu TTFs they are
+                                                cut from; outside rootdomain/,
+                                                so never served
+  assets-build/make-font-subset.py              cuts them, on every commit
   rootdomain/personal/themes/ubuntu804/CREDITS.txt   attribution; linked from
                                                 the theme's own Help menu
   rootdomain/personal/chrome/top.html           the desktop markup, in three
@@ -47,8 +52,10 @@ Those assets were duplicated out of the template's tree rather than shared with
 it, on purpose: that tree documented its own removal with a `git rm -r`, and a
 theme that dies when a temporary template is deleted is a theme with a trapdoor
 under it. The removal happened and the theme did not notice, which was the
-point. 464 kB, most of it the two fonts, and now the only copy in the repo —
-CREDITS.txt carries the full attribution and says where the originals went.
+point. It was 464 kB, most of it the two fonts; the fonts are subset on every
+commit now, so what ships is about 168 kB. CREDITS.txt carries the full
+attribution, records that the faces are modified, and says where the originals
+went — they are in the repo at assets-build/fonts-src/, unmodified.
 
 HOW IT WORKS
 ------------
@@ -165,16 +172,49 @@ THINGS THAT WILL BITE
     different feel from the other four themes and is the thing most likely to
     be reported as a bug.
 
-  - THE FULL FONTS SHIP, NOT A SUBSET, and that is deliberate. A subset is
-    declared with a unicode-range, and the browser consults the range BEFORE it
-    looks inside the file: a codepoint in range but absent from the font falls
-    out of the family rather than through to the next @font-face. These pages
-    are full of emoji — the nav alone has four — and DejaVu has none of them at
-    any weight, so a census-derived subset either excludes them (and every page
-    drags the full face down anyway looking for them, buying nothing) or
-    includes them (and the range lies, and the emoji stop rendering). Full
-    faces cost one fetch, need no build step, and cannot rot when a page gains
-    a character.
+  - SUBSET FONTS SHIP, built on every commit. 382 kB down to 45 kB.
+
+    This entry used to say the opposite — that the full faces shipped and that
+    this was deliberate — and the argument was: a subset is declared with a
+    unicode-range, the browser consults the range BEFORE it looks inside the
+    file, so a codepoint in range but absent from the font falls out of the
+    family rather than through to the next @font-face. These pages are full of
+    emoji and DejaVu has none of them at any weight, so a census-derived subset
+    either excludes them (and every page drags the full face down anyway,
+    buying nothing) or includes them (and the range lies, and the emoji stop
+    rendering).
+
+    THE PREMISE WAS WRONG. unicode-range is OPTIONAL, and ubuntu804.css never
+    declared one. Without it the browser does ordinary per-glyph fallback, so
+    a character the file lacks is rendered from the next family in the stack.
+    The dilemma was between two horns that only exist if you add the range.
+
+    And the emoji were never being served by DejaVu in the first place: they
+    are absent from it at every weight, so they were ALREADY falling through
+    to a system emoji font while the full 382 kB shipped. Checked against the
+    shipped woff2 rather than assumed — 🌠🏠🏰💼📈📓📧🚀, eight of them, none
+    present. They render today exactly as they did before.
+
+    The last sentence of the old entry was the one real objection: a subset
+    "cannot rot when a page gains a character". A subset can. That is why the
+    census is recomputed by assets-build/make-font-subset.py on EVERY commit
+    rather than being cut once by hand — see the header of that script, which
+    carries the rest of the reasoning, and githooks.txt for the pre-commit
+    chain.
+
+    Fidelity was measured, not assumed: zero advance-width differences against
+    the previously shipped faces, identical hhea and OS/2 metrics, GPOS kerning
+    retained (--layout-features='' would save another 1.6 kB and drop it, which
+    would move spacing this theme was measured against). The subsets are a
+    reduction in coverage and nothing else.
+
+    IF A CHARACTER EVER COMES OUT IN THE WRONG FONT, this is the first thing to
+    suspect — but the symptom is a style mismatch, not tofu, and the margin in
+    make-font-subset.py (Latin-1, General Punctuation, arrows, box drawing) is
+    sized to make it unlikely. DO NOT FIX IT BY ADDING A unicode-range. That
+    reintroduces the exact trap the old entry described, and the emoji go with
+    it. Add to the margin, or to THEMED if a page was added to theme.conf's
+    regex and not to the script.
 
 WHAT CAME FROM THE TEMPLATE'S CHROME
 ------------------------------------
