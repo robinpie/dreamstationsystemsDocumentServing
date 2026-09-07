@@ -1,0 +1,91 @@
+# staging.dreamstation.systems — the site as of the last commit, before it is
+# live.
+#
+# Serves /srv/httpstaging, which stage-site.sh writes on every commit. The live
+# docroot /srv/http only changes when promote-site.sh is run by hand. This
+# vhost is how you look at the difference.
+#
+# A more specific server_name than the *.dreamstation.systems wildcard in
+# dreamstation.systems, so nginx prefers this block. That preference is the
+# whole security boundary here: WITHOUT this file, staging.dreamstation.systems
+# still resolves (wildcard A record) and the apex block answers it with the
+# LIVE site and no password. Deleting this vhost does not close the name, it
+# just hands it back to the apex. Remove the DNS name too, or leave this be.
+#
+# Its own certificate, not an expansion of the dreamstation.systems one: that
+# cert also covers mta-sts, and re-issuing it for a staging host would put
+# inbound mail's TLS in the blast radius of a web deploy. Same call, and the
+# same reason, as grandexchange.
+
+server {
+    include snippets/clacks.conf;
+    listen 80;
+    listen [::]:80;
+    server_name staging.dreamstation.systems;
+
+    # Basic auth is base64, not a hash — the password is on the wire in
+    # cleartext on every request. So port 80 gets NO content whatsoever, not
+    # even behind auth: a redirect is issued before any credential is asked
+    # for. This is why the apex's "port 80 is deliberately not redirected"
+    # policy does not apply to this host.
+    #
+    # certbot's webroot is the live docroot, which is where this cert was
+    # issued from and where renewals will look. deploy already protects
+    # /srv/http/.well-known/acme-challenge/ from --delete.
+    location /.well-known/acme-challenge/ {
+        root /srv/http;
+        auth_basic off;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    include snippets/clacks.conf;
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name staging.dreamstation.systems;
+
+    ssl_certificate     /etc/letsencrypt/live/staging.dreamstation.systems/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/staging.dreamstation.systems/privkey.pem;
+
+    root /srv/httpstaging;
+    index index.html;
+
+    # The password file is NOT in this repo and NOT deployed by any script —
+    # it is created once by hand (githooks.txt records how). nginx -t does not
+    # check that it exists, so a missing file is not a config error: every
+    # request just 403s. Fail-closed, which is the right way round.
+    auth_basic           "staging";
+    auth_basic_user_file /etc/nginx/.htpasswd-staging;
+
+    # Belt and braces, for the case where auth_basic above is commented out
+    # for a debugging session: without it, a second copy of the whole site is
+    # indexable as duplicate content.
+    #
+    # CAVEAT, and the reason this is only ever belt-and-braces: add_header does
+    # not INHERIT into a location that sets any add_header of its own, so the
+    # themed /personal/*.html pages in theme.conf — which set Set-Cookie and
+    # Vary — silently drop this header. That is the same nginx rule that forces
+    # theme.conf to re-include clacks.conf inside its own location block.
+    # auth_basic, which DOES inherit, is the actual protection here.
+    add_header X-Robots-Tag "noindex, nofollow" always;
+
+    # Deliberately NOT included from the live vhost:
+    #
+    #   status-cgi.conf   would run the real /srv/cgi scripts against real
+    #                     system state; staging has no separate copy of them,
+    #                     so this would be the live status page on a staging
+    #                     URL — misleading rather than useful.
+    #   wkd.conf          OpenPGP key discovery must answer on the real names
+    #                     only.
+    #   pgp-key.conf      same.
+    #
+    # Included, because they are content-shaped and are exactly what you came
+    # here to preview:
+    include snippets/theme.conf;
+    include snippets/feeds.conf;
+}

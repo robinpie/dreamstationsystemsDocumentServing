@@ -1,10 +1,20 @@
 #!/bin/bash
-# Deploys this monorepo's served and installed pieces:
+# Promote: takes what you have looked at on staging and makes it live.
+# Run BY HAND. No git hook calls this.
 #
-#   rootdomain/    -> /srv/http               nginx docroot (content, no executables)
-#   cgi/           -> /srv/cgi                CGI scripts run by fcgiwrap
-#   status-sample/ -> /usr/local/bin + units  the status page's other half
-#   nginx/         -> /etc/nginx              vhosts and snippets
+#   /srv/httpstaging -> /srv/http           nginx docroot (content, no executables)
+#   cgi/             -> /srv/cgi            CGI scripts run by fcgiwrap
+#   status-sample/   -> /usr/local/bin + units  the status page's other half
+#   nginx/           -> /etc/nginx          vhosts and snippets
+#
+# Content comes from the STAGING TREE, not from the repo. That is deliberate:
+# it makes the live docroot byte-identical to the tree you previewed, rather
+# than a second, independent render of the same commit. If the two could
+# differ, staging would not be telling you anything.
+#
+# The other three come from the repo, because they have no staging copy — they
+# are system state (executables, systemd units, the server's own config), and
+# there is nowhere to stand them up that is not simply "live".
 #
 # Two carve-outs in /srv/http (excluded paths are protected from --delete):
 #   .well-known/acme-challenge/   certbot webroot
@@ -21,6 +31,7 @@
 set -eu
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
+STAGING=/srv/httpstaging
 
 # The two trees below are NOT --delete'd into their destinations, because both
 # share a directory with files this repo does not own (/usr/local/bin is full
@@ -32,6 +43,7 @@ NGINX_SITES=(
 	dreamstation.systems
 	grandexchange.dreamstation.systems
 	pool.ntp.org
+	staging.dreamstation.systems
 )
 NGINX_SNIPPETS=(
 	clacks.conf
@@ -42,21 +54,58 @@ NGINX_SNIPPETS=(
 	wkd.conf
 )
 
+# ------------------------------------------------------------- staging checks
+#
+# Promote is now the only path to the live site, so it has to refuse the two
+# ways staging can lie to you.
+if [ ! -d "$STAGING" ] || [ -z "$(ls -A "$STAGING" 2>/dev/null)" ]; then
+	echo "ABORT: $STAGING is missing or empty — run ./stage-site.sh first." >&2
+	echo "Promoting it would --delete the live site." >&2
+	exit 1
+fi
+
+# Uncommitted edits to rootdomain/ are NOT staged (the hook fires on commit),
+# so what you previewed is the last commit, not your working tree. Say so
+# rather than quietly shipping the older thing.
+#
+# Asked of git, NOT by comparing the two trees: stage-site.sh deliberately
+# chowns and chmods what it copies, so rootdomain/ and $STAGING differ in
+# owner, group and mode on literally every file by design. Any diff or rsync
+# check has to be taught to ignore exactly the attributes the stage is
+# responsible for setting, and gets it wrong the day one more is added. "Is
+# the working tree dirty" is the question actually being asked, and git
+# answers it exactly.
+dirty="$(git -C "$ROOT" status --porcelain -- rootdomain 2>/dev/null || true)"
+if [ -n "$dirty" ]; then
+	echo "NOTE: rootdomain/ has uncommitted changes. Staging is the last COMMIT," >&2
+	echo "      so the following are NOT in it and will not go live:" >&2
+	printf '%s\n' "$dirty" | sed 's/^/      /' >&2
+	echo "      Commit (which re-stages), or run ./stage-site.sh by hand." >&2
+	if [ ! -t 0 ]; then
+		echo "ABORT: not a terminal, cannot ask. Nothing promoted." >&2
+		exit 1
+	fi
+	printf 'Promote staging as it is anyway? [y/N] ' >&2
+	read -r reply
+	case "$reply" in
+	[yY]*) ;;
+	*)
+		echo "Nothing promoted." >&2
+		exit 1
+		;;
+	esac
+fi
+
 # --------------------------------------------------------------- syntax gates
 #
-# Deploy is automatic on every commit (post-commit / post-merge hooks), so a
-# typo would otherwise go straight to the live site and turn the status page
-# into a 502 with no warning. Abort the WHOLE deploy — content included — if
-# anything fails to compile, so the site and its scripts never go out of sync.
-#
-# These catch compile-time errors only, not logic ones. That is the point: a
-# cheap gate against the realistic failure, not a test suite. nginx gets the
-# same treatment, but it cannot be tested without installing first — see the
-# nginx section for how that is made safe.
+# Repeated from stage-site.sh, not merely inherited from it. A promote can
+# happen at any distance from the commit that staged it — after a git pull, a
+# hand-edit, a rollback — so the gate has to hold at the moment things actually
+# go live, not only at the moment they were staged.
 if compgen -G "$ROOT/cgi/*.cgi" >/dev/null; then
 	for f in "$ROOT"/cgi/*.cgi; do
 		if ! perl -c "$f" >/dev/null 2>&1; then
-			echo "ABORT: $(basename "$f") fails syntax check — nothing deployed." >&2
+			echo "ABORT: $(basename "$f") fails syntax check — nothing promoted." >&2
 			perl -c "$f" || true # show the user why
 			exit 1
 		fi
@@ -65,7 +114,7 @@ fi
 
 if [ -f "$ROOT/status-sample/status-sample.sh" ]; then
 	if ! bash -n "$ROOT/status-sample/status-sample.sh" 2>/dev/null; then
-		echo "ABORT: status-sample.sh fails syntax check — nothing deployed." >&2
+		echo "ABORT: status-sample.sh fails syntax check — nothing promoted." >&2
 		bash -n "$ROOT/status-sample/status-sample.sh" || true
 		exit 1
 	fi
@@ -75,13 +124,13 @@ fi
 sudo rsync -a --delete \
 	--exclude '.well-known/acme-challenge/' \
 	--exclude 'ntpstats.txt' \
-	"$ROOT/rootdomain/" /srv/http/
+	"$STAGING/" /srv/http/
 
 # Match the rest of the served tree: root-owned, world-readable.
 sudo chown -R root:root /srv/http/
 sudo chmod -R u=rwX,go=rX /srv/http/
 
-echo "Deployed rootdomain/ → /srv/http"
+echo "Promoted $STAGING → /srv/http"
 
 # ------------------------------------------------------------------------ cgi
 if [ -d "$ROOT/cgi" ]; then
@@ -94,7 +143,7 @@ if [ -d "$ROOT/cgi" ]; then
 	sudo chown -R root:root /srv/cgi/
 	sudo chmod -R u=rwX,go=rX /srv/cgi/
 
-	echo "Deployed cgi/ → /srv/cgi"
+	echo "Promoted cgi/ → /srv/cgi"
 fi
 
 # -------------------------------------------------------------- status-sample
@@ -131,7 +180,7 @@ if [ -d "$ROOT/status-sample" ]; then
 	fi
 	if [ "$sample_changed" = 1 ] || [ "$units_changed" = 1 ]; then
 		sudo systemctl restart status-sample.timer
-		echo "Deployed status-sample/ → /usr/local/bin + systemd (timer restarted)"
+		echo "Promoted status-sample/ → /usr/local/bin + systemd (timer restarted)"
 	fi
 fi
 
@@ -150,9 +199,9 @@ fi
 # hand-edit back into a state it cannot test.
 if [ -d "$ROOT/nginx" ]; then
 	if ! sudo nginx -t >/dev/null 2>&1; then
-		echo "SKIP: /etc/nginx is already failing nginx -t before this deploy touched it." >&2
+		echo "SKIP: /etc/nginx is already failing nginx -t before this promote touched it." >&2
 		sudo nginx -t || true
-		echo "SKIP: fix that first, then re-run $0. Content above IS deployed." >&2
+		echo "SKIP: fix that first, then re-run $0. Content above IS live." >&2
 		exit 1
 	fi
 
@@ -200,7 +249,7 @@ if [ -d "$ROOT/nginx" ]; then
 	if [ "$nginx_changed" = 1 ]; then
 		if sudo nginx -t >/dev/null 2>&1; then
 			sudo systemctl reload nginx
-			echo "Deployed nginx/ → /etc/nginx (reloaded)"
+			echo "Promoted nginx/ → /etc/nginx (reloaded)"
 		else
 			echo "ABORT: new nginx config fails nginx -t — rolling back." >&2
 			sudo nginx -t || true # show the user why

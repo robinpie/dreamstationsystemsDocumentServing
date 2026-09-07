@@ -155,6 +155,26 @@ and nothing here is sensitive.
                                                        radius of a web
                                                        deploy. Full details
                                                        in openget.txt.
+  /etc/nginx/sites-available/staging.dreamstation.systems
+                                                     — the site as of the last
+                                                       commit, docroot
+                                                       /srv/httpstaging, behind
+                                                       HTTP basic auth. EXACT
+                                                       server_name, and that is
+                                                       the whole security
+                                                       boundary: delete this
+                                                       vhost and the wildcard
+                                                       above answers the name
+                                                       with the LIVE site and
+                                                       no password. :80
+                                                       redirects to :443 and
+                                                       serves nothing, because
+                                                       basic auth puts the
+                                                       password on the wire in
+                                                       cleartext. Own cert,
+                                                       same reasoning as
+                                                       grandexchange. Full
+                                                       details in githooks.txt.
   /etc/nginx/sites-available/000-default-catchall    — default_server block,
                                                        server_name _, returns
                                                        444 (drops connection)
@@ -167,39 +187,46 @@ All are symlinked into /etc/nginx/sites-enabled/. EDIT sites-available —
 clobbers the real config (cost ten confusing minutes once; see openget.txt).
 
 Content is SERVED from /srv/http/ but its SOURCE OF TRUTH is the monorepo at
-~/configNotes/http/rootdomain/. Do not hand-edit /srv/http — edit rootdomain/
-and run ~/configNotes/http/deploy-site.sh (rsync --delete to /srv/http,
-preserving certbot's .well-known/acme-challenge/ webroot dir). See
+~/configNotes/http/rootdomain/. Do not hand-edit /srv/http — edit rootdomain/,
+commit (the hook stages it to /srv/httpstaging), and run
+~/configNotes/http/promote-site.sh (rsync --delete to /srv/http, preserving
+certbot's .well-known/acme-challenge/ webroot dir and ntpstats.txt). Nothing
+goes live without that second step — see githooks.txt, and
 ~/configNotes/http/README.md.
 
 THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every
 hand-authored file above lives in ~/configNotes/http/nginx/ and is installed by
-deploy-site.sh:
+promote-site.sh:
 
     nginx/sites-available/000-default-catchall
     nginx/sites-available/dreamstation.systems
     nginx/sites-available/grandexchange.dreamstation.systems
     nginx/sites-available/pool.ntp.org
+    nginx/sites-available/staging.dreamstation.systems
     nginx/snippets/clacks.conf
+    nginx/snippets/feeds.conf
     nginx/snippets/pgp-key.conf
     nginx/snippets/status-cgi.conf
+    nginx/snippets/theme.conf
     nginx/snippets/wkd.conf
 
-DO NOT HAND-EDIT /etc/nginx for any of these. The next commit reinstalls them
-and your edit is gone with no warning. Edit the repo copy and commit.
+DO NOT HAND-EDIT /etc/nginx for any of these. The next PROMOTE reinstalls them
+and your edit is gone with no warning. (Until 2026-09-07 that was "the next
+commit". A hand-edit now survives longer, which makes it MORE likely to be
+forgotten, not less.) Edit the repo copy and commit.
 
 Not in the repo, and deliberately: sites-available/default and
 snippets/{fastcgi-php,snakeoil}.conf are Debian's, unmodified; the sites-enabled
 symlinks are made once by hand; and the certificates are certbot's. That is why
-deploy-site.sh installs a NAMED LIST of files one at a time instead of rsyncing
+promote-site.sh installs a NAMED LIST of files one at a time instead of rsyncing
 the tree — an rsync --delete into /etc/nginx would eat all of the above. Adding
 a file to nginx/ therefore does nothing until it is added to NGINX_SITES or
-NGINX_SNIPPETS at the top of deploy-site.sh, AND symlinked into sites-enabled
+NGINX_SNIPPETS at the top of promote-site.sh, AND symlinked into sites-enabled
 if it is a vhost.
 
 nginx config cannot be syntax-checked before it is installed — the vhosts
 `include snippets/...` relative to nginx's own prefix, so a copy in the repo
-does not resolve. deploy-site.sh therefore installs, runs `nginx -t`, and rolls
+does not resolve. promote-site.sh therefore installs, runs `nginx -t`, and rolls
 the files back from a backup if the test fails. The running server is never at
 risk: the reload happens only after `nginx -t` passes, and until then nginx
 keeps serving the last good config out of memory.
