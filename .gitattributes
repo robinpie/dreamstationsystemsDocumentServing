@@ -3,3 +3,5 @@ rootdomain/mspajamrepo.tar.gz filter=lfs diff=lfs merge=lfs -text
 # Old shit
 rootdomain/old/** linguist-detectable=false
 rootdomain/oldsite/** linguist-detectable=false
+rootdomain/personal/sophiagame/** linguist-detectable=false
+rootdomain/personal/wiktionaryRacingV2 linguist-detectable=false
