@@ -10,11 +10,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-// Package ingest runs the pollers, the one-time historical backfill, and the nightly rollup and prune.
-//
-// This is the part of OpenGET that matters most, and the part worth running before anything can read from it. Upstream's /timeseries endpoint returns at most 365 points at any timestep, so the window of history that can ever be re-fetched is fixed: about 1.3 days at 5m granularity, a year at 24h. Every 5-minute bucket we record past that boundary is one upstream can no longer replay to anybody, and that gap widens for as long as the service runs.
-//
-// Practically: a day not ingesting is a day of 5m history lost permanently.
+// Package ingest runs the pollers, the one-time historical backfill, and the
+// nightly rollup and prune. This is the part of OpenGET that matters most:
+// upstream's /timeseries endpoint returns at most 365 points at any timestep,
+// so a day not ingesting is a day of 5m history lost permanently.
 package ingest
 
 import (

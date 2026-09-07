@@ -1,15 +1,10 @@
 /* SPDX-License-Identifier: CC0-1.0 */
-/* Hypnospace .hsp page renderer.
- *
- * Reimplements the parts of HypnOS that draw a page: Construct 2's Spritefont
- * text layout, the gif frame player, and the per-element animations.
- * See ../FORMAT.md for where each formula comes from.
- *
- * The layout is the game's, but the document is a document: every string is
- * real text in the DOM, every link is an <a href>, and the glyphs are painted
- * over that text with CSS masks rather than blitted into a canvas. So the page
- * can be read aloud, searched, translated and tabbed through, and it still
- * comes out pixel for pixel where the game put it.
+/* Hypnospace .hsp page renderer. Reimplements the parts of HypnOS that draw a
+ * page -- Construct 2's Spritefont text layout, the gif frame player, and the
+ * per-element animations -- as real DOM text and links with glyphs painted
+ * over them via CSS masks, so pages stay accessible while landing pixel for
+ * pixel where the game put them. See ../FORMAT.md for where each formula
+ * comes from.
  */
 const HSP = (() => {
 'use strict';

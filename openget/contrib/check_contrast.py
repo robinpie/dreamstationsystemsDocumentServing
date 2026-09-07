@@ -13,20 +13,14 @@
 
 """WCAG 2.2 AA contrast check for every OpenGET skin.
 
-Reads each palette out of the stylesheet that ships it rather than carrying a copy, so it cannot drift from what is actually served. Run it after touching any colour in any theme:
+Reads each palette straight out of the stylesheet that ships it, so it
+cannot drift from what is actually served. Run after touching any colour
+in any theme:
 
     python3 contrib/check_contrast.py
 
-Exits non-zero if any pair in any theme fails, so it can be wired into a make target.
-
-The value here is the PAIR LISTS, not the arithmetic. Four things they encode that are easy to forget:
-
-  - Text on a tinted ground must be checked against every ground it lands on: the flat colour, the alternate-row tint, and the hover tint. The alternate row is usually tightest and is what failed the 2026-08-08 audit.
-  - 13.5px bold is NOT WCAG "large text". That threshold is 18.66px bold or 24px regular. Bolding a number does not lower its requirement.
-  - A gradient has two ends and text sitting on it has to clear both.
-  - The badge in the footer is a claim about the site, not about the default theme. A skin that fails here falsifies it for everybody, so this script gates every skin or none of them.
-
-Adding a theme means adding a palette path and a pair list. It does not mean trusting that the new skin resembles an old one.
+Exits non-zero on any failure. See openget.txt (ACCESSIBILITY) for what
+the pair lists encode and why.
 """
 
 import pathlib
@@ -78,13 +72,10 @@ def _props(block):
 def palette(name):
     """Pull --name: #hex; pairs out of the first :root block of a stylesheet,
     then merge the :root overrides from the VARIANT media block over the top.
-
-    THE VARIANTS ARE WHY THIS FUNCTION IS NOT THREE LINES. Both skins redefine
-    part of their palette under prefers-contrast: more, and the OSRS skin also
-    does it under prefers-color-scheme: light. For as long as this script read
-    only the first :root block, those readers got a palette nothing had ever
-    measured — and they are, by definition, the readers who asked for contrast.
-    A skin may ship an override this script cannot see only by not shipping it.
+    Both skins redefine part of their palette under prefers-contrast: more
+    (and OSRS also under prefers-color-scheme: light) — skip that merge and
+    those readers get a palette nothing has measured. See openget.txt
+    (ACCESSIBILITY).
     """
     css = STATIC / name
     text = css.read_text(encoding="utf-8")
@@ -107,16 +98,11 @@ def palette(name):
 # ---------------------------------------------------------------------------
 
 def osrs():
-    """The skin has exactly three grounds and every pair below names which one it is on.
-
-      SHEET   the parchment column main is drawn on. Dark ink only. --scroll is
-              the flat, unlit value and the paper's own lighting only brightens
-              it, so --scroll is the worst case and the sheet needs no composite.
-      FURNITURE  the black panels standing on the sheet, and <pre>. Light text.
-      STONE   the masthead and the footer. Light text. The masthead's texture
-              DOES lighten, so its pairs use --stone-lit — the composite of
-              --stone under the one lightening layer in that stack, declared in
-              the stylesheet next to the layer that produces it.
+    """Three grounds, and every pair below names which one it's on: SHEET
+    (parchment, dark ink; --scroll is the flat, unlit worst case), FURNITURE
+    (black panels + <pre>, light text), and STONE (masthead + footer, light
+    text; the masthead uses --stone-lit, its one composite — see
+    openget.txt LOOK AND FEEL).
     """
     p = palette("openget-osrs.css")
     parch = p["parch-0"]                      # a table, one shade above the sheet

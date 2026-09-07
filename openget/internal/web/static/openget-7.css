@@ -12,19 +12,22 @@
  GNU General Public License for more details.
 */
 
-/* OpenGET skin: Windows 7 "Aero".
+/* OpenGET skin: Windows 7 "Aero". Loads after vendor-7.css (7.css 0.21.1,
+ * byte-identical to upstream); this file corrects that framework and maps
+ * it onto components it has never heard of — masthead, nav strip, price
+ * table, chart — arranged as one Explorer window on the desktop.
  *
- * Loads after vendor-7.css, which is 7.css 0.21.1 held byte-identical to its upstream release. Everything in this file is either a correction to that framework or a mapping from it onto components it has never heard of — a masthead, a nav strip, a parchment-free price table, a chart.
- *
- * The page is arranged as one Explorer window sitting on the desktop: glass title bar, command strip, white content pane, status bar along the bottom.
- *
- * THE CORRECTIONS ARE NOT OPTIONAL. 7.css was not written against WCAG and fails five criteria out of the box, two of them at Level A. They are marked below with the criterion they answer. If you upgrade the vendored file, re-run contrib/check_contrast.py and re-read this block before assuming the fixes still apply. */
+ * THE CORRECTIONS ARE NOT OPTIONAL: 7.css fails five WCAG criteria out of
+ * the box, two at Level A, each marked below with the criterion it answers.
+ * Re-run contrib/check_contrast.py and re-read this block before assuming
+ * the fixes still apply after any upgrade of the vendored file. See
+ * openget.txt (THEMES) for the full story. */
 
-/* Selawik, © 2015 Microsoft Corporation, SIL Open Font License 1.1. Microsoft's own metric-compatible substitute for Segoe UI, published precisely so that documents designed for Segoe UI render correctly where it is absent — which is this exact situation. Vendored unmodified from the 1.01 release, which ships WOFF2 directly; four weights at about 14.5 kB each.
- *
- * Segoe UI comes FIRST in the stack, so a reader on Windows gets the real face and downloads nothing. Everyone else gets Selawik, which is the difference between this skin looking like Windows 7 and looking like DejaVu Sans wearing a blue hat.
- *
- * local() first for the same reason as the OSRS skin's heading font. font-display:swap so a slow connection paints in the fallback rather than showing nothing. */
+/* Selawik, © 2015 Microsoft Corporation, SIL Open Font License 1.1 —
+ * Microsoft's own metric-compatible substitute for Segoe UI. Vendored
+ * unmodified from the 1.01 release; Segoe UI comes first in the stack, so
+ * only readers without it download Selawik. local() first, font-display:
+ * swap, same reasoning as the OSRS skin's heading font. */
 @font-face {
   font-family: Selawik;
   src: local("Selawik"), url("/static/selawik-light.woff2") format("woff2");
@@ -47,14 +50,20 @@
 }
 
 :root {
-  /* 7.css's own --w7-font is 9pt, i.e. 12px, and it is applied with the `font:` shorthand to button, select and table — which silently resets the sizes openget-layout.css set. Restating it here is how the layout's type scale survives the framework. 13.5px matches the table size the site has always used. */
+  /* 7.css's own --w7-font is 12px, applied with the `font:` shorthand to
+   * button/select/table, which silently resets what openget-layout.css set.
+   * Restated here at 13.5px, the site's usual table size. */
   --w7-font: 13.5px "Segoe UI", Selawik, "SegoeUI", Tahoma, "Noto Sans", "DejaVu Sans", sans-serif;
   --og-sans: "Segoe UI", Selawik, "SegoeUI", Tahoma, "Noto Sans", "DejaVu Sans", sans-serif;
 
-  /* 1.4.11 Non-text Contrast. Upstream's control border is #8e8f8f, which measures 2.85:1 against the #f0f0f0 surface it is normally drawn on — under the 3:1 that input and button boundaries need. #767676 is the lightest grey that clears it (3.15:1) and is visually indistinguishable at 1px. */
+  /* 1.4.11 Non-text Contrast. Upstream's control border (#8e8f8f) is
+   * 2.85:1 on the #f0f0f0 surface, under the 3:1 boundaries need; #767676
+   * clears it (3.15:1) and is indistinguishable at 1px. */
   --w7-el-bd: #767676;
 
-  /* 1.4.3 Contrast. Upstream's link hover is #39f: 2.58:1 on the surface and 2.94:1 on white, against a requirement of 4.5. Darkened until it clears on both, keeping the "hover goes brighter-blue" behaviour by moving the resting colour down with it. */
+  /* 1.4.3 Contrast. Upstream's link hover (#39f) is 2.58:1 on the surface
+   * and 2.94:1 on white, against 4.5 required — darkened until it clears
+   * both, moving the resting colour down with it to keep the hover step. */
   --w7-link-c:   #0059b3;
   --w7-link-c-h: #003f80;
 
@@ -65,7 +74,10 @@
   --og-dim:      #545454;
   --og-line:     #c0c1cd;
 
-  /* 1.4.3 again, and the one place where being faithful and being legible actually pulled apart. 7.css paints its title bars in #4580c4 and writes on them in black, which is 3.86:1 — it gets away with it upstream because the demo captions are short and decorative, and this site would be putting page titles there. Aero glass was frosted and light rather than saturated, so the fix is also the more accurate one: lighten the glass and keep the dark ink. #06243f on this reads 6.3:1 flat, 8.1:1 under the lightest stop of the gradient laid over it and 5.1:1 under the darkest — checked at both ends, because a gradient has two. */
+  /* 1.4.3 again: upstream's title bars are #4580c4 with black text, 3.86:1.
+   * Aero glass was frosted and light rather than saturated, so lightening
+   * the glass is also the more accurate fix — checked at both ends of the
+   * gradient over it (a gradient has two). */
   --og-glass:    #7bacd6;
   --og-glass-ink: #06243f;
   /* The framework draws .facts, .notes and .chartbox title bars from its own variable, so it has to be moved too or those three keep the failing blue. */
@@ -75,7 +87,9 @@
   --og-good: #146b10;
   --og-bad:  #b01a12;
 
-  /* The checked-checkbox fill. 1.4.11 treats it as a UI component state indicator needing 3:1 against what is adjacent, and the masthead's checkbox sits on the glass, not on white — the obvious brighter blue measures 2.28:1 there. This clears 4.3:1 on flat glass, 3.3:1 under the gradient's darkest stop and 10.3:1 on the form's white ground. */
+  /* The checked-checkbox fill, needing 3:1 (1.4.11) against what's
+   * adjacent. The masthead checkbox sits on the glass, not white — the
+   * obvious brighter blue only manages 2.28:1 there; this clears it. */
   --og-accent: #0f4468;
 
   --og-mono: ui-monospace, "DejaVu Sans Mono", "Liberation Mono", Consolas, monospace;
@@ -94,9 +108,11 @@ body {
 
 /* ---------------------------------------------------------- the window */
 
-/* The page is ONE Aero window floating on the desktop rather than a stack of full-bleed bands. The four pieces below are the frame, in order down the page: title bar, command strip, body, footer. They carry the frame between them — matching max-width, side borders that line up, rounded corners at top and bottom only, and one drop shadow spanning the lot.
- *
- * Deliberately not 7.css's own .window element wrapping everything. That class hangs :before/:after pseudo-elements at z-index -10 for the glass blur, and putting a whole scrolling document inside it fights the stacking context for no visual gain at this size. The frame is four rules; the machinery is not worth importing. */
+/* One Aero window floating on the desktop, not a stack of full-bleed
+ * bands: title bar, command strip, body and footer carry the frame between
+ * them (matching max-width, side borders, one drop shadow). Deliberately
+ * not 7.css's own .window — its glass-blur pseudo-elements fight the
+ * stacking context of a whole scrolling document for no visual gain. */
 .masthead, nav.tabs, main, footer {
   max-width: 1180px;
   margin-left: auto;
@@ -109,15 +125,13 @@ a { color: var(--w7-link-c); text-decoration: none; }
 a:hover { color: var(--w7-link-c-h); text-decoration: underline; }
 a:visited { color: #6a3ca0; }
 
-/* 2.4.7 Focus Visible (Level A). Upstream sets outline:none on [type=search], on every text-like input and inside its combobox and menu components, and replaces it on the inputs with a 1px border tint and on the search box with nothing at all. That is the masthead search on every page of this site with no keyboard indicator whatsoever. Re-asserted here for everything focusable; the border tint upstream applies is left in place as reinforcement.
- *
- * THE SECOND HALF OF THIS LIST IS ABOUT SPECIFICITY, NOT COVERAGE. Restating a selector upstream also uses wins on source order, which is why `[type=search]` and `button` and `a` were already fine. Two of upstream's rules are narrower than the plain element selectors above and went on winning after this block was written:
- *
- *   input[type=text]:focus and its five siblings, at (0,2,1), beat input:focus-visible at (0,1,1). Those fields kept outline:none and a border-colour tint that shifts #767676 to #467aa4 — a hue change of 1.01:1 luminance contrast, which is no indicator at all for anyone who cannot see the hue. The tax calculator's price, quantity and item-ID fields are those inputs.
- *
- *   select:not([multiple]):not(:disabled):focus, at (0,3,1), beat select:focus-visible at (0,1,1), leaving the theme picker in the masthead of every page with a 1px dotted ring inset 4px instead of the 2px ring everything beside it gets.
- *
- * Both are matched here at equal specificity so source order decides, and both keep upstream's inner glow underneath as reinforcement. Found by diffing screenshots of each tab stop with the ring on and off, because every one of these controls reports a focus style that a computed-style check reads as present. */
+/* 2.4.7 Focus Visible (Level A). Upstream sets outline:none on
+ * [type=search] and every text-like input, leaving some with no keyboard
+ * indicator at all. Re-asserted here for everything focusable, at equal
+ * specificity to upstream's own narrower rules (input[type=text]:focus,
+ * select:not([multiple])...:focus) so source order decides — see
+ * openget.txt (ACCESSIBILITY, "THE FOCUS-RING CHECK") for how these two
+ * were found; a computed-style check missed both. */
 :focus-visible,
 [type="search"]:focus-visible,
 input:focus-visible,
@@ -135,12 +149,17 @@ select:not([multiple]):not(:disabled):focus-visible {
   outline-offset: 1px;
 }
 
-/* 2.5.8 Target Size (Minimum). openget-layout.css already sets this, but the vendored sheet loads after it and restores its own min-height:23px on every button. One pixel, and it is the difference between meeting an AA criterion and arguing the spacing exception on fourteen controls. */
+/* 2.5.8 Target Size (Minimum). The vendored sheet loads after
+ * openget-layout.css and restores its own min-height:23px on every button —
+ * one pixel short of the AA floor. */
 button, select { min-height: 24px; }
 
-/* 1.3.1 / 4.1.2, and the most damaging thing the framework does to this site. Upstream hides the native checkbox outright — appearance:none AND opacity:0 — and redraws it from a SIBLING label via `input[type=checkbox] + label:before`. The masthead filter wraps its input INSIDE its label, and .field.check puts the label FIRST and moves the box back over it with order:-1, so in neither case does an input actually precede a label in the DOM. The sibling selector therefore never matches, upstream's replacement box is never drawn, and what ships is a checkbox that is present, focusable, operable by keyboard and completely invisible: the free-to-play filter in the masthead of every page, and the option checkboxes on the calculators.
- *
- * Restored to the native control rather than redrawn here. A hand-drawn Aero box would need label:has(input:checked) to know its own state, and making a checkbox VISIBLE contingent on :has() support is the same bet upstream lost. The native control is the one thing guaranteed to render, and with accent-color it is not far off. */
+/* 1.3.1 / 4.1.2. Upstream hides the native checkbox and redraws it from a
+ * SIBLING label (`input[type=checkbox] + label:before`), but this site
+ * wraps each input INSIDE its label, so the sibling selector never matches
+ * and the checkbox ships present, focusable and completely invisible.
+ * Restored to the native control rather than redrawn — see openget.txt
+ * (THEMES, "THE INVISIBLE CHECKBOX") for the full interaction. */
 .f2ptoggle input[type="checkbox"],
 .field.check input[type="checkbox"] {
   -webkit-appearance: checkbox;
@@ -244,7 +263,9 @@ h3:not([class]) { font-size: 16px; font-weight: 600; }
 /* What the bare h3 above gave the link-list labels before they were levelled to h2. */
 .linkhead { font-size: 16px; font-weight: 600; }
 
-/* The blue "instruction" line a Windows 7 wizard or Control Panel page opens with — 7.css calls it .instruction-primary and draws it in --w7-title-c at 12pt. Our page subtitle is doing that job already, so it gets the treatment rather than a class it would have to carry in every protocol. #039 is 9.5:1 on the surface. */
+/* The blue "instruction" line a Windows 7 wizard opens with (7.css's
+ * .instruction-primary). Our page subtitle does that job already, so it
+ * gets the colour rather than a class it would carry in every protocol. */
 .subtitle { color: var(--w7-title-c); font-size: 16px; }
 .ogform > p.muted { color: var(--w7-title-c); font-size: 16px; }
 
@@ -265,7 +286,9 @@ pre code { color: inherit; }
 
 table caption { color: var(--og-dim); }
 
-/* 1.4.10 Reflow, and content loss generally. Upstream sets table-layout:fixed, white-space:nowrap on the table and overflow:hidden + text-overflow:ellipsis on every cell, which silently truncates item names to whatever the column happens to be — the data simply stops being readable, at any window size. All four are undone here; the site's own .tablewrap scrolls horizontally instead, which loses nothing. */
+/* 1.4.10 Reflow. Upstream's table-layout:fixed plus ellipsis truncation
+ * silently cuts item names at any window size; undone here in favour of
+ * the site's own .tablewrap, which scrolls horizontally instead. */
 table {
   table-layout: auto;
   white-space: normal;
@@ -292,7 +315,8 @@ thead th:last-child { border-right: 0; }
 thead th a, thead th a:visited { color: inherit; text-decoration: none; }
 thead th a:hover { color: #0b3c68; text-decoration: underline; }
 
-/* :is(td, th) throughout: the column that names each row is a <th scope="row">, and these rules are all about being a body cell rather than about being a <td>. */
+/* :is(td, th) throughout: the row-naming column is a <th scope="row">, and
+ * these rules are about being a body cell, not specifically a <td>. */
 tbody :is(td, th) { border-bottom: 1px solid #ececec; }
 tbody :is(td, th).r { font-family: var(--og-mono); }
 tbody tr:nth-child(even) { background: #f6f6f6; }

@@ -17,8 +17,7 @@ import (
 	"testing"
 )
 
-// TestRetroLinksGeminiPageExt pins the capsule link shapes. Every one of these
-// 404'd against molly-brown before the .gmi pass existed, because the generator
+// TestRetroLinksGeminiPageExt pins the capsule link shapes, since the generator
 // writes "<slug>.gmi" while the view models link to extensionless web paths.
 func TestRetroLinksGeminiPageExt(t *testing.T) {
 	for _, tc := range []struct{ name, in, want string }{

@@ -349,7 +349,7 @@ func (b *Builder) ItemPage(ctx context.Context, id int, window string) (*render.
 		details.Pairs = append(details.Pairs, render.KV{Key: "Low alch", Value: render.GP(*it.LowAlch)})
 	}
 	if it.Value != nil {
-		// Not labelled "shop value": this is the base value from the game's item definitions, which every item carries whether or not a shop has ever stocked it. Calling it a shop price is what sent /store-profit looking for twisted bows on a shelf.
+		// Not labelled "shop value": this is the base value from the game's item definitions, which every item carries whether or not a shop has ever stocked it. See openget.txt, SHOP INVENTORIES.
 		details.Pairs = append(details.Pairs, render.KV{Key: "Base value", Value: render.GP(*it.Value),
 			Hint: "The item's value in the game's own definitions. Alchemy and general-store rates derive from it; it is not a price any shop necessarily charges."})
 	}
@@ -406,7 +406,7 @@ func (b *Builder) ItemPage(ctx context.Context, id int, window string) (*render.
 			lo = append(lo, render.XY{X: p.TS, Y: float64(*p.Low)})
 		}
 	}
-	// Gold and blue are both straight off the OSRS palette, and are the safest pairing for red-green colour blindness. They are NOT far enough apart on their own: they measure 1.34:1 against each other, so to anyone reading by lightness the two lines are the same line. Dashing the buy series is what actually separates them; the colours are the pleasant part.
+	// Gold and blue are the safest OSRS-palette pairing for red-green colour blindness, but too close in lightness alone — dashing the buy series is what actually separates the two lines. See openget.txt, CHART COLOURS.
 	chart.Series = []render.Series{
 		{Name: "sell", Points: hi, Colour: "#ffbb22"},
 		{Name: "buy", Points: lo, Colour: "#78adff", Dash: "5 3"},
@@ -417,7 +417,7 @@ func (b *Builder) ItemPage(ctx context.Context, id int, window string) (*render.
 	for _, w := range Windows {
 		winLinks = append(winLinks, render.Link{
 			Text: w.Label, Href: ItemPath(it.ID) + "?w=" + w.Key,
-			// Which range is on screen was previously visible only in the chart's own caption; the link list gave five identical-looking choices with no indication that one of them was where you already stood.
+			// Marks which range is on screen, so the link list doesn't show five identical-looking choices with no indication of where you already stand.
 			Current: w.Key == win.Key,
 		})
 	}

@@ -70,17 +70,10 @@ func shopKey(s string) string {
 	return strings.ToLower(strings.TrimRight(strings.TrimSpace(s), "."))
 }
 
-// parseStock converts a bucket stock string to a stored value, reporting whether the shelf is one a player can actually buy from.
-//
-// Three upstream spellings, three different claims:
-//
-//	"∞"        unlimited, the shop never runs out
-//	"12"       twelve in stock at base
-//	"0"        the shop holds none by default and only ever has any because
-//	           another player sold some in — you cannot plan around it
-//	"N/A", ""  nobody has recorded a stock level
-//
-// Both 0 and the unknowns are rejected. That is deliberately conservative: this whole table exists because the page was listing things nobody can buy, so "no evidence of a stocked shelf" has to fail closed. It costs one item (Bear fur, at 22 gp) as of writing.
+// parseStock converts a bucket stock string ("∞", a count, "0", or "N/A"/"")
+// to a stored value, reporting whether the shelf is one a player can actually
+// buy from. "0" and unknown values are rejected as a matter of policy — see
+// openget.txt for why.
 func parseStock(s string) (int64, bool) {
 	s = strings.TrimSpace(s)
 	if s == "∞" {
@@ -93,18 +86,9 @@ func parseStock(s string) (int64, bool) {
 	return n, true
 }
 
-// Usable reports whether a storeline row describes something a player could walk up to a shop and buy for coins, and why not when it does not.
-//
-// The rejections, in the order they bite:
-//
-//   - Currency. 689 of 6326 rows price in Tokkul, minigame points, trading
-//     sticks or castle wars tickets. A coin profit against a Tokkul price is
-//     not a number, it is a category error.
-//   - Seasonal. Leagues rows describe a temporary game mode that does not
-//     share the main game's economy; the Blood talisman at 8 gp is real there
-//     and fiction here.
-//   - Stock, as above.
-//   - Excluded shops. See data/shops.toml.
+// Usable reports whether a storeline row describes something a player could
+// walk up to a shop and buy for coins. It rejects non-coin currencies,
+// Leagues-only rows, unstocked shelves, and shops in data/shops.toml.
 func Usable(l wiki.StoreLine, ex ShopExclusions) (price, stock int64, ok bool) {
 	if !strings.EqualFold(strings.TrimSpace(l.Currency), "Coins") {
 		return 0, 0, false
@@ -126,11 +110,11 @@ func Usable(l wiki.StoreLine, ex ShopExclusions) (price, stock int64, ok bool) {
 	return price, stock, true
 }
 
-// ReplaceShopOffers rebuilds shop_offers from a freshly-fetched set of storeline rows, resolving item names against the items table.
-//
-// Returns the number of offers actually stored and the number of rows dropped as unusable. Those two do not sum to len(lines), and deliberately so: unmatched item names are expected and are neither stored nor counted as dropped, because the bucket covers holiday tat, quest items and other things that never reach the Grand Exchange. About a third of it has no tradeable counterpart.
-//
-// The whole table is replaced in one transaction rather than upserted, so an item a shop stopped stocking disappears instead of lingering as a claim nothing will ever retract.
+// ReplaceShopOffers rebuilds shop_offers from a freshly-fetched set of storeline
+// rows, resolving item names against the items table. stored+dropped does not
+// sum to len(lines): unmatched item names (holiday tat, quest items, etc.) are
+// neither stored nor counted as dropped. The table is replaced wholesale
+// rather than upserted, so an item a shop stopped stocking disappears.
 func (d *DB) ReplaceShopOffers(ctx context.Context, lines []wiki.StoreLine, ex ShopExclusions, now time.Time) (stored, dropped int, err error) {
 	byName := map[string]int{}
 	rows, err := d.r.QueryContext(ctx, `SELECT id, name FROM items ORDER BY id`)

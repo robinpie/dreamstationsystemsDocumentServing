@@ -4,29 +4,10 @@
     make-feed.py            write rootdomain/personal/{feed.xml,rss.xml}
     make-feed.py --check    exit 1 if either file is out of date, write nothing
 
-SOURCE OF TRUTH is the <ul class="posts"> list in rootdomain/personal/blog.html
-— hrefs, titles and <time datetime> values — plus each post's og:description
-for the entry summary. Nothing about a feed has to be authored by hand: adding
-a post stays a one-line edit to blog.html, exactly as it was before.
-
-WHY NOT og:url, which every post already carries: when this was written four
-of the five were wrong. They read https://dreamstation.systems/<post>.html,
-missing the /personal/ path segment, so a feed built on them would have
-linked every entry to a 404. Those tags are fixed now, but entry URLs are
-still built from blog.html's hrefs, because an href is what the site itself
-navigates by — a wrong one is a visibly broken link on the blog index, where
-a wrong og:url sat unnoticed for months.
-
-OUTPUT IS DETERMINISTIC — no "generated at" timestamp anywhere. That is a
-requirement, not a nicety: a pre-commit hook regenerates these files and
-re-stages them, so a clock in the output would put a diff in every single
-commit and the hook would fight the working tree forever. Feed-level dates
-come from the newest post, so they move only when the blog does.
-
-BOTH FORMATS, from one parse. Atom is the better fit for this blog (RFC 3339
-dates match the datetime= attributes already in the page, and published vs
-updated maps onto the "edited" posts), but RSS 2.0 is what a lot of readers
-still want pasted into them, so both are emitted and cross-linked.
+Source of truth is the <ul class="posts"> list in blog.html (hrefs, titles,
+<time datetime> values) plus each post's og:description. Output is
+deterministic — no "generated at" timestamp — since the pre-commit hook
+regenerates and re-stages these files on every commit. See feeds.txt.
 """
 
 import html

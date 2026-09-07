@@ -178,7 +178,7 @@ func (s *Server) renderDoc(w http.ResponseWriter, r *http.Request, doc *render.D
 	if !doc.Updated.IsZero() {
 		data.UpdatedAgo = render.Ago(doc.Updated)
 		data.UpdatedAt = doc.Updated.UTC().Format("15:04:05") + " UTC"
-		// Both fields are the same instant said two ways, and both are wrapped in <time datetime> pointing at it. These pages carry a minute of shared cache, so a reader can quite legitimately be told "24s ago" by a page that was rendered a minute earlier; the timestamp is the part that stays true.
+		// Both fields are the same instant said two ways, wrapped in <time datetime> pointing at it — see openget.txt, ACCESSIBILITY, on why the timestamp is the part that stays true under shared cache.
 		data.UpdatedISO = doc.Updated.UTC().Format(time.RFC3339)
 	}
 	if doc.NoIndex {

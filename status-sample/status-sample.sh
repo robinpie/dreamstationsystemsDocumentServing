@@ -1,30 +1,7 @@
 #!/bin/bash
-# status-sample.sh — collect the things the status page needs that its CGI
-# cannot get for itself. Runs every 30s via status-sample.timer.
-#
-# WHY THIS EXISTS
-# ---------------
-# /srv/cgi/status.cgi renders per request as www-data. Three kinds of figure
-# are out of its reach:
-#
-#   1. A rolling 5-minute CPU average. The CGI only runs when somebody visits,
-#      and a resume-linked page can go hours between visits — so it cannot
-#      collect its own history without the bar almost always reading
-#      "instantaneous" instead of "5 min avg".
-#
-#   2. NTS-KE counters. `chronyc serverstats` is one of the few chronyc
-#      commands restricted to root (unix-socket only, regardless of
-#      allow/cmdallow). The alternative was a sudoers rule for www-data;
-#      giving the web-facing user sudo to read a vanity statistic is a bad
-#      trade, so root collects it here and the CGI reads a plain file.
-#
-#   3. A month of disk history. Same problem as the CPU average but three
-#      orders of magnitude worse: nobody visits the page often enough to build
-#      a 30-day series out of page views. This is also the only figure here
-#      whose history outlives a reboot — see the disk block at the bottom.
-#
-# This mirrors ntp-qps-sample.sh and tor-bridge-sample.sh: a small privileged
-# collector feeding an unprivileged reader.
+# status-sample.sh — collects the CPU, NTS-KE and disk figures status.cgi
+# cannot get for itself (it runs unprivileged, per request). Runs every 30s
+# via status-sample.timer. See status.txt for the full rationale.
 #
 # Output, all world-readable:
 #   /run/status/cpu.hist      "<ts> <total_jiffies> <idle_jiffies>", 5min kept
@@ -33,12 +10,8 @@
 #   /run/status/disk.txt      current disk figures + a downsampled 30d series
 #   /var/lib/status/disk.hist THE ONE PERSISTENT FILE. Append-only, forever.
 #
-# tmpfs for everything except that last one — / sits around 80% and this box
-# has a documented ENOSPC history (see ntpset.txt). The tmpfs files are a few
-# KB total and never touch disk. Cleared on reboot, which is harmless: the CGI
-# degrades to a shorter labelled window, chrony's counters are "since chronyd
-# start" anyway, and disk.txt is rebuilt from the persistent history on the
-# first tick after boot.
+# Everything else is tmpfs, cleared on reboot; disk.hist is the one exception
+# and lives in the state directory instead — see the disk block below.
 set -eu
 
 CPU_HIST=/run/status/cpu.hist
@@ -66,24 +39,15 @@ now=$(date +%s)
 
 # ---------------------------------------------------------------- CPU sample
 #
-# /proc/stat's first line:
-#   cpu  user nice system idle iowait irq softirq steal guest guest_nice
-# total = every field; idle = idle + iowait.
-#
-# Counting iowait as idle is deliberate: it measures CPU *executing*, not
-# "unable to schedule". On a box whose busiest service is network-bound that
-# is the honest reading, and it is what the page's label claims. Verified
-# against vmstat at install time.
+# /proc/stat's first line: cpu user nice system idle iowait irq softirq steal
+# guest guest_nice. total = every field; idle = idle + iowait (measures CPU
+# *executing*, not "unable to schedule" — see status.txt).
 read -r _ user nice system idle iowait irq softirq steal _ < /proc/stat
 total=$((user + nice + system + idle + iowait + irq + softirq + steal))
 idle_all=$((idle + iowait))
 
-# Append, then keep only samples inside the window. Written via a temp file and
-# renamed so the CGI never reads a half-written history.
-#
-# Rewriting the whole file each tick is fine here and is NOT the mistake
-# ntp-qps-sample.sh had to avoid with TRIM_EVERY: this file is ten lines, not
-# seven days of 5-second samples.
+# Append, then keep only samples inside the window. Written via a temp file
+# and renamed so the CGI never reads a half-written history.
 tmp=$(mktemp /run/status/.cpu.XXXXXX)
 {
 	[ -f "$CPU_HIST" ] && awk -v cutoff="$((now - WINDOW))" '$1 >= cutoff' "$CPU_HIST"
@@ -94,19 +58,17 @@ mv -f "$tmp" "$CPU_HIST"
 
 # ------------------------------------------------------------- chrony sample
 #
-# `chronyc -c serverstats` emits one CSV row. Field order (chrony 4.x):
+# `chronyc -c serverstats` emits one CSV row (chrony 4.x field order):
 #   1 NTP packets received      2 NTP packets dropped
 #   3 Command packets received  4 Command packets dropped
 #   5 Client log records dropped
 #   6 NTS-KE connections accepted   <-- wanted
 #   7 NTS-KE connections dropped    <-- wanted
-#   8 Authenticated NTP packets
-#   ...timestamp counters follow
+#   8 Authenticated NTP packets     ...timestamp counters follow
 #
 # If chronyd is down or the call is refused, leave the previous snapshot in
-# place rather than writing zeros: the CGI can tell "stale" from "genuinely
-# zero" by the file's own sampled_at, and a zero here would render as a real
-# figure.
+# place rather than writing zeros — sampled_at is how the CGI tells stale from
+# genuinely-zero.
 if stats=$(timeout 5 /usr/bin/chronyc -c serverstats 2>/dev/null) && [ -n "$stats" ]; then
 	IFS=, read -r _ _ _ _ _ nts_accepted nts_dropped _ <<<"$stats"
 	# Guard against chronyc emitting an error string where a number belongs —
@@ -125,19 +87,9 @@ fi
 
 # ---------------------------------------------------------------- NTP rates
 #
-# Condense /var/lib/dashboard/ntp_qps.hist (~95k lines, ~3.3MB, appended every
-# 5s by ntp-qps-sample.service) down to three numbers.
-#
-# This lives here rather than in the CGI because parsing that file costs
-# ~263ms — measured — which was the single largest item on the request path
-# after module loading. Doing it here moves the cost onto a Nice=10 timer that
-# was already running, and the CGI just reads three fields.
-#
-# RESET HANDLING is the reason this is a full scan and not a head/tail read.
-# The nftables counter is lifetime-cumulative but resets to zero on nft reload
-# or reboot. Averaging straight across a reset silently understates the rate
-# for up to seven days — a real bug this box has already hit once (a reboot
-# made the 7-day average read ~930 pkt/s when the true rate was ~4700-5600).
+# Condenses /var/lib/dashboard/ntp_qps.hist (~95k lines, appended every 5s by
+# ntp-qps-sample.service) down to three numbers — see status.txt for why this
+# lives here instead of the CGI, and for the reset-handling rationale below.
 # A decrease between consecutive samples starts a new averaging window.
 if [ -r "$QPS_HIST" ]; then
 	if qps=$(awk '
@@ -170,27 +122,14 @@ fi
 
 # -------------------------------------------------------------- disk usage
 #
-# TWO OUTPUTS WITH DIFFERENT LIFETIMES, which is the whole shape of this block:
+# Two outputs with different lifetimes: disk.hist is persistent and kept
+# forever ("<ts> <used_kb> <total_kb> <avail_kb>"); disk.txt is tmpfs,
+# rewritten each sample with current figures plus a downsampled 30-day
+# series. See status.txt for the size arithmetic and why this is safe.
 #
-#   /var/lib/status/disk.hist   PERSISTENT, append-only, KEPT FOREVER.
-#                               "<ts> <used_kb> <total_kb> <avail_kb>"
-#   /run/status/disk.txt        tmpfs, rewritten each sample: the current
-#                               figures plus a downsampled 30-day series,
-#                               which is all the status page ever reads.
-#
-# Everything else this script writes is on tmpfs precisely because / has a
-# documented ENOSPC history (ntpset.txt) and sits around 80%. The history is
-# the deliberate exception, so here is the arithmetic that makes it safe:
-# one ~40-byte line every 5 minutes is 288 lines/day, ~4MB/year, growing
-# strictly linearly with no compaction ever needed. A monitoring file that
-# could itself fill the disk it monitors would be a genuinely stupid failure
-# mode; 4MB/year is not that.
-#
-# The 5-minute cadence is enforced HERE rather than by a second timer, because
-# this unit already wakes every 30 seconds and a whole systemd unit to run df
-# would be more machinery than the job deserves. The interval is measured from
-# the last line of the persistent history rather than from a stamp file, so a
-# reboot resumes the cadence correctly instead of restarting it.
+# The 5-minute cadence is enforced here rather than by a second timer, and is
+# measured from the last line of the persistent history so a reboot resumes
+# it correctly instead of restarting it.
 mkdir -p "$(dirname "$DISK_HIST")"
 
 disk_last=0
@@ -222,25 +161,14 @@ if [ $((now - disk_last)) -ge "$DISK_INTERVAL" ] || [ ! -f "$DISK_OUT" ]; then
 			fi
 
 			# Downsample to one point per DISK_STEP, taking the MAXIMUM used in
-			# each bucket. Max rather than mean because the interesting question
-			# a disk graph answers is "how close did we come to full", and an
-			# average would smooth away exactly the spike that matters.
-			#
-			# tail before awk is load-bearing: the history grows without bound,
-			# so a full scan would get slower every day it runs. Reading a fixed
-			# 12000 lines from the end keeps this at constant cost forever, and
-			# covers ~41 days against a 30-day window.
-			# Each point is "p <bucket> <ts> <used_kb>": the bucket it belongs
-			# to, the ACTUAL TIME of the peak sample within that bucket, and
-			# the value. Both timestamps are needed and they do different jobs:
+			# each bucket (see status.txt for max-vs-mean and the tail-before-awk
+			# cost rationale). Each point is "p <bucket> <ts> <used_kb>":
 			#
 			#   bucket  a regular 2h grid, so the CGI can tell a missing bucket
 			#           from a present one and break the line on real gaps.
-			#   ts      where to actually plot the point. Plotting at the
-			#           bucket floor instead misplaces a point by up to 2h,
-			#           which is nothing across 30 days but is most of the
-			#           width when the history is only a few hours old and the
-			#           graph has compressed its axis to fit.
+			#   ts      the actual time of the peak sample, for where to plot
+			#           the point — the bucket floor alone can misplace it by
+			#           up to 2h, most of the width on a short history.
 			disk_cut=$((now - DISK_WINDOW))
 			if series=$(tail -n "$DISK_TAIL" "$DISK_HIST" 2>/dev/null | awk \
 				-v cut="$disk_cut" -v step="$DISK_STEP" '

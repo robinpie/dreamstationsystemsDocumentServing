@@ -1,10 +1,7 @@
-# Shops excluded from /store-profit.
-#
-# Everything on this page comes from the OSRS Wiki's `storeline` bucket, which is accurate about what it claims: these shops really do list a coin price. The problem is that a coin price is not always the whole cost of admission, and the bucket has no field that says so.
-#
-# The test for adding a shop here is narrow: would a player with the listed number of coins, and nothing else, be turned away? A quest or skill requirement is NOT grounds for exclusion — Culinaromancer's Chest needs Recipe for Disaster and the Legends Guild shop needs Legends' Quest, but once you are standing there the coins are the price. What belongs here is a shop where the coins are a side charge on top of a currency we cannot see.
-#
-# Names are matched case-insensitively, ignoring a trailing full stop.
+# Shops excluded from /store-profit: ones whose listed coin price is not
+# the real cost of admission (see openget.txt, SHOP INVENTORIES, for the
+# test used to decide). Names are matched case-insensitively, ignoring a
+# trailing full stop.
 
 [[exclude]]
 shop = "Mixology Rewards"

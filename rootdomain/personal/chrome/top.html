@@ -1,24 +1,10 @@
 <!-- chrome/top.html — the ubuntu804 theme's desktop chrome, part 1 of 3.
      Opens .desktop, the panel, the window and the toolbars, and leaves
      .client open; chrome/mid.html and chrome/bottom.html finish the job.
-     Pulled in by nginx SSI only when that theme is selected, so under the
-     other four themes not a byte of this reaches the client.
-     ubuntu804theme.txt in the repo root is the design document.
-
-     Two things to know before editing this file.
-
-     NGINX VARIABLES DO NOT SURVIVE AN SSI INCLUDE, because the include is a
-     subrequest and they are re-evaluated against it. In here $document_uri
-     names THIS FILE and $theme resolves to the map default, not the visitor's
-     theme. Variables the page sets do arrive, because SSI looks them up in
-     the main request too — which is why the title and the location bar's path
-     are handed in that way. Anything else derived from the request has to
-     come the same way.
-
-     SSI DOES NOT UNDERSTAND HTML COMMENT NESTING. It scans for its own opening
-     sequence anywhere in the byte stream, so an example directive written
-     inside a comment like this one is not an example, it is executed. Describe
-     the syntax; do not spell it. -->
+     Pulled in by nginx SSI only when that theme is selected. See
+     ubuntu804theme.txt in the repo root for the design and the SSI traps
+     (nginx variables not surviving the include, and comment nesting) before
+     editing this file. -->
 
 
 <div class="desktop">

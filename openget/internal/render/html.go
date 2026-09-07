@@ -32,7 +32,7 @@ type HTMLOptions struct {
 // HTMLBody renders a Doc's blocks as HTML. The surrounding page chrome (head, nav, footer) lives in the web package's layout template; this produces only the main content, so the two concerns stay separable.
 func HTMLBody(d *Doc, o HTMLOptions) string {
 	var b strings.Builder
-	// Column and fact hints used to live in a title attribute and nowhere else, which a touch reader never sees, a keyboard user cannot reach and screen readers announce inconsistently — and those hints carry the definitions of "Potential" and "Vol 24h". They are collected here and emitted once, hidden, at the end of the body, with each header or term pointing at its own by aria-describedby. The title attribute stays for the mouse tooltip and costs nothing: aria-describedby wins where both are present, so nothing is read twice.
+	// Column and fact hints are collected here and emitted once, hidden, at the end of the body, with each header or term pointing at its own by aria-describedby. The title attribute stays too, for the mouse tooltip; aria-describedby wins where both are present, so nothing is read twice.
 	var hints hintSet
 
 	for _, blk := range d.Blocks {
@@ -124,8 +124,8 @@ func HTMLBody(d *Doc, o HTMLOptions) string {
 			if method == "" {
 				method = "get"
 			}
-			// Deliberately NOT .window, unlike the panels above. A window in 7.css is a frame plus a body, and this form is a flex container whose children are the fields themselves — there is nowhere to put a .window-body without breaking the layout, and a frame with no body shows through. Each skin draws the form panel itself.
-			// The prompt names the form as well as introducing it. A <form> becomes a landmark only once it has an accessible name, and these pages carry four of them — site search, the free-to-play filter, the theme picker and this one. A fieldset/legend would name it too, and draw a box every skin would then have to undraw.
+			// Deliberately NOT .window: the form is a flex container whose children are the fields themselves, with nowhere to put a .window-body.
+			// The prompt also gives the form its accessible name, so it counts as a landmark. A fieldset/legend would name it too, but would draw a box every skin would then have to undraw.
 			label := ""
 			if v.Prompt != "" {
 				label = fmt.Sprintf(` aria-label="%s"`, escapeAttr(v.Prompt))
@@ -162,7 +162,7 @@ func HTMLBody(d *Doc, o HTMLOptions) string {
 	return b.String()
 }
 
-// hintSet accumulates the hidden description elements for one page body. Hints are gathered rather than written in place because a description has to live outside the thing it describes: a span inside a <th> would join that header's accessible NAME, and the reader would then hear the whole explanation of "Potential" against every one of the hundred cells beneath it.
+// hintSet accumulates the hidden description elements for one page body. Hints are gathered rather than written in place because a span inside a <th> would join that header's accessible name, read out against every cell beneath it.
 type hintSet []string
 
 // ref records a hint and returns the attribute that points at it.
@@ -174,7 +174,7 @@ func (h *hintSet) ref(text string) string {
 	return fmt.Sprintf(` aria-describedby="hint-%d"`, len(*h))
 }
 
-// render writes the collected hints into one visually-hidden block at the end of the body. .vh is clipped rather than display:none deliberately — hidden subtrees are meant to be readable through an aria-describedby reference, but "meant to be" and "is, everywhere" are different claims, and clipped text is neither seen nor doubted.
+// render writes the collected hints into one visually-hidden block at the end of the body. .vh clips rather than display:none, since a describedby target needs to stay reachable to assistive tech.
 func (h hintSet) render(b *strings.Builder) {
 	if len(h) == 0 {
 		return
@@ -305,7 +305,7 @@ func htmlField(b *strings.Builder, f Field) {
 	if f.Kind == "checkbox" {
 		cls = "field check"
 	}
-	// A <div> holding a <label for>, rather than a <label> wrapping the lot. The wrapper was the simpler markup and it put the hint INSIDE the label, which makes it part of the control's accessible name: the tax calculator's third field announced as "Item ID (optional, to check the exempt list) Leave blank to assume the item is taxable", name and hint run together in one breath. As a described-by sibling the hint is read after the name, separately, which is what a hint is. The id/for pair keeps the whole label clickable, so nothing is lost by unwrapping — and .field.check still puts the box first by order:-1 rather than by DOM order, so the framework's `input[type=checkbox] + label` selector still cannot match it.
+	// A <div> holding a <label for>, rather than a <label> wrapping the lot, so the hint stays out of the control's accessible name — see openget.txt, ACCESSIBILITY. The id/for pair keeps the label clickable regardless.
 	fmt.Fprintf(b, `<div class="%s">`, cls)
 	fmt.Fprintf(b, `<label for="%s">%s</label>`, escapeAttr(id), escapeText(f.Label))
 	desc := ""

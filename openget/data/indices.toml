@@ -1,10 +1,7 @@
-# OpenGET market indices.
-#
-# Constituents are listed by NAME and resolved against the items table at load time, so a game update that renames an item is caught loudly instead of silently tracking the wrong thing.
-#
-# Every index here is published in full on /indices. That is the deliberate difference from ge-tracker, whose nine indices are opaque baskets: an index you cannot audit is a number you cannot actually use for anything.
-#
-# Weights default to 1.0 (equal weight). Equal weighting is chosen over market-cap weighting because it is auditable by hand from this file — with cap weighting the largest item quietly becomes the whole index.
+# OpenGET market indices. Constituents are listed by NAME and resolved
+# against the items table at load time, so a renamed item is caught loudly
+# rather than silently mistracked. Equal-weighted (weights default to 1.0)
+# and published in full on /indices — see openget.txt (RECIPES AND INDICES).
 
 [[index]]
 id = "food"

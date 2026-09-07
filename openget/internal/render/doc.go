@@ -12,9 +12,7 @@
 
 // Package render defines protocol-agnostic view models and the renderers that turn them into HTML, gemtext, gophermaps or plain text.
 //
-// This split is the reason OpenGET can serve Gopher, Gemini, Spartan and finger without being four applications. A handler builds a Doc — headings, tables, links, charts — and knows nothing about the transport. Each protocol gets a renderer that walks the same Doc. Adding a page gives every frontend that page; adding a protocol gives it every page.
-//
-// The alternative, templating each protocol separately, means every new calculator is written four times and drifts three ways.
+// A handler builds a Doc once — headings, tables, links, charts — and each protocol's renderer walks that same Doc, so adding a page gives every frontend that page. See openget.txt, ARCHITECTURE, for why.
 package render
 
 import (
@@ -92,7 +90,7 @@ const (
 type Column struct {
 	Title string
 	Align Align
-	// RowHeader marks the column that names its row — the item, the method, the index. HTML promotes those cells to <th scope="row">, so a screen reader reading across row 40 announces "Abyssal whip, Margin, 3,393" rather than a bare number. Set it only on a column that genuinely identifies the row: on a grid of timestamps or a one-column list it adds noise and no meaning.
+	// RowHeader marks the column that names its row — the item, the method, the index. HTML promotes those cells to <th scope="row"> for screen readers; set it only where a column genuinely identifies the row.
 	RowHeader bool
 	// SortKey, when set, makes the column header a sort link on the web.
 	SortKey string
@@ -110,7 +108,7 @@ type Cell struct {
 	Tone int
 	// Numeric is the underlying value, used for machine-readable output.
 	Numeric *float64
-	// At, when set, is the instant Text describes ("3m ago", "22:24:20 UTC"). HTML wraps the cell in <time datetime>, which is the difference between a string a machine has to guess at and one it can read — and these pages are served with a minute of shared cache, so the rendered "3m ago" is not necessarily true when it is read.
+	// At, when set, is the instant Text describes ("3m ago", "22:24:20 UTC"). HTML wraps the cell in <time datetime> so the machine-readable instant survives even though the page may be served from cache after Text has gone stale.
 	At time.Time
 }
 
@@ -171,7 +169,7 @@ type KV struct {
 // Facts is a definition list: the item page's price/margin/limit panel.
 type Facts struct {
 	Title string
-	// Level is the heading level for Title on the web. Zero means 2 — these panels are page sections, and hardcoding a depth here is what made every item and calculator page jump from h1 straight to h3. Set it only when a panel is genuinely nested under a Heading of its own.
+	// Level is the heading level for Title on the web. Zero means 2; set it only when a panel is genuinely nested under a Heading of its own.
 	Level int
 	Pairs []KV
 }
@@ -184,7 +182,7 @@ type Series struct {
 	Points []XY
 	// Colour is a CSS colour for HTML output; ignored elsewhere.
 	Colour string
-	// Dash is an SVG stroke-dasharray. Where a chart carries more than one series, at least one of them needs it: two lines separated by hue alone are one line to a reader who cannot use hue, and the legend swatch does not help — matching a chip to a line is the same colour judgement again. Ignored outside HTML.
+	// Dash is an SVG stroke-dasharray, ignored outside HTML. On a multi-series chart at least one series needs it, so lines don't collapse into one for a reader who can't distinguish by hue.
 	Dash string
 }
 
@@ -214,7 +212,7 @@ type Form struct {
 	Prompt string
 	Fields []Field
 	Submit string
-	// WebOnly drops the form from every text protocol. Gemini's input mechanism is one line of text and Gopher's is one search string, so a form with more than one control has no honest equivalent there — and rendering it anyway produces a prompt that silently discards every field but the first, or a type-7 entry pointing at the item search CGI. Retro readers get the same page with the defaults applied instead.
+	// WebOnly drops the form from every text protocol, for a form with more than one control that has no honest equivalent there. Retro readers get the same page with the defaults applied instead.
 	WebOnly bool
 }
 
@@ -378,11 +376,7 @@ func abs64(n int64) int64 {
 	return n
 }
 
-// RetroLinks maps the HTTP paths baked into the shared view models onto the retro tree layout, where prefix is the tree root (e.g. "/ge").
-//
-// View models are built once for every protocol and naturally speak in web paths (/item/4151, /calc/herblore). Rather than teach every page builder about four link schemes, the mapping is applied once on the way out — and it has to be applied by BOTH the static generator and the dynamic endpoints, or a menu links somewhere its own search results do not.
-//
-// The dynamic paths differ per protocol because the two servers locate CGI differently: gophernicus runs anything under the doc root's cgi-bin, taking its argument after a "?", while molly-brown matches a CGIPaths glob and passes the rest of the path as PATH_INFO.
+// RetroLinks maps the HTTP paths baked into the shared view models onto the retro tree layout, where prefix is the tree root (e.g. "/ge"). It must be applied by both the static generator and the dynamic endpoints, or a menu links somewhere its own search results do not; see openget.txt, "NOTE ON THE TWO TREE LAYOUTS".
 func RetroLinks(body, prefix, proto string) string {
 	itemPath, searchPath := prefix+"/cgi-bin/item?", prefix+"/cgi-bin/search"
 	if proto == "gemini" {
@@ -405,9 +399,7 @@ func RetroLinks(body, prefix, proto string) string {
 	return body
 }
 
-// gopherStripFragment drops "#section" from gopher selectors.
-//
-// A fragment is a client-side idea that Gopher has no notion of: gophernicus takes the whole selector literally and looks for a file called "indices#bars", so every index link 404'd. Gemini keeps its fragments, which is why this runs only on the other branch. Landing on the whole indices page is the honest degradation — every section is on it anyway.
+// gopherStripFragment drops "#section" from gopher selectors, since gophernicus takes the selector literally and has no notion of fragments. Landing on the whole indices page is the honest degradation — every section is on it anyway.
 func gopherStripFragment(body, prefix string) string {
 	lines := strings.Split(body, "\n")
 	for i, ln := range lines {
@@ -424,11 +416,7 @@ func gopherStripFragment(body, prefix string) string {
 	return strings.Join(lines, "\n")
 }
 
-// gemtextPageExt appends ".gmi" to the capsule's own page links.
-//
-// The generator writes each page as "<slug>.gmi" (writeGemini), but the view models link to extensionless web paths, and molly-brown does no extension guessing: it looks for the literal path and answers 51 when it is not there. The Gopher tree does not have this problem because its pages are directories with a gophermap inside, so "/ge/margin" is a real target there. Without this pass every internal link in the capsule 404s while the index itself loads fine, which is exactly how the breakage presents.
-//
-// Applied here rather than in withPrefix so it runs AFTER the replacements above: by this point /item/ and /search have already become cgi-bin paths, which must NOT gain an extension, and /calc/x has become the calc-x that is a real file.
+// gemtextPageExt appends ".gmi" to the capsule's own page links, since the view models link to extensionless web paths but molly-brown serves only the literal path. It runs after the replacements above, so cgi-bin paths (which must not gain an extension) are already excluded.
 func gemtextPageExt(body, prefix string) string {
 	lines := strings.Split(body, "\n")
 	for i, ln := range lines {

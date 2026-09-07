@@ -13,15 +13,9 @@
 // Package calc holds the arithmetic that turns raw prices into the numbers people actually trade on. The API gives prices; every feature on the site is a derivation from them, so this is the package most worth getting right.
 package calc
 
-// Grand Exchange convenience fee ("GE tax"), verified against https://oldschool.runescape.wiki/w/Grand_Exchange#Convenience_fee_and_item_sink on 2026-08-04:
-//
-//   - 2% of the sale price. Introduced 9 December 2021 at 1%, raised to 2% on 29 May 2025.
-//   - Paid by the SELLER only. A buyer always pays exactly the listed price.
-//   - Capped at 5,000,000 gp per item.
-//   - Rounds DOWN to the nearest whole coin, so anything selling below 50 gp is effectively untaxed.
-//   - A fixed list of items is exempt entirely (see exempt below).
-//
-// Re-check the rate, the cap and the exempt list after any game update that touches the Grand Exchange.
+// Grand Exchange convenience fee ("GE tax"): 2% of the sale price, paid by the
+// seller only, capped at 5,000,000 gp per item, rounded down. See openget.txt
+// for the full rule set and sources; re-check after any GE-touching game update.
 const (
 	// TaxRateNum/TaxRateDen express the 2% rate as an exact rational so the floor is applied to integer arithmetic. Doing this in float64 and truncating would round the wrong way for some prices.
 	TaxRateNum int64 = 2

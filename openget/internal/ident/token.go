@@ -10,11 +10,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-// Package ident implements identity without accounts.
-//
-// The burden of "accounts" is not the login form. It is password resets, email deliverability, verification bounces, GDPR data-subject requests, credential stuffing, and moderating user-generated public content. This design removes all of it by never collecting an identity in the first place.
-//
-// A token is 128 bits of crypto-random data, shown to the user in Crockford base32 and stored only as its SHA-256. The plaintext lives solely in the user's cookie (or in their password manager), so a leaked database yields nothing usable. Losing the code and the cookie loses the data, and that is stated plainly everywhere it matters — no recovery path is the entire point.
+// Package ident implements identity without accounts: a token is 128 bits of
+// crypto-random data, shown to the user in Crockford base32 and stored only
+// as its SHA-256, so a leaked database yields nothing usable. There is no
+// recovery path — losing the code loses the data, by design.
 package ident
 
 import (
@@ -142,9 +141,9 @@ func (t Token) String() string { return "Token(redacted)" }
 // Reveal returns the plaintext. Call only when handing it to the user.
 func (t Token) Reveal() string { return string(t) }
 
-// HashCert is the storage form for a Gemini client certificate fingerprint.
-//
-// Gemini's native identity mechanism is the TLS client certificate, which is a genuinely better answer than a cookie: nothing is stored on our side that identifies anybody, and unlike the Gopher and Spartan capability paths, the credential never appears in a URL, an access log or a referrer.
+// HashCert is the storage form for a Gemini client certificate fingerprint —
+// Gemini's native identity mechanism, which unlike a cookie never appears in
+// a URL, access log or referrer.
 func HashCert(fingerprint string) string {
 	sum := sha256.Sum256([]byte(strings.ToLower(strings.TrimSpace(fingerprint))))
 	return hex.EncodeToString(sum[:])

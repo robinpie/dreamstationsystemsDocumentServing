@@ -12,33 +12,21 @@
  GNU General Public License for more details.
 */
 
-/* OpenGET skin: Old School RuneScape. The default, and the only one of the two that is this site's own visual identity rather than a borrowed desktop.
+/* OpenGET skin: Old School RuneScape. The default skin, and the site's own
+ * visual identity rather than a borrowed desktop — three bands (stone
+ * chrome, a parchment scroll, stone again underneath), matching how
+ * oldschool.runescape.com actually lays a page out. Colours are sampled
+ * from their live page, not guessed, and nothing here is a copied Jagex
+ * asset — see openget.txt (LOOK AND FEEL) for the full rationale.
  *
- * THE COMPOSITION IS THE POINT, and it is taken from how oldschool.runescape.com actually lays a page out, which is three bands rather than one:
- *
- *   1. cracked black stone carries the chrome — banner, menus, buttons;
- *   2. a parchment scroll, narrower than the window and rolled at both ends, carries everything you came to read;
- *   3. stone again underneath for the small print.
- *
- * So .masthead and footer are stone, and main IS the scroll: an opaque parchment column with a curled roll at its top and bottom edge, sitting on the stone with a shadow under it. Nothing on that site puts body text on the stone, and neither do we.
- *
- * WHAT SITS ON THE SCROLL is either ink, or a black panel. Their menus are pure #000 boxes with a 2px #382418 frame and a white centred caption, and that is exactly the furniture this site already had in .facts, .notes, .chartbox and .ogform, so those keep their dark palettes and take their frame instead. The useful consequence is that the interior of every panel is unchanged by this skin's rewrite: only the surfaces those panels sit ON moved.
- *
- * That split is also the rule for text colour, and it is why the selector lists below are grouped the way they are. There are exactly two grounds in the content area — the scroll and the dark furniture — and every colour, link, hover and focus ring is declared once for each. Adding a new block means deciding which of the two it lands on; there is no third answer.
- *
- * COLOURS ARE SAMPLED FROM THEIR LIVE PAGE, not guessed: #382418 panel frame on #000000 panel fill, #90c040 menu link, #ffbb22 gold, #6d4211 scroll heading, #6b7b17 the olive rule between news items, #d2b47b scroll body, #0d0c08 stone. Where a sampled colour could not clear WCAG AA at the size we use it, it was darkened and the original is recorded next to it.
- *
- * Everything here is drawn from scratch in CSS. No Jagex image, texture or logo is copied or hotlinked; their stone and their parchment are JPEGs and ours are layered gradients doing the same job. The heading face IS the one their site uses — Kingthings Petrock by Kevin King — but served from our own /static under the licence bits below.
- *
- * Nothing here is copied from ge-tracker, whose functionality we clone and whose design we deliberately do not.
- *
- * Structure lives in openget-layout.css. This file sets faces, colour and ornament only. */
+ * Structure lives in openget-layout.css. This file sets faces, colour and
+ * ornament only. */
 
-/* Kingthings Petrock, © Kevin King 2006, a registered trademark of Kingthings. Not ours; served unmodified with its copyright and trademark name records intact, converted TTF->WOFF2 with no subsetting or other alteration.
- *
- * The font carries fsType=8 (Editable embedding) with the no-subset bit clear, which is the designer's own machine-readable grant covering exactly this use. The readme that ships with it states no terms at all, and the distribution sites contradict each other, so the fsType bits are the authority here. Obtained from Font Squirrel, not from Jagex's servers.
- *
- * local() first: a reader who already has it installed never downloads anything. */
+/* Kingthings Petrock, © Kevin King 2006, a registered trademark of
+ * Kingthings. Not ours; served unmodified, obtained from Font Squirrel
+ * under its fsType=8 embedding grant. See openget.txt (LOOK AND FEEL) for
+ * the licence details. local() first, so a reader who already has it
+ * installed never downloads anything. */
 @font-face {
   font-family: "Kingthings Petrock";
   src: local("Kingthings Petrock"),
@@ -61,19 +49,23 @@
   --wood-lit:  #6d4211;
   --wood-pale: #8e7246;
 
-  /* The stone the chrome is carved from. --stone is the opaque base of the masthead and --stone-lit is the LIGHTEST point the texture over it can reach: the weathering layer is --wood-pale at 0.26 alpha and nothing else in that stack lightens, so #141009 under 26% of #8e7246 composites to #342919 and no further. Text on the masthead is checked against --stone-lit rather than --stone, because the lightest pixel is the one that decides.
-   *
-   * 0.26 IS A CEILING, not a taste. The pale frame around the tabs and the search field is --wood-pale itself, and by the time the rock behind it reaches #342919 that frame is down to 3.14 against it — a sixth of a step from failing 1.4.11. Their own stone weathers to about #51402a, which would put the frame at 2.19, so this is as close to their rock as a bordered control can be put on top of. */
+  /* --stone-lit is the LIGHTEST point the masthead texture reaches: #141009
+   * under 26% --wood-pale composites to #342919 and no further, so text on
+   * the masthead is checked against --stone-lit rather than --stone. 0.26 is
+   * a ceiling, not a taste — see openget.txt (LOOK AND FEEL) for why. */
   --stone:     #141009;
   --stone-lit: #342919;
   --stone-foot: #14110a;
 
-  /* Scroll parchment. Two tones, and the difference between them is doing real work. --scroll is the sheet main is drawn on; --parch-0 is a shade lighter and is what a TABLE is drawn on, so a table reads as a fresh page laid over the roll rather than dissolving into it. --scroll is also the flat, UNLIT value: the sheet's own lighting only ever brightens it towards the middle, so --scroll is the worst case every dark-ink pair is measured against. Their news column samples #d2b47b, between the two. */
+  /* --scroll is the sheet main is drawn on, and the flat, unlit value every
+   * dark-ink pair is measured against. --parch-0, a shade lighter, is what a
+   * TABLE is drawn on, so it reads as a fresh page laid over the roll. */
   --scroll:    #cdb078;
   --parch-0:   #d9c27e;
   --parch-1:   #d0b87c;
 
-  /* Ink on parchment. --scroll-h is their heading brown #6d4211 darkened one step: at h3's 18px the original measured 4.13 on --scroll, and 18px regular is not WCAG large text. --code-ink is likewise a darkened rust; #7a3105 came to 4.44. */
+  /* --scroll-h and --code-ink are their heading brown and rust, each
+   * darkened one step to clear WCAG AA at the sizes we use them. */
   --ink:       #2b1c0a;
   --ink-dim:   #4a3a20;
   --scroll-h:  #5e3a0e;
@@ -85,16 +77,20 @@
   --text:      #ffffff;
   --text-dim:  #b1a994;
 
-  /* The olive rule their news items are separated by. Purely decorative — it never carries information a heading beside it does not — which is as well, because at 2.25 on the scroll it could not carry any. */
+  /* The olive rule their news items are separated by. Purely decorative —
+   * at 2.25 on the scroll it couldn't carry information anyway. */
   --olive:     #6b7b17;
 
-  /* Profit and loss in the game's own greens and reds. Two of each: one that works on the dark furniture, one that works on parchment. The reds were darkened off the game's own #d83530/#990a03 to clear WCAG AA: the originals measured 3.92 on the facts panel and 4.45 on an even table row, both short of the 4.5 that 13px non-bold text needs. */
+  /* Profit/loss in the game's own greens and reds — one pair for dark
+   * furniture, one for parchment. The reds are darkened off the game's own
+   * originals to clear WCAG AA (see check_contrast.py). */
   --good:      #61ca5c;
   --good-ink:  #1d4f1b;
   --bad:       #e8544e;
   --bad-ink:   #870802;
 
-  /* Links are green on black, the way their menus are, and brown-green ink on parchment. Their own parchment links are #7b4f17, which is 3.39 on --scroll and could not be used. */
+  /* Green on black, like their menus; brown-green ink on parchment — their
+   * own parchment links (#7b4f17) measure 3.39 there and can't be used. */
   --link:      #90c040;
   --link-hov:  #b6e065;
   --link-vis:  #7fa83f;
@@ -118,7 +114,10 @@
   --emboss: 0 1px 0 rgba(255, 250, 232, 0.45);
 }
 
-/* THE STONE. Their background is not a brick wall and not noise — it is cracked rock: irregular polygonal cells, a few lighter weathered patches, grit over the top. Three shallow-angle repeating gradients at coprime periods give cracks that never visibly tile; the radials are the weathering. No text is ever drawn on this, so the lightening layers here are unconstrained. */
+/* THE STONE: cracked rock, not a brick wall or noise. Three coprime-period
+ * repeating gradients give cracks that never visibly tile, plus radial
+ * weathering; no text is ever drawn on it, so the lightening is
+ * unconstrained. */
 body {
   background-color: var(--ground);
   background-image:
@@ -144,7 +143,9 @@ a { color: var(--link); text-decoration: none; }
 a:hover { color: var(--link-hov); text-decoration: underline; }
 a:visited { color: var(--link-vis); }
 
-/* Gold reads at 11.7:1 on the stone and 9.7:1 on the masthead, and 1.2:1 on parchment. Since main is now a parchment column, the default ring would be invisible for every link a reader actually tabs through, so the scroll flips it to ink — and then the dark furniture standing ON the scroll flips it back, because ink on a black panel is just as invisible the other way. Both overrides are one specificity step above the rule they beat. */
+/* Gold is invisible on parchment (1.2:1), so main flips the focus ring to
+ * ink, and dark furniture standing on the scroll flips it back — each
+ * override one specificity step above the rule it beats. */
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
 main :focus-visible { outline-color: var(--ink); }
 main .facts :focus-visible,
@@ -182,7 +183,9 @@ table, button, .sitesearch input, .field input, .field select, footer,
 
 /* ---------------------------------------------------------------- chrome */
 
-/* The banner band. On their page the logo sits directly on the stone with no panel behind it, so this is the same rock one step lighter, with the grit dropped and the weathering kept — plus a gold rail along the bottom so the header still ends somewhere. Only ONE layer here lightens, and --stone-lit is its composite; see the note by that token. */
+/* The banner band: the same rock one step lighter, grit dropped and
+ * weathering kept, plus a gold rail along the bottom. Only one layer here
+ * lightens — --stone-lit is its composite (see the note by that token). */
 .masthead {
   background-color: var(--stone);
   background-image:
@@ -213,7 +216,8 @@ table, button, .sitesearch input, .field input, .field select, footer,
 
 .sitesearch input {
   background: var(--void);
-  /* --wood-pale, not --wood-lit: a black field on dark stone is identified by its border alone, and --wood-lit managed 1.70:1 against that background where 1.4.11 wants 3. --wood-pale gets 3.65 on the masthead's lightest stone and 4.65 on the field itself. */
+  /* --wood-pale, not --wood-lit: --wood-lit manages only 1.70:1 on this
+   * black field where 1.4.11 needs 3; --wood-pale gets 3.65/4.65. */
   border: 2px solid var(--wood-pale);
   color: var(--text);
 }
@@ -230,7 +234,9 @@ table, button, .sitesearch input, .field input, .field select, footer,
   color: var(--text);
 }
 
-/* The tabs are their menu boxes turned on their side: a black cell, a pale frame, a green label. The one you are standing on is parchment instead, which also ties the rail to the scroll directly beneath it. The frame is --wood-pale rather than their #382418 because their boxes sit on lit stone and ours sit on the masthead, where #382418 measures 1.13 and would leave an unlit tab with no visible edge at all. */
+/* Their menu boxes turned on their side: a black cell, a pale frame, a
+ * green label. The frame is --wood-pale rather than #382418 because
+ * #382418 measures only 1.13 on this masthead. */
 nav.tabs a {
   background: var(--void);
   border: 2px solid var(--wood-pale);
@@ -255,11 +261,10 @@ nav.tabs a[aria-current="page"] {
 
 /* ----------------------------------------------------------------- scroll */
 
-/* main IS the sheet. Layer order, top of the stack first: the lit middle of the paper, the shadowed torn edges, the fibre, then two age blotches.
- *
- * ONLY THE MIDDLE LIGHTENS, and it lightens a surface that carries dark text, so it can only ever improve those pairs — which is what lets every ink pair be checked against the flat --scroll and be honest about it.
- *
- * The torn edges DARKEN, and dark ink on a darkened ground is the one direction that could fail, so they are held to 8px. main's padding is 16px, and 10px at the narrow breakpoint, so the gradient has returned to zero before the first character in either case. Widen that band and you are back to owing the checker a composite. */
+/* main IS the sheet: a lit middle (lightens only, so ink pairs stay honest
+ * against flat --scroll) plus darkened torn edges held to 8px — inside
+ * main's 16px padding (10px at the narrow breakpoint) — so no glyph is
+ * ever drawn on the darkened band. Widen it and it needs a composite. */
 main {
   position: relative;
   background-color: var(--scroll);
@@ -276,7 +281,9 @@ main {
   box-shadow: 0 0 22px rgba(0, 0, 0, 0.8);
 }
 
-/* The rolled ends. Each is one band with a light crest, a crease above and below it, and a soft shadow thrown onto the sheet — rolled towards the reader at the top, away at the bottom. The negative margins pull them out through main's own padding so they land flush on its edges; they are the reason the padding may not shrink below the values above. */
+/* The rolled ends: a light crest with a crease and shadow either side,
+ * pulled out through main's own padding by negative margins so they land
+ * flush on its edges — the reason that padding may not shrink further. */
 main::before, main::after {
   content: "";
   display: block;
@@ -297,7 +304,9 @@ main::after {
     #d8c096 70%, #a98d59 88%, #7b6335 100%);
   box-shadow: 0 -6px 10px -3px rgba(0, 0, 0, 0.5);
 }
-/* Past 1240px the column is capped at 1180 and there is slack either side, so the rolls can overhang the sheet the way a real one does. Below that they may not: main is full-width there and an overhang is horizontal page scroll, which 1.4.10 does not forgive. */
+/* Above 1240px the column is capped at 1180 with slack either side, so the
+ * rolls can overhang; below it main is full-width and an overhang would be
+ * horizontal page scroll, which 1.4.10 does not forgive. */
 @media (min-width: 1240px) {
   main::before { margin-left: -30px; margin-right: -30px; }
   main::after  { margin-left: -30px; margin-right: -30px; }
@@ -317,7 +326,9 @@ h1, h2, h3 {
   color: var(--scroll-h);
   text-shadow: var(--emboss);
 }
-/* The rule under a section heading is the olive line their news items are separated by, fading out to the right. Solid first so a browser without border-image still gets a rule. :not([class]) keeps it off the panel title bars, which are h2 as well now and draw their own frame. */
+/* The olive news-item rule, fading right; solid first so a browser without
+ * border-image still gets a rule. :not([class]) keeps it off panel title
+ * bars, which are h2 as well and draw their own frame. */
 h2:not([class]) {
   border-bottom: 2px solid var(--olive);
   border-image: linear-gradient(90deg, var(--olive), rgba(107, 123, 23, 0.4) 62%, transparent) 1;
@@ -329,7 +340,8 @@ a:where(main *) { color: var(--link-ink); font-weight: 600; }
 a:where(main *):visited { color: var(--link-ink); }
 a:where(main *):hover { color: var(--link-ink-hov); }
 
-/* The only <code> the site actually renders is the finger address in the footer, which is on stone — so amber is the default and the sheet is the exception, not the other way round. On parchment amber measures 2.0. `pre code` still wins over both by specificity and keeps the block's own colour. */
+/* The only <code> the site renders is the finger address in the footer, on
+ * stone — so amber is the default and the sheet is the exception. */
 code { font-family: var(--mono); color: var(--amber); }
 code:where(main *) { color: var(--code-ink); }
 
@@ -374,7 +386,8 @@ thead th {
 thead th a, thead th a:visited { color: inherit; font-weight: inherit; }
 thead th a:hover { color: #ffd166; }
 
-/* :is(td, th) throughout: the column that names each row is a <th scope="row">, and every one of these rules is about being a body cell rather than about being a <td>. The link colour in particular — miss it and the item name in column one drops to the generic main-content link weight. */
+/* :is(td, th) throughout: the row-naming column is a <th scope="row">, and
+ * every rule here is about being a body cell, not specifically a <td>. */
 tbody :is(td, th) { border-bottom: 1px solid rgba(90, 62, 20, 0.22); }
 tbody :is(td, th).r { font-family: var(--mono); }
 tbody tr:nth-child(even) { background: rgba(120, 84, 30, 0.10); }
@@ -387,7 +400,9 @@ tbody :is(td, th) a:hover { color: var(--link-ink-hov); }
 
 /* -------------------------------------------------------- dark furniture */
 
-/* Their menu boxes, exactly: #000 fill, 2px #382418 frame, a white bold caption centred over it. Every panel on this site is one of those, and because the fill went from a near-black gradient to flat black, every colour INSIDE them got slightly more contrast than it was already checked at rather than less. */
+/* Their menu boxes exactly: #000 fill, 2px #382418 frame, white centred
+ * caption. Flat black gives every colour inside slightly more contrast
+ * than it was checked at, never less. */
 .facts, .notes, .chartbox, .ogform, .status-bar {
   background: var(--void);
   border: 2px solid var(--wood);
@@ -458,7 +473,9 @@ svg.chart .chart-empty { fill: var(--text-dim); }
   accent-color: var(--gold);
 }
 
-/* Their buttons are a stone slab in a pale metal band with white lettering, and they are the one piece of chrome on that page that is not brown. The two cross-hatched gradients are cracks in the slab; both only darken, so the flat --btn-hi end of the fill is the lightest pixel under the label and the pair the checker measures. */
+/* A stone slab in a pale metal band. Both cross-hatch gradients only
+ * darken, so the flat --btn-hi end of the fill is the lightest pixel under
+ * the label — the pair check_contrast.py measures. */
 button {
   background-color: var(--btn-hi);
   background-image:
@@ -520,7 +537,8 @@ footer .retro { font-family: var(--mono); }
   main { background-image: none; }
 }
 
-/* Print is ink on paper in every theme, and openget-layout.css already flattens the page for it — but it was written when nothing in any skin painted main, and this skin paints main, its two rolled ends and every panel standing on it. */
+/* Print flattens to ink on paper; openget-layout.css handles most of it,
+ * but this skin also paints main, its rolled ends, and every panel on it. */
 @media print {
   main { background: #fff; color: #000; box-shadow: none; }
   main::before, main::after { display: none; }

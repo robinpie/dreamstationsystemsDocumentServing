@@ -192,9 +192,7 @@ func (g *Generator) buildPages(ctx context.Context) ([]page, error) {
 			}
 			pages = append(pages, page{"calc-" + kind, d})
 
-			// And one page per recipe, because every row of the page just added links to its own breakdown. Roughly 150 pages, which is a different proposition from the 4,650 item pages above: they cost about 180ms in total and they are the whole point of the money-maker section. Without them the capsules carry 150 links that answer "not found".
-			//
-			// One price book for the whole family, not one per recipe: going through CalcRecipe would re-query the recipe, its prices and the freshness stamp for every one.
+			// And one page per recipe, since every row of the page just added links to its own breakdown. One price book is fetched for the whole family rather than one per recipe; see openget.txt, "NOTE ON THE TWO TREE LAYOUTS".
 			rs, err := g.db.Recipes(ctx, kind)
 			if err != nil {
 				continue

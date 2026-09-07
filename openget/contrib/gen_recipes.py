@@ -59,7 +59,7 @@ def R(rid, kind, name, inputs, outputs, skill="", notes="", **extra):
 
 def build():
     # ----------------------------------------------------------------------
-    # Decanting. Bob Barter at the Grand Exchange decants for free. The usual trade buys 3-dose potions and sells 4-dose: four (3)s hold the same twelve doses as three (4)s, so the doses balance and any profit is spread.
+    # Decanting. Bob Barter at the Grand Exchange decants for free.
     # ----------------------------------------------------------------------
     for p in ["Prayer potion", "Super restore", "Saradomin brew", "Ranging potion",
               "Super attack", "Super strength", "Super defence", "Magic potion",
@@ -250,7 +250,9 @@ def build():
           per_hour=1000)
 
     # ----------------------------------------------------------------------
-    # Spell conversions: an item transmuted in the inventory, paid for in runes rather than in a service fee. Elemental runes are costed at market even though the usual setup wears a staff that supplies them free — same convention as the enchanting rows, and it keeps the row honest for anyone who has not bought the staff.
+    # Spell conversions: an item transmuted in the inventory, paid for in
+    # runes rather than a service fee. Elemental runes are costed at market
+    # for consistency with the enchanting rows above.
     # ----------------------------------------------------------------------
     if have("Bones", "Banana", "Nature rune", "Earth rune", "Water rune"):
         R("spell-bones-bananas", "spell", "Bones to Bananas",
@@ -288,7 +290,8 @@ def build():
                 "experience for the bar comes on top.",
           per_hour=1200, xp=53)
 
-    # Superglass Make. Costed at the guaranteed one glass per pair of materials, which understates it: the spell averages nearer 1.3. Understating is the right direction for a tool people spend capital on, and the bonus is real upside rather than a number this row has to defend.
+    # Superglass Make. Costed at the guaranteed one glass per pair of
+    # materials; the spell actually averages higher (see notes below).
     if have("Seaweed", "Bucket of sand", "Molten glass", "Astral rune", "Air rune", "Fire rune"):
         R("spell-superglass-seaweed", "spell", "Superglass Make with seaweed",
           [ing("Seaweed", 13), ing("Bucket of sand", 13),
@@ -313,7 +316,9 @@ def build():
                 "per unit of seaweed for it.",
           per_hour=150, xp=78)
 
-    # Plank Make, against the sawmill rows further up. The spell charges 70% of the operator's fee but adds two astral and a nature rune to every plank, so it only makes sense where the fee is large enough to swamp the runes.
+    # Plank Make, against the sawmill rows further up. The spell charges 70%
+    # of the operator's fee but adds runes, so it's only worth it where the
+    # fee is large enough to swamp them.
     for rid, log, plank, fee in [
         ("plank", "Logs", "Plank", 70),
         ("oak", "Oak logs", "Oak plank", 175),
@@ -356,7 +361,8 @@ def build():
           notes="The reverse trade: buy the four pieces, sell the assembled set.")
 
     # ----------------------------------------------------------------------
-    # Barrows repair. Costs verified against the wiki on 2026-08-05: the NPC price is the degradation state out of 1,000 times 60 gp for a helm, 90 for a body, 80 for legs and 100 for a weapon — so a fully degraded piece costs 60,000 / 90,000 / 80,000 / 100,000.
+    # Barrows repair. Costs verified against the wiki (see openget.txt,
+    # RECIPES AND INDICES, for the exact figures).
     # ----------------------------------------------------------------------
     repair_cost = {"helm": 60000, "body": 90000, "legs": 80000, "weapon": 100000}
     for brother, pieces in [

@@ -207,7 +207,7 @@ func SVG(c Chart, width, height int) string {
 			}
 			fmt.Fprintf(&path, "L%.1f %.1f", x(p.X), y(p.Y))
 		}
-		// The series index goes on the element as a class so a stylesheet can recolour the line. Series.Colour stays as the stroke attribute, which is a presentation attribute and therefore loses to any CSS rule: the literal is what renders where no stylesheet reaches (the standalone /chart endpoint, an SVG saved to disk), and the skin's own palette is what renders on the page. Without this every theme would draw the price line in the dark theme's gold, which is 1.8:1 on white.
+		// The series index goes on the element as a class so a stylesheet can recolour the line; Series.Colour stays as the stroke attribute for contexts with no stylesheet (the standalone /chart endpoint, an SVG saved to disk). See openget.txt, CHART COLOURS.
 		fmt.Fprintf(&b, `<path class="series s%d" d="%s" fill="none" stroke="%s" stroke-width="1.6" stroke-linejoin="round"%s/>`,
 			i, path.String(), escapeAttr(colour), dashAttr(s))
 	}

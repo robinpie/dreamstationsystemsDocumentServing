@@ -10,14 +10,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-// Package wiki is a client for the OSRS Wiki real-time prices API.
-//
-//	https://prices.runescape.wiki/api/v1/osrs
-//	https://oldschool.runescape.wiki/w/RuneScape:Real-time_Prices
-//
-// The service is run free of charge by the OSRS Wiki in partnership with RuneLite. It has no key and no signup, and the only hard rule in its acceptable-use policy is that callers set a descriptive User-Agent with contact info — default library UAs (Go-http-client, python-requests, curl) are policy-blocked. This package refuses to start without one, so the rule cannot be broken by forgetting a config field.
-//
-// The second rule is softer ("don't sustain multiple large queries per second") and is handled by the shared rate limiter: every request through a Client waits its turn, so even the 4650-item backfill loop stays polite without the caller having to remember to sleep.
+// Package wiki is a client for the OSRS Wiki real-time prices API
+// (https://prices.runescape.wiki/api/v1/osrs). It refuses to start without a
+// descriptive User-Agent, since upstream's acceptable-use policy blocks
+// default library UAs, and every request goes through a shared rate limiter
+// to stay polite to a free, volunteer-run service.
 package wiki
 
 import (
@@ -347,9 +344,9 @@ func (c *Client) Volumes(ctx context.Context) (int64, map[int]int64, error) {
 	return raw.Timestamp, keyByID(raw.Data), nil
 }
 
-// MaxTimeseriesPoints is the hard cap the API applies to /timeseries regardless of timestep. Verified 2026-08-04 across all four timesteps.
-//
-// The cap is what makes our own archive valuable: the window you can ever re-fetch is 365 * timestep, so 5m history older than ~1.3 days is unrecoverable from upstream. Everything we record past that is strictly better than anything the API can replay, and the gap widens every day.
+// MaxTimeseriesPoints is the hard cap the API applies to /timeseries
+// regardless of timestep, which is what makes our own archive valuable: the
+// window you can ever re-fetch is 365 * timestep. See openget.txt.
 const MaxTimeseriesPoints = 365
 
 // Timeseries fetches per-item history. Returns at most MaxTimeseriesPoints points, so the timestep chooses the window:

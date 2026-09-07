@@ -18,9 +18,9 @@ import (
 	"net/url"
 )
 
-// BucketBase is the MediaWiki API root of the OSRS Wiki proper. This is a different host and a different service from the prices API: Bucket is the wiki's structured-data extension, holding the facts that wiki templates render into pages.
-//
-// It is a supported interface rather than scraping. The wiki's own documentation offers it to outside tools in as many words: "External users can query Bucket's API to get this information, without needing to scrape or parse wiki pages." It replaced Semantic MediaWiki, whose api.php?action=ask is hard-deprecated — do not reach for that instead.
+// BucketBase is the MediaWiki API root of the OSRS Wiki proper — a different
+// host and service from the prices API. Bucket is the wiki's structured-data
+// extension and a supported interface, not scraping; see openget.txt.
 //
 //	https://oldschool.runescape.wiki/w/RuneScape:Bucket
 const BucketBase = "https://oldschool.runescape.wiki/api.php"
@@ -47,11 +47,9 @@ type StoreLine struct {
 // storeLineFields is the select list, and must stay in step with StoreLine's tags. Bucket wants lowercase names with underscores.
 const storeLineFields = `'sold_by','sold_item','store_sell_price','store_stock','restock_time','store_currency','store_notes'`
 
-// StoreLines fetches every row of the storeline bucket: what each shop in the game stocks, at what price, in what quantity.
-//
-// This is the data that makes a shop-buy claim checkable. The prices API's per-item `value` looks like a shop price and is not one — it is the base value from the item definitions, present for every item in the game whether or not anything sells it — so ranking on `value` alone produces a list of items nobody can buy at any price.
-//
-// About 6300 rows in two requests. It only changes on game updates, so poll it daily at most.
+// StoreLines fetches every row of the storeline bucket: what each shop in the
+// game stocks, at what price, in what quantity — about 6300 rows in two
+// requests. It only changes on game updates, so poll it daily at most.
 func (c *Client) StoreLines(ctx context.Context) ([]StoreLine, error) {
 	var out []StoreLine
 	for offset := 0; ; offset += bucketPageSize {

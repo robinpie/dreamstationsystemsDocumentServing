@@ -2,7 +2,7 @@
 #
 # status.cgi — live service status for dreamstation.systems
 #
-# Deployed to /srv/cgi/status.cgi by deploy-site.sh; served at /professional/status via fcgiwrap. Runs as www-data.
+# Deployed to /srv/cgi/status.cgi by promote-site.sh; served at /professional/status via fcgiwrap. Runs as www-data.
 #
 # Warning for very claudish comments lol.
 #
@@ -32,29 +32,15 @@
 use strict;
 use warnings;
 
-# NOTHING BUT strict AND warnings IS LOADED HERE, on purpose. Every module this
-# script uses is require'd at the point of use, because each is expensive to
-# compile and none is needed on the paths it takes most often:
-#
-#   IO::Socket::SSL   328ms — probe_tls() only, i.e. only on a sweep
-#   IO::Socket::INET  ~180ms — probe_tcp() only, likewise
-#   Time::HiRes        ~70ms — sub-second timing, sweep path only (see hnow)
-#
-# Together that is well over half a second of compile time on a request that
-# may do no probing whatsoever: a cache hit on the full page, or the box
-# fragment, which only ever reads two small files. POSIX went the same way —
-# another 95ms for functions this never used.
-#
-# If you add a `use` at the top of this file, measure it first.
+# NOTHING BUT strict AND warnings IS LOADED HERE, on purpose. Every module
+# this script uses is require'd at its point of use instead, because each is
+# expensive to compile and most requests need none of them. See status.txt
+# ("Cost and the cache") for the measured costs. If you add a `use` at the
+# top of this file, measure it first.
 
-# Sub-second timing, loaded on demand. Only three things need it — the two
-# probe latencies and the sweep's own duration — and all three are on the
-# sweep path, so the box fragment and cache hits never pay for it.
-#
-# Everything OUTSIDE the sweep (the generated stamp, cache freshness, the
-# "measured N ago" line) deliberately keeps using CORE::time. Those are whole
-# seconds and never were anything else, which is why the import was dropped
-# rather than made conditional: nothing silently changes meaning.
+# Sub-second timing, loaded on demand — only the sweep path needs it. Code
+# outside the sweep keeps using CORE::time (whole seconds), so nothing
+# silently changes meaning. See status.txt.
 my $HIRES;
 sub hnow {
 	$HIRES ||= do { require Time::HiRes; 1 };
@@ -93,16 +79,9 @@ use constant {
 };
 
 # Hover titles for the bar segments: the exact quantity each is computed from.
-#
-# DEFINED ONCE BECAUSE TWO RENDER PATHS USE THEM — the full page and the corner
-# box fragment. CPU and the two memory strings appear in both, and this file
-# already has three separate warnings about a value that has to be listed in
-# two places and silently diverges when it is not (see cache_write). The swap
-# and disk strings are used once each and live here anyway, so that this block
-# is the whole set and matches the table in status.txt.
-#
-# These are title attributes on elements inside aria-hidden="true", so they are
-# a MOUSE AFFORDANCE, NOT A TEXT ALTERNATIVE — see bar().
+# Defined once because both render paths (full page and corner box fragment)
+# use them. These are title attributes on aria-hidden elements — a mouse
+# affordance, not a text alternative. See status.txt ("Segment hover titles").
 use constant {
 	T_CPU        => '1 − Δ(idle + iowait) / Δtotal over the sampled window',
 	T_MEM_USED   => 'MemTotal − MemFree − cache',
@@ -113,11 +92,8 @@ use constant {
 	T_DISK_RSVD  => 'Unused root reserve',
 };
 
-# Probes run against loopback deliberately. Probing our own public IP would
-# inject self-traffic into the nginx access log and the journal that
-# `dashboard` parses, polluting its Visitors tab. This proves the daemon is
-# alive and speaking its protocol; external reachability is evidenced by the
-# NTP Pool monitoring score, which is third-party and cannot be faked.
+# Probes run against loopback deliberately, so they never pollute the access
+# log dashboard parses. See status.txt.
 use constant HOST => '127.0.0.1';
 
 # id, label, port, probe type, systemd unit to report alongside, note
@@ -399,12 +375,8 @@ sub read_qps {
 }
 
 # Current disk figures plus the downsampled 30-day series, both already
-# condensed by status-sample.sh. The persistent history behind this
-# (/var/lib/status/disk.hist, ~4MB/year and growing forever) is NEVER opened
-# here — same rule as the qps history and for the same reason: an unbounded
-# file on the request path is a page that gets slower every day it runs.
-#
-# At most ~360 "p" lines, so this is a ~4KB read of tmpfs.
+# condensed by status-sample.sh. The persistent history is never opened here
+# — see status.txt. At most ~360 "p" lines, so this is a ~4KB read of tmpfs.
 sub read_disk {
 	open my $fh, '<', DISK_SNAP or return undef;
 	my (%o, @series);
@@ -577,25 +549,11 @@ sub daystamp { my @t = gmtime($_[0] // 0); return sprintf '%d %s', $t[3], $MON[ 
 # everyone else. Same reason the ꩜ and the 🖱️ in the host line are hidden.
 my %MARK = (up => '●', down => '✕', unknown => '○');
 
-# bar($pct, $extra_pct, $far)
-#
-# Two segments: <i> solid, <u> faded. $far moves the faded one to the RIGHT
-# END of the bar instead of butting it against the solid one, which changes
-# what the pair MEANS and is not a cosmetic choice:
-#
-#   default ($far false) — the two segments are adjacent, and together they
-#     are the total occupancy. Used by Memory and Swap, where faded is
-#     "occupied but cheap to reclaim": cache sitting next to genuinely used
-#     memory is a true picture of where the RAM went.
-#
-#   $far true — the faded segment is a wall at the far end, separated from the
-#     solid one by whatever is genuinely free. Used by Disk, where faded is
-#     "unoccupied but NOT YOURS" (see the caller). Butting that against Used
-#     would read as though the reserve were part of what is consumed, which is
-#     the exact opposite of what it is.
-#
-# The gap between the segments is therefore meaningful in the $far case and
-# meaningless in the default one. Do not "unify" these.
+# bar($pct, $extra_pct, $far): two segments, <i> solid and <u> faded. $far
+# moves the faded segment to the right end of the bar instead of butting it
+# against the solid one — meaningful, not cosmetic, since faded means
+# "occupied but reclaimable" (adjacent, Memory/Swap) vs. "unoccupied but not
+# yours" (far, Disk). Do not "unify" these. See status.txt.
 sub bar {
 	my ($pct, $extra_pct, $far, $titles) = @_;
 	$pct = 0 if !defined $pct || $pct < 0;
@@ -603,18 +561,8 @@ sub bar {
 	my $w2 = defined $extra_pct ? sprintf('%.1f', $extra_pct > 100 ? 100 : $extra_pct) : 0;
 
 	# $titles is [solid, faded]: the exact quantity each segment is computed
-	# from, so a reader can hover a segment and see the arithmetic rather than
-	# having to guess what the faded part means. Either may be undef.
-	#
-	# THIS IS A title ATTRIBUTE, WHICH IS A MOUSE AFFORDANCE AND NOT A TEXT
-	# ALTERNATIVE. The bar stays aria-hidden — it is decoration, and the number
-	# beside it is the content — so assistive tech never sees these strings, and
-	# neither does a touch or keyboard user. That is a deliberate trade and not
-	# an oversight: it hands sighted mouse users a detail they can currently
-	# only get by reading read_mem(), without putting formula noise into the
-	# accessible name of every bar on the page. If this information ever needs
-	# to be genuinely available to everyone, it wants a visible legend, not a
-	# title attribute. See status.txt.
+	# from. A mouse affordance, not a text alternative — the bar stays
+	# aria-hidden. Either title may be undef. See status.txt.
 	my ($t_solid, $t_faded) = @{ $titles || [] };
 	my $a_solid = defined $t_solid ? ' title="' . esc($t_solid) . '"' : '';
 	my $a_faded = defined $t_faded ? ' title="' . esc($t_faded) . '"' : '';
@@ -635,30 +583,9 @@ sub bar {
 
 # ------------------------------------------------------------------ the graph
 #
-# HAND-ROLLED SVG, AND DELIBERATELY SO. The obvious move is a charting module —
-# SVG::Graph, SVG::TT::Graph, Chart::Clicker — and all of them are wrong here
-# for the same three reasons:
-#
-#   1. COST. The header note at the top of this file exists because
-#      IO::Socket::SSL's 328ms was judged too expensive to load unconditionally
-#      on a page that might not probe. A chart library plus its SVG.pm /
-#      Tree::DAG_Node dependency stack costs more than that, on EVERY render,
-#      to draw one polyline. A month of 2-hour buckets is 360 points; the
-#      entire drawing is the loop below.
-#
-#   2. THEME. Every colour on this page is currentColor under
-#      `color-scheme: light dark`. Chart libraries emit baked-in hex strokes,
-#      which means picking a colour that is wrong in one of the two themes.
-#      Inheriting currentColor makes the graph correct in both for free.
-#
-#   3. ACCESSIBILITY. This page hangs off one that claims WCAG 2.2 AA with a
-#      W3C badge. Generated SVG arrives as an unlabelled <svg> with no
-#      accessible name and no text alternative. The <title>/<desc> and the
-#      prose summary beside the figure are the actual content here; the
-#      drawing is an enhancement of them.
-#
-# Returns '' when there is not enough history to draw an honest line, so the
-# caller can simply omit the figure rather than showing an empty axis.
+# Hand-rolled SVG rather than a charting module (cost, theme, accessibility —
+# see status.txt). Returns '' when there is not enough history to draw an
+# honest line, so the caller can simply omit the figure.
 sub disk_graph {
 	my ($d) = @_;
 	my $pts = $d->{series} || [];
@@ -669,33 +596,18 @@ sub disk_graph {
 	my $end   = $d->{sampled_at} || time;
 	my $total = $d->{total};
 
-	# THE CURRENT READING IS APPENDED AS A FINAL POINT. Every other point is
-	# the PEAK within its 2h bucket, which for the bucket still in progress can
-	# be up to two hours behind now — a rounding error across 30 days, but most
-	# of the width while the axis is still compressed to a few hours, leaving
-	# the line stopping well short of the "now" label.
-	#
-	# It also makes the right-hand end of the line agree with the Disk bar
-	# above it, which shows this same figure. A graph whose last point silently
-	# disagreed with the number beside it would be the kind of small dishonesty
-	# this page exists to avoid.
-	#
-	# Copied rather than pushed onto $d->{series}, which is shared.
+	# The current reading is appended as a final point so the line reaches
+	# "now" and agrees with the Disk bar above it — see status.txt. Copied
+	# rather than pushed onto $d->{series}, which is shared.
 	my @P = @$pts;
 	if (defined $d->{used} && defined $d->{sampled_at} && $P[-1][1] < $d->{sampled_at}) {
 		push @P, [ int($d->{sampled_at} / $step) * $step, $d->{sampled_at}, $d->{used} ];
 	}
 	$pts = \@P;
 
-	# THE AXIS COMPRESSES TO WHATEVER HISTORY EXISTS, up to the 30-day window.
-	# Until the box has a month of samples the graph spans only what has
-	# actually been measured, so a young history fills the width instead of
-	# huddling against the right edge of a mostly empty month.
-	#
-	# first_ts is the first line of the persistent history, i.e. the real
-	# moment collection began — not the first plotted bucket, which can be up
-	# to a bucket-width earlier than any sample in it. Clamped to the earliest
-	# point regardless, so no point can ever fall left of the axis.
+	# The axis compresses to whatever history exists, up to the 30-day window
+	# (see status.txt). first_ts is the real moment collection began; clamped
+	# to the earliest point regardless, so nothing can fall left of the axis.
 	my $begin = $d->{first_ts};
 	$begin = $pts->[0][1] if !defined $begin || $begin > $pts->[0][1];
 	my $start = $end - $win;
@@ -718,13 +630,9 @@ sub disk_graph {
 	my $Y = sub { sprintf '%.1f', G_T + (1 - $_[0] / $ymax) * $ph };
 
 	# Break the line wherever the sampler missed more than one bucket, so a
-	# reboot or a stopped timer reads as a gap. Drawing straight through the
-	# hole would assert a measurement that was never taken.
-	# Gaps are detected on the BUCKET ($p->[0]), which sits on a regular grid,
-	# never on the plot time ($p->[1]), which wanders within its bucket — two
-	# adjacent buckets can have peaks nearly 2*step apart, and two buckets
-	# either side of a hole can have peaks moments apart. Only the grid gives a
-	# reliable answer.
+	# reboot or stopped timer reads as a gap rather than a straight line
+	# through data never taken. Detected on the bucket ($p->[0]), not the plot
+	# time ($p->[1]) — see status.txt for why only the grid is reliable.
 	my (@seg, @cur, $prev);
 	for my $p (@$pts) {
 		next if $p->[1] < $start;
@@ -770,18 +678,8 @@ sub disk_graph {
 	            . qq{stroke-opacity=".45" stroke-dasharray="4 4"/>},
 	            G_L, $cap_y, G_W - G_R, $cap_y;
 
-	# INTERIOR GRIDLINES. Without them the eye has only the baseline and the
-	# ceiling to work from, and a line wandering in the middle of the box is
-	# unreadable to within several GB. The step is chosen from a round-number
-	# ladder so the labels are values a person would actually say (5, 10, 15),
-	# never whatever an even division of 19.4 GB happens to produce.
-	#
-	# At most five intervals: more turns the box into graph paper and starts
-	# crowding 12px labels into each other at this height.
-	#
-	# Drawn BEFORE the data so the fill and the line sit on top of them, and
-	# fainter than either axis line — a gridline that competes with the data is
-	# worse than no gridline.
+	# Interior gridlines at round GB values, at most five of them, drawn before
+	# the data and fainter than either axis line. See status.txt.
 	my @grid;
 	{
 		my $cap_gb = $total / 1048576;
@@ -813,15 +711,9 @@ sub disk_graph {
 	              G_L - 6, $base_y + 4, $lab;
 	$s .= sprintf qq{<text x="%s" y="%s" text-anchor="end" %s>%s</text>},
 	              G_L - 6, $_->[0] + 4, $lab, $_->[1] for @grid;
-	# With the figcaption gone these two labels are the only temporal context
-	# on the page, so the left one switches to a clock below two days, where a
-	# bare date would read as though the graph covered a whole day.
-	#
-	# The clock form carries "UTC"; the date form does not. A date is a coarse
-	# enough anchor across a multi-day span that the zone cannot shift it by
-	# more than a few pixels of axis, and "2 Aug UTC" reads as clutter for no
-	# gain. An HH:MM with no zone, by contrast, is a number a reader will
-	# quietly assume is their own.
+	# These two labels are the only temporal context on the page, so the left
+	# one switches to a clock below a two-day span and a date above it — see
+	# status.txt for why the clock carries "UTC" and the date does not.
 	my @lt = gmtime($start);
 	my $left = $span < 172800 ? sprintf('%02d:%02d UTC', $lt[2], $lt[1]) : daystamp($start);
 	$s .= sprintf qq{<text x="%s" y="%s" %s>%s</text>},
@@ -857,13 +749,8 @@ sub render {
 	my $age = int(time - ($d->{generated} // time));
 	my $out = '';
 
-	# --muted REPLACED THE GrayText SYSTEM COLOUR, and not for looks. GrayText is
-	# specified as the colour of DISABLED text, which is exactly what it renders
-	# as under forced-colors: the freshness stamp, the footer and the "unknown"
-	# status word are all real content, and all three were being painted in the
-	# one colour a UA is entitled to treat as "this is switched off". The pair
-	# below is an explicit light/dark pair — same idiom as .up/.down two rules
-	# down — at 7.0:1 on white and 7.7:1 on the dark canvas.
+	# --muted replaces the GrayText system colour, which renders as "disabled"
+	# under forced-colors even though this text is real content. See status.txt.
 	my $css = <<'CSS';
 html{color-scheme:light dark;--muted:#595959}
 body{padding:1rem;font:100%/1.5 system-ui,sans-serif;max-width:60rem;margin-inline:auto}
@@ -935,21 +822,13 @@ CSS
 	$out .= qq{<p>Debian 13 <span class="koo" aria-hidden="true">꩜</span> }
 	      . qq{RackNerd 1&nbsp;vCPU, 1&nbsp;GB RAM <span aria-hidden="true">🖱️</span> Mouseover bar segments for details.</p>\n};
 
-	# THE METRIC ROWS ARE BUILT SEPARATELY so they can share ONE grid.
-	#
-	# Each row used to be its own display:grid, which meant its "auto" value
-	# column was sized to that row's own text — so "84% · 4m avg" and
-	# "680 / 967 MB" reserved different widths and the bars ended at four
-	# different places. The bars all START together (the 7rem label column is
-	# the same number in every row), which made the ragged right edge read as
-	# a bug rather than a consequence.
-	#
-	# One grid on the wrapper with .metric{display:contents} puts every row on
-	# the SAME three tracks, so the value column is sized to the widest value
-	# across all of them and every bar gets identical width. Deliberately not
-	# a fixed rem width for that column: these strings grow (a swap figure
-	# reaching 1024 / 3072 MB, a resized disk going to three digits), and a
-	# guessed width would either clip them or waste space forever.
+	# THE METRIC ROWS ARE BUILT SEPARATELY so they can share ONE grid: a
+	# .metric{display:contents} row on the wrapper's grid puts every row on
+	# the same three tracks, so the value column is sized to the widest value
+	# across all of them and every bar ends up the same width. Deliberately
+	# not a fixed rem width for that column: these strings grow (a swap
+	# figure reaching 1024 / 3072 MB, a resized disk going to three digits),
+	# and a guessed width would clip them or waste space.
 	my $rows = '';
 
 	if ($d->{cpu}) {
@@ -971,11 +850,10 @@ CSS
 		# still resident in RAM for swap). The number beside each bar is the
 		# SOLID segment only, matching htop.
 		#
-		# The prose decomposition that used to spell this out was cut, so the
-		# hover titles below are now the only place on the PAGE that says what
-		# each segment is. They give the arithmetic verbatim rather than a
-		# friendly paraphrase, because the exact meminfo fields are the whole
-		# answer to "why does this disagree with free(1)" — see read_mem().
+		# The hover titles below are the only place on the page that says what
+		# each segment is, and give the arithmetic verbatim rather than a
+		# friendly paraphrase — the exact meminfo fields are the whole answer
+		# to "why does this disagree with free(1)". See read_mem().
 		$rows .= qq{<div class="metric"><span>Memory</span>}
 		      . bar(100 * $m->{used} / $m->{total}, 100 * $m->{cache} / $m->{total}, 0,
 		            [ T_MEM_USED, T_MEM_CACHE ])
@@ -991,25 +869,11 @@ CSS
 	}
 	if ($d->{disk}) {
 		my $k = $d->{disk};
-		# df's Used plus Available does NOT add up to Size: the difference is
-		# f_bfree - f_bavail, the blocks ext4 holds back from unprivileged
-		# writers (the root reserve, plus a few thousand for delayed
-		# allocation). Showing that gap as free space would overstate the
-		# headroom, so it gets the faded segment.
-		#
-		# IT IS THE RESERVE STILL FREE, NOT THE RESERVE. If root ever writes
-		# into it those blocks become Used, so this segment SHRINKS towards
-		# zero as the disk fills — it is "emergency space remaining", and its
-		# disappearance is a signal rather than a rendering glitch.
-		#
-		# Hence the third argument: the faded segment sits at the FAR END of
-		# the bar, not against the solid one. In the memory and swap bars
-		# above, faded means "occupied but cheap to reclaim" and belongs
-		# beside used. Here it means the opposite — unoccupied, but not
-		# available to us — so drawing it adjacent would read as though the
-		# reserve were part of what we have consumed. At the right-hand end it
-		# reads correctly as the wall we cannot write past, with the genuinely
-		# free space visible as the gap in between.
+		# df's Used plus Available does NOT add up to Size — the difference is
+		# ext4's reserve, still free. It shrinks toward zero if root ever
+		# writes into it, which is a signal, not a bug. Drawn at the far end
+		# of the bar (third arg to bar()), not adjacent like memory/swap's
+		# faded segment — see status.txt for why.
 		my $reserve_free = $k->{total} - $k->{used} - ($k->{avail} // 0);
 		$reserve_free = 0 if $reserve_free < 0;
 		$rows .= qq{<div class="metric"><span>Disk</span>}
@@ -1025,18 +889,11 @@ CSS
 
 	$out .= qq{<p>Uptime } . esc(dur($d->{uptime})) . qq{.</p>\n} if $d->{uptime};
 
-	# NO FIGCAPTION, deliberately. It used to spell out the window, the sample
-	# interval, the age of the history and the meaning of the dashed line, and
-	# every one of those is either visible in the drawing or too fine-grained
-	# to matter: the axis labels give the span, the dashed line is labelled
-	# with the capacity figure it sits at, and a five-minute sample interval is
-	# invisible at two-hour buckets. The axis compressing to the available
-	# history replaced the "history began N ago" note — the left-hand label now
-	# says when collection started, by saying where the data starts.
-	#
-	# The <title>/<desc> inside the SVG are unaffected and still carry the full
-	# reading for anyone who cannot see it. They are the text alternative; the
-	# caption was redundant with the picture.
+	# NO FIGCAPTION: the axis labels give the span, the dashed line is
+	# labelled with the capacity figure it sits at, and a five-minute sample
+	# interval is invisible at two-hour buckets — nothing here needs restating
+	# outside the drawing. The <title>/<desc> inside the SVG are the text
+	# alternative for anyone who cannot see it.
 	if ($d->{disk} && (my $svg = disk_graph($d->{disk}))) {
 		$out .= qq{<figure class="graph">\n$svg\n</figure>\n};
 	}
@@ -1048,9 +905,8 @@ CSS
 
 	$out .= qq{<section aria-labelledby="svc"><h2 id="svc">Services</h2>\n};
 	$out .= qq{<p>$n_up of $n_tot responding.</p>\n};
-	# aria-labelledby replaces the <caption> that used to name this table, so
-	# cutting the visible line did not leave the table anonymous to a screen
-	# reader — it now takes its name from the "Services" heading above.
+	# aria-labelledby names this table from the "Services" heading above, so
+	# it is not anonymous to a screen reader.
 	# tabindex+role ON THE SCROLL CONTAINER, NOT DECORATION. .scroll is
 	# overflow-x:auto, and Chrome and Safari do not put a scroll container in the
 	# tab order on their own (Firefox does), so on a narrow viewport a keyboard-
@@ -1216,18 +1072,9 @@ eval {
 		}
 	}
 
-	# DISK DELIBERATELY BYPASSES THE CACHE, on every path, fresh or stale.
-	#
-	# Everything else in $data is expensive to produce — probes, forks, a
-	# 95k-line scan — which is what cache.txt exists to amortise. Disk is the
-	# opposite: status-sample.sh has already condensed it, so this is one small
-	# read of tmpfs, cheaper than the ~360 points would be to serialise into
-	# the flat cache format and parse back out. Routing it through the cache
-	# would cost more than it saved and would add a third place where a new
-	# field has to be listed (see the whitelist warnings in cache_write).
-	#
-	# It also means the disk figures are never up to CACHE_TTL stale, which
-	# costs nothing because they only change every five minutes anyway.
+	# DISK DELIBERATELY BYPASSES THE CACHE, on every path, fresh or stale: it's
+	# one small tmpfs read, cheaper than round-tripping through cache.txt, and
+	# it means the figures are never up to CACHE_TTL stale. See status.txt.
 	$data->{disk} = read_disk();
 	$body = render($data, $stale, $err);
 	1;

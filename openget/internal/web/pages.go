@@ -356,8 +356,7 @@ func (s *Server) chartSVG(w http.ResponseWriter, r *http.Request) {
 		// This endpoint varies on the theme cookie like every other page, and unlike them it is served as an image — so a shared cache handing one reader's dark chart to another is a real possibility rather than a theoretical one.
 		w.Header().Set("Vary", "Cookie")
 		fmt.Fprint(w, `<?xml version="1.0" encoding="UTF-8"?>`+"\n")
-		// Standalone SVG carries no stylesheet, so the few rules the chart depends on are inlined here rather than left to a missing file. The series colours have to be restated as CSS: the stroke attribute baked into the markup is the dark theme's gold, which measures 1.8:1 on the white ground the two Windows skins use.
-		// The label fills are restated for the same reason, and this one was already wrong before there were themes: an SVG <text> defaults to a black fill, so the axis numbers on the dark standalone chart were black on #1e1b16 and had never been visible.
+		// Standalone SVG carries no stylesheet, so the rules the chart depends on — series colours and label fills — are inlined here instead. See openget.txt, CHART COLOURS.
 		var style strings.Builder
 		fmt.Fprintf(&style, `<style>.ylab,.xlab,.legend,.chart-empty{fill:currentColor}.grid{stroke:%s;stroke-opacity:.35}`, th.ChartFG)
 		for i, col := range th.ChartSeries {

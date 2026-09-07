@@ -221,7 +221,7 @@ func (b *Builder) CalcRecipe(ctx context.Context, id string) (*render.Doc, error
 
 // CalcRecipeDoc renders one recipe against an already-loaded price book.
 //
-// Split out of CalcRecipe so a caller holding many recipes can fetch ONE price book for the lot. The retro generator writes all ~150 recipe pages on every regeneration; going through CalcRecipe there meant a recipe lookup, a price book query and a freshness query each, and took 47 seconds every five minutes on a box whose day job is answering NTP.
+// Split out of CalcRecipe so a caller holding many recipes can fetch ONE price book for the lot, rather than a separate price book query per recipe. See openget.txt, "NOTE ON THE TWO TREE LAYOUTS".
 func (b *Builder) CalcRecipeDoc(r calc.Recipe, pb *store.PriceBook) *render.Doc {
 	res := calc.Evaluate(r, pb)
 
@@ -572,7 +572,7 @@ const StoreMinVolume = 100
 //
 // Not a recipe family: the shop inventories cover a thousand items across five hundred shops, so it is a whole-catalogue query rather than a hand-listed set.
 //
-// The shop price here is a real shop's real price, from the wiki's storeline bucket by way of shop_offers. It is emphatically not items.value — that field is the base value from the game's item definitions, it exists for every item in the game whether or not anything stocks it, and ranking on it produced a page of twisted bows and third age that no shop has ever sold.
+// The shop price here is a real shop's real price, from the wiki's storeline bucket by way of shop_offers — not items.value, the item's base value. See openget.txt, SHOP INVENTORIES.
 func (b *Builder) StoreProfit(ctx context.Context, limit int) (*render.Doc, error) {
 	// Hand-written SQL rather than ListItems, so the site-wide toggle is spelt out here instead of arriving through b.filter.
 	members := ""

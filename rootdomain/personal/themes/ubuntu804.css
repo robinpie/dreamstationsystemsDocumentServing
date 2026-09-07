@@ -1,58 +1,15 @@
 /* ubuntu804.css — /personal/ as an Ubuntu 8.04 LTS desktop running Firefox 3.
  *
- * The chrome this styles is NOT in the pages. It is three SSI fragments under
- * /personal/chrome/, pulled in by nginx only when this theme is selected, so
- * the other four themes never see a byte of it. chrome/top.html explains the
- * split and the one real trap in it (nginx variables do not survive an
- * `#include virtual`); ubuntu804theme.txt in the repo root explains the rest.
- *
- * WHERE THIS CAME FROM. The desktop half began as the stylesheet of a
- * standalone template, since removed, that lived at /tmp-ubuntu804/. Its
- * measurements are load-bearing — every one came off a 1280x720 reference
- * screenshot with ImageMagick, pixel row by pixel row. Those rules were
- * carried over unchanged and their reasoning with them, because a number that
- * looks arbitrary here was measured there, and this is now the only record:
- *
- *   13.33px   the chrome font. Ubuntu 8.04's default was "Sans 10", and 10pt
- *             at the X server's 96dpi is exactly 13.333px.
- *   14.4px    the content font: ubuntu.css says html{font-size:0.90em}
- *             against a 16px default.
- *   90px      masthead height, from ubuntu.css and header.png.
- *   454px     the masthead logotype slot, the footprint of the Ubuntu 8.04
- *             headerlogo.png this site replaces.
- *
- * WHAT IS NEW HERE. That template's pages were generated around the chrome, so
- * every hook the stylesheet wanted was in the markup. These pages are hand
- * written and predate the theme by years, so three of their existing elements
- * are re-cast rather than restyled, and that mapping is the whole trick:
- *
- *   header.site-header  ->  the bookmarks toolbar. It is already a row of
- *                           links, which is what that toolbar is.
- *   main                ->  the browser viewport and the document in it.
- *   footer ul.badges    ->  the badge shelf on the exposed wallpaper. Both
- *                           were already 88x31 walls; they line up exactly.
- *
- * Nothing else in /personal/ changes shape for this theme. If a page grows a
- * new element, it lands in the viewport and is styled by the content half
- * below, the same as it would be under any other theme. */
+ * The chrome this styles lives in three SSI fragments under /personal/chrome/,
+ * not in the pages themselves. See ubuntu804theme.txt in the repo root for how
+ * it works, where the measurements came from, and the traps. */
 
 /* ------------------------------------------------------------------ fonts */
 
-/* The full faces, not the subset pair the old template shipped, and that is a
- * decision rather than an oversight. A subset is declared with a
- * unicode-range, and the browser consults that range BEFORE it looks inside
- * the file: a codepoint in range but absent from the font does not fall
- * through to the next @font-face, it falls out of the family. These pages are
- * full of emoji — the nav alone has four — and DejaVu Sans has none of them at
- * any weight. So a census-derived subset either excludes the emoji, in which
- * case every page drags the 199 kB full face down anyway to look for them and
- * the subset has bought nothing, or includes them, in which case the range
- * lies and the emoji silently stop rendering.
- *
- * Shipping the full faces alone costs one fetch, needs no build step, and
- * cannot rot when a page gains a character. Emoji fall past DejaVu to the
- * system emoji font by the ordinary family fallback below, which is what
- * should happen. */
+/* Full faces, not a unicode-range subset: these pages are full of emoji that
+ * DejaVu doesn't have, and a subset range would make the browser stop looking
+ * for them in the next @font-face instead of falling through. See
+ * ubuntu804theme.txt for why that's a decision, not an oversight. */
 @font-face {
   font-family: "DejaVu Web"; font-style: normal; font-weight: 400;
   font-display: swap; src: url(ubuntu804/f/dejavu-full.woff2) format("woff2");
@@ -100,8 +57,8 @@
   --strip-h:  48px;            /* the reference shows 85px; 48 gives more
                                 * window. Single source of truth. */
   --chrome-font: 13.33px;      /* "Sans 10" at 96dpi */
-  --masthead-h: 90px;
-  --logo-w: 454px;
+  --masthead-h: 90px;          /* ubuntu.css / header.png */
+  --logo-w: 454px;             /* Ubuntu 8.04 headerlogo.png's slot */
 
   --chrome-stack: "DejaVu Web", "DejaVu Sans", Verdana, Helvetica, Arial, sans-serif;
   --mono-stack: "DejaVu Sans Mono", "Liberation Mono", monospace;

@@ -6,7 +6,7 @@
 # repeated commits on the same day produce no diff.
 #
 # Test mode: pass file paths as arguments to stamp them directly, with no git
-# involvement and no re-staging.  ./githooks/pre-commit some/page.html
+# involvement and no re-staging.  ./datestamp-hook.pl some/page.html
 use strict;
 use warnings;
 use POSIX qw(strftime);

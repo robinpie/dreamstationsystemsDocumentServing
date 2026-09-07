@@ -12,13 +12,12 @@
  GNU General Public License for more details.
 */
 
-/* OpenGET layout. Loaded on every page, under whichever skin the reader has chosen.
- *
- * The split is by what a theme is allowed to disagree about. This file owns the box model, the flex and grid structure, the max-widths, the overflow behaviour, the responsive breakpoint and the type SCALE. A skin owns font families, colour, background, border, shadow and the decorative markers.
- *
- * The type scale lives here on purpose. XP's own interface font is 11px and Windows 7's is 12px, and a skin free to set its own sizes would eventually ship one of those to a page of five-digit prices. Sizes are a legibility property of the site, not of the costume it is wearing, so they are not negotiable per theme.
- *
- * Consequence worth knowing: a rule here with no counterpart in a skin still renders. That is the point — a half-finished skin degrades to an unstyled but usable page rather than a broken one. */
+/* OpenGET layout. Loaded on every page, under whichever skin the reader has
+ * chosen. Owns the box model, flex/grid structure, max-widths, overflow,
+ * the responsive breakpoint, and the type SCALE — legibility is a site
+ * property, not a costume a skin is free to resize. A rule here with no
+ * skin counterpart still renders, so a half-finished skin degrades to
+ * unstyled rather than broken. See openget.txt (THEMES) for more. */
 
 * { box-sizing: border-box; }
 
@@ -61,7 +60,10 @@ main:focus { outline: none; }
 
 .masthead { padding: 12px 16px 0; }
 
-/* Centred, not baseline-aligned. Baseline is the obvious choice for a row of text and the wrong one here: a flex container takes its baseline from its FIRST flex item, and the three control clusters disagree about what that is. The search form starts with a text input and aligns on its text; the free-to-play form starts with a label wrapping a checkbox, and a checkbox has no text baseline, so the browser uses its bottom edge; the theme form's label starts with a visually-hidden span that is absolutely positioned and therefore not a flex item at all, leaving the select to align on its option text. Three reference lines, three heights, nothing level. Centres are the only thing these clusters have in common. */
+/* Centred, not baseline-aligned: the three control clusters' first flex
+ * items disagree about where a text baseline even is (input text, a
+ * checkbox's bottom edge, a select's option text), so nothing lines up on
+ * baseline. Centres are the only thing they have in common. */
 .masthead-inner {
   max-width: 1180px;
   margin: 0 auto;
@@ -85,7 +87,9 @@ main:focus { outline: none; }
 .sitesearch { margin-left: auto; display: flex; gap: 6px; }
 .sitesearch input { padding: 5px 8px; font: inherit; min-width: 190px; }
 
-/* The site-wide free-to-play filter. It sits in the masthead rather than on each list page because it applies to all of them at once, and it carries its own Apply button because there is no JavaScript here to submit on change — a checkbox that silently did nothing until you found a button elsewhere would be worse than an honest pair of controls. */
+/* The site-wide free-to-play filter, in the masthead since it applies to
+ * every list page. Carries its own Apply button, since there is no
+ * JavaScript here to submit on change. */
 .f2ptoggle {
   display: flex;
   align-items: center;
@@ -129,7 +133,10 @@ main {
 
 h1 { margin: 0 0 4px; font-size: 34px; line-height: 1.15; }
 .subtitle { margin: 0 0 20px; max-width: 74ch; }
-/* :not([class]) is the line between a section heading and a panel's own title bar. Both are h2 now — the panels used to hardcode h3, which made every item and calculator page skip a level — but only the section heading wants the 24px and the rule the skins draw under it. A heading emitted by a Heading block never carries a class; .title-bar and .linkhead always do. */
+/* :not([class]) is the line between a section heading and a panel's own
+ * title bar — both are h2 now, but only the bare one wants the 24px and
+ * the skins' rule under it. A Heading block never carries a class; a panel
+ * title always does (.title-bar / .linkhead). */
 h2:not([class]) { margin: 30px 0 10px; font-size: 24px; padding-bottom: 5px; }
 h3:not([class]) { margin: 20px 0 8px; font-size: 18px; }
 
@@ -172,7 +179,9 @@ thead th.r { text-align: right; }
 
 tbody :is(td, th) { padding: 5px 10px; }
 tbody :is(td, th).r { text-align: right; font-variant-numeric: tabular-nums; }
-/* The first cell of each row is a <th scope="row"> so the item it names is announced with every figure beside it. It is still a body cell to look at: the UA's bold-and-centred default for th is a header-row style, and applied down a column of item names it would read as emphasis nobody meant. */
+/* The first cell of each row is a <th scope="row">. Still a body cell to
+ * look at: the UA's bold-and-centred th default reads as unintended
+ * emphasis down a column of item names, so it's undone here. */
 tbody th { font-weight: inherit; text-align: inherit; }
 
 /* ----------------------------------------------------------------- facts */
@@ -225,12 +234,15 @@ svg.chart .chart-empty { font-size: 13px; text-anchor: middle; }
 .field input, .field select { padding: 5px 8px; font: inherit; }
 .field small { font-size: 11.5px; }
 
-/* A checkbox sits beside its label, not under it. order:-1 puts the box first without reordering the markup — the label precedes the input in the DOM and points at it by for=, which keeps the whole label clickable and keeps the hint below out of the control's accessible name. */
+/* A checkbox sits beside its label, not under it. order:-1 puts the box
+ * first without reordering the markup, keeping the whole label clickable. */
 .field.check { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 4px 7px; }
 .field.check input { order: -1; width: 15px; height: 15px; padding: 0; }
 .field.check small { flex-basis: 100%; }
 
-/* Every skin draws its own controls, but none of them may draw one under 24px: 2.5.8 Target Size (Minimum) is an AA criterion as of WCAG 2.2, and both of the Windows frameworks this site borrows from ship 23px buttons. A skin that loads a vendored sheet after this one has to restate it, because the vendor will put its 23px back. */
+/* 2.5.8 Target Size (Minimum), WCAG 2.2 AA: no control may draw under
+ * 24px. A skin loading a vendored sheet after this one has to restate it —
+ * both Windows frameworks here ship 23px buttons. */
 button { padding: 6px 18px; font: inherit; cursor: pointer; }
 button, select { min-height: 24px; }
 

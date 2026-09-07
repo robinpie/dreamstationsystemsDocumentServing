@@ -18,20 +18,10 @@ import (
 )
 
 // ArchiveStats is the expensive half of the status page: how many rows each
-// table holds and how much history each tier covers.
-//
-// Every field here costs a full table scan. count(*) and min/max over
-// prices_5m cannot use an index to skip rows, so answering the status page
-// honestly means reading the whole archive — measured at 41 seconds, which is
-// how long /status and /api/status took to answer before this existed, and
-// what the retro generator would have paid every five minutes.
-//
-// So it is computed on a timer instead of on demand: ArchiveStats never
-// queries, it hands back the last snapshot and starts a refresh in the
-// background if that snapshot has gone stale. Nothing waits on it. The numbers
-// describe an archive measured in months, so an hour of drift is not a
-// meaningful inaccuracy — but it IS visible, which is why At is exported and
-// the pages print it.
+// table holds and how much history each tier covers. It is computed on a
+// timer rather than on demand — a full count(*)/min/max scan takes tens of
+// seconds — so callers always get the last snapshot, with a background
+// refresh kicked off if it has gone stale (see openget.txt).
 type ArchiveStats struct {
 	// Counts is keyed by table name. Empty until the first refresh lands.
 	Counts map[string]int64

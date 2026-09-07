@@ -16,13 +16,10 @@
 #     finger abyssal_whip@dreamstation.systems
 #     finger /W abyssal_whip@dreamstation.systems   (verbose)
 #
-# The trick is to make .nouser — the target fingerd serves when a queried name has no file of its own — treat that name as an ITEM name instead. One script gives every one of the 4,650 items a working finger address, with no files to generate and nothing to regenerate when the catalogue changes. Real user targets still resolve first, because fingerd only falls back here when no file matched.
-#
-# fingerd runs this in a forked child with stdout wired to the client socket, a clean environment carrying FINGER_USER, FINGER_VERBOSE and FINGER_CLIENT_IP, the username also in $ARGV[0], and a SIGALRM timeout.
-#
-# The unit's sandbox (ProtectSystem=strict) makes the whole filesystem read-only, so this cannot open the SQLite database — SQLite needs write access for its -wal and -shm sidecars even to read. RestrictAddressFamilies permits AF_INET, so it asks the openget daemon over localhost instead.
-#
-# RFC 1288 wants CRLF line endings; the daemon already renders them.
+# fingerd falls back to .nouser for any name with no file of its own; this
+# treats that name as an item lookup instead, giving all 4,650 items a
+# working finger address with nothing to generate. See openget.txt (RETRO
+# FRONTENDS) for the fallback mechanism, the sandbox, and RFC 1288 CRLF.
 
 use strict;
 use warnings;
@@ -37,6 +34,8 @@ $| = 1;
 # Raw bytes, NOT :encoding(UTF-8): HTTP::Tiny hands back undecoded UTF-8, so an encoding layer would re-encode each byte as Latin-1 and produce mojibake.
 binmode(STDOUT, ':raw');
 
+# fingerd forks a clean child with FINGER_USER, FINGER_VERBOSE and
+# FINGER_CLIENT_IP set, and the name also in $ARGV[0].
 my $user    = og_clean($ENV{FINGER_USER} // $ARGV[0] // '');
 my $verbose = ($ENV{FINGER_VERBOSE} // '0') eq '1' ? 1 : 0;
 

@@ -1,4 +1,5 @@
 # Runtime artifacts 
+assets-build/__pycache__/
 
 # /rootdomain/ntpstats.txt: written directly into /srv/http by ntpstatsgen.timer
 /rootdomain/ntpstats.txt

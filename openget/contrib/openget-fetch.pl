@@ -13,11 +13,10 @@
 
 # openget-fetch.pl — shared helper for every OpenGET retro frontend script.
 #
-# All four retro protocols (Gopher CGI, Gemini CGI, Spartan, finger) do the same thing: ask the local openget daemon to render a page in their format and print the body. The rendering lives in Go with the shared view models, so these scripts stay small and never drift from the web site.
-#
-# This is also the only shape that works for finger: finger.service runs under ProtectSystem=strict, so its scripts are read-only everywhere and cannot touch the SQLite file at all — even a read needs write access for the -wal and -shm sidecars. RestrictAddressFamilies does permit AF_INET, so localhost HTTP is the one door left open, and it is the right one anyway.
-#
-# Not a module: it is `do`-ed by the scripts so there is nothing to install.
+# Each retro protocol (Gopher CGI, Gemini CGI, Spartan, finger) asks the
+# local daemon to render a page and prints the body; all rendering stays
+# in Go so these scripts stay small. Not a module — `do`-ed by the scripts,
+# so nothing to install. See openget.txt (RETRO FRONTENDS) for why.
 
 use strict;
 use warnings;

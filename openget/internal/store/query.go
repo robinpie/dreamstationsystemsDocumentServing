@@ -137,7 +137,7 @@ var sortColumns = map[string]string{
 	"volume":     "s.avg_vol_24h",
 	"gpvol":      "s.daily_gp_vol",
 	"alch":       "s.alch_profit",
-	// Low alchemy has no precomputed column and does not need one: the rune cost is identical for every item, so it shifts every row by the same amount and cannot reorder them. Ranking by (alch value − buy price) is therefore ranking by profit, whatever the runes happen to cost today.
+	// No precomputed column needed: the rune cost is the same for every item, so ranking by (alch value - buy price) ranks by profit regardless of today's rune price.
 	"alch_low":  "(i.lowalch - s.high)",
 	"limit":     "i.buy_limit",
 	"value":     "i.value",
@@ -172,9 +172,9 @@ type ListOptions struct {
 	MinMargin   int64
 	HasLimit    bool // only items with a known buy limit
 	Tradeable   bool // only items with both prices observed
-	// MaxAge, when set, drops items whose last observed buy or sell print is older than this many seconds.
-	//
-	// This is not a nicety. An item that last sold weeks ago at a silly price and last bought yesterday at a sane one produces an enormous fake margin — the live data on 2026-08-05 had Adamant spear(p++) showing a 55,550% ROI on exactly that basis. A flip finder that ranks by margin without a recency bound is a list of stale prints sorted by how stale they are.
+	// MaxAge, when set, drops items whose last observed buy or sell print is
+	// older than this many seconds — without it, stale prices on one side
+	// of the book can produce enormous fake margins.
 	MaxAge         int64
 	Favourites     string // token hash; empty means no favourites filter
 	IncludeRemoved bool
@@ -408,9 +408,12 @@ func (d *DB) Series(ctx context.Context, itemID int, step string, since int64, l
 
 // ComputeStats rebuilds item_stats for every item.
 //
-// Done entirely in SQL: pulling 4650 items and their history into Go, looping, and writing back would be several seconds and a lot of garbage every five minutes. The one piece of Go policy that has to cross into SQL is the tax exemption list, injected as a literal id list.
+// Done entirely in SQL rather than pulling 4650 items into Go and looping,
+// which would be several seconds of work every five minutes. avg_vol_24h is
+// summed from our own 5m/1h archive rather than the upstream /volumes endpoint.
 //
-// avg_vol_24h is summed from OUR OWN 5m/1h archive rather than the upstream /volumes endpoint. /volumes is undocumented and, measured on 2026-08-04, disagrees with the 24h bucket totals by between -2% and +116% depending on the item — so whatever window it covers, it is not "volume traded in the last 24 hours", and labelling it as such would be a quiet lie on every list view. It is still ingested and shown separately, under its own name. refWindow bounds how far before a lookback target we will accept a reference price. A day's slack keeps thinly-traded items comparable without letting a month-old print masquerade as "yesterday's price".
+// refWindow bounds how far before a lookback target we will accept a reference
+// price, so a thinly-traded item doesn't get compared against a month-old print.
 const refWindow int64 = 86400
 
 func (d *DB) ComputeStats(ctx context.Context, now time.Time) (int64, error) {
@@ -422,9 +425,12 @@ func (d *DB) ComputeStats(ctx context.Context, now time.Time) (int64, error) {
 	_ = d.r.QueryRowContext(ctx,
 		`SELECT COALESCE(high, low, 0) FROM latest WHERE item_id = ?`, calc.NatureRuneID).Scan(&nature)
 
-	// "The price N ago" is the price in the LAST 1h bucket at or before now-N, which is not the same thing as max(price) over that period — a naive max() would report the item's high-water mark and turn every spike into a permanent "down 40%". Each reference price therefore gets its own grouped subquery relying on SQLite's documented bare-column rule: with exactly one max() in the query, the bare columns come from the row that produced that max.
-	//
-	// Each lookback is also floored (`bucket_ts >= target - refWindow`) so an item that has not traded in weeks yields NULL rather than a change measured against a stale price from a different market.
+	// "The price N ago" is the price in the LAST 1h bucket at or before now-N,
+	// not max(price) over that period (which would turn every spike into a
+	// permanent "down 40%") — relies on SQLite's rule that with one max() in
+	// the query, bare columns come from the row that produced it. Each
+	// lookback is floored so a thinly-traded item yields NULL rather than a
+	// change measured against a stale price.
 	ref := func(alias string, ago int64) string {
 		return fmt.Sprintf(`
 	LEFT JOIN (

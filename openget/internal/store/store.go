@@ -11,10 +11,7 @@
 // GNU General Public License for more details.
 
 // Package store owns the SQLite database: schema, migrations and every query.
-//
-// Why SQLite: this is a read-mostly, single-writer workload on a box with no Postgres, MySQL or Redis installed and no reason to install one. WAL mode gives readers a consistent snapshot while the pollers write, which is the only concurrency property we actually need.
-//
-// Why modernc.org/sqlite: it is pure Go, so the result is a static binary with no cgo and no libsqlite3 dependency — the same "make && sudo make install" shape as every other hand-rolled service on this host.
+// It uses modernc.org/sqlite (pure Go, no cgo) in WAL mode, matching the read-mostly, single-writer workload this runs.
 package store
 
 import (
@@ -31,9 +28,8 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-// DB wraps two connection pools over one database file.
-//
-// SQLite permits exactly one writer at a time. Rather than let N goroutines discover that through SQLITE_BUSY, writes go through a pool capped at one connection and readers get their own pool. WAL mode means readers never block behind the writer.
+// DB wraps two connection pools over one database file: a single-connection
+// write pool (SQLite allows exactly one writer) and a multi-connection read pool.
 type DB struct {
 	r    *sql.DB // readers
 	w    *sql.DB // single writer
@@ -139,9 +135,8 @@ func (d *DB) Tx(ctx context.Context, fn func(*sql.Tx) error) error {
 // migrations are applied in order; PRAGMA user_version records how many have run. Append only — never edit a migration that has shipped.
 var migrations = []string{
 	// -- 1 ------------------------------------------------------------------
-	// Core price archive.
-	//
-	// The price tiers are WITHOUT ROWID: the primary key *is* the row, so we avoid storing every row twice (once in the rowid table, once in the PK index). On a table heading for hundreds of millions of rows that is not a micro-optimisation.
+	// Core price archive. Price tiers are WITHOUT ROWID tables, since the
+	// primary key is the row and this avoids storing every row twice.
 	`
 	CREATE TABLE items (
 		id          INTEGER PRIMARY KEY,
@@ -379,11 +374,9 @@ var migrations = []string{
 	`,
 
 	// -- 6 ------------------------------------------------------------------
-	// What each shop actually stocks, from the wiki's storeline bucket.
-	//
-	// /store-profit used to rank on items.value, the base value from the game's item definitions. That field exists for every item in the game whether or not anything sells it, and it is trivially small next to a boss drop's price, so the page ranked the whole catalogue by market price and filled with items no shop has ever stocked. This table is the missing half: the set of things a player can genuinely walk up and buy.
-	//
-	// One row per (item, shop, price). The same shop legitimately appears twice for one item at different prices — diary discounts and quest states are separate shelves — and the cheapest is the one worth showing.
+	// What each shop actually stocks, from the wiki's storeline bucket. One
+	// row per (item, shop, price); the same shop can appear twice for one
+	// item at different prices (diary discounts, quest states).
 	`
 	CREATE TABLE shop_offers (
 		item_id    INTEGER NOT NULL REFERENCES items(id),

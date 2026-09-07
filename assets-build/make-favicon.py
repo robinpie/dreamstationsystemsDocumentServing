@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
 """Build favicon.ico (32px + 16px) and apple-touch-icon.png (180px) from the
-same geometry as favicon.svg.
+same geometry as favicon.svg, drawn from primitives here (ImageMagick's SVG
+renderer ignores stroke-width through <use>) rather than rasterised from the
+SVG -- if you change the geometry in favicon.svg, change it here too.
 
-ImageMagick's internal SVG renderer ignores stroke-width through <use>, so both
-are drawn from primitives here rather than rasterised out of the SVG. If you
-change the geometry in favicon.svg, change it here too and re-run.
-
-The SVG is theme-aware via prefers-color-scheme; neither output format can be.
-The ICO uses a mid grey that stays legible against both light and dark browser
-chrome. The apple-touch-icon cannot use the same trick: iOS composites any
-transparency onto black, which would hide a dark mark entirely, so it is drawn
-dark-on-white as an opaque tile. Do not add rounded corners -- iOS applies its
-own mask and pre-rounded art gets clipped twice.
+Neither output format can be theme-aware like the SVG: the ICO uses a mid
+grey legible on both light and dark chrome, and the apple-touch-icon is drawn
+dark-on-white as an opaque tile (iOS composites transparency onto black).
+Do not add rounded corners -- iOS applies its own mask.
 """
 import subprocess, sys, os, tempfile
 
@@ -47,11 +43,9 @@ for path, size in ((p32, 32), (p16, 16)):
 subprocess.run(["magick", p32, p16, OUT], check=True)
 print("wrote", OUT)
 
-# Apple touch icon: same geometry, opaque, dark-on-white, with a margin. The
-# mark is redrawn rather than recoloured from big.png because that render is
-# transparent-background antialiased grey, and flattening it onto white would
-# leave grey fringing. INNER leaves ~8% padding on each side; iOS crops nothing
-# but the art looks cramped edge-to-edge next to other home screen icons.
+# Apple touch icon: same geometry, redrawn (not recoloured from big.png, which
+# would leave grey fringing) opaque and dark-on-white. INNER leaves ~8% margin
+# so the art doesn't look cramped edge-to-edge on the home screen.
 INNER = int(TOUCH_PX * 0.84)
 touch_big = os.path.join(tmp, "touch.png")
 subprocess.run(["magick", "-size", "512x512", "xc:" + TOUCH_BG,

@@ -7,37 +7,17 @@
 #   status-sample/   -> /usr/local/bin + units  the status page's other half
 #   nginx/           -> /etc/nginx          vhosts and snippets
 #
-# Content comes from the STAGING TREE, not from the repo. That is deliberate:
-# it makes the live docroot byte-identical to the tree you previewed, rather
-# than a second, independent render of the same commit. If the two could
-# differ, staging would not be telling you anything.
-#
-# The other three come from the repo, because they have no staging copy — they
-# are system state (executables, systemd units, the server's own config), and
-# there is nowhere to stand them up that is not simply "live".
-#
-# Two carve-outs in /srv/http (excluded paths are protected from --delete):
-#   .well-known/acme-challenge/   certbot webroot
-#   ntpstats.txt                  written every 5 min by ntpstatsgen.timer
-#
-# cgi/ is a SIBLING of rootdomain/, not a subdirectory of it, so executables
-# never land inside the docroot. If a location block is ever misconfigured,
-# nginx has no path by which it could serve a CGI script's source. The same
-# goes for status-sample/, assets-build/ and nginx/ — nothing outside
-# rootdomain/ is reachable over HTTP.
-#
-# ORDER MATTERS. Content, then the things that read it, then nginx last: a
-# vhost that references a new path should not go live before the path exists.
+# Content comes from the staging tree so the live docroot matches what was
+# previewed; the other three come from the repo since they have no staging
+# copy. Order matters: content, then the things that read it, then nginx last.
+# Full rationale in githooks.txt and nginx.txt.
 set -eu
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 STAGING=/srv/httpstaging
 
-# The two trees below are NOT --delete'd into their destinations, because both
-# share a directory with files this repo does not own (/usr/local/bin is full
-# of other services' daemons; /etc/nginx/snippets carries Debian's own
-# fastcgi-php.conf and snakeoil.conf). Managed files are listed explicitly and
-# installed one at a time. Adding a file here is the only way to deploy it.
+# Named lists, not an rsync: both destination dirs hold files this repo does
+# not own. Adding a file here is the only way to deploy it. See nginx.txt.
 NGINX_SITES=(
 	000-default-catchall
 	dreamstation.systems
@@ -56,25 +36,17 @@ NGINX_SNIPPETS=(
 
 # ------------------------------------------------------------- staging checks
 #
-# Promote is now the only path to the live site, so it has to refuse the two
-# ways staging can lie to you.
+# Refuses the two ways staging can lie to you. See githooks.txt.
 if [ ! -d "$STAGING" ] || [ -z "$(ls -A "$STAGING" 2>/dev/null)" ]; then
 	echo "ABORT: $STAGING is missing or empty — run ./stage-site.sh first." >&2
 	echo "Promoting it would --delete the live site." >&2
 	exit 1
 fi
 
-# Uncommitted edits to rootdomain/ are NOT staged (the hook fires on commit),
-# so what you previewed is the last commit, not your working tree. Say so
-# rather than quietly shipping the older thing.
-#
-# Asked of git, NOT by comparing the two trees: stage-site.sh deliberately
-# chowns and chmods what it copies, so rootdomain/ and $STAGING differ in
-# owner, group and mode on literally every file by design. Any diff or rsync
-# check has to be taught to ignore exactly the attributes the stage is
-# responsible for setting, and gets it wrong the day one more is added. "Is
-# the working tree dirty" is the question actually being asked, and git
-# answers it exactly.
+# Uncommitted edits to rootdomain/ are not staged (the hook fires on commit),
+# so what you previewed is the last commit, not your working tree. Asked of
+# git rather than diffing the trees, since stage-site.sh's chown/chmod makes
+# any tree-diff approach fight false positives. See githooks.txt.
 dirty="$(git -C "$ROOT" status --porcelain -- rootdomain 2>/dev/null || true)"
 if [ -n "$dirty" ]; then
 	echo "NOTE: rootdomain/ has uncommitted changes. Staging is the last COMMIT," >&2
@@ -98,10 +70,8 @@ fi
 
 # --------------------------------------------------------------- syntax gates
 #
-# Repeated from stage-site.sh, not merely inherited from it. A promote can
-# happen at any distance from the commit that staged it — after a git pull, a
-# hand-edit, a rollback — so the gate has to hold at the moment things actually
-# go live, not only at the moment they were staged.
+# Repeated from stage-site.sh: a promote can happen at any distance from the
+# commit that staged it, so this has to hold at the moment things go live.
 if compgen -G "$ROOT/cgi/*.cgi" >/dev/null; then
 	for f in "$ROOT"/cgi/*.cgi; do
 		if ! perl -c "$f" >/dev/null 2>&1; then
@@ -148,15 +118,8 @@ fi
 
 # -------------------------------------------------------------- status-sample
 #
-# status-sample.sh is the half of the status page that its CGI cannot do for
-# itself: a rolling CPU average, root-only chronyc counters, and a month of
-# disk history. Everything it writes (/run/status/*, /var/lib/status/disk.hist)
-# is read by cgi/status.cgi and by nothing else, so the two are one program in
-# two files and must not be deployed separately — which is why this lives here
-# rather than being installed by hand.
-#
-# Restarting the timer is safe and cheap: it ticks every 30s, holds no state in
-# memory, and its one persistent file is append-only.
+# The other half of the status page (see status.txt); deployed alongside the
+# CGI so the two never drift apart. Restarting the timer is safe and cheap.
 if [ -d "$ROOT/status-sample" ]; then
 	sample_changed=0
 	units_changed=0
@@ -186,17 +149,10 @@ fi
 
 # ---------------------------------------------------------------------- nginx
 #
-# Unlike everything above, nginx config CANNOT be checked before it is
-# installed: the vhosts `include snippets/...` relative to nginx's own prefix,
-# so a copy sitting in this repo does not resolve. The sequence is therefore
-# install → test → roll back if the test fails, which leaves /etc/nginx correct
-# in every outcome. The RUNNING server is never at risk: a reload happens only
-# after `nginx -t` passes, and nginx keeps serving the last good config until
-# then.
-#
-# A pre-existing failure is reported and skipped rather than "fixed", so this
-# script never gets blamed for breakage it did not cause and never rolls a
-# hand-edit back into a state it cannot test.
+# Unlike everything above, nginx config can't be syntax-checked before it's
+# installed, so the sequence here is install -> `nginx -t` -> roll back on
+# failure. A pre-existing failure is reported and skipped, not "fixed". See
+# nginx.txt.
 if [ -d "$ROOT/nginx" ]; then
 	if ! sudo nginx -t >/dev/null 2>&1; then
 		echo "SKIP: /etc/nginx is already failing nginx -t before this promote touched it." >&2

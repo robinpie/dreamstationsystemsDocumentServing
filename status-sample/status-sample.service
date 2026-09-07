@@ -12,22 +12,10 @@ ExecStart=/usr/local/bin/status-sample.sh
 Nice=10
 IOSchedulingClass=idle
 
-# Hardening.
-#
-# ReadWritePaths=/run/chrony is LOAD-BEARING, not incidental: chronyc sets up
-# its own reply socket there, and under ProtectSystem=strict without this it
-# fails with "Not authorised" and the NTS-KE figures silently go to zero. This
-# exact trap already cost time once on ntp-qps-sample.service — see
-# dashboard.txt. If NTS-KE ever reads 0 after touching this block, suspect
-# this line first.
-#
-# AF_UNIX is likewise required: chronyc talks to chronyd over a unix socket.
-#
-# StateDirectory=status is the disk history's home (/var/lib/status). It is
-# used INSTEAD of another ReadWritePaths entry because systemd creates the
-# directory with the right ownership and mode on its own, so nothing has to
-# exist before the first run — and unlike a bare ReadWritePaths, a missing
-# directory is not a startup failure.
+# Hardening. ReadWritePaths=/run/chrony is LOAD-BEARING — see status.txt if
+# NTS-KE figures ever read 0. AF_UNIX is required for the same reason: chronyc
+# talks to chronyd over a unix socket. StateDirectory=status is the disk
+# history's home (/var/lib/status).
 NoNewPrivileges=true
 ProtectSystem=strict
 ReadWritePaths=/run/status /run/chrony

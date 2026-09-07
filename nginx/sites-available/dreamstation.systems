@@ -20,8 +20,7 @@
 # never reach the page — it lands on the default instead.
 #
 # TO ADD A THEME: drop themes/<id>.css, add <id> to BOTH maps, and add an
-# <option> to the switcher on each themed page. (Under theme.js this was two
-# steps; the map pair is the price of the page working without JavaScript.)
+# <option> to the switcher on each themed page.
 map $cookie_theme $theme_cookie {
     default   ubuntu804;
     gtk2      gtk2;

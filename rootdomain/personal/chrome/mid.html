@@ -1,28 +1,18 @@
 <!-- chrome/mid.html — the ubuntu804 theme's desktop chrome, part 2 of 3.
      Goes between the page's <header> and its <main>. See chrome/top.html for
      the whole layout and for why nginx variables cannot be read in here.
-
      This fragment exists so the masthead lands INSIDE the scroller and the
-     site nav lands OUTSIDE it. The nav is the bookmarks toolbar — fixed
-     chrome, like the menu bar above it — while the masthead is the top of the
-     document and scrolls away with the text.
-     Swap them and you get either a bookmarks bar that scrolls or a masthead
-     that does not; both look wrong, and no stylesheet can reorder them across
-     the scroll container's boundary. -->
+     site nav (the bookmarks toolbar) stays OUTSIDE it; see ubuntu804theme.txt
+     for why no stylesheet can do that split alone. -->
 
       <!-- ======================================================= viewport == -->
       <div class="viewport">
         <div id="page">
 
-          <!-- The masthead band. #mastwrap tiles header.png (10x90, effectively
-               a flat #dbba75 field with a 4px bevel along its bottom edge) on x
-               to both fill the band and draw the rule under it; #masthead lays
-               the light wash over the left 454px of it. That wash is not a
-               separate effect in Ubuntu 8.04 — it is the opaque background of
-               headerlogo.png, which also carried Canonical's wordmark and
-               Circle of Friends. Sampled off that file and rebuilt as a CSS
-               gradient in ubuntu804.css specifically so the bitmap itself never
-               has to ship. The logotype below is this site's own. -->
+          <!-- The masthead band: #mastwrap tiles header.png to fill it and draw
+               the rule under it; #masthead lays a CSS gradient (sampled from
+               Ubuntu 8.04's headerlogo.png, so that bitmap itself never has to
+               ship) over the left 454px. The logotype below is this site's own. -->
           <div id="mastwrap"><div id="masthead">
             <a href="/personal/" aria-label="dreamstation.systems home">
               <span id="logo-mark" aria-hidden="true"></span>

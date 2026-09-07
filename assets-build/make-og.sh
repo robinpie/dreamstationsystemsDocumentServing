@@ -4,10 +4,9 @@
 # Output: rootdomain/professional/ogimage.png
 #
 # The filename must stay ogimage.png: it is what og:image in
-# professional/index.html points at, and what is deployed. This defaulted to
-# og.png until 2026-08-27, which would have written an orphan file and left the
-# real card stale. Renaming is not worth it -- scrapers cache og:image URLs
-# hard, so changing the URL costs a re-scrape everywhere for no gain.
+# professional/index.html points at, and what is deployed. Renaming is not
+# worth it -- scrapers cache og:image URLs hard, so changing the URL costs a
+# re-scrape everywhere for no gain.
 set -eu
 
 OUT="${1:-/home/robin/configNotes/http/rootdomain/professional/ogimage.png}"
