@@ -1,0 +1,48 @@
+# Sapling trading
+Seeds grown into saplings.
+
+```table
+Method                                             Cost  Profit      ROI
+----------------------------------------------  -------  ------  -------
+Grow Dragonfruit tree seed into Dragonfruit s…  145,848   1,936     1.3%
+Grow Magic seed into Magic sapling               70,004   1,536     2.2%
+Grow Yew seed into Yew sapling                   20,821   1,470     7.1%
+Grow Celastrus seed into Celastrus sapling       18,003   1,303     7.2%
+Grow Palm tree seed into Palm sapling            15,281   1,125     7.4%
+Grow Maple seed into Maple sapling                3,208   1,090    34.0%
+Grow Redwood tree seed into Redwood sapling      16,762   1,074     6.4%
+Grow Calquat tree seed into Calquat sapling         555     731   131.7%
+Grow Apple tree seed into Apple sapling              34     556  1635.3%
+Grow Papaya tree seed into Papaya sapling         1,354     416    30.7%
+Grow Willow seed into Willow sapling                 62     332   535.5%
+Grow Teak seed into Teak sapling                     72     286   397.2%
+Grow Mahogany seed into Mahogany sapling            213     284   133.3%
+Grow Curry tree seed into Curry sapling              85     194   228.2%
+Grow Banana tree seed into Banana sapling            63     173   274.6%
+Grow Acorn into Oak sapling                         109     164   150.5%
+Grow Orange tree seed into Orange sapling            59      26    44.1%
+Grow Pineapple seed into Pineapple sapling          319      22     6.9%
+```
+=> /ge/calc-sapling/sap-dragonfruit-sapling Grow Dragonfruit tree seed into Dragonfruit sapling
+=> /ge/calc-sapling/sap-magic-sapling Grow Magic seed into Magic sapling
+=> /ge/calc-sapling/sap-yew-sapling Grow Yew seed into Yew sapling
+=> /ge/calc-sapling/sap-celastrus-sapling Grow Celastrus seed into Celastrus sapling
+=> /ge/calc-sapling/sap-palm-sapling Grow Palm tree seed into Palm sapling
+=> /ge/calc-sapling/sap-maple-sapling Grow Maple seed into Maple sapling
+=> /ge/calc-sapling/sap-redwood-sapling Grow Redwood tree seed into Redwood sapling
+=> /ge/calc-sapling/sap-calquat-sapling Grow Calquat tree seed into Calquat sapling
+=> /ge/calc-sapling/sap-apple-sapling Grow Apple tree seed into Apple sapling
+=> /ge/calc-sapling/sap-papaya-sapling Grow Papaya tree seed into Papaya sapling
+=> /ge/calc-sapling/sap-willow-sapling Grow Willow seed into Willow sapling
+=> /ge/calc-sapling/sap-teak-sapling Grow Teak seed into Teak sapling
+=> /ge/calc-sapling/sap-mahogany-sapling Grow Mahogany seed into Mahogany sapling
+=> /ge/calc-sapling/sap-curry-sapling Grow Curry tree seed into Curry sapling
+=> /ge/calc-sapling/sap-banana-sapling Grow Banana tree seed into Banana sapling
+=> /ge/calc-sapling/sap-oak-sapling Grow Acorn into Oak sapling
+=> /ge/calc-sapling/sap-orange-sapling Grow Orange tree seed into Orange sapling
+=> /ge/calc-sapling/sap-pineapple-sapling Grow Pineapple seed into Pineapple sapling
+
+## Notes
+* Rows marked "no price" reference an item nobody has traded recently, so no profit can be computed for them honestly.
+
+=> https://grandexchange.dreamstation.systems/calc/sapling This page on the web

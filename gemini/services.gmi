@@ -1,0 +1,85 @@
+# other protocols on dreamstation.systems
+
+(more comprehensive explainer coming soon)
+
+this box runs a few retro/fun/quirky internet services. here's everything it speaks:
+
+## Gemini / Spartan
+
+identical content served on Gemini and Spartan. you're here.
+
+=> /   you're here
+
+## Gopher
+
+mostly the same content as this capsule, over Gopher.
+
+=> gopher://dreamstation.systems   gopher://dreamstation.systems
+
+## Finger
+
+currently being set up. in your terminal: finger @dreamstation.systems
+
+## FTP
+
+an anonymous, read-only file archive. plain FTP or explicit FTPS
+
+=> ftp://dreamstation.systems   ftp://dreamstation.systems
+
+## NTP
+
+part of pool.ntp.org. i also serve NTS on TCP/4460
+
+=> /ntpstats.gmi   NTP server stats (auto-regenerating)
+
+## Email
+
+i also run a small personal-only email server here - email me at robin@dreamstation.systems 
+
+## DICT
+
+a dictionary server (RFC 2229), port 2628.
+
+=> dict://dreamstation.systems   in your favorite graphical dictd frontend, or in your terminal with dictd: dict -h dreamstation.systems -d jargon "amiga persecution complex" (or similar commands)
+
+## QOTD
+
+quote of the day (RFC 865), TCP/UDP port 17. in your terminal: nc dreamstation.systems 17
+
+```
+nc dreamstation.systems 17
+```
+
+## Daytime
+
+the current date and time (RFC 867), TCP/UDP port 13. in your terminal: nc dreamstation.systems 13
+
+```
+nc dreamstation.systems 13
+```
+
+## Echo
+
+whatever you type sent straight back to you (RFC 862), TCP/UDP port 7. in your terminal: nc dreamstation.systems 7
+
+```
+nc dreamstation.systems 7
+```
+
+## Discard
+
+everything you send is thrown away (RFC 863), TCP/UDP port 9. in your terminal: nc dreamstation.systems 9
+
+```
+nc dreamstation.systems 9
+```
+
+## Chargen
+
+an endless stream of ASCII (RFC 864), TCP/UDP port 19. in your terminal, ctrl-C to escape: nc dreamstation.systems 19
+
+```
+nc dreamstation.systems 19
+```
+
+=> /   back to home

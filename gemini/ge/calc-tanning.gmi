@@ -1,0 +1,25 @@
+# Tanning
+Hides into leather at a tanner.
+
+```table
+Method                                           Cost  Profit    ROI
+----------------------------------------------  -----  ------  -----
+Tan Blue dragonhide into Blue dragon leather    1,820     523  28.7%
+Tan Red dragonhide into Red dragon leather      2,283     293  12.8%
+Tan Green dragonhide into Green dragon leather  1,608     284  17.7%
+Tan Black dragonhide into Black dragon leather  3,908     248   6.3%
+Tan Cowhide into Leather                          142      43  30.3%
+Tan Cowhide into Hard leather                     144      38  26.4%
+```
+=> /ge/calc-tanning/tan-blue Tan Blue dragonhide into Blue dragon leather
+=> /ge/calc-tanning/tan-red Tan Red dragonhide into Red dragon leather
+=> /ge/calc-tanning/tan-green Tan Green dragonhide into Green dragon leather
+=> /ge/calc-tanning/tan-black Tan Black dragonhide into Black dragon leather
+=> /ge/calc-tanning/tan-cowhide Tan Cowhide into Leather
+=> /ge/calc-tanning/tan-hard Tan Cowhide into Hard leather
+
+## Notes
+* gp/hour uses a typical action rate for the method and assumes you never wait on a buy offer. Treat it as an upper bound.
+* Rows marked "no price" reference an item nobody has traded recently, so no profit can be computed for them honestly.
+
+=> https://grandexchange.dreamstation.systems/calc/tanning This page on the web

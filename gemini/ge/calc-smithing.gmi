@@ -1,0 +1,27 @@
+# Smelting and the blast furnace
+Ore and coal into bars.
+
+```table
+Method                                       Cost  Profit     ROI
+-----------------------------------------  ------  ------  ------
+Smelt Runite bar at the blast furnace      10,922   1,082    9.9%
+Smelt Adamantite bar at the blast furnace   1,011     840   83.1%
+Smelt Mithril bar at the blast furnace        443     526  118.7%
+Smelt Steel bar at the blast furnace          216     351  162.5%
+Smelt Iron bar at the blast furnace            73      89  121.9%
+Smelt Silver bar at the blast furnace          63      52   82.5%
+Smelt Gold bar at the blast furnace           154     -79  -51.3%
+```
+=> /ge/calc-smithing/bf-rune Smelt Runite bar at the blast furnace
+=> /ge/calc-smithing/bf-addy Smelt Adamantite bar at the blast furnace
+=> /ge/calc-smithing/bf-mithril Smelt Mithril bar at the blast furnace
+=> /ge/calc-smithing/bf-steel Smelt Steel bar at the blast furnace
+=> /ge/calc-smithing/bf-iron Smelt Iron bar at the blast furnace
+=> /ge/calc-smithing/bf-silver Smelt Silver bar at the blast furnace
+=> /ge/calc-smithing/bf-gold Smelt Gold bar at the blast furnace
+
+## Notes
+* gp/hour uses a typical action rate for the method and assumes you never wait on a buy offer. Treat it as an upper bound.
+* Rows marked "no price" reference an item nobody has traded recently, so no profit can be computed for them honestly.
+
+=> https://grandexchange.dreamstation.systems/calc/smithing This page on the web

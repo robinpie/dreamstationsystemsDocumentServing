@@ -1,0 +1,88 @@
+#!/usr/bin/perl
+# SPDX-License-Identifier: GPL-2.0-only
+# Copyright (C) 2026 robinpie
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# OpenGET dynamic pages for molly-brown's CGI.
+#
+# Installed at /srv/gemini/ge/cgi-bin/ge and enabled with a CGIPaths entry in /etc/molly-brown/dreamstation.conf.
+#
+# Gemini's request model is different from Gopher's and better: there are no forms, so a page that needs input answers with status 10 (INPUT) and the client prompts the user, then re-requests the same URL with the answer in the query string. That is what the search branch below does.
+#
+# molly-brown passes standard CGI variables: QUERY_STRING carries the query (percent-encoded), PATH_INFO the part of the path below the CGI script.
+
+use strict;
+use warnings;
+
+my $lib = $ENV{OPENGET_LIB} || '/usr/local/lib/openget/openget-fetch.pl';
+do $lib or die "cannot load $lib: $! $@";
+
+$| = 1;
+# Raw bytes, NOT :encoding(UTF-8): HTTP::Tiny hands back undecoded UTF-8, so an encoding layer would re-encode each byte as Latin-1 and produce mojibake.
+binmode(STDOUT, ':raw');
+
+# A Gemini response is a status line then the body. 20 is success; the meta field is the MIME type.
+sub gem_header { my ($code, $meta) = @_; print "$code $meta\r\n"; }
+
+sub gem_fail {
+    my ($msg) = @_;
+    # 40 is a temporary failure: the right answer when the daemon is down, because the client should retry rather than treat the page as gone.
+    gem_header(40, "OpenGET is not answering: $msg");
+    exit 0;
+}
+
+sub url_decode {
+    my ($s) = @_;
+    return '' unless defined $s;
+    $s =~ tr/+/ /;
+    $s =~ s/%([0-9A-Fa-f]{2})/chr(hex($1))/ge;
+    return $s;
+}
+
+my $path  = $ENV{PATH_INFO} // '';
+my $query = og_clean(url_decode($ENV{QUERY_STRING} // ''));
+
+$path =~ s{^/+}{};
+$path =~ s{[^A-Za-z0-9_./-]}{}g;
+my ($action, $rest) = split m{/}, $path, 2;
+$action ||= 'index';
+
+my $fetch;
+
+if ($action eq 'search') {
+    if ($query eq '') {
+        # Ask the client to prompt. This is Gemini's whole input mechanism.
+        gem_header(10, 'Item name');
+        exit 0;
+    }
+    $fetch = '/retro/gemini/search?q=' . og_escape($query);
+}
+elsif ($action eq 'item') {
+    my $want = $rest // '';
+    $want = $query if $want eq '';
+    $want = og_clean($want);
+    if ($want eq '') {
+        gem_header(10, 'Item name or id');
+        exit 0;
+    }
+    $fetch = '/retro/gemini/item?q=' . og_escape($want);
+}
+else {
+    my $slug = $action;
+    $slug = 'home' if $slug eq 'index';
+    $fetch = '/retro/gemini/page/' . og_escape($slug);
+}
+
+my ($body, $err) = og_fetch($fetch);
+gem_fail($err) if defined $err;
+
+gem_header(20, 'text/gemini; charset=utf-8');
+print $body;

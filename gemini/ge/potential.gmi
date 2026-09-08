@@ -1,0 +1,109 @@
+# Potential profit
+Margin multiplied by the 4-hour buy limit.
+
+```table
+Item                    Buy           Sell     Margin       ROI  Vol 24h
+------------  -------------  -------------  ---------  --------  -------
+Onyx ●            2,874,756      2,988,000     53,484     +1.9%      166
+Maple pyre …          2,181         24,000     21,339   +978.4%      612
+Bagged mapl…         14,597         20,914      5,899    +40.4%    1,849
+Enhanced cr…    112,869,104    116,000,000    810,896     +0.7%       89
+Veg ball ●              501          9,499      8,809  +1758.3%       73
+Godsword sh…        152,210        160,000      4,590     +3.0%      172
+Godsword bl…        472,420        487,000      4,840     +1.0%      134
+Crystal too…     22,850,000     23,699,896    375,899     +1.6%      143
+Asyn remain…          8,650         13,805      4,879    +56.4%    1,104
+Thin snail ●          1,537          4,245      2,624   +170.7%    1,137
+Ourg bones ●         43,165         48,271      4,141     +9.6%      815
+Death talis…          1,100          3,899      2,722   +247.5%    4,514
+Armadyl che…     35,709,009     40,000,000  3,490,991     +9.8%      130
+Harmonised …    467,088,407    475,413,355  3,324,948     +0.7%      108
+Worm hole ●           5,548          9,899      4,154    +74.9%      100
+Lean snail ●            101          2,001      1,860  +1841.6%      131
+Master wand…      6,899,601      7,389,000    341,619     +5.0%      354
+Dareeyak te…          1,355          3,797      2,367   +174.7%    2,047
+Blade of Sa…    113,327,021    118,536,342  2,838,595     +2.5%       59
+Elysian spi…    496,076,726    503,699,996  2,623,270     +0.5%       98
+Magic short…         46,733         49,740      2,013     +4.3%    2,532
+Divine bast…         15,881         26,063      9,661    +60.8%      122
+Cooked rabb…            849          4,000      3,071   +361.7%      298
+Scythe of V…  1,232,777,132  1,240,000,000  2,222,868     +0.2%      161
+Mushroom pi…         10,976         12,950      1,715    +15.6%    1,205
+Tumeken's s…    789,501,001    796,599,992  2,098,991     +0.3%      242
+Vegetable b…            505          3,251      2,681   +530.9%       74
+Golden scar…            997          2,222      1,181   +118.5%    1,599
+Chef's deli…         30,381         37,813      6,676    +22.0%      163
+Spicy tomat…            300          1,990      1,651   +550.3%      361
+Ivory comb ●            600          1,646      1,014   +169.0%      171
+Gilded 2h s…      4,021,604      4,293,883    186,402     +4.6%      209
+Infinity to…      1,654,297      1,791,996    101,860     +6.2%       99
+Infinity bo…      1,838,779      1,979,338    100,973     +5.5%       80
+Muddy key             6,052          7,343      1,145    +18.9%      574
+Arctic pyre…          2,000          3,209      1,145    +57.2%      634
+Yew pyre lo…          3,777          5,012      1,135    +30.1%    2,329
+White plate…          4,991        100,000     93,009  +1863.5%      117
+Prayer mix(…          4,120         10,000      5,680   +137.9%       52
+Mort myre p…          2,000          2,913        855    +42.8%      164
+Necklace of…            450          1,579      1,098   +244.0%      118
+Mystic eart…         24,987         26,099        591     +2.4%    18.1k
+Volatile or…     32,492,431     34,431,837  1,250,770     +3.8%       95
+Mithril bol…            201          1,107        884   +439.8%      391
+Ensouled ho…          1,580          2,915      1,277    +80.8%    2,093
+Bagged magi…         52,003         54,000        917     +1.8%      301
+Tall box he…        103,024        106,000        856     +0.8%      759
+Twisted bow…  1,394,006,000  1,400,056,752  1,050,752     +0.1%      201
+Watson tele…          4,454          5,389        828    +18.6%    6,264
+Eldritch or…    112,500,002    115,800,000    983,998     +0.9%      104
+```
+=> /ge/cgi-bin/ge/item/6573 Onyx ●
+=> /ge/cgi-bin/ge/item/3444 Maple pyre logs ●
+=> /ge/cgi-bin/ge/item/8425 Bagged maple tree ●
+=> /ge/cgi-bin/ge/item/25859 Enhanced crystal weapon seed ●
+=> /ge/cgi-bin/ge/item/2195 Veg ball ●
+=> /ge/cgi-bin/ge/item/11818 Godsword shard 1 ●
+=> /ge/cgi-bin/ge/item/11798 Godsword blade ●
+=> /ge/cgi-bin/ge/item/23953 Crystal tool seed ●
+=> /ge/cgi-bin/ge/item/3402 Asyn remains ●
+=> /ge/cgi-bin/ge/item/3363 Thin snail ●
+=> /ge/cgi-bin/ge/item/4834 Ourg bones ●
+=> /ge/cgi-bin/ge/item/1456 Death talisman ●
+=> /ge/cgi-bin/ge/item/11828 Armadyl chestplate ●
+=> /ge/cgi-bin/ge/item/24511 Harmonised orb ●
+=> /ge/cgi-bin/ge/item/2191 Worm hole ●
+=> /ge/cgi-bin/ge/item/3365 Lean snail ●
+=> /ge/cgi-bin/ge/item/6914 Master wand ●
+=> /ge/cgi-bin/ge/item/12777 Dareeyak teleport (tablet) ●
+=> /ge/cgi-bin/ge/item/23997 Blade of Saeldor (inactive) ●
+=> /ge/cgi-bin/ge/item/12817 Elysian spirit shield ●
+=> /ge/cgi-bin/ge/item/12786 Magic shortbow scroll ●
+=> /ge/cgi-bin/ge/item/24638 Divine bastion potion(3) ●
+=> /ge/cgi-bin/ge/item/3228 Cooked rabbit ●
+=> /ge/cgi-bin/ge/item/22486 Scythe of Vitur (uncharged) ●
+=> /ge/cgi-bin/ge/item/21690 Mushroom pie ●
+=> /ge/cgi-bin/ge/item/27277 Tumeken's shadow (uncharged) ●
+=> /ge/cgi-bin/ge/item/2281 Vegetable batta ●
+=> /ge/cgi-bin/ge/item/9028 Golden scarab ●
+=> /ge/cgi-bin/ge/item/5757 Chef's delight(m) ●
+=> /ge/cgi-bin/ge/item/9994 Spicy tomato ●
+=> /ge/cgi-bin/ge/item/9026 Ivory comb ●
+=> /ge/cgi-bin/ge/item/20155 Gilded 2h sword
+=> /ge/cgi-bin/ge/item/6916 Infinity top ●
+=> /ge/cgi-bin/ge/item/6924 Infinity bottoms ●
+=> /ge/cgi-bin/ge/item/991 Muddy key
+=> /ge/cgi-bin/ge/item/10808 Arctic pyre logs ●
+=> /ge/cgi-bin/ge/item/3446 Yew pyre logs ●
+=> /ge/cgi-bin/ge/item/6625 White platelegs ●
+=> /ge/cgi-bin/ge/item/11465 Prayer mix(2) ●
+=> /ge/cgi-bin/ge/item/2974 Mort myre pear ●
+=> /ge/cgi-bin/ge/item/21157 Necklace of faith ●
+=> /ge/cgi-bin/ge/item/1407 Mystic earth staff ●
+=> /ge/cgi-bin/ge/item/24514 Volatile orb ●
+=> /ge/cgi-bin/ge/item/9303 Mithril bolts (p++) ●
+=> /ge/cgi-bin/ge/item/13487 Ensouled horror head ●
+=> /ge/cgi-bin/ge/item/8429 Bagged magic tree ●
+=> /ge/cgi-bin/ge/item/8449 Tall box hedge (bagged) ●
+=> /ge/cgi-bin/ge/item/20997 Twisted bow ●
+=> /ge/cgi-bin/ge/item/23387 Watson teleport ●
+=> /ge/cgi-bin/ge/item/24517 Eldritch orb ●
+
+=> https://grandexchange.dreamstation.systems/flips/potential This page on the web

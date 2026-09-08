@@ -1,0 +1,19 @@
+# Enchanting
+Jewellery plus runes into enchanted jewellery.
+
+```table
+Method                                              Cost  Profit    ROI
+------------------------------------------------  ------  ------  -----
+Enchant Dragonstone amulet into Amulet of glory   11,645     601   5.2%
+Enchant Sapphire necklace into Games necklace(8)     670     207  30.9%
+Enchant Emerald ring into Ring of dueling(8)         767     102  13.3%
+```
+=> /ge/calc-enchanting/ench-glory Enchant Dragonstone amulet into Amulet of glory
+=> /ge/calc-enchanting/ench-games Enchant Sapphire necklace into Games necklace(8)
+=> /ge/calc-enchanting/ench-dueling Enchant Emerald ring into Ring of dueling(8)
+
+## Notes
+* gp/hour uses a typical action rate for the method and assumes you never wait on a buy offer. Treat it as an upper bound.
+* Rows marked "no price" reference an item nobody has traded recently, so no profit can be computed for them honestly.
+
+=> https://grandexchange.dreamstation.systems/calc/enchanting This page on the web

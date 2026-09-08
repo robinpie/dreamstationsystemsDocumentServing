@@ -1,0 +1,26 @@
+# Money makers
+Money-making methods priced at the current market.
+
+=> /ge/calc-decanting Potion decanting — Buy potions at one dose count, decant, sell at another. (18)
+=> /ge/calc-herblore Herblore — Unfinished potions plus secondaries into finished potions. (18)
+=> /ge/calc-tanning Tanning — Hides into leather at a tanner. (6)
+=> /ge/calc-plank Plank making — Logs into planks at a sawmill. (4)
+=> /ge/calc-smithing Smelting and the blast furnace — Ore and coal into bars. (7)
+=> /ge/calc-fletching Fletching — Logs into bows, and bows into strung bows. (15)
+=> /ge/calc-enchanting Enchanting — Jewellery plus runes into enchanted jewellery. (3)
+=> /ge/calc-tablet Magic tablets — Soft clay plus runes into teleport tablets. (6)
+=> /ge/calc-spell Spell conversions — Items transmuted in the inventory, paid for in runes. (14)
+=> /ge/calc-itemset Item sets — Barrows and armour sets against their component pieces. (12)
+=> /ge/calc-barrows Barrows repair — Degraded barrows gear repaired and resold. (24)
+=> /ge/calc-combination Combination items — Components combined into a single higher-value item. (7)
+=> /ge/calc-sapling Sapling trading — Seeds grown into saplings. (18)
+
+## Whole-catalogue calculators
+=> /ge/alch High alchemy — every item, alch value against market price
+=> /ge/alch?spell=low Low alchemy — the level 21 spell, 40% of the item's value
+=> /ge/alch Store profit — shop shelf against market price
+=> /ge/about GE tax calculator — what a sale actually pays out
+
+Inputs are costed at the price you would pay to buy them right now, and outputs at the price you would receive selling right now, minus tax.
+
+=> https://grandexchange.dreamstation.systems/calc This page on the web

@@ -1,0 +1,21 @@
+# Plank making
+Logs into planks at a sawmill.
+
+```table
+Method                Cost  Profit    ROI
+-------------------  -----  ------  -----
+Make Mahogany plank  1,609     496  30.8%
+Make Oak plank         292     214  73.3%
+Make Teak plank        633     112  17.7%
+Make Plank             124      17  13.7%
+```
+=> /ge/calc-plank/plank-mahogany Make Mahogany plank
+=> /ge/calc-plank/plank-oak Make Oak plank
+=> /ge/calc-plank/plank-teak Make Teak plank
+=> /ge/calc-plank/plank-plank Make Plank
+
+## Notes
+* gp/hour uses a typical action rate for the method and assumes you never wait on a buy offer. Treat it as an upper bound.
+* Rows marked "no price" reference an item nobody has traded recently, so no profit can be computed for them honestly.
+
+=> https://grandexchange.dreamstation.systems/calc/plank This page on the web
