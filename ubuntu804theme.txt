@@ -59,7 +59,7 @@ went — they are in the repo at assets-build/fonts-src/, unmodified.
 
 HOW IT WORKS
 ------------
-The seven themed pages already run through nginx with `ssi on` — that is how
+The eight themed pages already run through nginx with `ssi on` — that is how
 they pick a stylesheet at all. So the chrome rides the same machinery: each
 page carries three include lines, each guarded on the theme, and under
 gtk2/motif/skeuslop/plain nginx expands them to nothing. Measured: 5.5 kB for a
@@ -215,6 +215,14 @@ THINGS THAT WILL BITE
     reintroduces the exact trap the old entry described, and the emoji go with
     it. Add to the margin, or to THEMED if a page was added to theme.conf's
     regex and not to the script.
+
+    THAT SECOND CASE HAS ALREADY HAPPENED ONCE. gzipt.html was added to
+    theme.conf's regex and not to THEMED, and sat uncensused until 2026-09-07.
+    It caused nothing — gzipt.html turns out to contribute zero codepoints the
+    other seven pages and the chrome do not already carry, so the shipped woff2
+    files were byte-identical before and after the fix. That is luck, not
+    design, and it is the argument for checking THEMED whenever the regex
+    changes rather than waiting for a glyph to look wrong.
 
 WHAT CAME FROM THE TEMPLATE'S CHROME
 ------------------------------------

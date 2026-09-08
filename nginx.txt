@@ -37,7 +37,7 @@ Config layout:
                                                        silly bug). See
                                                        ~/configNotes/status.txt
   /etc/nginx/snippets/theme.conf                     — server-side theme
-                                                       selection for the seven
+                                                       selection for the eight
                                                        themed pages under
                                                        /personal/. Switches SSI
                                                        on for exactly those
@@ -382,8 +382,9 @@ Useful commands:
 
 THEME SELECTION (/personal/)
 ----------------------------
-The seven themed pages under /personal/ (index, blog, hypnospace, ntppost,
-ntpuserinfo, slowqotd, gzipt) let a visitor pick one of five stylesheets.
+The eight themed pages under /personal/ (index, blog, hypnospace, lanfalsehoods,
+ntppost, ntpuserinfo, slowqotd, gzipt) let a visitor pick one of five
+stylesheets.
 This used to be theme.js: a script loaded synchronously in <head> that read
 localStorage and rewrote <link id="theme-css"> before first paint. It is now
 done by nginx, and theme.js is deleted.
@@ -452,7 +453,7 @@ THINGS THAT WILL BITE
     the bare directory URL starts serving raw SSI comments.
   - NEVER add gzip_static for this tree. The SSI filter cannot parse a
     precompressed body. (Not currently used anywhere here.)
-  - SSI drops Content-Length and disables sendfile for these seven files.
+  - SSI drops Content-Length and disables sendfile for these eight files.
     Irrelevant at this site's traffic; noted so it is not a surprise.
   - Adding a theme is now THREE steps, not one: themes/<id>.css, the id in
     BOTH maps, and an <option> in each page's form. The stylesheet alone

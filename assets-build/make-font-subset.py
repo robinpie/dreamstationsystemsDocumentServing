@@ -80,14 +80,16 @@ SRC = ROOT / "assets-build" / "fonts-src"
 PERSONAL = ROOT / "rootdomain" / "personal"
 OUT = PERSONAL / "themes" / "ubuntu804" / "f"
 
-# The seven pages that nginx serves with the chrome, per snippets/theme.conf's
+# The eight pages that nginx serves with the chrome, per snippets/theme.conf's
 # location regex, plus the chrome fragments and the stylesheet itself.
 #
 # KEEP THIS IN SYNC WITH theme.conf. A page added to that regex and not here
 # gets the theme but not its characters; the margin below will usually cover
 # it, and when it does not the symptom is one character in a fallback font.
+# This has already happened once: gzipt was added to the regex and not here,
+# and went uncensused until 2026-09-07.
 THEMED = ["index", "blog", "hypnospace", "lanfalsehoods",
-          "ntppost", "ntpuserinfo", "slowqotd"]
+          "ntppost", "ntpuserinfo", "slowqotd", "gzipt"]
 
 FACES = [
     ("DejaVuSans.ttf", "dejavu.woff2"),
