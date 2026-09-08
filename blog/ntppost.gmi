@@ -88,7 +88,7 @@ Interactive Connectivity Establishment (ICE) accepts that no technique is reliab
 
 ## The long-term solution that wasn't
 
-The principal "long-term solution" in the works that RFC 1631 was referring to was IPv6, and it was supposed to fix this; give everyone a real globally unique address and obviate NAT. However, the sigmoid function of IPv6 adoption seems to be stalling out too early, and even where it is implemented, many ISPs and institutional networks keep doing NATy stuff out of inertia and even more misguided security thinking: firewalls that refuse inbound because that's we're used to NAT doing that, or completely unnecessarily *applying actual NAT to IPv6* — often deploying Unique Local Addresses (fc00::/7) the way they use private RFC1918 space on IPv4 — which is baffling to me.
+The principal "long-term solution" in the works that RFC 1631 was referring to was IPv6, and it was supposed to fix this; give everyone a real globally unique address and obviate NAT. However, the sigmoid function of IPv6 adoption seems to be stalling out too early, and even where it is implemented, many ISPs and institutional networks keep doing NATy stuff out of inertia and even more misguided security thinking: firewalls that refuse inbound *to every single port* (some degree of firewalling by default for sensitive services is reasonable) because that's we're used to NAT doing that, or completely unnecessarily *applying actual NAT to IPv6* — often deploying Unique Local Addresses (fc00::/7) the way they use private RFC1918 space on IPv4 — which is baffling to me.
 
 => https://www.google.com/intl/en/ipv6/statistics.html   the sigmoid function of IPv6 adoption seems to be stalling out too early
 
