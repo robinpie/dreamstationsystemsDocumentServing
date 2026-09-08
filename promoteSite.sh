@@ -24,6 +24,7 @@ NGINX_SITES=(
 	000-default-catchall
 	dreamstation.systems
 	grandexchange.dreamstation.systems
+	pool-ntp.tesla.com
 	pool.ntp.org
 	staging.dreamstation.systems
 )

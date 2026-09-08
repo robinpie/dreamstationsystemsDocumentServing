@@ -131,6 +131,30 @@ and nothing here is sensitive.
                                                        the project recommends
                                                        serving this redirect
                                                        for that case.
+  /etc/nginx/sites-available/pool-ntp.tesla.com     — server_name
+                                                       pool-ntp.tesla.com; a
+                                                       fixed HTTP 299 with an
+                                                       HTML notice, on every
+                                                       path. Tesla CNAMEs that
+                                                       name to pool.ntp.org and
+                                                       lists it as a scan
+                                                       target, so their
+                                                       Assetnote scanner keeps
+                                                       landing on us and
+                                                       throwing exploits at a
+                                                       stranger's IP. 299 is
+                                                       not a real code: 2xx so
+                                                       the body is kept, odd
+                                                       enough to be noticed in
+                                                       a scan report. Port 80
+                                                       only — we cannot get a
+                                                       cert for a tesla.com
+                                                       name. Same family as the
+                                                       pool.ntp.org block: a
+                                                       Host we do not own but
+                                                       predictably receive,
+                                                       answered rather than
+                                                       444'd.
   /etc/nginx/sites-available/grandexchange.dreamstation.systems
                                                      — the OpenGET OSRS
                                                        Grand Exchange site.
@@ -201,6 +225,7 @@ installed by promoteSite.sh:
     nginx/sites-available/000-default-catchall
     nginx/sites-available/dreamstation.systems
     nginx/sites-available/grandexchange.dreamstation.systems
+    nginx/sites-available/pool-ntp.tesla.com
     nginx/sites-available/pool.ntp.org
     nginx/sites-available/staging.dreamstation.systems
     nginx/snippets/clacks.conf
