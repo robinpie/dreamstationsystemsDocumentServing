@@ -19,11 +19,11 @@
 
        The href is built from $path, which the PAGE sets to $document_uri
        before including this fragment, because $document_uri inside a
-       subrequest names the fragment. theme.conf's regex matches eight literal
-       filenames, so $path is one of eight known strings — and $document_uri
-       carries no query string, so the appended ?theme=plain is always the
-       only one. Following it also sets the theme cookie, since theme.conf
-       stamps that on every response. -->
+       subrequest names the fragment. theme.conf's regex matches a fixed list
+       of literal filenames (nine today), so $path is always one of those
+       known strings — and $document_uri carries no query string, so the
+       appended ?theme=plain is always the only one. Following it also sets
+       the theme cookie, since theme.conf stamps that on every response. -->
   <p class="themenote">Using accessibility tools or a text browser? <a
      href="<!--#echo var="path" -->?theme=plain">Switch to another theme</a> to
      get rid of the chrome.</p>
