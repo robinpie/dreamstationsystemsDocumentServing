@@ -11,6 +11,19 @@
   <meta property="og:site_name" content="robin’s page">
   <link rel="stylesheet" href="base.css">
   <link rel="stylesheet" href="themes/<!--# echo var="theme" -->.css">
+  <style>
+    .ntppool-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .ntppool-title a {
+      flex: none;
+      line-height: 0;
+    }
+  </style>
 </head>
 <body>
   <!-- The ubuntu804 theme wraps this page in a picture of an Ubuntu 8.04
@@ -45,7 +58,7 @@
 <!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/mid.html" --><!--# endif -->
 
   <main id="content">
-    <h1>Please consider running a NTP server in the NTP Pool</h1>
+    <h1 class="ntppool-title"><span>Please consider running a NTP server in the NTP Pool</span><a href="https://www.pangram.com/history/1375abda-3acb-490f-b49e-1fa7a49718c0?ucc=tp64Jv2K7C4"><img src="pangramHumanBadge.webp" alt="Pangram 100% Human badge" width="88" height="31"></a></h1>
 
     <p>Do you have a spare computer, or a VPS with some extra bandwidth? Do you have <a href="ntppost.html">the ability to accept inbound connections</a>? If so, I want you to please consider joining the <a href="https://www.ntppool.org/">NTP Pool</a>.</p>
 
