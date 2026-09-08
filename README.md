@@ -18,5 +18,6 @@ Some scripting and layout is AI-assisted, and there’s some AI‐slop documenta
 | `gopher/`        | gopher://dreamstation.systems                    | mixed / messy  |
 | `gemini/`        | gemini://dreamstation.systems (+ `spartan://`)   | mixed / messy  |
 | `nginx/`         | `/etc/nginx`                                     | mixed / messy  |
+| `etc/`           | `/etc` (gophernicus, molly-brown, fail2ban, …)   | mixed / messy  |
 | `status-sample/` | `/usr/local/bin` + systemd                       | mixed / messy  |
 | `assets-build/`  | build-time only, not served                      | mixed / messy  |
