@@ -25,8 +25,9 @@ specifically so the bitmap itself would not have to ship.
 
 "Firefox" and the Firefox logo are trademarks of the Mozilla Foundation. This
 site is not Firefox and is not affiliated with, endorsed by or connected to
-Mozilla. The Firefox logo and toolbar throbber below are used unmodified, and
-only to depict the browser this desktop is a picture of.
+Mozilla. The Firefox logo and toolbar throbber below are used unaltered as
+artwork — re-encoding to WebP changes the container, not a pixel — and only to
+depict the browser this desktop is a picture of.
 
 THIRD-PARTY ARTWORK THAT SHIPS HERE
 -----------------------------------
@@ -39,29 +40,40 @@ i/heron.webp
     78; not otherwise altered, cropped or recoloured. From
     /usr/share/backgrounds/ on the Ubuntu 8.04.4 desktop-amd64 install image.
 
-i/header.png
+i/header.webp
     The masthead gradient from /usr/share/ubuntu-artwork/img/header.png,
-    10x90, tiled on x. (c) Canonical Ltd., Ubuntu artwork. Unmodified.
+    10x90, tiled on x. (c) Canonical Ltd., Ubuntu artwork. Re-encoded to
+    lossless WebP; not otherwise altered. The PNG carried a 2639-byte embedded
+    ICC profile around 74 bytes of image data, which is most of why this went
+    2863 -> 90 bytes.
 
-i/go-home.png
+i/go-home.webp
     "go-home" from the Human icon theme, 24x24.
-    (c) Canonical Ltd. Human icon theme, CC-BY-SA 3.0 / GPL. Unmodified.
+    (c) Canonical Ltd. Human icon theme, CC-BY-SA 3.0 / GPL. Re-encoded to
+    lossless WebP; not otherwise altered.
 
-i/wb-minimize.png, i/wb-maximize.png, i/wb-close.png
+i/wb-minimize.webp, i/wb-maximize.webp, i/wb-close.webp
     icon_minimize.png, icon_maximize.png and icon_close.png from the Human
     Metacity theme, 10x10 each.
-    (c) Canonical Ltd. Human theme, CC-BY-SA 3.0 / GPL. Unmodified.
+    (c) Canonical Ltd. Human theme, CC-BY-SA 3.0 / GPL. Re-encoded to lossless
+    WebP; not otherwise altered.
 
-i/firefox16.png, i/firefox24.png
+i/firefox16.png, i/firefox24.webp
     Mozilla Firefox 3's window icon (default16.png and default32.png).
     (c) Mozilla Foundation; MPL 1.1 / GPL 2.0 / LGPL 2.1 tri-license, and the
-    logo is additionally a Mozilla trademark. firefox24.png is default32.png
-    resampled to 24x24; firefox16.png is unmodified.
+    logo is additionally a Mozilla trademark. firefox24.webp is default32.png
+    resampled to 24x24, then re-encoded to lossless WebP; firefox16.png is
+    unmodified artwork, losslessly recompressed as a PNG and still a PNG.
 
-i/throbber.png
+    IT IS THE ONE FILE HERE WEBP LOSES ON — 898 bytes as an optimised PNG
+    against 894 as WebP, before you count that the conversion would make a
+    trademarked logo one more thing to explain. Left alone deliberately; do
+    not "finish the job" by converting it.
+
+i/throbber.webp
     Firefox 3's idle toolbar throbber (Throbber.png, 20x20), from
     chrome/classic.jar. (c) Mozilla Foundation, MPL/GPL/LGPL tri-license.
-    Unmodified.
+    Re-encoded to lossless WebP; not otherwise altered.
 
 f/dejavu.woff2, f/dejavu-bold.woff2
     DejaVu Sans and DejaVu Sans Bold, a Bitstream Vera derivative.
@@ -108,9 +120,17 @@ copyrights, licences and attribution it did then, and the per-file notes say
 which Ubuntu 8.04.4 desktop image, Human theme and Firefox 3 chrome each one
 came out of. Regenerating any of them means going back to those sources.
 
+THE BITMAPS WERE RE-ENCODED TO LOSSLESS WEBP ON 2026-09-07, except firefox16
+(see its note) and heron (already WebP, and lossy — re-encoding it again would
+only add generation loss). 8154 -> 3891 bytes. Every one was verified
+pixel-for-pixel identical to the PNG it replaced, so "not otherwise altered"
+above is a literal claim about the decoded image and not a figure of speech.
+Where a note still says a file is unmodified from its upstream source, that is
+about the artwork; the container changed and nothing else did.
+
 ORIGINAL TO THIS SITE
 ---------------------
-The logotype (i/mark.svg, i/favicon16.png) and the location bar's bookmark
+The logotype (i/mark.svg, i/favicon16.webp) and the location bar's bookmark
 star and autocomplete arrow (inline SVG in /personal/chrome/top.html, drawn to
 match the reference rather than reusing the Human theme's differently-shaped
 bookmark-new icon) were made for this site. So was every line of
@@ -127,7 +147,7 @@ FILES THIS THEME SHIPS
 ----------------------
   /personal/themes/ubuntu804.css
   /personal/chrome/top.html, mid.html, bottom.html
-  i/heron.webp, i/header.png, i/mark.svg, i/favicon16.png
-  i/firefox16.png, i/firefox24.png, i/go-home.png, i/throbber.png
-  i/wb-minimize.png, i/wb-maximize.png, i/wb-close.png
+  i/heron.webp, i/header.webp, i/mark.svg, i/favicon16.webp
+  i/firefox16.png, i/firefox24.webp, i/go-home.webp, i/throbber.webp
+  i/wb-minimize.webp, i/wb-maximize.webp, i/wb-close.webp
   f/dejavu.woff2, f/dejavu-bold.woff2

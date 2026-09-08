@@ -58,7 +58,7 @@
   /* Content palette, lifted from /usr/share/ubuntu-artwork/ubuntu.css */
   --text:           #002b3d;
   --brown:          #6d4c07;   /* headings and links, including :visited */
-  --header-tan:     #dbba75;   /* header.png's flat field */
+  --header-tan:     #dbba75;   /* header.webp's flat field */
 
   /* Geometry */
   --panel-h:  24px;
@@ -511,10 +511,10 @@ body {
 /* ------------------------------------------------------ masthead + content */
 
 #mastwrap {
-  /* Verbatim from ubuntu.css. header.png is 10x90 and effectively a flat
+  /* Verbatim from ubuntu.css. header.webp is 10x90 and effectively a flat
    * #dbba75 field with a 4px bevel along its bottom edge, so tiling it on x
    * both fills the band and draws the rule under the masthead. */
-  background: url(ubuntu804/i/header.png) bottom left repeat-x var(--header-tan);
+  background: url(ubuntu804/i/header.webp) bottom left repeat-x var(--header-tan);
 }
 #masthead {
   position: relative;
@@ -525,7 +525,7 @@ body {
    * that file at 1px steps and rebuilt here as a gradient, which is why no
    * headerlogo.png ships (and it could not — the Ubuntu wordmark and Circle
    * of Friends on it are Canonical trademarks). 86px tall, not 90px, so
-   * header.png's bottom bevel still shows through underneath. */
+   * header.webp's bottom bevel still shows through underneath. */
   background: linear-gradient(to right,
       #f0e2c5   0px, #f1e5cb  10px, #f7f0e2  50px, #fdfcf9  90px,
       #ffffff 110px, #fefdfa 180px, #fcfaf4 200px, #f1e6cb 260px,
