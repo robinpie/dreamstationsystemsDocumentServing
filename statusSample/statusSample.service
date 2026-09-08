@@ -5,7 +5,7 @@ After=chrony.service
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/status-sample.sh
+ExecStart=/usr/local/bin/statusSample.sh
 
 # Never compete with chronyd, which is by far the busiest thing on this box.
 # Same posture as disk-cleanup.service.

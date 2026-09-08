@@ -10,7 +10,7 @@ server block — this sets up name-based virtual hosting for future
 subdomains.
 
 Config layout:
-  /etc/nginx/snippets/status-cgi.conf                — the /professional/status
+  /etc/nginx/snippets/statusCgi.conf                 — the /professional/status
                                                        location: fcgiwrap ->
                                                        /srv/cgi/status.cgi, its
                                                        502/504 static backstop,
@@ -59,7 +59,7 @@ Config layout:
                                                        INCLUDED FROM both the
                                                        :80 and apex :443 block,
                                                        same anti-drift reason
-                                                       as status-cgi.conf.
+                                                       as statusCgi.conf.
                                                        See THEME SELECTION below
   /etc/nginx/sites-available/dreamstation.systems   — main site, server_name
                                                        dreamstation.systems
@@ -103,7 +103,7 @@ and with it professional/index.html's declared https canonical and the status
 page. There is now an explicit block:
 
     server { listen 443 ssl; server_name dreamstation.systems www....;
-             root /srv/http; include snippets/status-cgi.conf; }
+             root /srv/http; include snippets/statusCgi.conf; }
 
 Same certificate, same content, same blast radius (deliberately NOT merged with
 grandexchange's separate cert — see that file's note about keeping inbound
@@ -189,14 +189,14 @@ clobbers the real config (cost ten confusing minutes once; see openget.txt).
 Content is SERVED from /srv/http/ but its SOURCE OF TRUTH is the monorepo at
 ~/configNotes/documentServing/rootdomain/. Do not hand-edit /srv/http — edit
 rootdomain/, commit (the hook stages it to /srv/httpstaging), and run
-~/configNotes/documentServing/promote-site.sh (rsync --delete to /srv/http,
+~/configNotes/documentServing/promoteSite.sh (rsync --delete to /srv/http,
 preserving certbot's .well-known/acme-challenge/ webroot dir and
 ntpstats.txt). Nothing goes live without that second step — see githooks.txt,
 and ~/configNotes/documentServing/README.md.
 
 THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every
 hand-authored file above lives in ~/configNotes/documentServing/nginx/ and is
-installed by promote-site.sh:
+installed by promoteSite.sh:
 
     nginx/sites-available/000-default-catchall
     nginx/sites-available/dreamstation.systems
@@ -205,8 +205,8 @@ installed by promote-site.sh:
     nginx/sites-available/staging.dreamstation.systems
     nginx/snippets/clacks.conf
     nginx/snippets/feeds.conf
-    nginx/snippets/pgp-key.conf
-    nginx/snippets/status-cgi.conf
+    nginx/snippets/pgpKey.conf
+    nginx/snippets/statusCgi.conf
     nginx/snippets/theme.conf
     nginx/snippets/wkd.conf
 
@@ -218,15 +218,15 @@ forgotten, not less.) Edit the repo copy and commit.
 Not in the repo, and deliberately: sites-available/default and
 snippets/{fastcgi-php,snakeoil}.conf are Debian's, unmodified; the sites-enabled
 symlinks are made once by hand; and the certificates are certbot's. That is why
-promote-site.sh installs a NAMED LIST of files one at a time instead of rsyncing
+promoteSite.sh installs a NAMED LIST of files one at a time instead of rsyncing
 the tree — an rsync --delete into /etc/nginx would eat all of the above. Adding
 a file to nginx/ therefore does nothing until it is added to NGINX_SITES or
-NGINX_SNIPPETS at the top of promote-site.sh, AND symlinked into sites-enabled
+NGINX_SNIPPETS at the top of promoteSite.sh, AND symlinked into sites-enabled
 if it is a vhost.
 
 nginx config cannot be syntax-checked before it is installed — the vhosts
 `include snippets/...` relative to nginx's own prefix, so a copy in the repo
-does not resolve. promote-site.sh therefore installs, runs `nginx -t`, and rolls
+does not resolve. promoteSite.sh therefore installs, runs `nginx -t`, and rolls
 the files back from a backup if the test fails. The running server is never at
 risk: the reload happens only after `nginx -t` passes, and until then nginx
 keeps serving the last good config out of memory.
@@ -267,7 +267,7 @@ Three things are easy to get wrong here:
 
 snippets/wkd.conf holds the CORS header and is included from BOTH the apex
 :443 block and the openpgpkey block, same anti-drift reasoning as
-status-cgi.conf. The openpgpkey vhost shares /srv/http as its docroot (so one
+statusCgi.conf. The openpgpkey vhost shares /srv/http as its docroot (so one
 rsync covers it) but returns 404 for everything outside the WKD tree.
 
 The openpgpkey name resolved via the *.dreamstation.systems wildcard long
@@ -285,9 +285,9 @@ Verify:
 The armored key linked from /professional is a DIFFERENT file from the WKD
 ones above, and wants the opposite treatment. .asc is absent from
 /etc/nginx/mime.types, so it inherited default_type application/octet-stream
-and browsers downloaded it instead of showing it. snippets/pgp-key.conf now
+and browsers downloaded it instead of showing it. snippets/pgpKey.conf now
 serves it as text/plain; charset=utf-8, included from both apex blocks (:80
-and :443) — the same anti-drift pattern as clacks/status-cgi/wkd.
+and :443) — the same anti-drift pattern as clacks/statusCgi/wkd.
 
 text/plain rather than the registered application/pgp-keys (RFC 3156): the
 registered type also triggers a download in browsers, which is the whole
@@ -335,7 +335,7 @@ Every server block for this domain sends:
 It lives in snippets/clacks.conf and is INCLUDED FROM every server block
 (both dreamstation.systems blocks, openpgpkey, mta-sts, and both
 grandexchange blocks) rather than being set once in nginx.conf's http block.
-Same anti-drift reasoning as status-cgi.conf and wkd.conf, plus it keeps
+Same anti-drift reasoning as statusCgi.conf and wkd.conf, plus it keeps
 pool.ntp.org's redirect — a name we do not own — out of it.
 
 Two traps, both already handled:

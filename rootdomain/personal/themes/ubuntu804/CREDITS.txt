@@ -74,9 +74,9 @@ f/dejavu.woff2, f/dejavu-bold.woff2
     characters these pages actually use plus a margin of Latin-1, punctuation,
     arrows and box drawing — about 45 kB for the pair against 382 kB for the
     full faces. Rebuilt from the upstream TTFs on every commit by
-    assets-build/make-font-subset.py; glyph metrics are unchanged, so this is
+    assetsBuild/makeFontSubset.py; glyph metrics are unchanged, so this is
     a reduction in coverage and nothing else. The unmodified originals are in
-    the repo at assets-build/fonts-src/.
+    the repo at assetsBuild/fontsSrc/.
 
 CSS DERIVED FROM SOMEBODY ELSE'S STYLESHEET
 -------------------------------------------

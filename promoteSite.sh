@@ -6,7 +6,7 @@
 #   cgi/             -> /srv/cgi            CGI scripts run by fcgiwrap
 #   gopher/          -> /srv/gopher         gophernicus doc root
 #   gemini/          -> /srv/gemini         molly-brown doc root (Spartan too)
-#   status-sample/   -> /usr/local/bin + units  the status page's other half
+#   statusSample/    -> /usr/local/bin + units  the status page's other half
 #   nginx/           -> /etc/nginx          vhosts and snippets
 #
 # Web content comes from the staging tree so the live docroot matches what was
@@ -30,8 +30,8 @@ NGINX_SITES=(
 NGINX_SNIPPETS=(
 	clacks.conf
 	feeds.conf
-	pgp-key.conf
-	status-cgi.conf
+	pgpKey.conf
+	statusCgi.conf
 	theme.conf
 	wkd.conf
 )
@@ -57,21 +57,21 @@ ETC_FILES=(
 #
 # Refuses the two ways staging can lie to you. See githooks.txt.
 if [ ! -d "$STAGING" ] || [ -z "$(ls -A "$STAGING" 2>/dev/null)" ]; then
-	echo "ABORT: $STAGING is missing or empty — run ./stage-site.sh first." >&2
+	echo "ABORT: $STAGING is missing or empty — run ./stageSite.sh first." >&2
 	echo "Promoting it would --delete the live site." >&2
 	exit 1
 fi
 
 # Uncommitted edits to rootdomain/ are not staged (the hook fires on commit),
 # so what you previewed is the last commit, not your working tree. Asked of
-# git rather than diffing the trees, since stage-site.sh's chown/chmod makes
+# git rather than diffing the trees, since stageSite.sh's chown/chmod makes
 # any tree-diff approach fight false positives. See githooks.txt.
 dirty="$(git -C "$ROOT" status --porcelain -- rootdomain 2>/dev/null || true)"
 if [ -n "$dirty" ]; then
 	echo "NOTE: rootdomain/ has uncommitted changes. Staging is the last COMMIT," >&2
 	echo "      so the following are NOT in it and will not go live:" >&2
 	printf '%s\n' "$dirty" | sed 's/^/      /' >&2
-	echo "      Commit (which re-stages), or run ./stage-site.sh by hand." >&2
+	echo "      Commit (which re-stages), or run ./stageSite.sh by hand." >&2
 	if [ ! -t 0 ]; then
 		echo "ABORT: not a terminal, cannot ask. Nothing promoted." >&2
 		exit 1
@@ -89,7 +89,7 @@ fi
 
 # --------------------------------------------------------------- syntax gates
 #
-# Repeated from stage-site.sh: a promote can happen at any distance from the
+# Repeated from stageSite.sh: a promote can happen at any distance from the
 # commit that staged it, so this has to hold at the moment things go live.
 if compgen -G "$ROOT/cgi/*.cgi" >/dev/null; then
 	for f in "$ROOT"/cgi/*.cgi; do
@@ -101,10 +101,10 @@ if compgen -G "$ROOT/cgi/*.cgi" >/dev/null; then
 	done
 fi
 
-if [ -f "$ROOT/status-sample/status-sample.sh" ]; then
-	if ! bash -n "$ROOT/status-sample/status-sample.sh" 2>/dev/null; then
-		echo "ABORT: status-sample.sh fails syntax check — nothing promoted." >&2
-		bash -n "$ROOT/status-sample/status-sample.sh" || true
+if [ -f "$ROOT/statusSample/statusSample.sh" ]; then
+	if ! bash -n "$ROOT/statusSample/statusSample.sh" 2>/dev/null; then
+		echo "ABORT: statusSample.sh fails syntax check — nothing promoted." >&2
+		bash -n "$ROOT/statusSample/statusSample.sh" || true
 		exit 1
 	fi
 fi
@@ -258,24 +258,24 @@ promote_retro() { # <repo subdir> <doc root> <generated file to protect>
 promote_retro gopher /srv/gopher ntpstats.txt
 promote_retro gemini /srv/gemini ntpstats.gmi
 
-# -------------------------------------------------------------- status-sample
+# --------------------------------------------------------------- statusSample
 #
 # The other half of the status page (see status.txt); deployed alongside the
 # CGI so the two never drift apart. Restarting the timer is safe and cheap.
-if [ -d "$ROOT/status-sample" ]; then
+if [ -d "$ROOT/statusSample" ]; then
 	sample_changed=0
 	units_changed=0
 
-	if ! sudo cmp -s "$ROOT/status-sample/status-sample.sh" /usr/local/bin/status-sample.sh; then
+	if ! sudo cmp -s "$ROOT/statusSample/statusSample.sh" /usr/local/bin/statusSample.sh; then
 		sudo install -m755 -o root -g root \
-			"$ROOT/status-sample/status-sample.sh" /usr/local/bin/status-sample.sh
+			"$ROOT/statusSample/statusSample.sh" /usr/local/bin/statusSample.sh
 		sample_changed=1
 	fi
 
-	for u in status-sample.service status-sample.timer; do
-		if ! sudo cmp -s "$ROOT/status-sample/$u" "/etc/systemd/system/$u"; then
+	for u in statusSample.service statusSample.timer; do
+		if ! sudo cmp -s "$ROOT/statusSample/$u" "/etc/systemd/system/$u"; then
 			sudo install -m644 -o root -g root \
-				"$ROOT/status-sample/$u" "/etc/systemd/system/$u"
+				"$ROOT/statusSample/$u" "/etc/systemd/system/$u"
 			units_changed=1
 		fi
 	done
@@ -284,8 +284,8 @@ if [ -d "$ROOT/status-sample" ]; then
 		sudo systemctl daemon-reload
 	fi
 	if [ "$sample_changed" = 1 ] || [ "$units_changed" = 1 ]; then
-		sudo systemctl restart status-sample.timer
-		echo "Promoted status-sample/ → /usr/local/bin + systemd (timer restarted)"
+		sudo systemctl restart statusSample.timer
+		echo "Promoted statusSample/ → /usr/local/bin + systemd (timer restarted)"
 	fi
 fi
 

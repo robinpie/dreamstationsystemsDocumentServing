@@ -1,5 +1,5 @@
 # Runtime artifacts 
-assets-build/__pycache__/
+assetsBuild/__pycache__/
 
 # /rootdomain/ntpstats.txt: written directly into /srv/http by ntpstatsgen.timer
 /rootdomain/ntpstats.txt
@@ -13,7 +13,7 @@ README.local.md
 # /gopher/ge/ and /gemini/ge/: OpenGET's retro frontends. NOT authored here —
 # the openget daemon regenerates ~50 gophermaps/gemtext files under these after
 # every stats recomputation, and `make install-retro` owns the cgi-bin/ scripts.
-# Both dirs are openget:openget on disk. promote-site.sh excludes them from its
+# Both dirs are openget:openget on disk. promoteSite.sh excludes them from its
 # rsync and its chown for the same reason. See openget.txt.
 /gopher/ge/
 /gemini/ge/

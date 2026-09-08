@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Subset the ubuntu804 theme's DejaVu faces to what the themed pages use.
 
-    make-font-subset.py            write themes/ubuntu804/f/dejavu{,-bold}.woff2
-    make-font-subset.py --check    exit 1 if either is out of date, write nothing
+    makeFontSubset.py            write themes/ubuntu804/f/dejavu{,-bold}.woff2
+    makeFontSubset.py --check    exit 1 if either is out of date, write nothing
 
-Source is assets-build/fonts-src/DejaVuSans{,-Bold}.ttf, which are NOT under
+Source is assetsBuild/fontsSrc/DejaVuSans{,-Bold}.ttf, which are NOT under
 rootdomain/ and so are never served — same reasoning as cgi/ being a sibling of
 the docroot rather than a child of it. Output is a committed artifact in
 rootdomain/, like feed.xml and rss.xml: the deploy is a plain rsync with no
@@ -76,7 +76,7 @@ from pathlib import Path
 from fontTools.ttLib import TTFont
 
 ROOT = Path(__file__).resolve().parent.parent
-SRC = ROOT / "assets-build" / "fonts-src"
+SRC = ROOT / "assetsBuild" / "fontsSrc"
 PERSONAL = ROOT / "rootdomain" / "personal"
 OUT = PERSONAL / "themes" / "ubuntu804" / "f"
 
@@ -126,7 +126,7 @@ def census() -> set[str]:
     sources += [PERSONAL / "themes" / "ubuntu804.css"]
     for path in sources:
         if not path.exists():
-            print(f"make-font-subset: WARNING: no such source {path}",
+            print(f"makeFontSubset: WARNING: no such source {path}",
                   file=sys.stderr)
             continue
         chars |= set(path.read_text(encoding="utf-8"))
@@ -207,7 +207,7 @@ def main() -> int:
     for src_name, out_name in FACES:
         src, dest = SRC / src_name, OUT / out_name
         if not src.exists():
-            print(f"make-font-subset: missing source {src}", file=sys.stderr)
+            print(f"makeFontSubset: missing source {src}", file=sys.stderr)
             return 1
         want = wanted(src, chars)
         if up_to_date(dest, want):
@@ -217,12 +217,12 @@ def main() -> int:
             OUT.mkdir(parents=True, exist_ok=True)
             build(src, dest, chars)
             kb = dest.stat().st_size / 1024
-            print(f"make-font-subset: {out_name} "
+            print(f"makeFontSubset: {out_name} "
                   f"({len(want)} codepoints, {kb:.1f} kB)")
 
     if check and stale:
         for dest in stale:
-            print(f"make-font-subset: out of date: "
+            print(f"makeFontSubset: out of date: "
                   f"{dest.relative_to(ROOT)}", file=sys.stderr)
         return 1
     return 0

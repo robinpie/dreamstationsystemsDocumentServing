@@ -1,4 +1,4 @@
-site-assets — favicon, icons, OpenGraph card and sitemap for dreamstation.systems
+siteAssets — favicon, icons, OpenGraph card and sitemap for dreamstation.systems
 ================================================================================
 
 Source of truth is ~/configNotes/documentServing/rootdomain/, which mirrors
@@ -13,13 +13,13 @@ FILES
   /srv/http/sitemap.xml                canonical page list
   /srv/http/robots.txt                 Allow: / plus the Sitemap: line
 
-BUILD SCRIPTS  (~/configNotes/documentServing/assets-build/, in the repo but
+BUILD SCRIPTS  (~/configNotes/documentServing/assetsBuild/, in the repo but
                 a SIBLING of rootdomain/, so it is never rsynced into the
                 docroot)
-  make-og.sh          renders ogimage.png with ImageMagick + Pango
-  make-favicon.py     renders favicon.ico AND apple-touch-icon.png from
+  makeOg.sh           renders ogimage.png with ImageMagick + Pango
+  makeFavicon.py      renders favicon.ico AND apple-touch-icon.png from
                       favicon.svg's geometry — one run produces both
-  make-feed.py        renders personal/feed.xml (Atom) and personal/rss.xml
+  makeFeed.py         renders personal/feed.xml (Atom) and personal/rss.xml
                       from the post list in personal/blog.html — run by the
                       pre-commit hook, not by hand; see feeds.txt
 
@@ -41,9 +41,9 @@ FAVICON
 
   Caveat: ImageMagick's internal SVG renderer (MSVG) ignores stroke-width
   through <use>, so rasterising favicon.svg with `magick` produces hairlines
-  and is NOT a valid preview. make-favicon.py redraws the geometry from
+  and is NOT a valid preview. makeFavicon.py redraws the geometry from
   primitives instead. If favicon.svg's geometry changes, change the constants
-  at the top of make-favicon.py to match — they are duplicated, not shared.
+  at the top of makeFavicon.py to match — they are duplicated, not shared.
 
 APPLE TOUCH ICON
   Same geometry, but it cannot reuse the favicon's tricks. iOS composites any
@@ -75,11 +75,11 @@ OPENGRAPH
   faces here with U+2042.
 
   The stats on the card (pool score, CVE status) are point-in-time and scrapers
-  cache images hard. After re-running make-og.sh, bust the caches via
+  cache images hard. After re-running makeOg.sh, bust the caches via
   Facebook's Sharing Debugger and LinkedIn's Post Inspector, or the old card
   will keep appearing for weeks.
 
-  Filename gotcha: the file is ogimage.png, NOT og.png. make-og.sh defaulted to
+  Filename gotcha: the file is ogimage.png, NOT og.png. makeOg.sh defaulted to
   og.png until 2026-08-27, which would have silently written an orphan and left
   the real card stale. The default now matches. Do not "tidy" the name —
   scrapers cache og:image URLs hard and a rename costs a re-scrape everywhere.

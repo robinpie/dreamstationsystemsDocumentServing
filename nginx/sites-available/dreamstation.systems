@@ -51,8 +51,8 @@ server {
     root /srv/http;
     index index.html;
 
-    include snippets/status-cgi.conf;
-    include snippets/pgp-key.conf;
+    include snippets/statusCgi.conf;
+    include snippets/pgpKey.conf;
     include snippets/theme.conf;
     include snippets/feeds.conf;
 }
@@ -87,9 +87,9 @@ server {
     root /srv/http;
     index index.html;
 
-    include snippets/status-cgi.conf;
+    include snippets/statusCgi.conf;
     include snippets/wkd.conf;
-    include snippets/pgp-key.conf;
+    include snippets/pgpKey.conf;
     include snippets/theme.conf;
     include snippets/feeds.conf;
 }

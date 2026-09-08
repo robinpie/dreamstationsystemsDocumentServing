@@ -2,7 +2,7 @@
 #
 # status.cgi — live service status for dreamstation.systems
 #
-# Deployed to /srv/cgi/status.cgi by promote-site.sh; served at /professional/status via fcgiwrap. Runs as www-data.
+# Deployed to /srv/cgi/status.cgi by promoteSite.sh; served at /professional/status via fcgiwrap. Runs as www-data.
 #
 # Warning for very claudish comments lol.
 #
@@ -352,7 +352,7 @@ sub read_chrony {
 	}
 
 	# NTS-KE comes from the root-only `chronyc serverstats`, captured for us
-	# by status-sample.service. Reading a file here keeps www-data out of
+	# by statusSample.service. Reading a file here keeps www-data out of
 	# sudoers entirely.
 	if (open my $fh, '<', CHRONY_SNAP) {
 		while (<$fh>) { $out{$1} = $2 if /^(\w+)\s+(\S+)/ }
@@ -364,9 +364,9 @@ sub read_chrony {
 }
 
 sub read_qps {
-	# Three numbers, already condensed by status-sample.service. The scan that
+	# Three numbers, already condensed by statusSample.service. The scan that
 	# produces them walks ~95k lines and costs ~263ms, which is why it does
-	# not happen here — see the reset-handling note in status-sample.sh.
+	# not happen here — see the reset-handling note in statusSample.sh.
 	open my $fh, '<', QPS_SNAP or return undef;
 	my %o;
 	while (<$fh>) { $o{$1} = $2 if /^(\w+)\s+(\S+)/ }
@@ -375,7 +375,7 @@ sub read_qps {
 }
 
 # Current disk figures plus the downsampled 30-day series, both already
-# condensed by status-sample.sh. The persistent history is never opened here
+# condensed by statusSample.sh. The persistent history is never opened here
 # — see status.txt. At most ~360 "p" lines, so this is a ~4KB read of tmpfs.
 sub read_disk {
 	open my $fh, '<', DISK_SNAP or return undef;
@@ -988,7 +988,7 @@ CSS
 # ---------------------------------------------------------------- box render
 
 # A compact fragment for the top of /professional/, pulled in server-side by
-# nginx SSI (see snippets/status-cgi.conf).
+# nginx SSI (see snippets/statusCgi.conf).
 #
 # It deliberately does NOT probe and does NOT touch the cache. /professional/
 # is a static page that serves in 3.5ms and it is the first thing a reader

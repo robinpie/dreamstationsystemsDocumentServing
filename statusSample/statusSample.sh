@@ -1,7 +1,7 @@
 #!/bin/bash
-# status-sample.sh — collects the CPU, NTS-KE and disk figures status.cgi
+# statusSample.sh — collects the CPU, NTS-KE and disk figures status.cgi
 # cannot get for itself (it runs unprivileged, per request). Runs every 30s
-# via status-sample.timer. See status.txt for the full rationale.
+# via statusSample.timer. See status.txt for the full rationale.
 #
 # Output, all world-readable:
 #   /run/status/cpu.hist      "<ts> <total_jiffies> <idle_jiffies>", 5min kept

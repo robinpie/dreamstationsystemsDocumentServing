@@ -11,20 +11,20 @@ root, versioned, and .git/hooks/<name> is a relative symlink to it.
 Installed hooks:
 
     post-checkout                          git-lfs
-    post-commit -> ../../deploy-hook.sh    runs stage-site.sh
-    post-merge  -> ../../deploy-hook.sh    runs stage-site.sh
-    pre-commit  -> ../../pre-commit.sh     runs the pre-commit chain
+    post-commit -> ../../deployHook.sh     runs stageSite.sh
+    post-merge  -> ../../deployHook.sh     runs stageSite.sh
+    pre-commit  -> ../../preCommit.sh      runs the pre-commit chain
     pre-push                               git-lfs
 
 NO HOOK PUBLISHES ANYTHING. See "stage and promote" below.
 
-pre-commit was a symlink straight to datestamp-hook.pl until there was a
+pre-commit was a symlink straight to datestampHook.pl until there was a
 second step to run. git runs exactly ONE pre-commit hook, so it now points at
-pre-commit.sh, which calls each step in turn:
+preCommit.sh, which calls each step in turn:
 
-    datestamp-hook.pl                 schema.org dateModified stamp    (below)
-    assets-build/make-feed.py         Atom + RSS for the blog       (feeds.txt)
-    assets-build/make-font-subset.py  ubuntu804 DejaVu subsets
+    datestampHook.pl               schema.org dateModified stamp       (below)
+    assetsBuild/makeFeed.py        Atom + RSS for the blog         (feeds.txt)
+    assetsBuild/makeFontSubset.py  ubuntu804 DejaVu subsets
                                                           (ubuntu804theme.txt)
 
 Any step added there must re-stage what it rewrites, or the commit will not
@@ -33,7 +33,7 @@ match what the hook computed.
 The last two produce COMMITTED ARTIFACTS, and for the same reason: promote is
 a plain rsync of rootdomain/ with no build step, so anything served has to
 exist in the repo. (That invariant is why the font subsetting went here rather
-than into stage-site.sh, where it would have been just as easy to run and
+than into stageSite.sh, where it would have been just as easy to run and
 would have left the live docroot holding files that exist in no commit.)
 
 Both are no-ops when their inputs have not changed, so an unrelated commit
@@ -59,8 +59,8 @@ Until 2026-09-07 the post-commit hook ran deploy-site.sh, which pushed
 straight to the live docroot: every commit was public within seconds. That is
 now two steps.
 
-    ./stage-site.sh      rootdomain/ -> /srv/httpstaging     AUTOMATIC (hook)
-    ./promote-site.sh    everything  -> live                 BY HAND
+    ./stageSite.sh      rootdomain/ -> /srv/httpstaging     AUTOMATIC (hook)
+    ./promoteSite.sh    everything  -> live                 BY HAND
 
 Preview the staged copy at https://staging.dreamstation.systems (basic auth,
 user robinpie; see "staging vhost" below). Then promote.
@@ -69,7 +69,7 @@ THE FAILURE MODE TO KNOW ABOUT: "I fixed it, and forgot to promote." The live
 site no longer moves on its own. If a change is not showing up, that is the
 first thing to check, before touching nginx or the cache.
 
-Only rootdomain/ stages. cgi/, status-sample/ and nginx/ are system state --
+Only rootdomain/ stages. cgi/, statusSample/ and nginx/ are system state --
 executables, systemd units, the server's own config -- with nowhere to stand
 them up that is not simply "live", so they are promote-only and are read from
 the REPO, not from the staging tree.
@@ -79,15 +79,15 @@ so the live docroot is byte-identical to the tree you actually previewed
 rather than a second render of the same commit. If those two could differ,
 staging would not be telling you anything.
 
-promote-site.sh refuses to run when /srv/httpstaging is missing or empty --
+promoteSite.sh refuses to run when /srv/httpstaging is missing or empty --
 promoting an empty tree would --delete the live site -- and warns, with a
 y/N prompt, when rootdomain/ has uncommitted changes, because the hook fires
 on COMMIT and your working tree is therefore not what you previewed. That
-check asks git rather than diffing the two trees: stage-site.sh chowns and
+check asks git rather than diffing the two trees: stageSite.sh chowns and
 chmods everything it copies, so the trees differ in owner, group and mode on
 every file by design.
 
-The syntax gates (perl -c on the CGIs, bash -n on status-sample.sh) run in
+The syntax gates (perl -c on the CGIs, bash -n on statusSample.sh) run in
 BOTH scripts. Not an oversight: at stage time the mistake is fresh and one
 --amend away, and a promote can happen at any distance from the commit that
 staged it.
@@ -96,7 +96,7 @@ To roll the live site back without touching git: stage the old tree by hand
 and promote it.
 
     sudo rsync -a --delete /some/known-good/tree/ /srv/httpstaging/
-    ./promote-site.sh          # will warn that rootdomain/ is dirty; say y
+    ./promoteSite.sh           # will warn that rootdomain/ is dirty; say y
 
 
 staging vhost
@@ -108,7 +108,7 @@ Its own Let's Encrypt cert, separate from the dreamstation.systems lineage
 because that one also covers mta-sts and re-issuing it for a staging host
 would put inbound mail's TLS in the blast radius of a web deploy. Issued with
 the webroot method against the LIVE docroot /srv/http, which is where renewals
-will look and which promote-site.sh already protects from --delete.
+will look and which promoteSite.sh already protects from --delete.
 
 WITHOUT that vhost file the name is not closed: staging.dreamstation.systems
 resolves via the wildcard A record, and the apex's *.dreamstation.systems
@@ -122,11 +122,11 @@ opposite of the apex's deliberate no-redirect policy. Basic auth is base64,
 not a hash: the password is on the wire in cleartext on every single request,
 so there must be no plaintext path to a page that asks for it.
 
-Adding a vhost to NGINX_SITES in promote-site.sh installs it into
+Adding a vhost to NGINX_SITES in promoteSite.sh installs it into
 sites-available but does NOT symlink it into sites-enabled -- that is still a
 manual step, and the order matters:
 
-    ./promote-site.sh                                  # installs the file
+    ./promoteSite.sh                                   # installs the file
     sudo ln -s /etc/nginx/sites-available/<name> /etc/nginx/sites-enabled/
     sudo nginx -t && sudo systemctl reload nginx
 
@@ -140,7 +140,7 @@ password file
 
     /etc/nginx/.htpasswd-staging      root:www-data, 640, bcrypt
 
-NOT in this repo and NOT installed by promote-site.sh, so no password hash is
+NOT in this repo and NOT installed by promoteSite.sh, so no password hash is
 ever committed. It was created once, by hand, and needs apache2-utils:
 
     sudo apt install apache2-utils
@@ -157,7 +157,7 @@ which is the right direction, but it means a lost password file looks like a
 broken site rather than a config error.
 
 
-datestamp-hook.pl (pre-commit)
+datestampHook.pl (pre-commit)
 ------------------------------
 
 Perl. Stamps schema.org "dateModified" on the WebSite node of staged HTML and
@@ -193,7 +193,7 @@ Test without git -- pass paths as arguments and it stamps them in place, no
 staging, no re-adding:
 
     cp rootdomain/professional/index.html /tmp/t.html
-    ./datestamp-hook.pl /tmp/t.html
+    ./datestampHook.pl /tmp/t.html
 
 Bypass for one commit:
 

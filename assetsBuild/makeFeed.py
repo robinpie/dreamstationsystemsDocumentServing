@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Generate Atom and RSS 2.0 feeds for /personal/blog.html.
 
-    make-feed.py            write rootdomain/personal/{feed.xml,rss.xml}
-    make-feed.py --check    exit 1 if either file is out of date, write nothing
+    makeFeed.py            write rootdomain/personal/{feed.xml,rss.xml}
+    makeFeed.py --check    exit 1 if either file is out of date, write nothing
 
 Source of truth is the <ul class="posts"> list in blog.html (hrefs, titles,
 <time datetime> values) plus each post's og:description. Output is
@@ -207,7 +207,7 @@ def main():
         for post in posts:
             post["summary"] = summarize(post)
     except (PostError, OSError) as exc:
-        print(f"make-feed: {exc}", file=sys.stderr)
+        print(f"makeFeed: {exc}", file=sys.stderr)
         return 1
 
     stale = []
@@ -219,12 +219,12 @@ def main():
             stale.append(path.name)
         else:
             path.write_text(text, encoding="utf-8")
-            print(f"make-feed: wrote {path.relative_to(ROOT)} "
+            print(f"makeFeed: wrote {path.relative_to(ROOT)} "
                   f"({len(posts)} posts)")
 
     if stale:
-        print(f"make-feed: out of date: {', '.join(stale)} "
-              f"— run assets-build/make-feed.py", file=sys.stderr)
+        print(f"makeFeed: out of date: {', '.join(stale)} "
+              f"— run assetsBuild/makeFeed.py", file=sys.stderr)
         return 1
     return 0
 

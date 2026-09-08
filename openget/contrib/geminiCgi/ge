@@ -22,7 +22,7 @@
 use strict;
 use warnings;
 
-my $lib = $ENV{OPENGET_LIB} || '/usr/local/lib/openget/openget-fetch.pl';
+my $lib = $ENV{OPENGET_LIB} || '/usr/local/lib/openget/opengetFetch.pl';
 do $lib or die "cannot load $lib: $! $@";
 
 $| = 1;

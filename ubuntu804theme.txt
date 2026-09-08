@@ -37,10 +37,10 @@ WHERE EVERYTHING IS
   rootdomain/personal/themes/ubuntu804/i/       11 images (wallpaper, icons)
   rootdomain/personal/themes/ubuntu804/f/       two DejaVu woff2 faces,
                                                 SUBSETS, generated - see below
-  assets-build/fonts-src/                       the full DejaVu TTFs they are
+  assetsBuild/fontsSrc/                         the full DejaVu TTFs they are
                                                 cut from; outside rootdomain/,
                                                 so never served
-  assets-build/make-font-subset.py              cuts them, on every commit
+  assetsBuild/makeFontSubset.py                 cuts them, on every commit
   rootdomain/personal/themes/ubuntu804/CREDITS.txt   attribution; linked from
                                                 the theme's own Help menu
   rootdomain/personal/chrome/top.html           the desktop markup, in three
@@ -56,7 +56,7 @@ under it. The removal happened and the theme did not notice, which was the
 point. It was 464 kB, most of it the two fonts; the fonts are subset on every
 commit now, so what ships is about 168 kB. CREDITS.txt carries the full
 attribution, records that the faces are modified, and says where the originals
-went — they are in the repo at assets-build/fonts-src/, unmodified.
+went — they are in the repo at assetsBuild/fontsSrc/, unmodified.
 
 HOW IT WORKS
 ------------
@@ -229,7 +229,7 @@ THINGS THAT WILL BITE
 
     The last sentence of the old entry was the one real objection: a subset
     "cannot rot when a page gains a character". A subset can. That is why the
-    census is recomputed by assets-build/make-font-subset.py on EVERY commit
+    census is recomputed by assetsBuild/makeFontSubset.py on EVERY commit
     rather than being cut once by hand — see the header of that script, which
     carries the rest of the reasoning, and githooks.txt for the pre-commit
     chain.
@@ -242,7 +242,7 @@ THINGS THAT WILL BITE
 
     IF A CHARACTER EVER COMES OUT IN THE WRONG FONT, this is the first thing to
     suspect — but the symptom is a style mismatch, not tofu, and the margin in
-    make-font-subset.py (Latin-1, General Punctuation, arrows, box drawing) is
+    makeFontSubset.py (Latin-1, General Punctuation, arrows, box drawing) is
     sized to make it unlikely. DO NOT FIX IT BY ADDING A unicode-range. That
     reintroduces the exact trap the old entry described, and the emoji go with
     it. Add to the margin, or to THEMED if a page was added to theme.conf's

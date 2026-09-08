@@ -59,7 +59,7 @@ install: $(BIN)
 	install -m 0644 data/recipes.toml $(DATADIR)/recipes.toml
 	install -m 0644 data/indices.toml $(DATADIR)/indices.toml
 	install -m 0644 data/shops.toml   $(DATADIR)/shops.toml
-	install -m 0644 contrib/openget-fetch.pl $(LIBDIR)/openget-fetch.pl
+	install -m 0644 contrib/opengetFetch.pl $(LIBDIR)/opengetFetch.pl
 	# Never clobber a live config: the deployed file carries the User-Agent and the retention policy.
 	[ -f $(CONFDIR)/config.toml ] || install -m 0644 contrib/config.toml $(CONFDIR)/config.toml
 	install -m 0644 contrib/openget.service $(UNITDIR)/openget.service
@@ -72,10 +72,10 @@ install: $(BIN)
 # The retro frontends touch three other services' trees, so they are a separate target: installing OpenGET should not silently rewrite the finger server's behaviour for every unknown name.
 install-retro:
 	install -d $(GOPHERDIR)/cgi-bin $(GEMINIDIR)/cgi-bin
-	install -m 0755 contrib/gopher-cgi/search $(GOPHERDIR)/cgi-bin/search
-	install -m 0755 contrib/gopher-cgi/item   $(GOPHERDIR)/cgi-bin/item
-	install -m 0755 contrib/gemini-cgi/ge     $(GEMINIDIR)/cgi-bin/ge
-	install -m 0755 contrib/finger-nouser     $(FINGERDIR)/.nouser
+	install -m 0755 contrib/gopherCgi/search $(GOPHERDIR)/cgi-bin/search
+	install -m 0755 contrib/gopherCgi/item   $(GOPHERDIR)/cgi-bin/item
+	install -m 0755 contrib/geminiCgi/ge     $(GEMINIDIR)/cgi-bin/ge
+	install -m 0755 contrib/fingerNouser     $(FINGERDIR)/.nouser
 	@echo
 	@echo "Retro frontends installed. Remaining manual steps:"
 	@echo "  * add a CGIPaths line for $(GEMINIDIR)/cgi-bin to"

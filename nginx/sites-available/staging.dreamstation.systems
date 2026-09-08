@@ -1,8 +1,8 @@
 # staging.dreamstation.systems — the site as of the last commit, before it is
 # live.
 #
-# Serves /srv/httpstaging, which stage-site.sh writes on every commit. The live
-# docroot /srv/http only changes when promote-site.sh is run by hand. This
+# Serves /srv/httpstaging, which stageSite.sh writes on every commit. The live
+# docroot /srv/http only changes when promoteSite.sh is run by hand. This
 # vhost is how you look at the difference.
 #
 # A more specific server_name than the *.dreamstation.systems wildcard in
@@ -76,13 +76,13 @@ server {
 
     # Deliberately NOT included from the live vhost:
     #
-    #   status-cgi.conf   would run the real /srv/cgi scripts against real
+    #   statusCgi.conf    would run the real /srv/cgi scripts against real
     #                     system state; staging has no separate copy of them,
     #                     so this would be the live status page on a staging
     #                     URL — misleading rather than useful.
     #   wkd.conf          OpenPGP key discovery must answer on the real names
     #                     only.
-    #   pgp-key.conf      same.
+    #   pgpKey.conf       same.
     #
     # Included, because they are content-shaped and are exactly what you came
     # here to preview:

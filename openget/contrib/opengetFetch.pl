@@ -11,7 +11,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-# openget-fetch.pl — shared helper for every OpenGET retro frontend script.
+# opengetFetch.pl — shared helper for every OpenGET retro frontend script.
 #
 # Each retro protocol (Gopher CGI, Gemini CGI, Spartan, finger) asks the
 # local daemon to render a page and prints the body; all rendering stays

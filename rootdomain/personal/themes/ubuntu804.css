@@ -6,7 +6,7 @@
 
 /* ------------------------------------------------------------------ fonts */
 
-/* Subsets, built by assets-build/make-font-subset.py from the census of these
+/* Subsets, built by assetsBuild/makeFontSubset.py from the census of these
  * pages on every commit. 382 kB of full faces down to 45 kB.
  *
  * DO NOT ADD A unicode-range HERE. Its absence is what makes the subset safe:
@@ -17,7 +17,7 @@
  * it, and they turn to tofu.
  *
  * A character these files lack is not tofu either, just a fallback font. See
- * make-font-subset.py's header, and ubuntu804theme.txt. */
+ * makeFontSubset.py's header, and ubuntu804theme.txt. */
 @font-face {
   font-family: "DejaVu Web"; font-style: normal; font-weight: 400;
   font-display: swap; src: url(ubuntu804/f/dejavu.woff2) format("woff2");

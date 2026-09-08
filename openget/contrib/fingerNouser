@@ -24,7 +24,7 @@
 use strict;
 use warnings;
 
-my $lib = $ENV{OPENGET_LIB} || '/usr/local/lib/openget/openget-fetch.pl';
+my $lib = $ENV{OPENGET_LIB} || '/usr/local/lib/openget/opengetFetch.pl';
 do $lib or do {
     print "OpenGET is misconfigured on this host.\r\n";
     exit 0;

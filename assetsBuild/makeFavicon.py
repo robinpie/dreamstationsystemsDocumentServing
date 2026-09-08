@@ -12,7 +12,7 @@ Do not add rounded corners -- iOS applies its own mask.
 import subprocess, sys, os, tempfile
 
 # Resolved from this file's own location, not hardcoded, so renaming the repo
-# directory cannot silently point this at a stale path. make-font-subset.py
+# directory cannot silently point this at a stale path. makeFontSubset.py
 # does the same with pathlib; this file is os.path throughout, so it stays so.
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
