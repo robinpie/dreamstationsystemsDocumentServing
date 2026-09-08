@@ -4,12 +4,14 @@
 #
 #   /srv/httpstaging -> /srv/http           nginx docroot (content, no executables)
 #   cgi/             -> /srv/cgi            CGI scripts run by fcgiwrap
+#   gopher/          -> /srv/gopher         gophernicus doc root
+#   gemini/          -> /srv/gemini         molly-brown doc root (Spartan too)
 #   status-sample/   -> /usr/local/bin + units  the status page's other half
 #   nginx/           -> /etc/nginx          vhosts and snippets
 #
-# Content comes from the staging tree so the live docroot matches what was
-# previewed; the other three come from the repo since they have no staging
-# copy. Order matters: content, then the things that read it, then nginx last.
+# Web content comes from the staging tree so the live docroot matches what was
+# previewed; everything else comes from the repo since it has no staging copy.
+# Order matters: content, then the things that read it, then nginx last.
 # Full rationale in githooks.txt and nginx.txt.
 set -eu
 
@@ -115,6 +117,57 @@ if [ -d "$ROOT/cgi" ]; then
 
 	echo "Promoted cgi/ → /srv/cgi"
 fi
+
+# ------------------------------------------------------------- gopher, gemini
+#
+# The two retro doc roots. Promote-only, like everything below the web content:
+# there is one gophernicus and one molly-brown on this box and no second
+# instance for a change to stand up in, so "staged" and "live" would be the
+# same tree. See gophernicus.txt and gemini.txt.
+#
+# NO RESTART IS NEEDED and none is issued. gophernicus is socket-activated
+# per connection, molly-brown reads from disk per request, and spartan.pl
+# (which shares /srv/gemini) does too. Content is live the moment rsync
+# finishes.
+#
+# THE TWO CARVE-OUTS, and why --delete would otherwise be destructive:
+#
+#   ge/          OpenGET's retro frontend. The openget daemon rewrites ~50
+#                files under it after every stats recomputation and owns the
+#                dirs as openget:openget; `make install-retro` puts the
+#                cgi-bin/ scripts there. It is generated, not authored, so it
+#                is gitignored and absent from this repo -- and an unexcluded
+#                --delete would wipe it between regenerations. Excluding it
+#                also protects it from the ownership note below, since
+#                openget writes atomically (temp file + rename) and so needs
+#                write access to the DIRECTORY, not just the files.
+#
+#   ntpstats.*   written every 5 min by ntpstatsgen.timer straight into both
+#                doc roots. Same carve-out /srv/http/ntpstats.txt gets above.
+#
+# rsync excludes protect receiver-side files from --delete (that is the
+# default; only --delete-excluded overrides it), which is exactly what both
+# of these need.
+#
+# OWNERSHIP is deliberately NOT the root:root the web docroot gets. These
+# trees are robin:robin so the content can be edited without sudo, and -a
+# preserves that from the repo. --chmod normalises the repo's group-writable
+# 664/775 to the 644/755 the doc roots have always carried; both leave every
+# file world-readable, which is what lets _gophernicus and molly-brown's
+# DynamicUser read them.
+promote_retro() { # <repo subdir> <doc root> <generated file to protect>
+	local sub="$1" dest="$2" generated="$3"
+	[ -d "$ROOT/$sub" ] || return 0
+	sudo rsync -a --delete \
+		--chmod=D755,F644 \
+		--exclude 'ge/' \
+		--exclude "$generated" \
+		"$ROOT/$sub/" "$dest/"
+	echo "Promoted $sub/ → $dest"
+}
+
+promote_retro gopher /srv/gopher ntpstats.txt
+promote_retro gemini /srv/gemini ntpstats.gmi
 
 # -------------------------------------------------------------- status-sample
 #
