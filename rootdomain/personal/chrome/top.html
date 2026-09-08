@@ -11,6 +11,23 @@
 
   <a class="skip" href="#content">Skip to page content</a>
 
+  <!-- Second, so the skip link stays the first tab stop. Off-screen under
+       this theme and revealed on focus, exactly like .skip; a text browser or
+       a screen reader ignores the positioning and reads it here, at the top,
+       which is the whole point. Only this theme includes it, so it never
+       lies: under the other four there is no chrome to get rid of.
+
+       The href is built from $path, which the PAGE sets to $document_uri
+       before including this fragment, because $document_uri inside a
+       subrequest names the fragment. theme.conf's regex matches eight literal
+       filenames, so $path is one of eight known strings — and $document_uri
+       carries no query string, so the appended ?theme=plain is always the
+       only one. Following it also sets the theme cookie, since theme.conf
+       stamps that on every response. -->
+  <p class="themenote">Using accessibility tools or a text browser? <a
+     href="<!--#echo var="path" -->?theme=plain">Switch to another theme</a> to
+     get rid of the chrome.</p>
+
   <!-- ==================================================== GNOME panel ==== -->
   <div class="panel">
     <!-- The home link lives on the panel's window-list entry, not on the

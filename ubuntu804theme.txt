@@ -135,6 +135,37 @@ $document_uri is right even for /personal/ with no filename: the server-level
 `index` makes that an internal redirect to /personal/index.html before the
 variable is read. Verified, not assumed.
 
+THE WAY OUT (.themenote)
+------------------------
+Below the skip link, chrome/top.html carries one off-screen sentence: "Using
+accessibility tools or a text browser? Switch to another theme to get rid of
+the chrome.", the middle clause linking to $path plus ?theme=plain.
+
+It exists because this theme puts a GNOME panel, a title bar, a menu bar, a
+toolbar and a URL bar between a screen reader and the first word of the page,
+and because it is the DEFAULT — a stranger on a text browser gets it without
+having chosen it. The theme switcher was always the escape hatch, but it sits
+in the top-right corner of the viewport, which under this theme is a long way
+into the reading order. This puts the same escape at the very top.
+
+  - It is off-screen (left: -9999px), not display:none and not
+    visibility:hidden. Those two would drop it from the accessibility tree,
+    which is the only tree it exists for. A text browser ignores the
+    positioning and simply reads it.
+  - It is revealed on :focus-within, like .skip, so the link is never an
+    invisible tab stop. focus-within rather than focus because the focusable
+    thing is the link and the sentence around it is what makes it make sense.
+  - It comes SECOND, after the skip link, so the first tab stop is still the
+    one a sighted keyboard user wants.
+  - It lives in the chrome fragment, so it appears under this theme and no
+    other. That is not just tidiness: under the other four the sentence would
+    be a lie, since there is no chrome to get rid of.
+  - The link is safe by construction. $path is $document_uri, which
+    theme.conf's regex constrains to eight literal filenames, and
+    $document_uri never carries a query string, so the appended ?theme=plain
+    is always the only one. Following it also persists the choice, because
+    theme.conf stamps the cookie on every response.
+
 THINGS THAT WILL BITE
 ---------------------
   - NGINX VARIABLES DO NOT SURVIVE AN #include virtual. The include is a

@@ -742,6 +742,23 @@ footer .badges a:focus { outline: 2px solid #fff; outline-offset: 1px; }
 }
 .skip:focus { left: 6px; top: 6px; }
 
+/* The same trick for the note that offers a way out of the chrome entirely.
+ * Off-screen rather than display:none or visibility:hidden, because those two
+ * take it out of the accessibility tree as well and it exists ONLY for that
+ * tree (and for text browsers, which read the markup and ignore all of this).
+ *
+ * focus-within, not focus: the focusable thing is the link inside, but the
+ * sentence around it is what makes the link make sense, so the whole note
+ * travels on-screen together. It cannot collide with .skip at the same
+ * coordinates — only one of the two can hold focus. */
+.themenote {
+  position: absolute; left: -9999px; top: 0; z-index: 50;
+  margin: 0; max-width: 34em;
+  background: #fff; color: #000; padding: 6px 10px;
+  border: 2px solid var(--urlbar-border);
+}
+.themenote:focus-within { left: 6px; top: 6px; }
+
 /* ------------------------------------------------------------- responsive */
 
 /* The illusion has to survive every width. It degrades by dropping chrome
@@ -791,7 +808,7 @@ footer .badges a:focus { outline: 2px solid #fff; outline-offset: 1px; }
 @media print {
   body { background: #fff; overflow: visible; }
   .panel, .titlebar, .menubar, .navbar, .site-header,
-  .statusbar, .skip { display: none !important; }
+  .statusbar, .skip, .themenote { display: none !important; }
   .desktop, .window, .client { display: block; height: auto; border: 0; }
   .viewport { overflow: visible; margin: 0; background: #fff; }
   #mastwrap { background: none; }
