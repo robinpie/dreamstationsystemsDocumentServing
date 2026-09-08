@@ -1,0 +1,5 @@
+# Options used to invoke gophernicus. See man gophernicus.
+#  -h  hostname advertised in menus (MUST match the public domain)
+#  -r  document root
+#  -l  access log (Apache combined format) -- watched by fail2ban
+OPTIONS=-h dreamstation.systems -r /srv/gopher -l /var/log/gophernicus/access.log

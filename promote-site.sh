@@ -36,6 +36,23 @@ NGINX_SNIPPETS=(
 	wkd.conf
 )
 
+# etc/ mirrors real /etc paths, one file per entry, installed by name for the
+# same reason as the nginx lists: every one of these directories holds files
+# this repo does not own. A new file here does nothing until it is listed.
+#
+# NOT IN THIS LIST, DELIBERATELY: /etc/fail2ban/jail.local. It is a single file
+# holding every jail on the box, and its [DEFAULT] and [sshd] sections carry
+# ignoreip lines with a home IP and an institutional range. THIS REPO IS PUBLIC
+# ON GITHUB. The filters below are pure regex and carry nothing; the jails that
+# reference them stay out of git. See gophernicus.txt / fail2ban.txt.
+ETC_FILES=(
+	default/gophernicus
+	molly-brown/dreamstation.conf
+	fail2ban/filter.d/gophernicus.conf
+	fail2ban/filter.d/molly-brown.conf
+	logrotate.d/gophernicus
+)
+
 # ------------------------------------------------------------- staging checks
 #
 # Refuses the two ways staging can lie to you. See githooks.txt.
@@ -89,6 +106,78 @@ if [ -f "$ROOT/status-sample/status-sample.sh" ]; then
 		echo "ABORT: status-sample.sh fails syntax check — nothing promoted." >&2
 		bash -n "$ROOT/status-sample/status-sample.sh" || true
 		exit 1
+	fi
+fi
+
+# etc/ gates. Unlike nginx there is no one `-t` for these, so each file gets
+# the best offline check its own tool offers, BEFORE anything is installed.
+# molly-brown is the one that really needs it: it has no config-test flag and
+# no second instance, so a bad config is a genuine outage rather than a
+# refused reload. See nginx.txt for why the nginx block cannot work this way.
+if [ -d "$ROOT/etc" ]; then
+	# /etc/default/gophernicus is a systemd EnvironmentFile: KEY=VALUE only.
+	f="$ROOT/etc/default/gophernicus"
+	if [ -f "$f" ] && grep -vE '^\s*(#|$)' "$f" | grep -qvE '^[A-Za-z_][A-Za-z0-9_]*='; then
+		echo "ABORT: etc/default/gophernicus has a line that is not KEY=VALUE." >&2
+		grep -vE '^\s*(#|$)' "$f" | grep -vE '^[A-Za-z_][A-Za-z0-9_]*=' | sed 's/^/      /' >&2
+		exit 1
+	fi
+
+	# logrotate reads a config only if root owns it, so validate a root-owned
+	# copy rather than the repo file. --debug parses and changes nothing.
+	f="$ROOT/etc/logrotate.d/gophernicus"
+	if [ -f "$f" ]; then
+		lr_tmp="$(mktemp -d)"
+		sudo install -m644 -o root -g root "$f" "$lr_tmp/lr"
+		if sudo logrotate --debug "$lr_tmp/lr" 2>&1 | grep -qi '^error'; then
+			echo "ABORT: etc/logrotate.d/gophernicus fails logrotate parsing." >&2
+			sudo logrotate --debug "$lr_tmp/lr" 2>&1 | grep -i '^error' | sed 's/^/      /' >&2
+			sudo rm -rf "$lr_tmp"
+			exit 1
+		fi
+		sudo rm -rf "$lr_tmp"
+	fi
+
+	# molly-brown: run the real binary against the candidate config and read
+	# HOW it fails. With the live instance holding 1965 a fully valid config
+	# gets all the way to "address already in use" — which means TOML parsed,
+	# the TLS keypair loaded and the logs opened. Anything else is a reject,
+	# and that includes SILENCE: the documented ErrorLog="-" footgun sends the
+	# startup errors into a file literally named "-", so a broken config can
+	# fail quietly. Requiring the expected message rather than merely checking
+	# the exit status is what catches that one. See gemini.txt CONFIG.
+	f="$ROOT/etc/molly-brown/dreamstation.conf"
+	if [ -f "$f" ] && command -v molly-brown >/dev/null 2>&1; then
+		# Run it from a throwaway cwd, never the repo. An ErrorLog of "-" makes
+		# molly create a file literally named "-" in the working directory, and
+		# a validation step must not drop that into a git tree.
+		#
+		# The timeout is short and deliberate. If the service is DOWN and the
+		# config is good, this probe genuinely binds :1965 and would sit there
+		# serving; 3s caps how long a validation run can hold the real port.
+		mb_tmp="$(mktemp -d)"
+		mb_out="$(cd "$mb_tmp" && sudo timeout 3 molly-brown -c "$f" 2>&1 || true)"
+		sudo rm -rf "$mb_tmp"
+		if systemctl is-active --quiet molly-brown@dreamstation; then
+			if ! printf '%s' "$mb_out" | grep -q 'address already in use'; then
+				echo "ABORT: etc/molly-brown/dreamstation.conf did not validate." >&2
+				echo "       Expected it to reach a bind conflict on the live port;" >&2
+				echo "       got this instead:" >&2
+				printf '%s\n' "${mb_out:-(no output — check for ErrorLog = \"-\")}" | sed 's/^/      /' >&2
+				exit 1
+			fi
+		else
+			# Service is down, so there is no port conflict to bump into and a
+			# valid config would just start serving. Fall back to the weaker
+			# check: it must at least not be a TOML parse error.
+			if printf '%s' "$mb_out" | grep -q 'toml:'; then
+				echo "ABORT: etc/molly-brown/dreamstation.conf fails to parse." >&2
+				printf '%s\n' "$mb_out" | sed 's/^/      /' >&2
+				exit 1
+			fi
+			echo "NOTE: molly-brown@dreamstation is not running, so its config got" >&2
+			echo "      only a parse check, not the full startup check." >&2
+		fi
 	fi
 fi
 
@@ -270,5 +359,151 @@ if [ -d "$ROOT/nginx" ]; then
 			fi
 			exit 1
 		fi
+	fi
+fi
+
+# ----------------------------------------------------------------------- etc/
+#
+# Single files scattered across five /etc locations, installed by name like the
+# nginx lists above. Everything here was gated offline further up, so by this
+# point the remaining risk is behavioural, not syntactic: a config that parses
+# but does not work. Each service is therefore restarted and then PROBED over
+# its own protocol, and rolled back if the probe fails.
+#
+# This is the nginx install -> test -> roll back shape, with one real
+# difference. `nginx -t` runs before the reload and the old config keeps
+# serving until it passes, so a bad nginx config never costs a request.
+# molly-brown has no config test and no second instance, so its check can only
+# happen after a restart that has already dropped the service. A bad config
+# therefore means a few seconds of downtime, not zero. The offline gate above
+# exists to make that path rare.
+if [ -d "$ROOT/etc" ]; then
+	etc_backup="$(mktemp -d)"
+	# Keeps the nginx block's backup dir in the trap too — a bare `trap ... EXIT`
+	# here would REPLACE that handler and leak it.
+	trap 'sudo rm -rf "$etc_backup" ${backup:+"$backup"}' EXIT
+	etc_changed=()
+
+	for rel in "${ETC_FILES[@]}"; do
+		src="$ROOT/etc/$rel"
+		if [ ! -f "$src" ]; then
+			echo "ABORT: etc/$rel is in ETC_FILES but missing from the repo." >&2
+			exit 1
+		fi
+		if ! sudo cmp -s "$src" "/etc/$rel"; then
+			sudo mkdir -p "$etc_backup/$(dirname "$rel")"
+			if sudo test -f "/etc/$rel"; then
+				sudo cp -p "/etc/$rel" "$etc_backup/$rel"
+			else
+				# Absent upstream: record it, so a rollback removes the file
+				# rather than leaving a half-applied config behind.
+				sudo touch "$etc_backup/$rel.ABSENT"
+			fi
+			sudo install -D -m644 -o root -g root "$src" "/etc/$rel"
+			etc_changed+=("$rel")
+		fi
+	done
+
+	etc_did_change() { # <rel>
+		local rel
+		for rel in ${etc_changed[@]+"${etc_changed[@]}"}; do
+			[ "$rel" = "$1" ] && return 0
+		done
+		return 1
+	}
+
+	etc_restore() { # <rel>...
+		local rel
+		for rel in "$@"; do
+			if sudo test -f "$etc_backup/$rel.ABSENT"; then
+				sudo rm -f "/etc/$rel"
+			elif sudo test -f "$etc_backup/$rel"; then
+				sudo cp -p "$etc_backup/$rel" "/etc/$rel"
+			fi
+		done
+	}
+
+	# Probes retry briefly: a restarted daemon is not always listening the
+	# instant systemctl returns.
+	probe_gopher() {
+		local i
+		for i in 1 2 3 4 5 6 7 8 9 10; do
+			if printf '\r\n' | timeout 5 nc -w 3 localhost 70 2>/dev/null | grep -q .; then
+				return 0
+			fi
+			sleep 0.3
+		done
+		return 1
+	}
+
+	probe_gemini() {
+		local i
+		for i in 1 2 3 4 5 6 7 8 9 10; do
+			if printf 'gemini://dreamstation.systems/\r\n' |
+				timeout 10 openssl s_client -quiet \
+					-connect localhost:1965 -servername dreamstation.systems 2>/dev/null |
+				head -1 | grep -q '^20 '; then
+				return 0
+			fi
+			sleep 0.3
+		done
+		return 1
+	}
+
+	# -- gophernicus: socket-activated, so only the socket unit is restarted.
+	if etc_did_change default/gophernicus; then
+		sudo systemctl restart gophernicus.socket
+		if probe_gopher; then
+			echo "Promoted etc/default/gophernicus (gophernicus.socket restarted)"
+		else
+			echo "ABORT: gopher :70 stopped answering after the config change —" >&2
+			echo "       rolling back and restarting." >&2
+			etc_restore default/gophernicus
+			sudo systemctl restart gophernicus.socket
+			probe_gopher && echo "Rolled back; :70 is answering again." >&2 ||
+				echo "ROLLBACK ALSO FAILS. gophernicus needs a human." >&2
+			exit 1
+		fi
+	fi
+
+	# -- molly-brown: a real restart, and the capsule is down while it happens.
+	if etc_did_change molly-brown/dreamstation.conf; then
+		sudo systemctl restart molly-brown@dreamstation
+		if probe_gemini; then
+			echo "Promoted etc/molly-brown/dreamstation.conf (molly-brown@dreamstation restarted)"
+		else
+			echo "ABORT: gemini :1965 did not come back after the config change —" >&2
+			echo "       rolling back and restarting." >&2
+			etc_restore molly-brown/dreamstation.conf
+			sudo systemctl restart molly-brown@dreamstation
+			probe_gemini && echo "Rolled back; :1965 is answering again." >&2 ||
+				echo "ROLLBACK ALSO FAILS. molly-brown needs a human." >&2
+			exit 1
+		fi
+	fi
+
+	# -- fail2ban: the filters cannot be checked standalone because jail.local
+	# is what references them (and jail.local is deliberately not in this repo).
+	# So this one keeps the nginx order: install, then test the whole config.
+	if etc_did_change fail2ban/filter.d/gophernicus.conf ||
+		etc_did_change fail2ban/filter.d/molly-brown.conf; then
+		if sudo fail2ban-client --test >/dev/null 2>&1; then
+			sudo systemctl reload fail2ban
+			echo "Promoted etc/fail2ban/filter.d/* (fail2ban reloaded)"
+		else
+			echo "ABORT: fail2ban-client --test fails with the new filters — rolling back." >&2
+			sudo fail2ban-client --test 2>&1 | tail -5 | sed 's/^/      /' >&2
+			etc_restore fail2ban/filter.d/gophernicus.conf fail2ban/filter.d/molly-brown.conf
+			sudo fail2ban-client --test >/dev/null 2>&1 &&
+				echo "Rolled back; fail2ban config is valid again (not reloaded)." >&2 ||
+				echo "ROLLBACK ALSO FAILS fail2ban-client --test. Needs a human." >&2
+			exit 1
+		fi
+	fi
+
+	# -- logrotate: nothing runs it on our behalf and nothing needs reloading;
+	# the parse gate above is the whole check.
+	if etc_did_change logrotate.d/gophernicus; then
+		echo "Promoted etc/logrotate.d/gophernicus"
 	fi
 fi
