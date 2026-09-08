@@ -1,0 +1,46 @@
+#!/usr/bin/perl
+# SPDX-License-Identifier: GPL-2.0-only
+# Copyright (C) 2026 robinpie
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# OpenGET item page, served as a gophernicus CGI.
+#
+# Installed at /srv/gopher/ge/cgi-bin/item. The generated gophermaps link here as "/ge/cgi-bin/item?4151", and gophernicus puts everything after the "?" into QUERY_STRING.
+
+use strict;
+use warnings;
+
+my $lib = $ENV{OPENGET_LIB} || '/usr/local/lib/openget/openget-fetch.pl';
+do $lib or die "cannot load $lib: $! $@";
+
+$| = 1;
+# Raw bytes, NOT :encoding(UTF-8): HTTP::Tiny hands back undecoded UTF-8, so an encoding layer would re-encode each byte as Latin-1 and produce mojibake.
+binmode(STDOUT, ':raw');
+
+my $q = og_clean($ENV{QUERY_STRING} // $ENV{SEARCHREQUEST} // '');
+
+if ($q eq '') {
+    print "iNo item requested.\tfake\t(NULL)\t0\r\n";
+    print "7Search for an item\t/ge/cgi-bin/search\tdreamstation.systems\t70\r\n";
+    print ".\r\n";
+    exit 0;
+}
+
+my ($body, $err) = og_fetch('/retro/gopher/item?q=' . og_escape($q));
+
+if (defined $err) {
+    print "iOpenGET is not answering right now.\tfake\t(NULL)\t0\r\n";
+    print "i($err)\tfake\t(NULL)\t0\r\n";
+    print ".\r\n";
+    exit 0;
+}
+
+print $body;

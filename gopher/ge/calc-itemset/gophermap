@@ -1,0 +1,23 @@
+iItem sets	fake	(NULL)	0
+i=========	fake	(NULL)	0
+iBarrows and armour sets against their component pieces.	fake	(NULL)	0
+i	fake	(NULL)	0
+iMethod                                          Cost    Profit     ROI	fake	(NULL)	0
+i-----------------------------------------  ---------  --------  ------	fake	(NULL)	0
+0Combine pieces into Verac's armour set       817,454   106,123   13.0%	/ge/calc-itemset/set-verac-make	dreamstation.systems	70
+0Combine pieces into Karil's armour set     1,433,288    89,175    6.2%	/ge/calc-itemset/set-karil-make	dreamstation.systems	70
+0Combine pieces into Dharok's armour set    3,939,270    79,760    2.0%	/ge/calc-itemset/set-dharok-make	dreamstation.systems	70
+0Combine pieces into Ahrim's armour set     3,393,312    66,088    1.9%	/ge/calc-itemset/set-ahrim-make	dreamstation.systems	70
+0Combine pieces into Torag's armour set     1,009,503    50,761    5.0%	/ge/calc-itemset/set-torag-make	dreamstation.systems	70
+0Combine pieces into Guthan's armour set      717,377    20,227    2.8%	/ge/calc-itemset/set-guthan-make	dreamstation.systems	70
+0Break Guthan's armour set into its pieces    752,657   -49,627   -6.6%	/ge/calc-itemset/set-guthan-break	dreamstation.systems	70
+0Break Torag's armour set into its pieces   1,081,902   -92,586   -8.6%	/ge/calc-itemset/set-torag-break	dreamstation.systems	70
+0Break Verac's armour set into its pieces     942,425  -141,319  -15.0%	/ge/calc-itemset/set-verac-break	dreamstation.systems	70
+0Break Karil's armour set into its pieces   1,553,533  -148,909   -9.6%	/ge/calc-itemset/set-karil-break	dreamstation.systems	70
+0Break Ahrim's armour set into its pieces   3,530,000  -204,552   -5.8%	/ge/calc-itemset/set-ahrim-break	dreamstation.systems	70
+0Break Dharok's armour set into its pieces  4,101,051  -240,566   -5.9%	/ge/calc-itemset/set-dharok-break	dreamstation.systems	70
+i	fake	(NULL)	0
+i----------------------------------------	fake	(NULL)	0
+i* Rows marked "no price" reference an item nobody has traded recently,	fake	(NULL)	0
+i  so no profit can be computed for them honestly.	fake	(NULL)	0
+.

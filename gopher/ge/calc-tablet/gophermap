@@ -1,0 +1,19 @@
+iMagic tablets	fake	(NULL)	0
+i=============	fake	(NULL)	0
+iSoft clay plus runes into teleport tablets.	fake	(NULL)	0
+i	fake	(NULL)	0
+iMethod                            Cost  Profit     ROI	fake	(NULL)	0
+i--------------------------------  ----  ------  ------	fake	(NULL)	0
+0Make Varrock teleport (tablet)     280     312  111.4%	/ge/calc-tablet/tab-varrock	dreamstation.systems	70
+0Make Teleport to house (tablet)    268     310  115.7%	/ge/calc-tablet/tab-house	dreamstation.systems	70
+0Make Lumbridge teleport (tablet)   280     300  107.1%	/ge/calc-tablet/tab-lumbridge	dreamstation.systems	70
+0Make Falador teleport (tablet)     280     260   92.9%	/ge/calc-tablet/tab-falador	dreamstation.systems	70
+0Make Camelot teleport (tablet)     287     117   40.8%	/ge/calc-tablet/tab-camelot	dreamstation.systems	70
+0Make Ardougne teleport (tablet)    393      27    6.9%	/ge/calc-tablet/tab-ardougne	dreamstation.systems	70
+i	fake	(NULL)	0
+i----------------------------------------	fake	(NULL)	0
+i* gp/hour uses a typical action rate for the method and assumes you	fake	(NULL)	0
+i  never wait on a buy offer. Treat it as an upper bound.	fake	(NULL)	0
+i* Rows marked "no price" reference an item nobody has traded recently,	fake	(NULL)	0
+i  so no profit can be computed for them honestly.	fake	(NULL)	0
+.

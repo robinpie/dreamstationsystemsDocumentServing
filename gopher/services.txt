@@ -1,0 +1,49 @@
+other protocols on dreamstation.systems
+=======================================
+
+(more comprehensive explainer coming soon)
+
+this box runs a few retro/fun/quirky internet services. here's everything it speaks:
+
+
+  Gopher         gopher://dreamstation.systems
+                 you're here
+
+  Gemini/Spartan gemini://dreamstation.systems, spartan://dreamstation.systems
+                 mostly the same content as this gopher hole, over Gemini or Spartan.
+
+  Finger         in your terminal: finger @dreamstation.systems
+                 currently being set up.
+
+  FTP            ftp://dreamstation.systems
+                 an anonymous, read-only file archive. plain FTP or
+                 explicit FTPS for the same archive encrypted.
+
+  NTP            part of pool.ntp.org. i also serve NTS on TCP/4460
+                 
+  E-mail         i run a small personal-only email server here - email me at
+                 robin@dreamstation.systems
+
+  DICT           dict://dreamstation.systems
+                 in your favorite graphical dictd frontend, or in your terminal
+                 with dictd: dict -h dreamstation.systems -d jargon
+                 "amiga persecution complex" (or similar commands)
+                 a dictionary server (RFC 2229), port 2628.
+
+  QOTD           in your terminal: nc dreamstation.systems 17
+                 quote of the day (RFC 865), TCP/UDP port 17.
+
+  Daytime        in your terminal: nc dreamstation.systems 13
+                 the current date and time (RFC 867), TCP/UDP port 13.
+
+  Echo           in your terminal: nc dreamstation.systems 7
+                 whatever you type sent straight back to you (RFC 862), port 7.
+
+  Discard        in your terminal: nc dreamstation.systems 9
+                 everything you send is thrown away (RFC 863), port 9.
+                 
+  Chargen        in your terminal: nc dreamstation.systems 19
+                 an endless stream of ASCII (RFC 864), port 19.
+  
+--
+back to home: gopher://dreamstation.systems

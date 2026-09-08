@@ -1,0 +1,50 @@
+#!/usr/bin/perl
+# SPDX-License-Identifier: GPL-2.0-only
+# Copyright (C) 2026 robinpie
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# OpenGET item search, served as a gophernicus type-7 CGI.
+#
+# Installed at /srv/gopher/ge/cgi-bin/search. gophernicus runs anything under the CGI directory (default cgi-bin/) as a script; execution is enabled because the unit does not pass -nx. It sets SEARCHREQUEST to the term typed into a type-7 selector, with QUERY_STRING as the fallback for a plain "selector?arg" request.
+#
+# Regenerating a static page for all 4,650 items every five minutes would be silly; search is what a type-7 selector is for.
+
+use strict;
+use warnings;
+
+my $lib = $ENV{OPENGET_LIB} || '/usr/local/lib/openget/openget-fetch.pl';
+do $lib or die "cannot load $lib: $! $@";
+
+$| = 1;
+# Raw bytes, NOT :encoding(UTF-8): HTTP::Tiny hands back undecoded UTF-8, so an encoding layer would re-encode each byte as Latin-1 and produce mojibake.
+binmode(STDOUT, ':raw');
+
+my $q = og_clean($ENV{SEARCHREQUEST} // $ENV{QUERY_STRING} // '');
+
+if ($q eq '') {
+    print "iType an item name to search for.\tfake\t(NULL)\t0\r\n";
+    print "iFor example: abyssal whip\tfake\t(NULL)\t0\r\n";
+    print ".\r\n";
+    exit 0;
+}
+
+my ($body, $err) = og_fetch('/retro/gopher/search?q=' . og_escape($q));
+
+if (defined $err) {
+    # A gophermap must still be well formed when the daemon is down, or the client shows nothing at all rather than an explanation.
+    print "iOpenGET is not answering right now.\tfake\t(NULL)\t0\r\n";
+    print "i($err)\tfake\t(NULL)\t0\r\n";
+    print "iThe price archive keeps running; only this lookup is affected.\tfake\t(NULL)\t0\r\n";
+    print ".\r\n";
+    exit 0;
+}
+
+print $body;

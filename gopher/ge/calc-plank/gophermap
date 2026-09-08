@@ -1,0 +1,17 @@
+iPlank making	fake	(NULL)	0
+i============	fake	(NULL)	0
+iLogs into planks at a sawmill.	fake	(NULL)	0
+i	fake	(NULL)	0
+iMethod                Cost  Profit    ROI	fake	(NULL)	0
+i-------------------  -----  ------  -----	fake	(NULL)	0
+0Make Mahogany plank  1,609     496  30.8%	/ge/calc-plank/plank-mahogany	dreamstation.systems	70
+0Make Oak plank         292     214  73.3%	/ge/calc-plank/plank-oak	dreamstation.systems	70
+0Make Teak plank        633     112  17.7%	/ge/calc-plank/plank-teak	dreamstation.systems	70
+0Make Plank             124      17  13.7%	/ge/calc-plank/plank-plank	dreamstation.systems	70
+i	fake	(NULL)	0
+i----------------------------------------	fake	(NULL)	0
+i* gp/hour uses a typical action rate for the method and assumes you	fake	(NULL)	0
+i  never wait on a buy offer. Treat it as an upper bound.	fake	(NULL)	0
+i* Rows marked "no price" reference an item nobody has traded recently,	fake	(NULL)	0
+i  so no profit can be computed for them honestly.	fake	(NULL)	0
+.

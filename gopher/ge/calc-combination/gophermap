@@ -1,0 +1,18 @@
+iCombination items	fake	(NULL)	0
+i=================	fake	(NULL)	0
+iComponents combined into a single higher-value item.	fake	(NULL)	0
+i	fake	(NULL)	0
+iMethod                                Cost    Profit    ROI	fake	(NULL)	0
+i------------------------------  ----------  --------  -----	fake	(NULL)	0
+0Make an Saradomin godsword      24,547,015   928,396   3.8%	/ge/calc-combination/comb-saradomin-gs	dreamstation.systems	70
+0Make an Zamorak godsword        20,287,000   434,622   2.1%	/ge/calc-combination/comb-zamorak-gs	dreamstation.systems	70
+0Make an Bandos godsword         17,502,625   235,375   1.3%	/ge/calc-combination/comb-bandos-gs	dreamstation.systems	70
+0Make an Armadyl godsword         7,689,889    52,111   0.7%	/ge/calc-combination/comb-armadyl-gs	dreamstation.systems	70
+0Make a Dragonfire ward          12,234,595  -107,204  -0.9%	/ge/calc-combination/comb-dfw	dreamstation.systems	70
+0Make a Dragonfire shield         3,484,024  -250,024  -7.2%	/ge/calc-combination/comb-dfs	dreamstation.systems	70
+0Make a Toxic staff (uncharged)   8,692,504  -327,133  -3.8%	/ge/calc-combination/comb-toxic-staff	dreamstation.systems	70
+i	fake	(NULL)	0
+i----------------------------------------	fake	(NULL)	0
+i* Rows marked "no price" reference an item nobody has traded recently,	fake	(NULL)	0
+i  so no profit can be computed for them honestly.	fake	(NULL)	0
+.

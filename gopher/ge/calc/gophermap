@@ -1,0 +1,29 @@
+iMoney makers	fake	(NULL)	0
+i============	fake	(NULL)	0
+iMoney-making methods priced at the current market.	fake	(NULL)	0
+i	fake	(NULL)	0
+1Potion decanting — Buy potions at one dose count, decant, sell at another. (18)	/ge/calc-decanting	dreamstation.systems	70
+1Herblore — Unfinished potions plus secondaries into finished potions. (18)	/ge/calc-herblore	dreamstation.systems	70
+1Tanning — Hides into leather at a tanner. (6)	/ge/calc-tanning	dreamstation.systems	70
+1Plank making — Logs into planks at a sawmill. (4)	/ge/calc-plank	dreamstation.systems	70
+1Smelting and the blast furnace — Ore and coal into bars. (7)	/ge/calc-smithing	dreamstation.systems	70
+1Fletching — Logs into bows, and bows into strung bows. (15)	/ge/calc-fletching	dreamstation.systems	70
+1Enchanting — Jewellery plus runes into enchanted jewellery. (3)	/ge/calc-enchanting	dreamstation.systems	70
+1Magic tablets — Soft clay plus runes into teleport tablets. (6)	/ge/calc-tablet	dreamstation.systems	70
+1Spell conversions — Items transmuted in the inventory, paid for in runes. (14)	/ge/calc-spell	dreamstation.systems	70
+1Item sets — Barrows and armour sets against their component pieces. (12)	/ge/calc-itemset	dreamstation.systems	70
+1Barrows repair — Degraded barrows gear repaired and resold. (24)	/ge/calc-barrows	dreamstation.systems	70
+1Combination items — Components combined into a single higher-value item. (7)	/ge/calc-combination	dreamstation.systems	70
+1Sapling trading — Seeds grown into saplings. (18)	/ge/calc-sapling	dreamstation.systems	70
+i	fake	(NULL)	0
+iWhole-catalogue calculators	fake	(NULL)	0
+1High alchemy — every item, alch value against market price	/ge/alch	dreamstation.systems	70
+1Low alchemy — the level 21 spell, 40% of the item's value	/ge/alch?spell=low	dreamstation.systems	70
+1Store profit — shop shelf against market price	/ge/alch	dreamstation.systems	70
+1GE tax calculator — what a sale actually pays out	/ge/about	dreamstation.systems	70
+i	fake	(NULL)	0
+iInputs are costed at the price you would pay to buy them right now,	fake	(NULL)	0
+iand outputs at the price you would receive selling right now, minus	fake	(NULL)	0
+itax.	fake	(NULL)	0
+i	fake	(NULL)	0
+.
