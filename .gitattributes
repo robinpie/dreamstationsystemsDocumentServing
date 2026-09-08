@@ -5,3 +5,6 @@ rootdomain/old/** linguist-detectable=false
 rootdomain/oldsite/** linguist-detectable=false
 rootdomain/personal/sophiagame/** linguist-detectable=false
 rootdomain/personal/wiktionaryRacingV2 linguist-detectable=false
+
+# webBadges.csv is RFC 4180, which specifies CRLF
+webBadges.csv text eol=crlf

@@ -26,27 +26,44 @@ preCommit.sh, which calls each step in turn:
     assetsBuild/makeFeed.py        Atom + RSS for the blog         (feeds.txt)
     assetsBuild/makeFontSubset.py  ubuntu804 DejaVu subsets
                                                           (ubuntu804theme.txt)
+    assetsBuild/badgeBuild.pl      the 88x31 wall             (siteAssets.txt)
 
 Any step added there must re-stage what it rewrites, or the commit will not
 match what the hook computed.
 
-The last two produce COMMITTED ARTIFACTS, and for the same reason: promote is
+The last three produce COMMITTED ARTIFACTS, and for the same reason: promote is
 a plain rsync of rootdomain/ with no build step, so anything served has to
 exist in the repo. (That invariant is why the font subsetting went here rather
 than into stageSite.sh, where it would have been just as easy to run and
 would have left the live docroot holding files that exist in no commit.)
 
-Both are no-ops when their inputs have not changed, so an unrelated commit
-does not list feeds or fonts among its changes. For the fonts that is
+All three are no-ops when their inputs have not changed, so an unrelated commit
+does not list feeds, fonts or badges among its changes. For the fonts that is
 load-bearing rather than cosmetic: without it every commit would put two new
-20 kB binaries into git history.
+20 kB binaries into git history. The badges get there differently — a source
+sha256 matching assetsBuild/badgeManifest.txt skips the encoders outright,
+which also keeps a slow -z 9 encode off the critical path of every commit.
 
-THE UNSTAGED GUARD IS ON THE FEEDS ONLY, deliberately. A feed built from a
-half-finished working tree makes a false claim to readers who cache it — it
-announces posts the commit does not contain. A font subset built from the same
-tree is merely generous: it carries glyphs for text that is not committed yet,
-which costs bytes and breaks nothing. Same tree, different failure modes,
-different guard.
+THE THREE STEPS GUARD DIFFERENTLY, and none of it is accidental.
+
+  feeds    UNSTAGED GUARD. A feed built from a half-finished working tree
+           makes a false claim to readers who cache it — it announces posts
+           the commit does not contain. So it declines to build at all.
+
+  fonts    NO GUARD. A subset built from the same tree is merely generous: it
+           carries glyphs for text that is not committed yet, which costs
+           bytes and breaks nothing.
+
+  badges   PER-FILE GUARD, because this is the only step that rewrites
+           HAND-AUTHORED FILES — it generates the <ul class="badges"> block
+           inside eight .html pages you also edit by hand. `git add` on one of
+           those would sweep an unrelated in-progress edit into the commit,
+           which no generator should ever do. So pages that were already dirty
+           before it ran are written on disk but NOT staged, and pages that
+           were clean are staged normally. The images and the manifest are
+           wholly generated and stage unconditionally.
+
+Same tree, three different failure modes, three different guards.
 
 DO NOT set core.hooksPath. It replaces .git/hooks wholesale, which would
 silently disable the deploy hooks and both git-lfs hooks. Symlink instead.
