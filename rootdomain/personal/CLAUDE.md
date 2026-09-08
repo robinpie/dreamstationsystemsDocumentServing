@@ -1,0 +1,1 @@
+When I refer to "the main site" in the context of the personal site, I'm referring to index, blog, hypnospace, lanfalsehoods, ntppool, ntppost, ntpuserinfo, slowqotd, gzipt, and any future blog posts.
