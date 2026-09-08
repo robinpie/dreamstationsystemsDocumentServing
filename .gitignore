@@ -9,3 +9,23 @@ README.local.md
 
 # Editor artifacts
 *.kate-swp
+
+# /gopher/ge/ and /gemini/ge/: OpenGET's retro frontends. NOT authored here —
+# the openget daemon regenerates ~50 gophermaps/gemtext files under these after
+# every stats recomputation, and `make install-retro` owns the cgi-bin/ scripts.
+# Both dirs are openget:openget on disk. promote-site.sh excludes them from its
+# rsync and its chown for the same reason. See openget.txt.
+/gopher/ge/
+/gemini/ge/
+
+# Written every 5 min by ntpstatsgen.timer, straight into the doc roots
+# (same deal as /rootdomain/ntpstats.txt above). See ntpstatsgen.txt.
+/gopher/ntpstats.txt
+/gemini/ntpstats.gmi
+
+# TLS material never belongs in this repo — it is public on GitHub. molly-brown's
+# cert and key live in /etc/molly-brown/certs. Carried up from the capsule's own
+# .gitignore when it was merged in. See gemini.txt.
+*.key
+*.crt
+*.pem
