@@ -1,9 +1,9 @@
 githooks
 ========
 
-Hooks for the site repo, which is ~/configNotes/http (NOT ~/configNotes --
-that directory holds these notes and contains a stray empty .git that makes
-git refuse to run there).
+Hooks for the site repo, which is ~/configNotes/documentServing (NOT
+~/configNotes -- that directory holds these notes and contains a stray empty
+.git that makes git refuse to run there).
 
 Convention, already used by the deploy hook: the script lives at the repo
 root, versioned, and .git/hooks/<name> is a relative symlink to it.

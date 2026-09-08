@@ -9,7 +9,11 @@
 # re-scrape everywhere for no gain.
 set -eu
 
-OUT="${1:-/home/robin/configNotes/http/rootdomain/professional/ogimage.png}"
+# Resolved from this script's own location, not hardcoded, so renaming the repo
+# directory cannot silently point this at a stale path.
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+OUT="${1:-$ROOT/rootdomain/professional/ogimage.png}"
 FONT="Noto Sans Mono"          # one of the few monos with U+2042 ASTERISM
 BG="#000000"
 FRAME="#ffffff"

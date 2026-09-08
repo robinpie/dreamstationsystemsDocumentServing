@@ -1,8 +1,9 @@
 site-assets — favicon, icons, OpenGraph card and sitemap for dreamstation.systems
 ================================================================================
 
-Source of truth is ~/configNotes/http/rootdomain/, which mirrors the live
-docroot /srv/http. Edit in configNotes, then install to /srv/http as root.
+Source of truth is ~/configNotes/documentServing/rootdomain/, which mirrors
+the live docroot /srv/http. Edit in configNotes, then install to /srv/http as
+root.
 
 FILES
   /srv/http/favicon.svg                theme-aware asterism, modern browsers
@@ -12,8 +13,9 @@ FILES
   /srv/http/sitemap.xml                canonical page list
   /srv/http/robots.txt                 Allow: / plus the Sitemap: line
 
-BUILD SCRIPTS  (~/configNotes/http/assets-build/, in the repo but a SIBLING of
-                rootdomain/, so it is never rsynced into the docroot)
+BUILD SCRIPTS  (~/configNotes/documentServing/assets-build/, in the repo but
+                a SIBLING of rootdomain/, so it is never rsynced into the
+                docroot)
   make-og.sh          renders ogimage.png with ImageMagick + Pango
   make-favicon.py     renders favicon.ico AND apple-touch-icon.png from
                       favicon.svg's geometry — one run produces both

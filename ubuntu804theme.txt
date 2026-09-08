@@ -17,9 +17,10 @@ so a mistake in the chrome is no longer confined to people who went looking
 for it.
 
 It began as a port of a standalone template that lived at /tmp-ubuntu804/,
-built by a generator out of http/ubuntu804/. That template and its source tree
-were REMOVED in September 2026 (archived off the server); this theme is now the
-only surviving copy of the desktop, and this file the only documentation of it.
+built by a generator out of documentServing/ubuntu804/. That template and its
+source tree were REMOVED in September 2026 (archived off the server); this
+theme is now the only surviving copy of the desktop, and this file the only
+documentation of it.
 
 The distinction the two were built on still explains why this one is shaped the
 way it is:

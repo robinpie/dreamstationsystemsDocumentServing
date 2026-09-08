@@ -187,16 +187,16 @@ All are symlinked into /etc/nginx/sites-enabled/. EDIT sites-available —
 clobbers the real config (cost ten confusing minutes once; see openget.txt).
 
 Content is SERVED from /srv/http/ but its SOURCE OF TRUTH is the monorepo at
-~/configNotes/http/rootdomain/. Do not hand-edit /srv/http — edit rootdomain/,
-commit (the hook stages it to /srv/httpstaging), and run
-~/configNotes/http/promote-site.sh (rsync --delete to /srv/http, preserving
-certbot's .well-known/acme-challenge/ webroot dir and ntpstats.txt). Nothing
-goes live without that second step — see githooks.txt, and
-~/configNotes/http/README.md.
+~/configNotes/documentServing/rootdomain/. Do not hand-edit /srv/http — edit
+rootdomain/, commit (the hook stages it to /srv/httpstaging), and run
+~/configNotes/documentServing/promote-site.sh (rsync --delete to /srv/http,
+preserving certbot's .well-known/acme-challenge/ webroot dir and
+ntpstats.txt). Nothing goes live without that second step — see githooks.txt,
+and ~/configNotes/documentServing/README.md.
 
 THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every
-hand-authored file above lives in ~/configNotes/http/nginx/ and is installed by
-promote-site.sh:
+hand-authored file above lives in ~/configNotes/documentServing/nginx/ and is
+installed by promote-site.sh:
 
     nginx/sites-available/000-default-catchall
     nginx/sites-available/dreamstation.systems

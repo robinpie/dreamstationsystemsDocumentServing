@@ -11,8 +11,13 @@ Do not add rounded corners -- iOS applies its own mask.
 """
 import subprocess, sys, os, tempfile
 
+# Resolved from this file's own location, not hardcoded, so renaming the repo
+# directory cannot silently point this at a stale path. make-font-subset.py
+# does the same with pathlib; this file is os.path throughout, so it stays so.
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 OUT = sys.argv[1] if len(sys.argv) > 1 else \
-    "/home/robin/configNotes/http/rootdomain/favicon.ico"
+    os.path.join(ROOT, "rootdomain", "favicon.ico")
 TOUCH_OUT = os.path.join(os.path.dirname(OUT), "apple-touch-icon.png")
 COLOR = "#666666"
 TOUCH_FG, TOUCH_BG, TOUCH_PX = "#111111", "#ffffff", 180
