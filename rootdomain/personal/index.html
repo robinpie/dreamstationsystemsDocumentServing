@@ -4,12 +4,158 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>robin’s page</title>
+  <meta name="description" content="robin’s personal site: a blog, the services this box runs on the small and old internet protocols, and the programming projects behind them.">
+  <meta name="author" content="robin">
+  <link rel="canonical" href="https://dreamstation.systems/personal/">
+
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+  <!-- Follows the server-selected theme: nginx maps $theme to a colour and
+       SSI stamps it in, the same way the stylesheet above it is chosen. Four
+       of the five themes are fixed-appearance, so their two values are equal
+       on purpose; only `plain` (browser defaults) really differs. The maps
+       are in nginx/sites-available/dreamstation.systems. -->
+  <meta name="theme-color" content="<!--# echo var="theme_color_light" -->" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="<!--# echo var="theme_color_dark" -->" media="(prefers-color-scheme: dark)">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Feed autodiscovery. Both files are generated from the post list in
+       blog.html by assetsBuild/makeFeed.py; see feeds.txt. -->
   <link rel="alternate" type="application/atom+xml" title="robin’s blog (Atom)" href="/personal/feed.xml">
   <link rel="alternate" type="application/rss+xml" title="robin’s blog (RSS)" href="/personal/rss.xml">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="robin’s page">
+  <meta property="og:description" content="robin’s personal site: a blog, the services this box runs on the small and old internet protocols, and the programming projects behind them.">
+  <meta property="og:url" content="https://dreamstation.systems/personal/">
+  <meta property="og:site_name" content="robin’s page">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+
+  <!-- JSON-LD. Every claim here mirrors something stated in the body below.
+
+       This graph is one PART of the site-wide graph rooted at
+       /professional/index.html, joined by @id: #robin, #website and the
+       project nodes are the same subjects, not copies of them. So a node
+       defined in full elsewhere appears here with IDENTITY ONLY (@type, @id,
+       name, url) — enough for a consumer that only ever sees this page, and
+       no second copy of a description to drift out of step. Descriptive
+       properties live in exactly one document per node.
+
+       Do not add a "@type": "WebSite" node here: datestampHook.pl stamps
+       dateModified into the first one it finds, and that node belongs to
+       /professional/index.html. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://dreamstation.systems/personal/",
+        "url": "https://dreamstation.systems/personal/",
+        "name": "robin’s page",
+        "description": "robin’s personal site: a blog, the services this box runs on the small and old internet protocols, and the programming projects behind them.",
+        "inLanguage": "en",
+        "isPartOf": { "@id": "https://dreamstation.systems/#website" },
+        "about": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "mentions": [
+          { "@id": "https://dreamstation.systems/personal/blog.html#blog" },
+          { "@id": "https://dreamstation.systems/#ntp" },
+          { "@id": "https://grandexchange.dreamstation.systems/#openget" },
+          { "@id": "https://github.com/robinpie/ath#ath" },
+          { "@id": "https://github.com/robinpie/viewpoint#viewpoint" },
+          { "@id": "https://github.com/robinpie/fontliberator#fontliberator" },
+          { "@id": "https://github.com/robinpie/xcaca#xcaca" },
+          { "@id": "https://github.com/robinpie/.hsp-to-web#hsp" },
+          { "@id": "https://github.com/OboeLang/oboe#oboe" }
+        ],
+        "relatedLink": [
+          "https://nnycap.neocities.org/",
+          "https://sushii64.com/",
+          "https://fervor.diy/"
+        ]
+      },
+      {
+        "@type": "Blog",
+        "@id": "https://dreamstation.systems/personal/blog.html#blog",
+        "name": "robin’s blog",
+        "url": "https://dreamstation.systems/personal/blog.html"
+      },
+      {
+        "@type": "Service",
+        "@id": "https://dreamstation.systems/#ntp",
+        "name": "dreamstation.systems public NTP and NTS server"
+      },
+      {
+        "@type": "WebApplication",
+        "@id": "https://grandexchange.dreamstation.systems/#openget",
+        "name": "OpenGET",
+        "url": "https://grandexchange.dreamstation.systems"
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://github.com/robinpie/ath#ath",
+        "name": "!~ATH",
+        "url": "https://github.com/robinpie/ath"
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://github.com/robinpie/viewpoint#viewpoint",
+        "name": "viewpoint",
+        "url": "https://github.com/robinpie/viewpoint"
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://github.com/robinpie/xcaca#xcaca",
+        "name": "xcaca",
+        "url": "https://github.com/robinpie/xcaca"
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://github.com/robinpie/.hsp-to-web#hsp",
+        "name": "Hypnospace Outlaw page converter",
+        "url": "https://github.com/robinpie/.hsp-to-web"
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://github.com/OboeLang/oboe#oboe",
+        "name": "Oboe",
+        "url": "https://github.com/OboeLang/oboe"
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://github.com/robinpie/fontliberator#fontliberator",
+        "name": "fontliberator",
+        "url": "https://github.com/robinpie/fontliberator",
+        "codeRepository": "https://github.com/robinpie/fontliberator",
+        "description": "A fully automatic font clean‐room reimplementor.",
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" }
+      }
+    ]
+  }
+  </script>
+
   <link rel="stylesheet" href="base.css">
   <link rel="stylesheet" href="themes/<!--# echo var="theme" -->.css">
 </head>
 <body>
+  <!-- FIRST thing in the document, so it is the first tab stop under every
+       theme. It used to live in chrome/top.html, which meant it existed only
+       under ubuntu804 and the other four themes shipped no skip link at all —
+       while the accessibilitySummary on the #website node in
+       /professional/index.html claims one for the whole site. Being here it
+       also precedes the chrome include below, so it stays ahead of the
+       desktop's six menus and the nav row.
+
+       base.css holds it off-screen until focus; ubuntu804.css restyles it to
+       match the desktop. Geometry is unchanged by the move: it is absolutely
+       positioned against the initial containing block either way, since
+       neither .desktop nor body is positioned. -->
+  <a class="skip" href="#content">Skip to page content</a>
   <!-- The ubuntu804 theme wraps this page in a picture of an Ubuntu 8.04
        desktop. The chrome is three fragments under chrome/, pulled in by
        nginx; every other theme expands these to nothing. chrome/top.html
@@ -70,17 +216,18 @@
       <li><a href="https://github.com/robinpie/viewpoint">viewpoint</a> <span class="sep">|</span> a WIMPy terminal emulator</li>
       <li><a href="https://github.com/robinpie/fontliberator">fontliberator</a> <span class="sep">|</span> a fully automatic font clean‐room reimplementor</li>
       <li><a href="https://github.com/robinpie/xcaca">xcaca</a> <span class="sep">|</span> an X server in ASCII art</li>
-      <li><a href="/hsptohtml/README/pages/README.html">convert Hypnospace Outlaw pages to real webpages</a><li>
-      <li><a href="https://github.com/OboeLang/oboe">Oboe</a>, a general‐purpose programming language I'm co‐creating with <a href="https://sushii64.com/">Jade K.</a>.
+      <li><a href="/hsptohtml/README/pages/README.html">convert Hypnospace Outlaw pages to real webpages</a></li>
+      <li><a href="https://github.com/OboeLang/oboe">Oboe</a>, a general‐purpose programming language I'm co‐creating with <a href="https://sushii64.com/">Jade K.</a>.</li>
     </ul>
 
     <h2>contact</h2>
-    <p>please <a href="mailto:robin@dreamstation.systems">send me an 📧email</a>, even just to say hi! i love hearing from people visiting my site
+    <p>please <a href="mailto:robin@dreamstation.systems">send me an 📧email</a>, even just to say hi! i love hearing from people visiting my site</p>
     <ul class="contact">
       <li><span class="label">email:</span> <a href="mailto:robin@dreamstation.systems">robin@dreamstation.systems</a></li>
       <li><span class="label">signal:</span> g9ij.47</li>
       <li><span class="label">discord:</span> g9ij</li>
-    
+    </ul>
+
     <h2>friends</h2>
     <ul>
       <li><a href="https://nnycap.neocities.org/">https://nnycap.neocities.org/</a></li>

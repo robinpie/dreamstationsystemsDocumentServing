@@ -71,7 +71,12 @@ if ($test) {
 my $failed = 0;
 for my $f (@files) {
     my $html = slurp($f) // next;
-    next unless index($html, $ANCHOR) >= 0;
+    # Gate on the TYPE, not the @id. The site @id also appears as an isPartOf
+    # reference on the /personal/ pages, which have no WebSite node of their
+    # own; gating on it made every one of those files reach the unstaged-changes
+    # warning below and emit a warning about work this hook was never going to
+    # do. stamp() still verifies the @id before touching anything.
+    next unless index($html, $TYPE) >= 0;
 
     # Don't silently sweep unstaged edits into the commit.
     if (!$test && length `git diff --name-only -- "$f"`) {

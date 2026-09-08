@@ -7,6 +7,7 @@
 #
 #     datestampHook.pl               schema.org dateModified on staged HTML
 #     assetsBuild/makeFeed.py        Atom + RSS for /personal/blog.html
+#     assetsBuild/makeMeta.py        blog.html's JSON-LD + sitemap.xml
 #     assetsBuild/makeFontSubset.py  ubuntu804's DejaVu subsets
 #     assetsBuild/badgeBuild.pl      the 88x31 wall: WebP + generated markup
 #
@@ -57,6 +58,35 @@ else
 	# harmless but noisy in the hook's output, and this keeps a commit that
 	# touched no post from silently listing the feeds among its changes.
 	for f in rootdomain/personal/feed.xml rootdomain/personal/rss.xml; do
+		if ! git diff --quiet -- "$f"; then
+			git add "$f"
+			echo "pre-commit: re-staged $f"
+		fi
+	done
+fi
+
+# --------------------------------------------------- JSON-LD wall + sitemap
+#
+# blog.html's JSON-LD block and rootdomain/sitemap.xml, both derived from the
+# same <ul class="posts"> the feeds come from. Committed artifacts for the
+# same reason: plain rsync deploy, no build step downstream. See siteAssets.txt.
+#
+# It also CHECKS things it does not generate — each post's dateline and its
+# BlogPosting dates against the list, and that every JSON-LD block on the site
+# is valid JSON — and returns non-zero if any of that disagrees. That failure
+# ABORTS THE COMMIT, and is meant to: shipping structured data that contradicts
+# the page is worse than shipping none, and unlike a stale feed it is not
+# self-correcting on the next commit.
+#
+# THE UNSTAGED GUARD IS THE FEEDS' GUARD, and for the feeds' reason — this
+# reads the working tree too, and a sitemap or a blogPost array built from a
+# half-finished tree makes the same kind of false claim a feed does. Same
+# variable, computed above; if the feeds were skipped, these are skipped too.
+if [ -n "$feed_sources" ]; then
+	echo "pre-commit: JSON-LD and sitemap NOT regenerated either." >&2
+else
+	./assetsBuild/makeMeta.py
+	for f in rootdomain/personal/blog.html rootdomain/sitemap.xml; do
 		if ! git diff --quiet -- "$f"; then
 			git add "$f"
 			echo "pre-commit: re-staged $f"

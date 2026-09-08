@@ -4,15 +4,89 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Welcome to the dreamstation.systems NTP server!</title>
+  <meta name="description" content="How to use the dreamstation.systems public NTP and NTS server">
+  <meta name="author" content="robin">
+  <link rel="canonical" href="https://dreamstation.systems/personal/ntpuserinfo.html">
+
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+  <!-- Follows the server-selected theme: nginx maps $theme to a colour and
+       SSI stamps it in, the same way the stylesheet above it is chosen. Four
+       of the five themes are fixed-appearance, so their two values are equal
+       on purpose; only `plain` (browser defaults) really differs. The maps
+       are in nginx/sites-available/dreamstation.systems. -->
+  <meta name="theme-color" content="<!--# echo var="theme_color_light" -->" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="<!--# echo var="theme_color_dark" -->" media="(prefers-color-scheme: dark)">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <meta property="og:type" content="article">
   <meta property="og:title" content="Welcome to the dreamstation.systems NTP server!">
   <meta property="og:description" content="How to use the dreamstation.systems public NTP and NTS server">
-  <meta property="og:type" content="article">
   <meta property="og:url" content="https://dreamstation.systems/personal/ntpuserinfo.html">
-  <meta property="og:site_name" content="robin's page">
+  <meta property="og:site_name" content="robin’s page">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+
+  <!-- JSON-LD. Every claim here mirrors something stated in the body below.
+       Part of the site-wide graph rooted at /professional/index.html and
+       joined to it by @id; nodes defined in full there appear here with
+       identity only. See that file, and index.html in this directory. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "TechArticle",
+        "@id": "https://dreamstation.systems/personal/ntpuserinfo.html#usage",
+        "mainEntityOfPage": "https://dreamstation.systems/personal/ntpuserinfo.html",
+        "url": "https://dreamstation.systems/personal/ntpuserinfo.html",
+        "headline": "Welcome to the dreamstation.systems NTP server!",
+        "description": "How to use the dreamstation.systems public NTP and NTS server",
+        "inLanguage": "en",
+        "isPartOf": { "@id": "https://dreamstation.systems/#website" },
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "publisher": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "about": { "@id": "https://dreamstation.systems/#ntp" }
+      },
+      {
+        "@type": "Service",
+        "@id": "https://dreamstation.systems/#ntp",
+        "name": "dreamstation.systems public NTP and NTS server",
+        "serviceType": "Network Time Protocol (NTP) and Network Time Security (NTS) server",
+        "description": "A stratum 2 time server in pool.ntp.org, serving plain NTP on UDP/123 and NTS-KE on TCP/4460.",
+        "provider": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "areaServed": "Worldwide",
+        "isRelatedTo": {
+          "@type": "Organization",
+          "name": "NTP Pool Project",
+          "url": "https://www.ntppool.org/"
+        },
+        "subjectOf": { "@id": "https://dreamstation.systems/personal/ntpuserinfo.html#usage" }
+      }
+    ]
+  }
+  </script>
+
   <link rel="stylesheet" href="base.css">
   <link rel="stylesheet" href="themes/<!--# echo var="theme" -->.css">
 </head>
 <body>
+  <!-- FIRST thing in the document, so it is the first tab stop under every
+       theme. It used to live in chrome/top.html, which meant it existed only
+       under ubuntu804 and the other four themes shipped no skip link at all —
+       while the accessibilitySummary on the #website node in
+       /professional/index.html claims one for the whole site. Being here it
+       also precedes the chrome include below, so it stays ahead of the
+       desktop's six menus and the nav row.
+
+       base.css holds it off-screen until focus; ubuntu804.css restyles it to
+       match the desktop. Geometry is unchanged by the move: it is absolutely
+       positioned against the initial containing block either way, since
+       neither .desktop nor body is positioned. -->
+  <a class="skip" href="#content">Skip to page content</a>
   <!-- The ubuntu804 theme wraps this page in a picture of an Ubuntu 8.04
        desktop. The chrome is three fragments under chrome/, pulled in by
        nginx; every other theme expands these to nothing. chrome/top.html

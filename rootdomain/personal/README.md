@@ -63,6 +63,11 @@ bytes. The fragments are deliberately unbalanced HTML — `top` opens what
 `bottom` closes — and are served from an `internal` location, so fetching one
 directly gives a 404.
 
+The skip link is **not** part of this. It used to live in `chrome/top.html`,
+which meant only this theme had one; it is now in each page just before the
+include, so all five themes get it, held off-screen until focus by `base.css`
+and restyled here to match the desktop.
+
 Three of the pages' own elements are re-cast rather than restyled:
 `header.site-header` becomes the bookmarks toolbar, `main` becomes the
 document in the browser viewport, and `footer ul.badges` becomes the badge
@@ -81,9 +86,12 @@ comment as documentation gets executed.
 1. Create `themes/<id>.css` (including switcher chrome, or it inherits
    nothing and shows native controls). A theme that needs markup of its own
    adds fragments under `chrome/` and include lines on each page — see above.
-2. Add `<id>` to **both** maps at the top of
-   `nginx/sites-available/dreamstation.systems`. Anything not in the maps is
-   rejected and falls back to the default.
+2. Add `<id>` to **all four** maps at the top of
+   `nginx/sites-available/dreamstation.systems`. The two `$theme` maps are the
+   whitelist: anything not in them is rejected and falls back to the default.
+   The two `$theme_color_*` maps supply the page's `<meta name="theme-color">`
+   — a theme missing from those is not rejected, it just serves the default
+   theme's colour, which is the quieter failure of the two.
 3. Add an `<option>` to the switcher `<form>` in each themed page.
 
 Step 2 is what makes it live; a stylesheet that exists but is not in the maps

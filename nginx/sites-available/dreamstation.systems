@@ -42,6 +42,53 @@ map $arg_theme $theme {
     plain     plain;
 }
 
+# ------------------------------------------------------------- theme-colour
+#
+# <meta name="theme-color"> for the themed pages, so the browser's own UI
+# (Android's address bar, Safari's toolbars) is tinted to match whichever
+# stylesheet nginx just selected, instead of a single value that is wrong for
+# four themes out of five. The pages echo these with SSI exactly the way they
+# echo $theme itself.
+#
+# Keyed on $theme, not on the cookie or the query parameter: $theme is the
+# END of the precedence chain above, already normalised to a known id, so
+# these two maps cannot disagree with the stylesheet that was actually
+# served. `default` here is therefore unreachable in practice — it exists
+# because a map needs one, and it carries ubuntu804's value so that even an
+# impossible fallthrough matches the default theme.
+#
+# The values are quoted because an unquoted # opens a comment in nginx.conf,
+# which would silently truncate every one of them to the empty string.
+#
+# Four of the five themes are fixed-appearance: they paint the same colours
+# whatever the visitor's prefers-color-scheme is, so their light and dark
+# entries are deliberately identical rather than accidentally unmaintained.
+# Only `plain` — which is (almost) an empty stylesheet, i.e. browser defaults
+# — actually follows the system, and it is the one theme whose two values
+# differ. They match the pair on /professional/, which is the same situation:
+# an unthemed page rendering in the browser's own colours.
+#
+# TO ADD A THEME: it needs an entry in these two maps as well as in the two
+# above. A missing entry is not loud — it silently lands on the default's
+# colour, which will merely look slightly wrong.
+map $theme $theme_color_light {
+    default   "#e8e8e0";
+    gtk2      "#dcdad5";   # --gtk-bg,   window / widget grey
+    motif     "#b0b0b0";   # --mtf-bg,   window / widget face
+    skeuslop  "#e8eaef";   # --v-bg,     cool light grey-blue
+    ubuntu804 "#e8e8e0";   # --panel-bg, the GNOME panel at the top
+    plain     "#ffffff";
+}
+
+map $theme $theme_color_dark {
+    default   "#e8e8e0";
+    gtk2      "#dcdad5";
+    motif     "#b0b0b0";
+    skeuslop  "#e8eaef";
+    ubuntu804 "#e8e8e0";
+    plain     "#121212";
+}
+
 server {
     include snippets/clacks.conf;
     listen 80;

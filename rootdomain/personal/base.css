@@ -46,3 +46,18 @@ img {
   height: 31px;
   max-width: none;
 }
+
+/* Skip link. Structural, not aesthetic: it lives here rather than in a theme
+   because every theme needs one — that is exactly the base.css test. It is in
+   the pages themselves (just before the ubuntu804 chrome include), so the four
+   stylesheet-only themes get it too.
+
+   :not(:focus) rather than a fixed off-screen position plus an on-screen
+   override, so a theme that says nothing about .skip still behaves correctly:
+   hidden until focused, then laid out in normal flow at the top of the page
+   in whatever that theme's ordinary link styling is. ubuntu804.css overrides
+   both states to place and paint it against the desktop. */
+.skip:not(:focus) {
+  position: absolute;
+  left: -100vw;
+}

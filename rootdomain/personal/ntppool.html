@@ -4,11 +4,67 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Please consider running a NTP server in the NTP Pool</title>
+  <meta name="description" content="Massive demand for a simple service">
+  <meta name="author" content="robin">
+  <link rel="canonical" href="https://dreamstation.systems/personal/ntppool.html">
+
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+  <!-- Follows the server-selected theme: nginx maps $theme to a colour and
+       SSI stamps it in, the same way the stylesheet above it is chosen. Four
+       of the five themes are fixed-appearance, so their two values are equal
+       on purpose; only `plain` (browser defaults) really differs. The maps
+       are in nginx/sites-available/dreamstation.systems. -->
+  <meta name="theme-color" content="<!--# echo var="theme_color_light" -->" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="<!--# echo var="theme_color_dark" -->" media="(prefers-color-scheme: dark)">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <meta property="og:type" content="article">
   <meta property="og:title" content="Please consider running a NTP server in the NTP Pool">
   <meta property="og:description" content="Massive demand for a simple service">
-  <meta property="og:type" content="article">
   <meta property="og:url" content="https://dreamstation.systems/personal/ntppool.html">
   <meta property="og:site_name" content="robin’s page">
+  <meta property="og:locale" content="en_US">
+  <meta property="article:published_time" content="2026-09-08">
+  <meta property="article:modified_time" content="2026-09-08">
+  <meta property="article:author" content="https://dreamstation.systems/professional/">
+  <meta name="twitter:card" content="summary">
+
+  <!-- JSON-LD. Every claim here mirrors something stated in the body below.
+       Part of the site-wide graph rooted at /professional/index.html and
+       joined to it by @id; nodes defined in full there appear here with
+       identity only. See that file, and index.html in this directory. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        "@id": "https://dreamstation.systems/personal/ntppool.html#post",
+        "mainEntityOfPage": "https://dreamstation.systems/personal/ntppool.html",
+        "url": "https://dreamstation.systems/personal/ntppool.html",
+        "headline": "Please consider running a NTP server in the NTP Pool",
+        "description": "Massive demand for a simple service",
+        "inLanguage": "en",
+        "datePublished": "2026-09-08",
+        "dateModified": "2026-09-08",
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "publisher": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "isPartOf": { "@id": "https://dreamstation.systems/personal/blog.html#blog" }
+      },
+      {
+        "@type": "Blog",
+        "@id": "https://dreamstation.systems/personal/blog.html#blog",
+        "name": "robin’s blog",
+        "url": "https://dreamstation.systems/personal/blog.html"
+      }
+    ]
+  }
+  </script>
+
   <link rel="stylesheet" href="base.css">
   <link rel="stylesheet" href="themes/<!--# echo var="theme" -->.css">
   <style>
@@ -26,6 +82,19 @@
   </style>
 </head>
 <body>
+  <!-- FIRST thing in the document, so it is the first tab stop under every
+       theme. It used to live in chrome/top.html, which meant it existed only
+       under ubuntu804 and the other four themes shipped no skip link at all —
+       while the accessibilitySummary on the #website node in
+       /professional/index.html claims one for the whole site. Being here it
+       also precedes the chrome include below, so it stays ahead of the
+       desktop's six menus and the nav row.
+
+       base.css holds it off-screen until focus; ubuntu804.css restyles it to
+       match the desktop. Geometry is unchanged by the move: it is absolutely
+       positioned against the initial containing block either way, since
+       neither .desktop nor body is positioned. -->
+  <a class="skip" href="#content">Skip to page content</a>
   <!-- The ubuntu804 theme wraps this page in a picture of an Ubuntu 8.04
        desktop. The chrome is three fragments under chrome/, pulled in by
        nginx; every other theme expands these to nothing. chrome/top.html
@@ -59,6 +128,10 @@
 
   <main id="content">
     <h1 class="ntppool-title"><span>Please consider running a NTP server in the NTP Pool</span><a href="https://www.pangram.com/history/1375abda-3acb-490f-b49e-1fa7a49718c0?ucc=tp64Jv2K7C4"><img src="pangramHumanBadge.webp" alt="Pangram 100% Human badge" width="88" height="31"></a></h1>
+    <!-- The post's own dateline. Cross-checked against the list in
+         blog.html by assetsBuild/makeMeta.py, along with the dates in
+         the JSON-LD above. -->
+    <p class="dateline"><time datetime="2026-09-08">2026-09-08</time></p>
 
     <p>Do you have a spare computer, or a VPS with some extra bandwidth? Do you have <a href="ntppost.html">the ability to accept inbound connections</a>? If so, I want you to please consider joining the <a href="https://www.ntppool.org/">NTP Pool</a>.</p>
 

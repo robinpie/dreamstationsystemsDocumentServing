@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-# ROBOTS.TXT IS A SUICIDE NOTE - https://wiki.archiveteam.org/index.php/Robots.txt

@@ -391,10 +391,25 @@ done by nginx, and theme.js is deleted.
 
 Two halves, in two files, because map is only valid in http context:
 
-  sites-available/dreamstation.systems   the $theme_cookie and $theme maps,
-                                         at the top, outside every server block
+  sites-available/dreamstation.systems   the four maps, at the top, outside
+                                         every server block
   snippets/theme.conf                    the location that turns SSI on, and
                                          the internal /personal/chrome/ one
+
+FOUR maps, not two. $theme_cookie and $theme resolve the precedence chain
+below; $theme_color_light and $theme_color_dark then key off the RESOLVED
+$theme to give the page its <meta name="theme-color">, so the browser's own
+chrome is tinted to match the stylesheet that was actually served instead of
+carrying one value that is wrong for four themes out of five. They key off
+$theme and not off the cookie or the query parameter precisely so they cannot
+disagree with the stylesheet.
+
+Four of the five themes are fixed-appearance, so their light and dark entries
+are identical on purpose; only `plain` — which is almost an empty stylesheet,
+i.e. browser defaults — really follows prefers-color-scheme, and it is the one
+theme whose two values differ. The colour values are QUOTED in the map: an
+unquoted # opens a comment in nginx.conf and would silently truncate every one
+of them to the empty string.
 
 Precedence is one chain: ?theme=<id> if it names a known theme, else the
 cookie if IT names a known theme, else ubuntu804. Both maps list the themes
@@ -456,8 +471,11 @@ THINGS THAT WILL BITE
   - SSI drops Content-Length and disables sendfile for these eight files.
     Irrelevant at this site's traffic; noted so it is not a surprise.
   - Adding a theme is now THREE steps, not one: themes/<id>.css, the id in
-    BOTH maps, and an <option> in each page's form. The stylesheet alone
-    does nothing — the maps are the whitelist.
+    ALL FOUR maps, and an <option> in each page's form. The stylesheet alone
+    does nothing — the two $theme maps are the whitelist. A missing entry in
+    the two colour maps is the quiet one: it does not fall back to an
+    unstyled page, it just serves the default theme's theme-color, which
+    merely looks slightly wrong.
   - NGINX VARIABLES DO NOT SURVIVE AN #include virtual. They are re-evaluated
     against the subrequest, which has the fragment's URI and no query args, so
     inside a fragment $document_uri names the fragment and $theme resolves to
@@ -491,6 +509,11 @@ VERIFYING
     curl -s 'localhost/personal/index.html?theme=bogus' | grep themes/  # ubuntu804
     curl -s localhost/personal/ | grep -c '<!--#'                 # must be 0
     curl -sI localhost/personal/index.html | grep -i 'vary\|clacks'
+    curl -s 'localhost/personal/index.html?theme=plain' | grep theme-color
+    curl -s 'localhost/personal/index.html?theme=motif' | grep theme-color
+
+  The theme-color pair must track the stylesheet on the line above it: plain
+  is the only theme whose two values differ (#ffffff / #121212).
 
   The last two are the regressions worth guarding: raw SSI leaking on the
   directory URL, and the clacks header being dropped by this location's own

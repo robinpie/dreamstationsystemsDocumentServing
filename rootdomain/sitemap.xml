@@ -4,12 +4,10 @@
 
   <url>
     <loc>https://dreamstation.systems/</loc>
-    <lastmod>2026-08-27</lastmod>
   </url>
 
   <url>
     <loc>https://dreamstation.systems/professional/</loc>
-    <lastmod>2026-08-27</lastmod>
   </url>
 
   <url>
@@ -19,17 +17,48 @@
 
   <url>
     <loc>https://dreamstation.systems/resume.pdf</loc>
-    <lastmod>2026-08-27</lastmod>
   </url>
 
   <url>
     <loc>https://dreamstation.systems/personal/</loc>
-    <lastmod>2026-08-27</lastmod>
   </url>
 
   <url>
     <loc>https://dreamstation.systems/personal/blog.html</loc>
-    <lastmod>2026-08-27</lastmod>
+  </url>
+
+  <url>
+    <loc>https://dreamstation.systems/personal/ntpuserinfo.html</loc>
+  </url>
+
+  <url>
+    <loc>https://dreamstation.systems/personal/ntppool.html</loc>
+    <lastmod>2026-09-08</lastmod>
+  </url>
+
+  <url>
+    <loc>https://dreamstation.systems/personal/lanfalsehoods.html</loc>
+    <lastmod>2026-09-05</lastmod>
+  </url>
+
+  <url>
+    <loc>https://dreamstation.systems/personal/ntppost.html</loc>
+    <lastmod>2026-08-30</lastmod>
+  </url>
+
+  <url>
+    <loc>https://dreamstation.systems/personal/hypnospace.html</loc>
+    <lastmod>2026-08-29</lastmod>
+  </url>
+
+  <url>
+    <loc>https://dreamstation.systems/personal/slowqotd.html</loc>
+    <lastmod>2026-06-22</lastmod>
+  </url>
+
+  <url>
+    <loc>https://dreamstation.systems/personal/gzipt.html</loc>
+    <lastmod>2026-06-17</lastmod>
   </url>
 
 </urlset>
