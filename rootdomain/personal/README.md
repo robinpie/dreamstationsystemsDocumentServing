@@ -25,8 +25,8 @@ form that submits to `?theme=<id>`, and the correct stylesheet is in the first
 byte of the response, so there is no flash of the wrong theme to work around.
 
 Themed pages (the list is also spelled out in `nginx/snippets/theme.conf`, and
-both have to agree): `index`, `blog`, `hypnospace`, `lanfalsehoods`, `ntppost`, `ntpuserinfo`,
-`slowqotd`, `gzipt`. The other pages under `personal/` are one-off things with
+both have to agree): `index`, `blog`, `hypnospace`, `lanfalsehoods`, `ntppool`,
+`ntppost`, `ntpuserinfo`, `slowqotd`, `gzipt`. The other pages under `personal/` are one-off things with
 their own styling and are not themed.
 
 - `base.css` — always loaded. Only structural things that hold for *every*

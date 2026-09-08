@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Please consider running a NTP server in the NTP Pool</title>
+  <meta property="og:title" content="Please consider running a NTP server in the NTP Pool">
+  <meta property="og:description" content="Massive demand for a simple service">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://dreamstation.systems/personal/ntppool.html">
+  <meta property="og:site_name" content="robin’s page">
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="themes/<!--# echo var="theme" -->.css">
+</head>
+<body>
+  <!-- The ubuntu804 theme wraps this page in a picture of an Ubuntu 8.04
+       desktop. The chrome is three fragments under chrome/, pulled in by
+       nginx; every other theme expands these to nothing. chrome/top.html
+       explains the split, and why the title and path are handed in by hand. -->
+<!--# if expr="$theme = ubuntu804" --><!--# set var="wtitle" value="Please consider running a NTP server in the NTP Pool" --><!--# set var="path" value="$document_uri" --><!--# include virtual="/personal/chrome/top.html" --><!--# endif -->
+  <header class="site-header">
+    <nav class="site-nav">
+      <a href="index.html">🏠 home</a>
+      <a href="blog.html">📓 blog</a>
+      <a href="/professional">💼 my professional site</a>
+      <a href="https://grandexchange.dreamstation.systems">📈 OpenGET</a>
+
+    </nav>
+    <div id="theme-switcher" class="theme-switcher">
+      <!-- A GET form, so switching themes is a plain form submission to
+           ?theme=<id> and needs no JavaScript. nginx reads the parameter and
+           SSI stamps the choice back in below - see nginx/snippets/theme.conf. -->
+      <form method="get">
+        <select name="theme" aria-label="Theme">
+          <option value="gtk2"<!--# if expr="$theme = gtk2" --> selected<!--# endif -->>GTK2</option>
+          <option value="motif"<!--# if expr="$theme = motif" --> selected<!--# endif -->>Motif</option>
+          <option value="skeuslop"<!--# if expr="$theme = skeuslop" --> selected<!--# endif -->>skeuslop</option>
+          <option value="ubuntu804"<!--# if expr="$theme = ubuntu804" --> selected<!--# endif -->>Ubuntu 8.04</option>
+          <option value="plain"<!--# if expr="$theme = plain" --> selected<!--# endif -->>Plain</option>
+        </select>
+        <button type="submit">Apply</button>
+      </form>
+    </div>
+  </header>
+<!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/mid.html" --><!--# endif -->
+
+  <main id="content">
+    <h1>Please consider running a NTP server in the NTP Pool</h1>
+
+    <p>Do you have a spare computer, or a VPS with some extra bandwidth? Do you have <a href="ntppost.html">the ability to accept inbound connections</a>? If so, I want you to please consider joining the <a href="https://www.ntppool.org/">NTP Pool</a>.</p>
+
+    <h2>It’s needed</h2>
+
+    <p>The NTP Pool always needs more servers. You’re probably using it without even knowing — most Linux distributions use <code>pool.ntp.org</code> as their default NTP server, along with FreeBSD, OpenBSD, many consumer routers, printers, thermostats, embedded devices…</p>
+
+    <p>There is always massive demand for NTP servers; although less than 100 bytes cross the wire for a typical NTP query packet, basically every network‐connected device in the world queries it several times a day, so it adds up.</p>
+
+    <p>There are fewer servers than you’d expect: as of the time I’m drafting this, the pool has about 3,800 active IPv4 servers and about 2,300 active IPv6 servers, supporting ~a billion devices.</p>
+
+    <h2>It’s easy</h2>
+
+    <p>You do not need a very powerful computer or a very strong connection to join the NTP Pool.</p>
+
+    <p>As of the time I’m drafting this, the dreamstation.systems NTP server <a href="/ntpstats.txt">answered about 743 million queries in the past 24 hours</a>, from a VPS with one shared vcore on a 2016 Xeon (with reported CPU usage from chronyd and the kernel networking stack only being about 25%), using less than 60 GB per day of bandwidth. You do not even need to handle so many queries — I recommend setting your “net speed” to the minimum “512 Kbit” at first and scaling up while seeing how much traffic you can handle. (In your NTP Pool server management settings, “net speed” is just a relative measure of how much regional traffic the pool directs to you — it has no relation to your actual link speed and no guarantees on how much absolute traffic you will get. I have my net speed set to 3 Gbit and am getting less than 6 Mbps of NTP traffic.) Any bottom‐of‐the‐barrel VPS will do.</p>
+
+    <p>You do not need a fancy clock. You do not need to be stratum 1, and timekeeping in virtual machines has gotten way better recently. Hell, <a href="https://github.com/ntppool/monitor/blob/main/scorer/statusscore/statusscore.go">if you can keep your clock accurate within 100 ms, you’re good enough for the pool</a> (which is insanely forgiving).</p>
+
+    <h2>A warning</h2>
+
+    <p>This is a long‐term commitment. You can remove yourself from the pool whenever you like, but due to misbehaving NTP clients and misguided configurers resolving a singular pool IP once and hardcoding it in a fleet of devices, it can take months, years, or forever for the traffic to stop. (I e‐mailed Dave Plonka about the <a href="https://pages.cs.wisc.edu/~plonka/netgear-sntp/">2003 Netgear–University of Wisconsin incident</a> recently, and apparently they <em>still</em> see a bit of traffic from these routers.) For a long time after removing yourself from the NTP Pool, you will continue to get hammered on UDP 123 for years.</p>
+
+  </main>
+  <footer>
+    <ul class="badges">
+    <!-- badges:start GENERATED by assetsBuild/badgeBuild.pl from webBadges.csv - do not edit -->
+        <li><a href="https://eightyeightthirty.one/"><img src="badges/88x31.webp" alt="eightyeightthirty.one" width="88" height="31"></a></li>
+        <li><img src="badges/zero-javascript.webp" alt="Proudly ZERO JavaScript!" width="88" height="31"></li>
+        <li><a href="https://debian.org/"><img src="badges/debian-powered.webp" alt="debian POWERED" width="88" height="31"></a></li>
+        <li><img src="badges/trans-flag.webp" alt="Transgender pride flag" width="88" height="31"></li>
+        <li><a href="https://nginx.org"><img src="badges/nginx.png" alt="nginx powered" width="88" height="31"></a></li>
+        <li><a href="https://xkcd.com"><img src="badges/xkcd.webp" alt="xkcd" width="88" height="31"></a></li>
+        <li><a href="https://www.getmonero.org/"><img src="badges/monero.webp" alt="I ❤️ MONERO" width="88" height="31"></a></li>
+        <li><a href="https://homestuck.com/"><img src="badges/mspaintadventures.webp" alt="MS Paint Adventures" width="88" height="31"></a></li>
+        <li><a href="https://archlinux.org"><img src="badges/Arch.webp" alt="Arch Linux" width="88" height="31"></a></li>
+        <li><a href="https://www.sbnation.com/a/17776-football"><img src="badges/17776.webp" alt="17776" width="88" height="31"></a></li>
+    <!-- badges:end -->
+    </ul>
+  </footer>
+<!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/bottom.html" --><!--# endif -->
+</body>
+</html>

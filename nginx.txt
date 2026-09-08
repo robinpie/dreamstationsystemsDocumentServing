@@ -382,8 +382,8 @@ Useful commands:
 
 THEME SELECTION (/personal/)
 ----------------------------
-The eight themed pages under /personal/ (index, blog, hypnospace, lanfalsehoods,
-ntppost, ntpuserinfo, slowqotd, gzipt) let a visitor pick one of five
+The nine themed pages under /personal/ (index, blog, hypnospace, lanfalsehoods,
+ntppool, ntppost, ntpuserinfo, slowqotd, gzipt) let a visitor pick one of five
 stylesheets.
 This used to be theme.js: a script loaded synchronously in <head> that read
 localStorage and rewrote <link id="theme-css"> before first paint. It is now

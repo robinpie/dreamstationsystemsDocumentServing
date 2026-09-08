@@ -1,25 +1,25 @@
-# Porting Hypnospace Outlaw's webpages to the real Web
+# Porting Hypnospace Outlaw’s webpages to the real Web
 
-Also see the README page for the tool's download link and how to use it.
+Also see the README page for the tool’s download link and how to use it.
 
 => https://dreamstation.systems/hsptohtml/README/pages/README.html   the README page (HTTP only — it is itself a converted Hypnospace page)
 => https://github.com/robinpie/.hsp-to-web                           robinpie/.hsp-to-web
 
-*Hypnospace Outlaw* is a video game that takes place mainly in "hypnospace", a fictional version of the late-'90s Web that you access while sleeping. Hypnospace Outlaw was built in Construct 2, a game engine that exports to HTML5 + JavaScript. I love the aesthetic of the game's webpages (which are built in a custom .hsp format, which the game also ships a page builder for). Given that the game already builds to web technologies, I decided to port the format to the real Web.
+*Hypnospace Outlaw* is a video game that takes place mainly in “hypnospace”, a fictional version of the late‐’90s Web that you access while sleeping. Hypnospace Outlaw was built in Construct 2, a game engine that exports to HTML5 + JavaScript. I love the aesthetic of the game’s webpages (which are built in a custom .hsp format, which the game also ships a page builder for). Given that the game already builds to web technologies, I decided to port the format to the real Web.
 
 => https://www.hypnospace.net/    Hypnospace Outlaw
 => https://www.construct.net/en   Construct 2
 
 ## Decompiling
 
-"data/read this.txt" says that "we decided not to hide anything from players via encryption or whatever". They weren't kidding; package.nw is a plain zip containing a Construct 2 HTML5 export, unobfuscated save for Construct 2's built-in minification.
+"data/read this.txt" says that “we decided not to hide anything from players via encryption or whatever”. They weren’t kidding; package.nw is a plain zip containing a Construct 2 HTML5 export, unobfuscated save for Construct 2’s built‐in minification.
 
 package.nw contains the following, among several more files:
 
 * c2runtime.js, which is the Construct 2 engine.
-* data.js, which is Hypnospace Outlaw's project model as JSON, including object types, layouts, and compiled event sheets. This is our reference for how .hsp files are parsed.
+* data.js, which is Hypnospace Outlaw’s project model as JSON, including object types, layouts, and compiled event sheets. This is our reference for how .hsp files are parsed.
 
-Construct 2 minifies object-type names, but luckily keeps every string literal, numeric constant, and ACE reference. In data.js, project[5] contains 9 layouts (BootScreen, Menu, HypnOS, Highway, Dummy, RSOD, BIOS, Y2K, ModIO). project[6] also contains 16 event sheets. Since object-type names are minified, we understand them via their string literals and numeric constants. c2runtime.js ends with a cr.getObjectRefTable() that maps the numeric references in data.js back to real plugin/behaviour methods. In the repo, I wrote tools/c2decomp.py to join the two and print pseudo-code:
+Construct 2 minifies object‐type names, but luckily keeps every string literal, numeric constant, and ACE reference. In data.js, project[5] contains 9 layouts (BootScreen, Menu, HypnOS, Highway, Dummy, RSOD, BIOS, Y2K, ModIO). project[6] also contains 16 event sheets. Since object‐type names are minified, we understand them via their string literals and numeric constants. c2runtime.js ends with a cr.getObjectRefTable() that maps the numeric references in data.js back to real plugin/behaviour methods. In the repo, I wrote tools/c2decomp.py to join the two and print pseudo‐code:
 
 ```
     $ python3 tools/c2decomp.py work/pkg all | head -9
@@ -77,19 +77,19 @@ ReplaceText, which handles the /n, /t, /p, and #VAR# escapes, is native JavaScri
 
 ## Converting
 
-Finally, I built the converter. tools/hspconv.py the game's .hsp files and data/ directory and generates a static site:
+Finally, I built the converter. tools/hspconv.py the game’s .hsp files and data/ directory and generates a static site:
 
 ```
     $ python3 tools/hspconv.py --data "Hypnospace Outlaw/data" --out site
 ```
 
-hsp.js reproduces HypnOS's rendering behavior using browser-friendly techniques: the Construct 2 Spritefont rendering is replaced with my own implementation, and text is rendered to canvas. GIF playback uses a looping image player, and it implements sway/spin/marquee/typewriter/color-cycle effects. As a result, the pages behave like they do in the game. Modern browsers won't autoplay audio without user interaction, so on initial load the user needs to click or interact with the page for audio playback to become available.
+hsp.js reproduces HypnOS’s rendering behavior using browser‐friendly techniques: the Construct 2 Spritefont rendering is replaced with my own implementation, and text is rendered to canvas. GIF playback uses a looping image player, and it implements sway/spin/marquee/typewriter/color-cycle effects. As a result, the pages behave like they do in the game. Modern browsers won’t autoplay audio without user interaction, so on initial load the user needs to click or interact with the page for audio playback to become available.
 
-.hsp files are serialized Construct 2 object data: a 300px-wide page, metadata, and a collection of Gif and Text elements. Every element can have up to 20 events/actions (the game's scripting language triggers them). Consequently, two visually identical elements can behave differently and produce different game outcomes. For every element, the converter implements a version of the ElementEventWeb logic. It looks for the image or text of the element in the same asset locations used by LoadGifs when the game starts (gifs/, static/, shapes/, wordart/). It resolves navigation in the same way as URLtoCurrent (which resolves URLs relative to the page being opened) and converts them into links to the generated local page. It writes one HTML file per page. Every element is a div. Their positioning and z-ordering (back-to-front stacking) match the game.
+.hsp files are serialized Construct 2 object data: a 300px‐wide page, metadata, and a collection of Gif and Text elements. Every element can have up to 20 events/actions (the game’s scripting language triggers them). Consequently, two visually identical elements can behave differently and produce different game outcomes. For every element, the converter implements a version of the ElementEventWeb logic. It looks for the image or text of the element in the same asset locations used by LoadGifs when the game starts (gifs/, static/, shapes/, wordart/). It resolves navigation in the same way as URLtoCurrent (which resolves URLs relative to the page being opened) and converts them into links to the generated local page. It writes one HTML file per page. Every element is a div. Their positioning and z-ordering (back‐to‐front stacking) match the game.
 
-By default, site/assets is a symlink pointing to the game's data/ directory. This keeps the generated site very small, but doesn't provide what you need to host it without Hypnospace Outlaw installed (please don't install random video games on servers). Use --copy-assets if you need an actual copy of the required assets.
+By default, site/assets is a symlink pointing to the game’s data/ directory. This keeps the generated site very small, but doesn’t provide what you need to host it without Hypnospace Outlaw installed (please don’t install random video games on servers). Use --copy-assets if you need an actual copy of the required assets.
 
-tools/hspaudit.py re-scans the generated site and reports anything that could not be resolved. For example, I ran it against the entire game:
+tools/hspaudit.py re‐scans the generated site and reports anything that could not be resolved. For example, I ran it against the entire game:
 
 ```
     $ python3 tools/hspaudit.py --site site --data "Hypnospace Outlaw/data"
@@ -100,13 +100,13 @@ tools/hspaudit.py re-scans the generated site and reports anything that could no
     links that resolve to no exported page: 13 distinct, 48 references
 ```
 
-The 48 dead links are dead in-game too, I think they're pages that were cut from the shipped data but are still linked from somewhere (a "the comic shop" zone that doesn't exist, a couple of template2.hsp placeholders, one ~truetranquilityno.hsp).
+The 48 dead links are dead in‐game too, I think they’re pages that were cut from the shipped data but are still linked from somewhere (a "the comic shop" zone that doesn’t exist, a couple of template2.hsp placeholders, one ~truetranquilityno.hsp).
 
 ### Music
 
 The pages contain music in two formats. 450 pages refer to .ogg files. Every .ogg file has a corresponding .txt file containing "name|author". Modern audio players can read these directly. The converter preserves both pieces of information. The browser plays them using an audio element with looping enabled.
 
-Another 527 pages refer to .hsm files. These are also Construct 2 data files, but they contain small tracker-style compositions made from short audio samples. The music logic is in the HypnOS event sheet alongside the rest of the page logic. Therefore, the same reverse-engineering approach works: the "Play Music Sounds" group sends music information to a three-dimensional sequence (step, pattern×track, parameter). The "BPM Timer" event group calculates secPerStep = 1 / (BPM/60) / 4 — one step is a 1/16th note. The FREQOUT object at ID 60 converts pitch numbers into audio frequencies (using a different method for long notes).
+Another 527 pages refer to .hsm files. These are also Construct 2 data files, but they contain small tracker‐style compositions made from short audio samples. The music logic is in the HypnOS event sheet alongside the rest of the page logic. Therefore, the same reverse‐engineering approach works: the "Play Music Sounds" group sends music information to a three‐dimensional sequence (step, pattern×track, parameter). The "BPM Timer" event group calculates secPerStep = 1 / (BPM/60) / 4 — one step is a 1/16th note. The FREQOUT object at ID 60 converts pitch numbers into audio frequencies (using a different method for long notes).
 
 tools/hsmrender.py converts all of the music data into looping audio files. It does this offline. It extracts all of the short samples using ffmpeg, then combines them with NumPy into a single waveform containing all of the short sounds. Audio that would otherwise continue past the end of the sequence is wrapped around to the beginning. This makes the resulting audio loop cleanly.
 

@@ -89,7 +89,7 @@ OUT = PERSONAL / "themes" / "ubuntu804" / "f"
 # This has already happened once: gzipt was added to the regex and not here,
 # and went uncensused until 2026-09-07.
 THEMED = ["index", "blog", "hypnospace", "lanfalsehoods",
-          "ntppost", "ntpuserinfo", "slowqotd", "gzipt"]
+          "ntppool", "ntppost", "ntpuserinfo", "slowqotd", "gzipt"]
 
 FACES = [
     ("DejaVuSans.ttf", "dejavu.woff2"),
