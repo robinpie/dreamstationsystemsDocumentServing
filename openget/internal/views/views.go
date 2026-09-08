@@ -609,7 +609,7 @@ func (b *Builder) About(ctx context.Context) (*render.Doc, error) {
 	d.Add(render.Para{Text: "OpenGET is licensed under the GNU GPL version 2:"})
 	d.Add(render.Links{Items: []render.Link{
 		{Text: "View directory over FTP", Href: "ftp://dreamstation.systems/robinsSoftware/openget/"},
-		{Text: "View on GitHub", Href: "https://github.com/robinpie/httpdreamstationsystems"},
+		{Text: "View on GitHub", Href: "https://github.com/robinpie/dreamstationsystemsDocumentServing"},
 	}})
 
 	d.Add(render.Heading{Level: 2, Text: "Where the data comes from"})
