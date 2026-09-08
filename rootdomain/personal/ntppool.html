@@ -78,6 +78,8 @@
 
     <p>You do not need a fancy clock. You do not need to be stratum 1, and timekeeping in virtual machines has gotten way better recently. Hell, <a href="https://github.com/ntppool/monitor/blob/main/scorer/statusscore/statusscore.go">if you can keep your clock accurate within 100 ms, you’re good enough for the pool</a> (which is insanely forgiving).</p>
 
+    <p>Information on how to join the NTP Pool <a href="https://www.ntppool.org/en/join.html">can be found on their website</a>.</p>
+
     <h2>A warning</h2>
 
     <p>This is a long‐term commitment. You can remove yourself from the pool whenever you like, but due to misbehaving NTP clients and misguided configurers resolving a singular pool IP once and hardcoding it in a fleet of devices, it can take months, years, or forever for the traffic to stop. (I e‐mailed Dave Plonka about the <a href="https://pages.cs.wisc.edu/~plonka/netgear-sntp/">2003 Netgear–University of Wisconsin incident</a> recently, and apparently they <em>still</em> see a bit of traffic from these routers.) For a long time after removing yourself from the NTP Pool, you will continue to get hammered on UDP 123 for years.</p>

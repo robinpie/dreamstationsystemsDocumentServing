@@ -26,6 +26,10 @@ You do not need a fancy clock. You do not need to be stratum 1, and timekeeping
 
 if you can keep your clock accurate within 100 ms, you’re good enough for the pool: <https://github.com/ntppool/monitor/blob/main/scorer/statusscore/statusscore.go>
 
+Information on how to join the NTP Pool can be found on their website.
+
+can be found on their website: <https://www.ntppool.org/en/join.html>
+
 A warning
 ---------
 
