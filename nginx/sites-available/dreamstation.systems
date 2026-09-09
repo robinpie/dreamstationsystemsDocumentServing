@@ -91,6 +91,7 @@ map $theme $theme_color_dark {
 
 server {
     include snippets/clacks.conf;
+    include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;
     server_name dreamstation.systems www.dreamstation.systems mta-sts.dreamstation.systems *.dreamstation.systems;
@@ -123,6 +124,7 @@ server {
 # is sensitive.
 server {
     include snippets/clacks.conf;
+    include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
     http2 on;
@@ -154,6 +156,7 @@ server {
 # real backstop rather than the only path that ever succeeded.
 server {
     include snippets/clacks.conf;
+    include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name openpgpkey.dreamstation.systems;
@@ -182,6 +185,7 @@ server {
 # domain requires TLS for inbound mail.
 server {
     include snippets/clacks.conf;
+    include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name mta-sts.dreamstation.systems;

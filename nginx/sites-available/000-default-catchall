@@ -1,7 +1,13 @@
 server {
+    include snippets/accessLog.conf;
     listen 80 default_server;
     listen [::]:80 default_server;
     server_name _;
+
+    # Logging a dropped request is the point, not an oversight: the Host that
+    # got 444'd is the only record of what was aimed at this address, and it is
+    # what tells you a name has started arriving that deserves a block of its
+    # own. That is how the bare-IP hole was found.
 
     # Any Host that doesn't match a configured server block lands here
     # (e.g. an unconfigured subdomain someone pointed at this IP).

@@ -1,4 +1,5 @@
 server {
+    include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;
     server_name pool.ntp.org *.pool.ntp.org ntppool.org *.ntppool.org;

@@ -1,0 +1,44 @@
+# 67.215.249.229 — the site, for people who arrive by address instead of name.
+#
+# THE BUG THIS FIXES: http://67.215.249.229/ used to get nothing at all. A Host
+# that is a bare address matches no server_name, so it fell to
+# 000-default-catchall and had its connection dropped with 444. Over HTTPS the
+# same request has always worked, because there is no :443 default_server and
+# unmatched SNI falls through to the apex — so the address worked on one port
+# and was a black hole on the other, which is not a distinction anyone meant to
+# draw. Found Sept 2026 while looking at something else.
+#
+# WHY NOT JUST SOFTEN THE CATCHALL: because 444 is right for everything else it
+# catches. Its job is that an unrecognized *name* pointed at this address does
+# not get the site served under it — someone else's domain aimed here, a stale
+# DNS record, a vhost-guessing scanner. A bare address is the opposite case: it
+# names nothing, claims nothing, and is how someone who has only the IP reaches
+# a human. So the address gets its own block and the catchall keeps its teeth.
+#
+# NOT `default_server`. This matches one literal address and nothing else;
+# unmatched names still reach the catchall.
+#
+# IPv4 only, because the box has no global IPv6 address. If one is ever added,
+# this block needs the address adding to server_name — the same request over
+# IPv6 would otherwise land back in the catchall and be dropped exactly as
+# before.
+#
+# Content is the apex's :80 block: same root, same snippets. Not a redirect to
+# HTTPS, for the reason the apex gives — port 80 is deliberately left plain.
+# Kept as its own file rather than another server_name on the apex, so that
+# "what does the bare address do" has one obvious place to be answered.
+server {
+    include snippets/clacks.conf;
+    include snippets/accessLog.conf;
+    listen 80;
+    listen [::]:80;
+    server_name 67.215.249.229;
+
+    root /srv/http;
+    index index.html;
+
+    include snippets/statusCgi.conf;
+    include snippets/pgpKey.conf;
+    include snippets/theme.conf;
+    include snippets/feeds.conf;
+}

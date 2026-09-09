@@ -10,6 +10,51 @@ server block — this sets up name-based virtual hosting for future
 subdomains.
 
 Config layout:
+  /etc/nginx/conf.d/logFormat.conf                   — defines the `combinedHost`
+                                                       log format: Debian's
+                                                       `combined` with the Host
+                                                       header appended as
+                                                       host=<value>. In conf.d
+                                                       because log_format is
+                                                       http context and conf.d/*
+                                                       is included BEFORE
+                                                       sites-enabled/*, so the
+                                                       name is defined before
+                                                       any block uses it; a
+                                                       snippet could not work,
+                                                       being server context. It
+                                                       does NOT set access_log —
+                                                       that would ADD a second
+                                                       destination next to
+                                                       nginx.conf's and log
+                                                       everything twice. Applied
+                                                       per-server by
+                                                       snippets/accessLog.conf.
+                                                       Appended rather than
+                                                       inserted so anything
+                                                       reading these logs
+                                                       positionally still works.
+  /etc/nginx/snippets/accessLog.conf                 — `access_log ... combinedHost`
+                                                       (format defined in
+                                                       conf.d/logFormat.conf).
+                                                       INCLUDE IT IN EVERY NEW
+                                                       SERVER BLOCK: a block
+                                                       without it silently
+                                                       inherits nginx.conf's
+                                                       plain `combined` and
+                                                       drops the Host, so the
+                                                       one vhost you forget is
+                                                       the one you cannot later
+                                                       account for. The lone
+                                                       exception is
+                                                       grandexchange's :443
+                                                       block, which logs to
+                                                       openget-access.log —
+                                                       access_log does not
+                                                       override at the same
+                                                       level, it ADDS, so
+                                                       including it there would
+                                                       double-log OpenGET.
   /etc/nginx/snippets/statusCgi.conf                 — the /professional/status
                                                        location: fcgiwrap ->
                                                        /srv/cgi/status.cgi, its
@@ -229,6 +274,35 @@ and nothing here is sensitive.
                                                        same reasoning as
                                                        grandexchange. Full
                                                        details in githooks.txt.
+  /etc/nginx/sites-available/bare-ip                 — server_name
+                                                       67.215.249.229; serves
+                                                       the site to anyone who
+                                                       arrives by address rather
+                                                       than name. Before it,
+                                                       http://<ip>/ matched no
+                                                       server_name, fell to the
+                                                       catchall and was DROPPED
+                                                       with 444 — while the same
+                                                       request over HTTPS worked
+                                                       fine (no :443
+                                                       default_server, so
+                                                       unmatched SNI reaches the
+                                                       apex). The address worked
+                                                       on one port and was a
+                                                       black hole on the other.
+                                                       Fixed with its own block
+                                                       rather than by softening
+                                                       the catchall, which
+                                                       should keep dropping
+                                                       unrecognized NAMES; a
+                                                       bare address names
+                                                       nothing and is how
+                                                       someone holding only the
+                                                       IP reaches a human.
+                                                       IPv4-only because the box
+                                                       has no global IPv6 — add
+                                                       the address here if that
+                                                       changes.
   /etc/nginx/sites-available/000-default-catchall    — default_server block,
                                                        server_name _, returns
                                                        444 (drops connection)
@@ -252,7 +326,9 @@ THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every
 hand-authored file above lives in ~/configNotes/documentServing/nginx/ and is
 installed by promoteSite.sh:
 
+    nginx/conf.d/logFormat.conf
     nginx/sites-available/000-default-catchall
+    nginx/sites-available/bare-ip
     nginx/sites-available/dreamstation.systems
     nginx/sites-available/grandexchange.dreamstation.systems
     nginx/sites-available/pool-ntp.tesla.com
@@ -261,6 +337,7 @@ installed by promoteSite.sh:
     nginx/snippets/clacks.conf
     nginx/snippets/feeds.conf
     nginx/snippets/pgpKey.conf
+    nginx/snippets/accessLog.conf
     nginx/snippets/statusCgi.conf
     nginx/snippets/teslaNotice.conf
     nginx/snippets/theme.conf

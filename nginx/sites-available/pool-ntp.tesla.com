@@ -53,6 +53,7 @@
 
 server {
     include snippets/clacks.conf;
+    include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;
     server_name pool-ntp.tesla.com;
@@ -66,6 +67,7 @@ server {
 # human. This block answers for one name and nothing else.
 server {
     include snippets/clacks.conf;
+    include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
     http2 on;

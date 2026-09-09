@@ -12,6 +12,10 @@
 
 server {
     include snippets/clacks.conf;
+    # This block redirects rather than proxying, so its traffic belongs in the
+    # main log with everything else. Only the :443 block below is OpenGET's own
+    # and keeps its own access_log — see the note there.
+    include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;
     server_name grandexchange.dreamstation.systems;
@@ -41,6 +45,11 @@ server {
     ssl_certificate     /etc/letsencrypt/live/grandexchange.dreamstation.systems/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/grandexchange.dreamstation.systems/privkey.pem;
 
+    # DELIBERATELY NOT snippets/accessLog.conf. OpenGET's traffic gets its own
+    # file, and two access_log directives at the same level do not override —
+    # they ADD, so including the snippet here would write every request to both
+    # files. If this log ever needs the Host field, give it `combinedHost` (the
+    # format is defined in conf.d/logFormat.conf) rather than the snippet.
     access_log /var/log/nginx/openget-access.log;
     error_log  /var/log/nginx/openget-error.log;
 

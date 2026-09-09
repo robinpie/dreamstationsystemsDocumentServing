@@ -19,6 +19,7 @@
 
 server {
     include snippets/clacks.conf;
+    include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;
     server_name staging.dreamstation.systems;
@@ -44,6 +45,7 @@ server {
 
 server {
     include snippets/clacks.conf;
+    include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
     http2 on;

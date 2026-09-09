@@ -22,13 +22,18 @@ STAGING=/srv/httpstaging
 # not own. Adding a file here is the only way to deploy it. See nginx.txt.
 NGINX_SITES=(
 	000-default-catchall
+	bare-ip
 	dreamstation.systems
 	grandexchange.dreamstation.systems
 	pool-ntp.tesla.com
 	pool.ntp.org
 	staging.dreamstation.systems
 )
+NGINX_CONFD=(
+	logFormat.conf
+)
 NGINX_SNIPPETS=(
+	accessLog.conf
 	clacks.conf
 	feeds.conf
 	pgpKey.conf
@@ -331,7 +336,7 @@ if [ -d "$ROOT/nginx" ]; then
 
 	rollback() {
 		local dest f
-		for dest in sites-available snippets; do
+		for dest in conf.d sites-available snippets; do
 			[ -d "$backup/$dest" ] || continue
 			for f in "$backup/$dest"/*; do
 				[ -e "$f" ] || continue
@@ -343,6 +348,12 @@ if [ -d "$ROOT/nginx" ]; then
 		done
 	}
 
+	# conf.d first: it defines the log_format that the snippets below refer to,
+	# and nginx resolves a format name only if it was defined earlier in the
+	# parse. Install order does not set parse order (nginx.conf's includes do,
+	# and conf.d/* comes before sites-enabled/* there), but keeping the two in
+	# the same order means one less thing to reason about.
+	install_managed conf.d conf.d "${NGINX_CONFD[@]}"
 	install_managed sites-available sites-available "${NGINX_SITES[@]}"
 	install_managed snippets snippets "${NGINX_SNIPPETS[@]}"
 
