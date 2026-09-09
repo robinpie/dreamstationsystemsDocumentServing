@@ -23,14 +23,33 @@
 # but it is odd enough to stand out in a report full of 200s and 404s — which
 # is the entire point, since the audience is whoever reads the scan output.
 #
-# PORT 80 ONLY, deliberately. Serving this over HTTPS would need a certificate
-# for a hostname in tesla.com, which we cannot obtain and should not want to;
-# an HTTPS scan of this Host gets a cert-mismatch against the apex block as it
-# always has. The scanner's plaintext requests are the ones that reach here.
+# BOTH :80 AND :443, and the HTTPS half is the one that took a second pass.
+#
+# This started as a :80 block only, on the reasoning that HTTPS would need a
+# certificate for a name in tesla.com and we cannot get one. That was true and
+# beside the point: the scanner does not validate certificates. With no :443
+# block for this name, its HTTPS requests fell through to the first :443 server
+# in config order — the apex — and got the real site and a 404 per path, which
+# is exactly what the notice exists to prevent. Roughly half its traffic is
+# HTTPS, so half the point was being missed.
+#
+# So :443 reuses the dreamstation.systems certificate. It does not match this
+# name and is not meant to: nginx needs *a* keypair to finish a handshake, the
+# scanner ignores the mismatch, and no real client ever asks for this name. The
+# mismatch is arguably useful — a cert naming dreamstation.systems tells the
+# operator whose machine they are on before they have read a word of the body.
+#
+# This REUSES an existing certificate file; it does not add a name to one. The
+# blast-radius rule that keeps grandexchange on a separate cert (see that file)
+# is about re-issuing the dreamstation.systems cert, which also carries mta-sts
+# and therefore inbound mail's TLS. Nothing here touches certbot.
+#
+# Kept out of the apex's server_name rather than added to it, because the apex
+# answers with the site and this name must answer with the notice.
 #
 # If Tesla fixes their asset list, or the pool rotates us out of their resolver
-# cache for good, this block stops matching anything and can be deleted. Check
-# the access log for the Host before assuming it's still earning its place.
+# cache for good, these blocks stop matching anything and can be deleted. Check
+# the access log for the Host before assuming they are still earning their place.
 
 server {
     include snippets/clacks.conf;
@@ -38,22 +57,22 @@ server {
     listen [::]:80;
     server_name pool-ntp.tesla.com;
 
-    # Same answer on every path, including the several thousand CVE probes the
-    # scanner will walk through. No location block, so nothing here can reach
-    # the filesystem.
-    default_type text/html;
-    charset utf-8;
+    include snippets/teslaNotice.conf;
+}
 
-    return 299 '<h1>This is not Tesla infrastructure!</h1>
+# Deliberately NOT `default_server`. Adding one here would change what every
+# unmatched SNI gets — a bare-IP HTTPS request included — and those should keep
+# reaching the apex site, which is how someone with only the address gets to a
+# human. This block answers for one name and nothing else.
+server {
+    include snippets/clacks.conf;
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name pool-ntp.tesla.com;
 
-<p>This is a hobbyist NTP, web, and miscellaneous server.</p>
+    ssl_certificate     /etc/letsencrypt/live/dreamstation.systems/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/dreamstation.systems/privkey.pem;
 
-<p>Over the past few days, I have been receiving tons of requests at the pool-ntp.tesla.com Host from two Assetnote scanning hosts (<code>54.165.75.96</code> and <code>35.168.63.24</code>).</p>
-
-<p>pool-ntp.tesla.com CNAMEs to pool.ntp.org, which round-robins to thousands of volunteer NTP servers, and your scanner seems to have gotten stuck to my server.</p>
-
-<p>You have not caused me any harm, but you are throwing exploits at strangers&rsquo; IPs.</p>
-
-<p>I have emailed VulnerabilityReporting@tesla.com about this. If you would like, email me back at <a href="mailto:robin@dreamstation.systems">robin@dreamstation.systems</a> and I can provide detailed logs.</p>
-';
+    include snippets/teslaNotice.conf;
 }

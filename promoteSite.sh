@@ -33,6 +33,7 @@ NGINX_SNIPPETS=(
 	feeds.conf
 	pgpKey.conf
 	statusCgi.conf
+	teslaNotice.conf
 	theme.conf
 	wkd.conf
 )

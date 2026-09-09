@@ -36,6 +36,21 @@ Config layout:
                                                        over HTTPS would be a
                                                        silly bug). See
                                                        ~/configNotes/status.txt
+  /etc/nginx/snippets/teslaNotice.conf               — default_type/charset and
+                                                       the `return 299` carrying
+                                                       the "this is not Tesla
+                                                       infrastructure" notice.
+                                                       INCLUDED FROM BOTH the
+                                                       :80 and :443 blocks of
+                                                       sites-available/
+                                                       pool-ntp.tesla.com, for
+                                                       the same
+                                                       cannot-drift reason as
+                                                       statusCgi.conf above —
+                                                       here it matters more,
+                                                       since the whole file is
+                                                       one 776-byte prose body
+                                                       that will get edited.
   /etc/nginx/snippets/theme.conf                     — server-side theme
                                                        selection for the eight
                                                        themed pages under
@@ -146,10 +161,25 @@ and nothing here is sensitive.
                                                        not a real code: 2xx so
                                                        the body is kept, odd
                                                        enough to be noticed in
-                                                       a scan report. Port 80
-                                                       only — we cannot get a
-                                                       cert for a tesla.com
-                                                       name. Same family as the
+                                                       a scan report. TWO blocks,
+                                                       :80 and :443, sharing the
+                                                       body via
+                                                       snippets/teslaNotice.conf
+                                                       so the two cannot drift.
+                                                       :443 reuses the
+                                                       dreamstation.systems cert
+                                                       — it does not match this
+                                                       name and does not need to,
+                                                       since the scanner ignores
+                                                       the mismatch and no real
+                                                       client asks for the name.
+                                                       Was :80 only at first;
+                                                       the scanner's HTTPS half
+                                                       then fell through to the
+                                                       apex (first :443 block in
+                                                       config order) and got the
+                                                       real site, defeating the
+                                                       point. Same family as the
                                                        pool.ntp.org block: a
                                                        Host we do not own but
                                                        predictably receive,
@@ -232,6 +262,7 @@ installed by promoteSite.sh:
     nginx/snippets/feeds.conf
     nginx/snippets/pgpKey.conf
     nginx/snippets/statusCgi.conf
+    nginx/snippets/teslaNotice.conf
     nginx/snippets/theme.conf
     nginx/snippets/wkd.conf
 
