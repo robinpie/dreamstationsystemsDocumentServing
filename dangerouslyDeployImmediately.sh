@@ -7,6 +7,6 @@ git commit --allow-empty -am "automatic commit: from the dangerouslyDeployImmedi
 
 ./promoteSite.sh || DIDFAIL=1
 
-git push
+git push # nbd if this fails
 
-exit $FAILED
+exit $DIDFAIL
