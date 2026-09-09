@@ -12,60 +12,13 @@ build step, so anything served has to exist in the repo.
 
 382 kB -> ~44 kB across the two faces.
 
-
-WHY THIS IS SAFE, given ubuntu804theme.txt spent a paragraph saying it was not
------------------------------------------------------------------------------
-That paragraph's premise was that a subset must be declared with a
-unicode-range, which the browser consults BEFORE opening the file, so a
-codepoint in range but absent from the font falls out of the family instead of
-through to the next @font-face.
-
-The premise is wrong: unicode-range is OPTIONAL, and ubuntu804.css has never
-declared one. Without it the browser does ordinary per-glyph fallback — a
-character the file lacks is rendered from the next family in the stack,
-exactly as it is today.
-
-Which matters because the eight emoji in these pages (🌠🏠🏰💼📈📓📧🚀) are
-absent from DejaVu at every weight, so they ALREADY fall through to a system
-emoji font. Shipping the full face buys them nothing. Verified against the
-shipped woff2, not assumed.
-
-The paragraph's real objection was the last one — a subset "can rot when a
-page gains a character". That one was correct, and this script is the answer
-to it: the census is recomputed from the pages on every commit, so the subset
-cannot drift from the content. Nothing here is a judgement call that survives
-the next edit.
-
-
-WHY THE MARGIN
---------------
-THE CENSUS CANNOT SEE THE CLOCK. chrome/top.html renders the GNOME panel's
-clock with SSI —
-
-    <!--#config timefmt="%a %b %e, %-l:%M %p" --><!--#echo var="date_gmt" -->
-
-— so the characters actually painted there ("Sun Sep 7, 2:15 PM") are produced
-by nginx at request time and appear in no source file this script can read. A
-census-only subset would be cut from text that does not include the day and
-month abbreviations on every visitor's screen.
-
-They are ASCII, so the margin's U+0020-007E covers them, which is the whole
-point: the margin is what makes the census's blind spots harmless. The same
-goes for anything a CSS content: rule injects, and for the theme's other two
-SSI values (the window title and $document_uri).
-
-So: census over RAW file bytes — markup, styles and any script included, not a
-stripped text extraction — plus a fixed margin. Together they cost about 10 kB
-over a tight subset and remove a category of bug that would otherwise surface
-on one page, in one browser, months later.
-
-A character outside both is not tofu — it falls back to another font, so the
-failure mode is a visible style mismatch rather than a missing glyph.
-
-(The themed pages carry NO JavaScript at all — slowqotd.html has a "Proudly
-ZERO JavaScript!" badge and means it — so script-built text is not among the
-blind spots here. Reading raw bytes is still the right call: it is robust to
-that changing, and to markup this script would otherwise have to parse.)
+Approach: a codepoint census over the RAW bytes of every source the theme
+renders, plus a fixed MARGIN of ranges the census cannot see (SSI clock text,
+CSS content: injections, the window title). ubuntu804.css declares no
+unicode-range, so a character in neither set just falls back to the next font
+rather than turning into tofu. The census runs on every commit, so the subset
+cannot drift from the content. Full rationale — why subsetting is safe, what
+the margin is for — in ubuntu804theme.txt, "SUBSET FONTS SHIP".
 """
 
 import subprocess
@@ -80,14 +33,10 @@ SRC = ROOT / "assetsBuild" / "fontsSrc"
 PERSONAL = ROOT / "rootdomain" / "personal"
 OUT = PERSONAL / "themes" / "ubuntu804" / "f"
 
-# The eight pages that nginx serves with the chrome, per snippets/theme.conf's
-# location regex, plus the chrome fragments and the stylesheet itself.
-#
-# KEEP THIS IN SYNC WITH theme.conf. A page added to that regex and not here
-# gets the theme but not its characters; the margin below will usually cover
-# it, and when it does not the symptom is one character in a fallback font.
-# This has already happened once: gzipt was added to the regex and not here,
-# and went uncensused until 2026-09-07.
+# The pages nginx serves with the chrome. KEEP THIS IN SYNC WITH theme.conf's
+# location regex — a page in the regex but not here gets the theme without its
+# characters. See ubuntu804theme.txt ("SUBSET FONTS SHIP") for the time this
+# drifted.
 THEMED = ["index", "blog", "hypnospace", "lanfalsehoods",
           "ntppool", "ntppost", "ntpuserinfo", "slowqotd", "gzipt"]
 
@@ -178,11 +127,9 @@ def build(src: Path, dest: Path, chars: set[str]) -> None:
             f"--text-file={textfile}",
             f"--unicodes={MARGIN}",
             "--flavor=woff2",
-            # Layout features are left at pyftsubset's defaults ON PURPOSE.
-            # --layout-features='' saves 1.6 kB and drops GPOS kerning with
-            # it, which would change the advance widths this theme's spacing
-            # was measured against. The shipped full faces carry GPOS (and no
-            # legacy kern table); so does this.
+            # Layout features left at pyftsubset's defaults on purpose: keeps
+            # GPOS kerning, so advance widths match the faces this theme's
+            # spacing was measured against. See ubuntu804theme.txt.
             "--no-recalc-timestamp",
             f"--output-file={dest}",
         ], check=True, stdout=subprocess.DEVNULL,

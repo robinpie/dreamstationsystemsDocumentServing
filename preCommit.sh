@@ -1,31 +1,20 @@
 #!/bin/bash
 # pre-commit: run every pre-commit step, in order.
 #
-# .git/hooks/pre-commit used to be a symlink straight to datestampHook.pl,
-# because there was only one step. There are two now, and git runs exactly one
-# pre-commit hook, so the symlink points here instead and this file calls both:
-#
 #     datestampHook.pl               schema.org dateModified on staged HTML
 #     assetsBuild/makeFeed.py        Atom + RSS for /personal/blog.html
 #     assetsBuild/makeMeta.py        blog.html's JSON-LD + sitemap.xml
 #     assetsBuild/makeFontSubset.py  ubuntu804's DejaVu subsets
 #     assetsBuild/badgeBuild.pl      the 88x31 wall: WebP + generated markup
 #
-# ADDING A STEP: put it below, and make it re-stage anything it rewrites. A
-# step that edits a file without `git add`ing it produces a commit whose
-# contents do not match what the hook computed.
-#
-# See githooks.txt for the symlink convention and why core.hooksPath is not
-# used. Install with:
-#
-#     ln -sf ../../preCommit.sh .git/hooks/pre-commit
+# ADDING A STEP: put it below, and make it re-stage anything it rewrites.
+# git runs exactly one pre-commit hook, so this file exists to chain them.
+# See githooks.txt for the symlink convention, the install command, and why
+# core.hooksPath is not used.
 set -eu
 
-# NOT dirname "$0": git invokes this through the .git/hooks/pre-commit
-# symlink, so $0 is that path and dirname lands in .git/hooks, where none of
-# the scripts below exist. `git rev-parse --show-toplevel` resolves the repo
-# root whatever path the hook was reached by — the same thing deployHook.sh
-# does, and for the same reason.
+# rev-parse, NOT dirname "$0": the hook is reached through a symlink under
+# .git/hooks, so $0's directory is not the repo. Same as deployHook.sh.
 ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
 
@@ -34,16 +23,10 @@ cd "$ROOT"
 
 # ---------------------------------------------------------------------- feeds
 #
-# feed.xml and rss.xml are generated from blog.html and the og:description of
-# each post, so they are committed artifacts: the deploy is a plain rsync of
-# rootdomain/ and has no build step that could produce them later.
-#
-# THE UNSTAGED GUARD, matching datestampHook.pl's: the generator reads the
-# WORKING TREE, not the index. If a source file has unstaged edits, the feed
-# built from it would describe posts this commit does not contain — so the
-# feeds are left exactly as they are and the commit proceeds. This is a
-# warning, not an abort: an unrelated commit should not be blocked by a draft
-# sitting in the tree.
+# feed.xml/rss.xml: committed artifacts (plain rsync deploy, no build step).
+# UNSTAGED GUARD: the generator reads the working tree, so if a source has
+# unstaged edits the feeds are left alone and the commit proceeds with a
+# warning. See githooks.txt, "THE FOUR STEPS GUARD DIFFERENTLY".
 feed_sources=$(git diff --name-only -- \
 	'rootdomain/personal/blog.html' 'rootdomain/personal/*.html' \
 	| grep -v -e 'personal/feed\.xml$' -e 'personal/rss\.xml$' || true)
@@ -67,21 +50,11 @@ fi
 
 # --------------------------------------------------- JSON-LD wall + sitemap
 #
-# blog.html's JSON-LD block and rootdomain/sitemap.xml, both derived from the
-# same <ul class="posts"> the feeds come from. Committed artifacts for the
-# same reason: plain rsync deploy, no build step downstream. See siteAssets.txt.
-#
-# It also CHECKS things it does not generate — each post's dateline and its
-# BlogPosting dates against the list, and that every JSON-LD block on the site
-# is valid JSON — and returns non-zero if any of that disagrees. That failure
-# ABORTS THE COMMIT, and is meant to: shipping structured data that contradicts
-# the page is worse than shipping none, and unlike a stale feed it is not
-# self-correcting on the next commit.
-#
-# THE UNSTAGED GUARD IS THE FEEDS' GUARD, and for the feeds' reason — this
-# reads the working tree too, and a sitemap or a blogPost array built from a
-# half-finished tree makes the same kind of false claim a feed does. Same
-# variable, computed above; if the feeds were skipped, these are skipped too.
+# blog.html's JSON-LD block and rootdomain/sitemap.xml, from the same post list
+# the feeds use. Shares the feeds' unstaged guard (same $feed_sources). It also
+# CHECKS post datelines / BlogPosting dates / JSON-LD validity and ABORTS the
+# commit on a mismatch. See githooks.txt ("THE FOUR STEPS GUARD DIFFERENTLY")
+# and siteAssets.txt, STRUCTURED DATA.
 if [ -n "$feed_sources" ]; then
 	echo "pre-commit: JSON-LD and sitemap NOT regenerated either." >&2
 else
@@ -96,23 +69,11 @@ fi
 
 # --------------------------------------------------------------- font subsets
 #
-# The ubuntu804 theme's two DejaVu faces, cut down to the characters the seven
-# themed pages actually use (382 kB -> 45 kB). Committed artifacts for the same
-# reason the feeds are: the deploy is a plain rsync of rootdomain/ with no
-# build step that could produce them later.
-#
-# NO UNSTAGED GUARD HERE, unlike the feeds above, and the difference is not an
-# oversight. A feed built from a half-finished tree makes a FALSE CLAIM — it
-# announces posts the commit does not contain, to readers who cache it. A font
-# subset built from a half-finished tree is merely GENEROUS: it carries a few
-# glyphs for text that is not committed yet, which costs bytes and breaks
-# nothing. The failure modes are not comparable, so the guard that is right for
-# one is needless friction for the other.
-#
-# The generator is a no-op unless the character census actually changed, so a
-# commit that touches no themed page leaves these binaries alone and out of the
-# diff. That matters more than usual here: without it every commit would put
-# two new 20 kB blobs into git history.
+# The ubuntu804 theme's two DejaVu faces, cut to the themed pages' characters
+# (382 kB -> 45 kB). NO UNSTAGED GUARD: a subset built from a half-finished
+# tree is merely generous, not a false claim. No-op unless the census changed,
+# which keeps two 20 kB blobs out of every commit's history. See githooks.txt,
+# "THE FOUR STEPS GUARD DIFFERENTLY".
 ./assetsBuild/makeFontSubset.py
 
 for f in rootdomain/personal/themes/ubuntu804/f/dejavu.woff2 \
@@ -125,28 +86,12 @@ done
 
 # ----------------------------------------------------------------- 88x31 wall
 #
-# Re-encodes the badges to WebP where that is smaller (see badgeBuild.pl for
-# why "where smaller" and not "always"), then GENERATES the <ul class="badges">
-# block in every page carrying the badges:start/end markers. Committed
-# artifacts, same reasoning as the feeds and the font subsets: plain rsync
-# deploy, no build step downstream.
-#
-# It is a no-op on a commit that touches no badge — a source sha256 that
-# matches the manifest skips the encoders entirely, and the generated markup is
-# byte-identical, so nothing gets re-staged and nothing enters the diff.
-#
-# THE GUARD HERE IS NOT THE FEEDS' GUARD, and not the font subsets' absence of
-# one. This step is the only one that rewrites HAND-AUTHORED FILES: it edits
-# eight .html pages that you also edit. `git add` on one of those would sweep
-# an unrelated in-progress edit sitting in the same file into this commit —
-# a thing no generator should ever do, and one you would not notice until you
-# read the commit later.
-#
-# So the pages that were already dirty BEFORE the generator ran are recorded
-# first, and those are the ones it refuses to stage. The wall is still written
-# into them on disk, so nothing is lost and the next commit picks it up; it
-# just is not staged on your behalf. Pages that were clean are staged normally,
-# because for those the badge block is provably the only change.
+# Re-encodes the badges (WebP where smaller) and GENERATES the <ul
+# class="badges"> block in every page carrying the badges:start/end markers.
+# PER-FILE GUARD, because this is the only step that rewrites hand-authored
+# files: pages already dirty before it ran get the block on disk but are NOT
+# staged, so an unrelated in-progress edit is not swept into the commit; clean
+# pages stage normally. See githooks.txt, "THE FOUR STEPS GUARD DIFFERENTLY".
 badge_dirty=$(git diff --name-only -- 'rootdomain/personal/*.html' || true)
 
 ./assetsBuild/badgeBuild.pl

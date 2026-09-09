@@ -160,15 +160,11 @@ if [ $((now - disk_last)) -ge "$DISK_INTERVAL" ] || [ ! -f "$DISK_OUT" ]; then
 				chmod 644 "$DISK_HIST" 2>/dev/null || true
 			fi
 
-			# Downsample to one point per DISK_STEP, taking the MAXIMUM used in
-			# each bucket (see status.txt for max-vs-mean and the tail-before-awk
-			# cost rationale). Each point is "p <bucket> <ts> <used_kb>":
-			#
-			#   bucket  a regular 2h grid, so the CGI can tell a missing bucket
-			#           from a present one and break the line on real gaps.
-			#   ts      the actual time of the peak sample, for where to plot
-			#           the point — the bucket floor alone can misplace it by
-			#           up to 2h, most of the width on a short history.
+			# Downsample to one point per DISK_STEP, MAX used per bucket. Each
+			# point is "p <bucket> <ts> <used_kb>": bucket is a regular 2h grid
+			# (gap detection), ts is the peak sample's real time (where to plot).
+			# See status.txt for max-vs-mean, both timestamps, and the
+			# tail-before-awk cost rationale.
 			disk_cut=$((now - DISK_WINDOW))
 			if series=$(tail -n "$DISK_TAIL" "$DISK_HIST" 2>/dev/null | awk \
 				-v cut="$disk_cut" -v step="$DISK_STEP" '

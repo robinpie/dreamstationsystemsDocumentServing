@@ -130,6 +130,66 @@ and promote it.
     ./promoteSite.sh           # will warn that rootdomain/ is dirty; say y
 
 
+promote: the rest of the tree
+-----------------------------
+
+After the web content, promoteSite.sh installs everything else in dependency
+order: content, then the things that read it, then nginx last.
+
+  gopher / gemini    rsync gopher/ -> /srv/gopher and gemini/ -> /srv/gemini.
+                     NO RESTART: gophernicus is socket-activated per
+                     connection, molly-brown reads from disk per request, and
+                     spartan.pl (sharing /srv/gemini) does too. Content is live
+                     the moment rsync finishes.
+
+                     TWO CARVE-OUTS from --delete, both receiver-side files
+                     that are not in the repo:
+                       ge/          OpenGET's retro frontend, rewritten (~50
+                                    files, owned openget:openget) after every
+                                    stats recomputation and gitignored. An
+                                    unexcluded --delete would wipe it between
+                                    regenerations; the exclude also leaves
+                                    openget its atomic-rename write access to
+                                    the directory.
+                       ntpstats.*   written into both doc roots every 5 min by
+                                    ntpstatsgen.timer (ntpstats.txt for gopher,
+                                    ntpstats.gmi for gemini).
+                     rsync excludes are protected from --delete by default
+                     (only --delete-excluded overrides), which is what both
+                     need.
+
+                     OWNERSHIP is robin:robin, NOT the docroot's root:root, so
+                     the content stays editable without sudo. --chmod
+                     normalises the repo's 664/775 to 644/755; both stay
+                     world-readable, which is what lets _gophernicus and
+                     molly-brown's DynamicUser read them.
+
+  statusSample/      the status page's other half (see status.txt), installed
+                     to /usr/local/bin + systemd alongside the CGI so the two
+                     never drift. Timer restarted; safe and cheap.
+
+  nginx/             install -> nginx -t -> roll back on failure (see nginx.txt
+                     for why it cannot be gated before install). conf.d before
+                     sites-available before snippets, matching parse order so
+                     the log_format is defined before a snippet names it.
+
+  etc/               single files across five /etc locations, all gated offline
+                     earlier in the script. Here the remaining risk is
+                     behavioural, not syntactic, so each service is restarted
+                     and then PROBED over its own protocol and rolled back if
+                     the probe fails. Unlike nginx, molly-brown has no config
+                     test and no second instance, so its probe can only run
+                     after a restart that already dropped the service: a bad
+                     config costs a few seconds of downtime, not zero. The
+                     offline gate exists to make that rare.
+
+  jail.local IS DELIBERATELY NOT in ETC_FILES. It holds every fail2ban jail on
+  the box, and its [DEFAULT]/[sshd] ignoreip lines carry a home IP and an
+  institutional range; this repo is public on GitHub. The filter regexes carry
+  nothing and are installed; the jails that reference them stay out of git. See
+  fail2ban.txt.
+
+
 staging vhost
 -------------
 

@@ -14,67 +14,13 @@
 #     rootdomain/personal/badges/          <- generated, served
 #     assetsBuild/badgeManifest.txt        <- generated, the encode cache
 #
-#
-# WHAT IT DOES
-# ------------
-# Each source image is re-encoded to lossless WebP at maximum effort and kept
-# ONLY IF IT CAME OUT SMALLER; otherwise the original is copied through
-# untouched. That comparison is not ceremony — of the ten badges here nine win
-# (the wall goes 15643 -> 9144 bytes) and nginx.png LOSES, by 4 bytes. A rule of
-# "convert everything" would ship one file bigger than what it replaced, for no
-# benefit, forever. zero-javascript.png wins by the same tiny margin in the
-# other direction, which is the point: at this size the answer is per-image and
-# cannot be guessed.
-#
-# Lossless, always. These are 88x31 pixel art with hard edges and tiny palettes,
-# which is the exact case lossy WebP is worst at and lossless WebP is best at.
-# Do not "try -q 80 to save more bytes" — it looks like mud and saves nothing at
-# this size.
-#
-# GIF GOES THROUGH gif2webp, ALWAYS — not just when it is animated. cwebp does
-# not read GIF at any frame count; it fails with "Cannot read input picture
-# file", which is easy to mistake for a missing file. (trans-flag.gif is 8
-# frames and would need gif2webp regardless, but debian-powered.gif is a single
-# frame and still cannot go through cwebp.)
-#
-#
-# WHY THE MARKUP IS GENERATED TOO
-# -------------------------------
-# Because the winner's extension is not knowable until the encoder has run. The
-# wall serves badges/88x31.webp and badges/nginx.png side by side, and which is
-# which can flip when a source image is replaced. Hand-written <img src=> would
-# have to be re-audited across every page on every re-encode; nobody does that,
-# so it would rot into 404s.
-#
-# So the CSV owns the wall and this script writes it into every page carrying
-# the markers. The pages are FOUND BY SCANNING for the start marker rather than
-# listed here — a new page joins the wall by pasting the two markers into it,
-# with nothing to update in this script.
-#
-#     <ul class="badges">
-#     <!-- badges:start ... -->
-#         ...generated <li> rows...
-#     <!-- badges:end -->
-#     </ul>
-#
-# The <ul> stays OUTSIDE the markers so a page can carry its own classes on it.
-#
-#
-# THE MANIFEST
-# ------------
-# assetsBuild/badgeManifest.txt records, per badge, the SHA-256 of the source
-# and which format won. It is the "skip if the source hasn't changed" cache:
-# unchanged digest plus a present output file means the encoders never run.
-# That matters because -z 9 / -m 6 is deliberately slow, and this sits in a
-# pre-commit hook that must not cost seconds on a commit touching no images.
-#
-# It is COMMITTED, so a fresh clone is already warm and the first commit after
-# one does not re-encode ten images to reproduce byte-identical output. It is
-# also the audit trail for the size comparison — it records both sizes, so the
-# question "why is nginx still a PNG" has an answer in the repo.
-#
-# Mtimes deliberately play no part: git does not preserve them, so every fresh
-# clone would have a garbage cache.
+# Each source image is re-encoded to lossless WebP and kept only if it came out
+# smaller; otherwise the original is copied through, so the served extension is
+# not known until the encoder runs and the <li> markup has to be generated too.
+# badgeManifest.txt is the committed encode cache (source SHA-256 + winning
+# format) that keeps a no-image commit cheap. Full rationale — the per-image
+# size comparison, GIF via gif2webp, why mtimes are ignored — in siteAssets.txt,
+# THE 88x31 WALL.
 
 use strict;
 use warnings;
@@ -148,21 +94,10 @@ sub parse_csv {
     return @rows;
 }
 
-# :raw, NOT :encoding(UTF-8), AND THIS IS LOAD-BEARING.
-#
-# The alt text goes straight into HTML files that are read and written as bytes.
-# Decoding the CSV would make "I ❤️ MONERO" a string of wide characters, and
-# interpolating even one wide character into a byte string upgrades the WHOLE
-# string — at which point Perl treats the page's existing UTF-8 bytes as
-# Latin-1 and re-encodes them on output. Every curly quote and emoji in the file
-# turns into mojibake ('’' -> 'â€™'), in a part of the page this script never
-# meant to touch. It announces itself only as "Wide character in print".
-#
-# Bytes in, bytes out, no decoding anywhere: the UTF-8 in the CSV is copied into
-# the UTF-8 in the page unexamined. The parser below only ever compares against
-# ASCII delimiters, which cannot occur inside a UTF-8 multi-byte sequence, so it
-# does not need to know the encoding either. The guard in the page writer is
-# what stops this from regressing silently.
+# :raw, NOT :encoding(UTF-8), and load-bearing: everything here is bytes in,
+# bytes out. Decoding the CSV's emoji alt text would upgrade the HTML byte
+# string on interpolation and re-encode the page's existing UTF-8 as Latin-1,
+# turning every curly quote into mojibake. See siteAssets.txt, THE 88x31 WALL.
 open my $cfh, '<:raw', $CSV or die "badgeBuild: $CSV: $!\n";
 my $csv_text = do { local $/; <$cfh> };
 close $cfh;

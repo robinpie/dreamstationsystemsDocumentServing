@@ -43,15 +43,11 @@ NGINX_SNIPPETS=(
 	wkd.conf
 )
 
-# etc/ mirrors real /etc paths, one file per entry, installed by name for the
-# same reason as the nginx lists: every one of these directories holds files
-# this repo does not own. A new file here does nothing until it is listed.
-#
-# NOT IN THIS LIST, DELIBERATELY: /etc/fail2ban/jail.local. It is a single file
-# holding every jail on the box, and its [DEFAULT] and [sshd] sections carry
-# ignoreip lines with a home IP and an institutional range. THIS REPO IS PUBLIC
-# ON GITHUB. The filters below are pure regex and carry nothing; the jails that
-# reference them stay out of git. See gophernicus.txt / fail2ban.txt.
+# etc/ mirrors real /etc paths, installed by name like the nginx lists: these
+# dirs hold files this repo does not own, so a new file does nothing until
+# listed. jail.local is DELIBERATELY absent — it carries ignoreip lines with a
+# home IP and an institutional range, and this repo is public. See githooks.txt
+# ("promote: the rest of the tree") and fail2ban.txt.
 ETC_FILES=(
 	default/gophernicus
 	molly-brown/dreamstation.conf
@@ -145,14 +141,12 @@ if [ -d "$ROOT/etc" ]; then
 		sudo rm -rf "$lr_tmp"
 	fi
 
-	# molly-brown: run the real binary against the candidate config and read
-	# HOW it fails. With the live instance holding 1965 a fully valid config
-	# gets all the way to "address already in use" — which means TOML parsed,
-	# the TLS keypair loaded and the logs opened. Anything else is a reject,
-	# and that includes SILENCE: the documented ErrorLog="-" footgun sends the
-	# startup errors into a file literally named "-", so a broken config can
-	# fail quietly. Requiring the expected message rather than merely checking
-	# the exit status is what catches that one. See gemini.txt CONFIG.
+	# molly-brown: run the real binary against the candidate config and check
+	# HOW it fails. With the live instance holding :1965, a fully valid config
+	# reaches "address already in use" (TOML parsed, keypair loaded, logs
+	# opened). Requiring that exact message — not just a zero exit — is what
+	# catches the ErrorLog="-" footgun, where errors go to a file named "-" and
+	# a broken config fails silently. See gemini.txt CONFIG.
 	f="$ROOT/etc/molly-brown/dreamstation.conf"
 	if [ -f "$f" ] && command -v molly-brown >/dev/null 2>&1; then
 		# Run it from a throwaway cwd, never the repo. An ErrorLog of "-" makes
@@ -216,41 +210,12 @@ fi
 
 # ------------------------------------------------------------- gopher, gemini
 #
-# The two retro doc roots. Promote-only, like everything below the web content:
-# there is one gophernicus and one molly-brown on this box and no second
-# instance for a change to stand up in, so "staged" and "live" would be the
-# same tree. See gophernicus.txt and gemini.txt.
-#
-# NO RESTART IS NEEDED and none is issued. gophernicus is socket-activated
-# per connection, molly-brown reads from disk per request, and spartan.pl
-# (which shares /srv/gemini) does too. Content is live the moment rsync
-# finishes.
-#
-# THE TWO CARVE-OUTS, and why --delete would otherwise be destructive:
-#
-#   ge/          OpenGET's retro frontend. The openget daemon rewrites ~50
-#                files under it after every stats recomputation and owns the
-#                dirs as openget:openget; `make install-retro` puts the
-#                cgi-bin/ scripts there. It is generated, not authored, so it
-#                is gitignored and absent from this repo -- and an unexcluded
-#                --delete would wipe it between regenerations. Excluding it
-#                also protects it from the ownership note below, since
-#                openget writes atomically (temp file + rename) and so needs
-#                write access to the DIRECTORY, not just the files.
-#
-#   ntpstats.*   written every 5 min by ntpstatsgen.timer straight into both
-#                doc roots. Same carve-out /srv/http/ntpstats.txt gets above.
-#
-# rsync excludes protect receiver-side files from --delete (that is the
-# default; only --delete-excluded overrides it), which is exactly what both
-# of these need.
-#
-# OWNERSHIP is deliberately NOT the root:root the web docroot gets. These
-# trees are robin:robin so the content can be edited without sudo, and -a
-# preserves that from the repo. --chmod normalises the repo's group-writable
-# 664/775 to the 644/755 the doc roots have always carried; both leave every
-# file world-readable, which is what lets _gophernicus and molly-brown's
-# DynamicUser read them.
+# The two retro doc roots. Promote-only, no restart (both servers read from
+# disk per request). Two carve-outs from --delete — ge/ (OpenGET's generated,
+# gitignored frontend) and ntpstats.* (written by ntpstatsgen.timer) — and
+# robin:robin ownership so the content stays sudo-free to edit. Full rationale
+# in githooks.txt, "promote: the rest of the tree"; see also gophernicus.txt
+# and gemini.txt.
 promote_retro() { # <repo subdir> <doc root> <generated file to protect>
 	local sub="$1" dest="$2" generated="$3"
 	[ -d "$ROOT/$sub" ] || return 0
@@ -377,19 +342,12 @@ fi
 
 # ----------------------------------------------------------------------- etc/
 #
-# Single files scattered across five /etc locations, installed by name like the
-# nginx lists above. Everything here was gated offline further up, so by this
-# point the remaining risk is behavioural, not syntactic: a config that parses
-# but does not work. Each service is therefore restarted and then PROBED over
-# its own protocol, and rolled back if the probe fails.
-#
-# This is the nginx install -> test -> roll back shape, with one real
-# difference. `nginx -t` runs before the reload and the old config keeps
-# serving until it passes, so a bad nginx config never costs a request.
-# molly-brown has no config test and no second instance, so its check can only
-# happen after a restart that has already dropped the service. A bad config
-# therefore means a few seconds of downtime, not zero. The offline gate above
-# exists to make that path rare.
+# Single files across five /etc locations, all gated offline earlier. Remaining
+# risk here is behavioural, not syntactic, so each service is restarted, PROBED
+# over its own protocol, and rolled back if the probe fails. molly-brown's
+# probe can only run post-restart (no config test, no second instance), so a
+# bad config costs seconds of downtime. See githooks.txt, "promote: the rest
+# of the tree".
 if [ -d "$ROOT/etc" ]; then
 	etc_backup="$(mktemp -d)"
 	# Keeps the nginx block's backup dir in the trap too — a bare `trap ... EXIT`

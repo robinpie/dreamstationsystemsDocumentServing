@@ -3,10 +3,8 @@
 # Pure ImageMagick + Pango, no design tooling. Re-run after editing the text.
 # Output: rootdomain/professional/ogimage.png
 #
-# The filename must stay ogimage.png: it is what og:image in
-# professional/index.html points at, and what is deployed. Renaming is not
-# worth it -- scrapers cache og:image URLs hard, so changing the URL costs a
-# re-scrape everywhere for no gain.
+# The filename must stay ogimage.png (og:image points at it). Do not "tidy" it
+# -- scrapers cache og:image URLs hard. See siteAssets.txt, OPENGRAPH.
 set -eu
 
 # Resolved from this script's own location, not hardcoded, so renaming the repo
