@@ -23,6 +23,7 @@ second step to run. git runs exactly ONE pre-commit hook, so it now points at
 preCommit.sh, which calls each step in turn:
 
     datestampHook.pl               schema.org dateModified stamp       (below)
+    ntpStatHook.pl                 NTP unique-client sentence          (below)
     assetsBuild/makeFeed.py        Atom + RSS for the blog         (feeds.txt)
     assetsBuild/makeMeta.py        sitemap.xml + blog JSON-LD (siteAssets.txt)
     assetsBuild/makeFontSubset.py  ubuntu804 DejaVu subsets
@@ -289,3 +290,43 @@ staging, no re-adding:
 Bypass for one commit:
 
     git commit --no-verify
+
+
+ntpStatHook.pl (pre-commit)
+---------------------------
+
+Perl. Keeps one hand-written sentence in
+
+    rootdomain/professional/index.html
+
+in step with the live NTP analytics page, so its two upward-drifting
+figures do not have to be hand-edited:
+
+    Around 123 million unique client IP addresses seen, or about one in
+    every 30 routable IPv4 addresses.
+
+SOURCE is /srv/http/ntpstats.txt, the copy ntpstatsgen.timer rewrites every
+five minutes (see ntpstatsgen.txt). Override with $NTP_STATS_FILE. That file
+is a generated, gitignored, server-only artifact, so OFF THE VPS it does not
+exist -- the hook then warns and leaves the line untouched, and the commit
+proceeds. A stale count is generous, not a lie; same call as the font subset.
+
+  - "Around N million" is the unique-IP count rounded to whole millions;
+    "one in every N" is the integer the stats page itself already rounds to.
+  - No diff on the line unless one of those integers actually moved, so an
+    unrelated commit does not get dragged into touching the page.
+  - Like datestampHook, it only acts on a staged .html that already contains
+    the sentence, and skips (with a warning) a file that has unstaged
+    changes. It refreshes the page when you commit it for other reasons; it
+    is not a substitute for editing the page.
+  - Re-parses every JSON-LD block after editing and aborts the commit if the
+    edit somehow broke one (the sentence is not in JSON-LD, but the guard is
+    cheap).
+  - The match is deliberately tied to the exact wording. Reword the line and
+    the hook falls silent rather than mangling it -- update the regex in
+    ntpStatHook.pl to match the new phrasing.
+
+Test without git -- pass paths as arguments and it rewrites them in place:
+
+    cp rootdomain/professional/index.html /tmp/t.html
+    ./ntpStatHook.pl /tmp/t.html

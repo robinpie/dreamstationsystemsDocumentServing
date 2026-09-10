@@ -2,6 +2,7 @@
 # pre-commit: run every pre-commit step, in order.
 #
 #     datestampHook.pl               schema.org dateModified on staged HTML
+#     ntpStatHook.pl                 NTP unique-client figures on staged HTML
 #     assetsBuild/makeFeed.py        Atom + RSS for /personal/blog.html
 #     assetsBuild/makeMeta.py        blog.html's JSON-LD + sitemap.xml
 #     assetsBuild/makeFontSubset.py  ubuntu804's DejaVu subsets
@@ -20,6 +21,14 @@ cd "$ROOT"
 
 # ------------------------------------------------------- schema.org datestamp
 ./datestampHook.pl
+
+# ----------------------------------------------------- NTP unique-client line
+#
+# Rewrites the "Around N million unique client IP addresses ... one in every N
+# routable IPv4 addresses" sentence from the analytics page ntpstatsgen keeps
+# current. No-op off the VPS (the source file is server-only) and no-op when
+# neither number moved. See ntpstatsgen.txt and githooks.txt.
+./ntpStatHook.pl
 
 # ---------------------------------------------------------------------- feeds
 #
