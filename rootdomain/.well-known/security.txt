@@ -1,6 +1,4 @@
 # security.txt for dreamstation.systems 🏰
-#
-# Cyberattacking me with the intent to cause minimal damage (or only cause enough damage to make a point 😛) and report the issues to me afterwards is fine. I give you broad authorization.
 
 Contact: mailto:robin@dreamstation.systems
 Expires: 2027-08-26T23:59:59.000Z
