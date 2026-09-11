@@ -87,9 +87,7 @@ silently disable the deploy hooks and both git-lfs hooks. Symlink instead.
 stage and promote
 -----------------
 
-Until 2026-09-07 the post-commit hook ran deploy-site.sh, which pushed
-straight to the live docroot: every commit was public within seconds. That is
-now two steps.
+Publishing is two steps.
 
     ./stageSite.sh      rootdomain/ -> /srv/httpstaging     AUTOMATIC (hook)
     ./promoteSite.sh    everything  -> live                 BY HAND
@@ -98,7 +96,7 @@ Preview the staged copy at https://staging.dreamstation.systems (basic auth,
 user robinpie; see "staging vhost" below). Then promote.
 
 THE FAILURE MODE TO KNOW ABOUT: "I fixed it, and forgot to promote." The live
-site no longer moves on its own. If a change is not showing up, that is the
+site does not move on its own. If a change is not showing up, that is the
 first thing to check, before touching nginx or the cache.
 
 Only rootdomain/ stages. cgi/, statusSample/ and nginx/ are system state --

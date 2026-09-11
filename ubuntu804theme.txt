@@ -12,24 +12,14 @@ wallpaper strip along the bottom with the badge shelf on it.
 Being the default is one line — `default` in the $theme_cookie map — but it
 does NOT move visitors who already have a cookie, and the cookie is re-sent on
 every request with a one-year life. See THINGS THAT WILL BITE in nginx.txt.
-Being the default also means this theme is now the first thing a stranger sees,
-so a mistake in the chrome is no longer confined to people who went looking
-for it.
+Being the default also means this theme is the first thing a stranger sees, so
+a mistake in the chrome is not confined to people who went looking for it.
 
-It began as a port of a standalone template that lived at /tmp-ubuntu804/,
-built by a generator out of documentServing/ubuntu804/. That template and its
-source tree were REMOVED in September 2026 (archived off the server); this
-theme is now the only surviving copy of the desktop, and this file the only
-documentation of it.
-
-The distinction the two were built on still explains why this one is shaped the
-way it is:
-
-  the template   a generator emitted complete pages around one chrome.html, so
-                 every hook the stylesheet wanted was in the generated markup.
-  this theme     the pages are hand-written, predate the theme by years, and
-                 must still render under four other stylesheets. Nothing may
-                 be generated and nothing may be permanently restructured.
+THE CONSTRAINT THAT SHAPES EVERYTHING: the pages are hand-written, predate the
+theme by years, and must still render under four other stylesheets. Nothing may
+be generated and nothing may be permanently restructured — the chrome is bolted
+on around markup it does not control, which is why it leans on SSI fragments
+and on re-casting elements the pages already have.
 
 WHERE EVERYTHING IS
 -------------------
@@ -206,47 +196,33 @@ THINGS THAT WILL BITE
 
   - SUBSET FONTS SHIP, built on every commit. 382 kB down to 45 kB.
 
-    This entry used to say the opposite — that the full faces shipped and that
-    this was deliberate — and the argument was: a subset is declared with a
-    unicode-range, the browser consults the range BEFORE it looks inside the
-    file, so a codepoint in range but absent from the font falls out of the
-    family rather than through to the next @font-face. These pages are full of
-    emoji and DejaVu has none of them at any weight, so a census-derived subset
-    either excludes them (and every page drags the full face down anyway,
-    buying nothing) or includes them (and the range lies, and the emoji stop
-    rendering).
+    ubuntu804.css declares NO unicode-range, and MUST NOT GAIN ONE. Without a
+    range the browser does ordinary per-glyph fallback, so a character the
+    subset lacks is rendered from the next family in the stack. With one, the
+    browser consults the range BEFORE it looks inside the file, so a codepoint
+    in range but absent from the font falls out of the family rather than
+    through to the next @font-face. That would break these pages: they are full
+    of emoji and DejaVu has none at any weight — 🌠🏠🏰💼📈📓📧🚀, checked
+    against the shipped woff2, none present — so the emoji come from a system
+    emoji font, which only works while the fallback chain is live.
 
-    THE PREMISE WAS WRONG. unicode-range is OPTIONAL, and ubuntu804.css never
-    declared one. Without it the browser does ordinary per-glyph fallback, so
-    a character the file lacks is rendered from the next family in the stack.
-    The dilemma was between two horns that only exist if you add the range.
-
-    And the emoji were never being served by DejaVu in the first place: they
-    are absent from it at every weight, so they were ALREADY falling through
-    to a system emoji font while the full 382 kB shipped. Checked against the
-    shipped woff2 rather than assumed — 🌠🏠🏰💼📈📓📧🚀, eight of them, none
-    present. They render today exactly as they did before.
-
-    The last sentence of the old entry was the one real objection: a subset
-    "cannot rot when a page gains a character". A subset can. That is why the
-    census is recomputed by assetsBuild/makeFontSubset.py on EVERY commit
-    rather than being cut once by hand — see the header of that script, which
-    carries the rest of the reasoning, and githooks.txt for the pre-commit
-    chain.
+    A subset CAN rot when a page gains a character. That is why the census is
+    recomputed by assetsBuild/makeFontSubset.py on EVERY commit rather than
+    being cut once by hand — see the header of that script, which carries the
+    rest of the reasoning, and githooks.txt for the pre-commit chain.
 
     Fidelity was measured, not assumed: zero advance-width differences against
-    the previously shipped faces, identical hhea and OS/2 metrics, GPOS kerning
-    retained (--layout-features='' would save another 1.6 kB and drop it, which
-    would move spacing this theme was measured against). The subsets are a
-    reduction in coverage and nothing else.
+    the full faces, identical hhea and OS/2 metrics, GPOS kerning retained
+    (--layout-features='' would save another 1.6 kB and drop it, which would
+    move spacing this theme was measured against). The subsets are a reduction
+    in coverage and nothing else.
 
     IF A CHARACTER EVER COMES OUT IN THE WRONG FONT, this is the first thing to
     suspect — but the symptom is a style mismatch, not tofu, and the margin in
     makeFontSubset.py (Latin-1, General Punctuation, arrows, box drawing) is
-    sized to make it unlikely. DO NOT FIX IT BY ADDING A unicode-range. That
-    reintroduces the exact trap the old entry described, and the emoji go with
-    it. Add to the margin, or to THEMED if a page was added to theme.conf's
-    regex and not to the script.
+    sized to make it unlikely. DO NOT FIX IT BY ADDING A unicode-range; the
+    emoji go with it. Add to the margin, or to THEMED if a page was added to
+    theme.conf's regex and not to the script.
 
     THAT SECOND CASE HAS ALREADY HAPPENED ONCE. gzipt.html was added to
     theme.conf's regex and not to THEMED, and sat uncensused until 2026-09-07.

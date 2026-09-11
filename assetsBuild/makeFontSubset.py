@@ -35,8 +35,7 @@ OUT = PERSONAL / "themes" / "ubuntu804" / "f"
 
 # The pages nginx serves with the chrome. KEEP THIS IN SYNC WITH theme.conf's
 # location regex — a page in the regex but not here gets the theme without its
-# characters. See ubuntu804theme.txt ("SUBSET FONTS SHIP") for the time this
-# drifted.
+# characters. See ubuntu804theme.txt ("SUBSET FONTS SHIP").
 THEMED = ["index", "blog", "hypnospace", "lanfalsehoods",
           "ntppool", "ntppost", "ntpuserinfo", "slowqotd", "gzipt"]
 

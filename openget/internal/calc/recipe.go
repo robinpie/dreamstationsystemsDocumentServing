@@ -52,8 +52,6 @@ type Extra struct {
 	PerHour int `json:"per_hour,omitempty" toml:"per_hour"`
 	// XP is experience per action, for the gp-per-xp column.
 	XP float64 `json:"xp,omitempty" toml:"xp"`
-	// InputsUntaxed is unused today but reserved: it would mark inputs obtained outside the GE (a shop, a drop) so the cost side is not a market price.
-	InputsUntaxed bool `json:"inputs_untaxed,omitempty" toml:"inputs_untaxed"`
 }
 
 // Kinds are the calculator families, in the order they appear in the menu.

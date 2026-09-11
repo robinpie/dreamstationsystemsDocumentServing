@@ -517,10 +517,8 @@ THEME SELECTION (/personal/)
 ----------------------------
 The nine themed pages under /personal/ (index, blog, hypnospace, lanfalsehoods,
 ntppool, ntppost, ntpuserinfo, slowqotd, gzipt) let a visitor pick one of five
-stylesheets.
-This used to be theme.js: a script loaded synchronously in <head> that read
-localStorage and rewrote <link id="theme-css"> before first paint. It is now
-done by nginx, and theme.js is deleted.
+stylesheets. The choice is resolved entirely by nginx, server-side: no
+JavaScript is involved, and the right stylesheet is in the markup as served.
 
 Two halves, in two files, because map is only valid in http context:
 
@@ -621,17 +619,16 @@ THINGS THAT WILL BITE
     comment as documentation is not an example, it is executed. This bit once,
     in chrome/top.html, where a commented illustration of the theme guard ran
     and left its output in the page.
-  - The pages no longer render correctly from disk over file://. Serve them.
+  - The pages do not render correctly from disk over file://. Serve them.
   - CHANGING THE DEFAULT DOES NOT MOVE EXISTING VISITORS. theme.conf re-sends
     Set-Cookie on every request with a one-year Max-Age, so anyone who has
     loaded a themed page in the last year carries an explicit cookie naming
-    whatever the default was THEN, and the cookie beats the map default. When
-    gtk2 stopped being the default, every returning visitor kept seeing gtk2;
-    only cookieless ones got ubuntu804. Nothing in the config can tell a
-    cookie that records a real choice from one that merely records the old
-    default. If a default change ever has to reach everybody, the only lever
-    is renaming the cookie, which also discards the genuine choices — decide
-    which you want before reaching for it.
+    whatever the default was THEN, and the cookie beats the map default. A
+    default change therefore reaches cookieless visitors only, and nothing in
+    the config can tell a cookie that records a real choice from one that
+    merely records the old default. If a default change ever has to reach
+    everybody, the only lever is renaming the cookie, which also discards the
+    genuine choices — decide which you want before reaching for it.
 
 VERIFYING
   Config test, then the behaviours that actually matter:

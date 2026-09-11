@@ -5,13 +5,8 @@ Choosing "Ubuntu 8.04" in the theme switcher draws an Ubuntu 8.04 LTS "Hardy
 Heron" desktop running Firefox 3 around the page. Most of it is hand-written
 CSS. The parts that are not are listed here.
 
-This file covers the artwork that ships under /personal/themes/ubuntu804/.
-That artwork was once duplicated, byte for byte, by a separate standalone
-template at /tmp-ubuntu804/, which carried its own copy of this attribution.
-The duplication was deliberate — a theme that dies when a temporary template is
-deleted is a theme with a trapdoor under it — and it paid off: the template was
-removed in September 2026 and this theme did not notice. What ships here is now
-the only copy, and this file is its only attribution.
+This file covers the artwork that ships under /personal/themes/ubuntu804/, and
+is the only attribution for it.
 
 NOT AFFILIATED WITH ANYBODY
 ---------------------------
@@ -107,18 +102,14 @@ One rule was deliberately not carried over: ubuntu.css restyles <strong> as a
 1.3em brown pseudo-heading, which would turn every bold word on this site into
 a subheading.
 
-WHERE THE ORIGINALS WENT
-------------------------
-This site is built from a public git repository. That repository used to carry
-the unmodified extracted originals, the two DejaVu TTFs the woff2 faces were
-built from, and the 1280x720 screenshot the whole design was measured against,
-all under a build tree for the /tmp-ubuntu804/ template. That tree was removed
-along with the template in September 2026 and is archived off the server.
-
-Nothing about the licensing changes: every file listed above carries the same
-copyrights, licences and attribution it did then, and the per-file notes say
-which Ubuntu 8.04.4 desktop image, Human theme and Firefox 3 chrome each one
-came out of. Regenerating any of them means going back to those sources.
+WHERE THE ORIGINALS ARE
+-----------------------
+The unmodified extracted originals and the 1280x720 screenshot the design was
+measured against are archived off the server, not in this site's public git
+repository. Every file listed above carries its own copyrights, licences and
+attribution, and the per-file notes say which Ubuntu 8.04.4 desktop image,
+Human theme and Firefox 3 chrome each one came out of. Regenerating any of them
+means going back to those sources.
 
 THE BITMAPS WERE RE-ENCODED TO LOSSLESS WEBP ON 2026-09-07, except firefox16
 (see its note) and heron (already WebP, and lossy — re-encoding it again would

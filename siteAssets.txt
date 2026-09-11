@@ -70,8 +70,8 @@ APPLE TOUCH ICON
   and pre-rounded art gets clipped twice.
 
   Only the 180px size is shipped. iOS downscales it cleanly for every smaller
-  slot, and the pile of legacy apple-touch-icon-NNxNN.png variants has not been
-  needed since iOS 8.
+  slot; the per-size apple-touch-icon-NNxNN.png variants have not been needed
+  since iOS 8.
 
 OPENGRAPH
   Tags live in professional/index.html, after <link rel="canonical">.
@@ -121,10 +121,6 @@ SITEMAP
   blog posts are derived from <ul class="posts"> in personal/blog.html, the
   same source of truth the feeds use, so a new post lands in the sitemap on the
   commit that adds it and there is no second list to forget.
-
-  It used to be hand-written, and it had gone wrong in both available ways: it
-  listed six URLs and omitted every blog post, and all six carried a lastmod of
-  2026-08-27 that was stale for most of them.
 
   NO lastmod ON THE FIXED PAGES, deliberately. lastmod is optional, consumers
   discount one they can catch being wrong, and this repo has no honest source
@@ -284,7 +280,5 @@ THE 88x31 WALL
 
   THE PANGRAM BADGE IS NOT PART OF THIS. personal/pangramHumanBadge.webp sits
   in five post <h1>s with a different link per page, so it is hand-written
-  markup and outside the CSV. It was re-encoded once by hand (2723 -> 1482 B,
-  lossless) and renamed at the same time: it used to be "my shitty Pangram 100%
-  Human badge.png", addressed as my%20shitty%20Pangram%20100%25%20Human%20-
-  badge.png. If it ever needs re-encoding, do it by hand again.
+  markup and outside the CSV. It was re-encoded by hand (2723 -> 1482 B,
+  lossless); if it ever needs re-encoding again, do that by hand too.

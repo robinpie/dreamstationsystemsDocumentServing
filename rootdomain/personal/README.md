@@ -63,10 +63,9 @@ bytes. The fragments are deliberately unbalanced HTML — `top` opens what
 `bottom` closes — and are served from an `internal` location, so fetching one
 directly gives a 404.
 
-The skip link is **not** part of this. It used to live in `chrome/top.html`,
-which meant only this theme had one; it is now in each page just before the
-include, so all five themes get it, held off-screen until focus by `base.css`
-and restyled here to match the desktop.
+The skip link is **not** part of this. It lives in each page just before the
+include, not in `chrome/top.html`, so all five themes get one — held off-screen
+until focus by `base.css`, and restyled here to match the desktop.
 
 Three of the pages' own elements are re-cast rather than restyled:
 `header.site-header` becomes the bookmarks toolbar, `main` becomes the
