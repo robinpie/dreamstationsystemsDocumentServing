@@ -1,10 +1,8 @@
-These are my typographic guidelines for smart text on the W3 site on dreamstation.systems. This is a note for me, it is not served on the website (which is why it is not ASCII‐only).
+These are my typographic guidelines for smart text on dreamstation.systems. This is a note for me, it is not served on the website (which is why it is not ASCII‐only).
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ The character set                                                           │
 └─────────────────────────────────────────────────────────────────────────────┘
-
-Use in HTML, including e.g. script‐generated HTML:
 
 Use U+2019 ’, not '.
 Use U+201C/U+201D “/”, not ".
@@ -40,8 +38,6 @@ Code.
 Do not retypeset someone else's words, including machine‐generated text.
 
 Do not change rootdomain/old/ and rootdomain/oldsite/.
-
-Documents typically read as part of a repository, such as personal/README.md, oldsite/README.md and personal/ath/!~ATH spec.md.
 
 ASCII art.
 

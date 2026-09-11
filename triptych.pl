@@ -19,7 +19,7 @@
 #     ./triptych.pl <id>...      restrict to these pages (with or without
 #                                --check; unnamed pages are left alone)
 #
-# The outputs are COMMITTED, because promoteSite.sh is a plain rsync with no
+# The outputs are committed, because promoteSite.sh is a plain rsync with no
 # build step on the server. preCommit.sh runs this first, before the hooks
 # that rewrite what it produced (badgeBuild.pl fills the badge markers,
 # datestampHook.pl stamps dateModified) — see githooks.txt.
