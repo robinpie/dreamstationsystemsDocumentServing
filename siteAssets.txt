@@ -1,10 +1,7 @@
-siteAssets — favicon, icons, OpenGraph card, sitemap, the JSON-LD graph and
-              the 88x31 badge wall for dreamstation.systems
+siteAssets — favicon, icons, OpenGraph card, sitemap, the JSON-LD graph and the 88x31 badge wall for dreamstation.systems
 ================================================================================
 
-Source of truth is ~/configNotes/documentServing/rootdomain/, which mirrors
-the live docroot /srv/http. Edit in configNotes, then install to /srv/http as
-root.
+Source of truth is ~/configNotes/documentServing/rootdomain/, which mirrors the live docroot /srv/http. Edit in configNotes, then install to /srv/http as root.
 
 FILES
   /srv/http/favicon.svg                theme-aware asterism, modern browsers
@@ -14,9 +11,7 @@ FILES
   /srv/http/sitemap.xml                canonical page list
   /srv/http/robots.txt                 Allow: / plus the Sitemap: line
 
-BUILD SCRIPTS  (~/configNotes/documentServing/assetsBuild/, in the repo but
-                a SIBLING of rootdomain/, so it is never rsynced into the
-                docroot)
+BUILD SCRIPTS  (~/configNotes/documentServing/assetsBuild/, in the repo but a SIBLING of rootdomain/, so it is never rsynced into the docroot)
   makeOg.sh           renders ogimage.png with ImageMagick + Pango
   makeFavicon.py      renders favicon.ico AND apple-touch-icon.png from
                       favicon.svg's geometry — one run produces both
@@ -35,100 +30,45 @@ BUILD SCRIPTS  (~/configNotes/documentServing/assetsBuild/, in the repo but
                       WALL below
 
 FAVICON
-  The mark is U+2042 ASTERISM, matching the separator already used in the nav
-  and meta description. It is drawn as line geometry, not as a text glyph:
-  U+2042 is missing from most fonts, and a favicon renderer with no glyph for
-  it would draw tofu. Only DejaVu, Free*, Noto Sans Mono, IPA and Unifont have
-  it on this box.
+  The mark is U+2042 ASTERISM, matching the separator already used in the nav and meta description. It is drawn as line geometry, not as a text glyph: U+2042 is missing from most fonts, and a favicon renderer with no glyph for it would draw tofu. Only DejaVu, Free*, Noto Sans Mono, IPA and Unifont have it on this box.
 
-  Arm length (5 units) and star spacing in the 32-unit viewBox are tuned so the
-  three stars stay visually separate at 16px. Tighter spacing merged them into
-  a blob. The asterisk template lives in <defs> — a bare <g> would also be
-  painted at the origin, which is a real rendering bug, not just a preview one.
+  Arm length (5 units) and star spacing in the 32-unit viewBox are tuned so the three stars stay visually separate at 16px. Tighter spacing merged them into a blob. The asterisk template lives in <defs> — a bare <g> would also be painted at the origin, which is a real rendering bug, not just a preview one.
 
-  The SVG follows prefers-color-scheme (#111 light / #eee dark). ICO has no way
-  to do that, so it is a fixed mid grey (#666) that stays legible against both
-  light and dark browser chrome.
+  The SVG follows prefers-color-scheme (#111 light / #eee dark). ICO has no way to do that, so it is a fixed mid grey (#666) that stays legible against both light and dark browser chrome.
 
-  Caveat: ImageMagick's internal SVG renderer (MSVG) ignores stroke-width
-  through <use>, so rasterising favicon.svg with `magick` produces hairlines
-  and is NOT a valid preview. makeFavicon.py redraws the geometry from
-  primitives instead. If favicon.svg's geometry changes, change the constants
-  at the top of makeFavicon.py to match — they are duplicated, not shared.
+  Caveat: ImageMagick's internal SVG renderer (MSVG) ignores stroke-width through <use>, so rasterising favicon.svg with `magick` produces hairlines and is NOT a valid preview. makeFavicon.py redraws the geometry from primitives instead. If favicon.svg's geometry changes, change the constants at the top of makeFavicon.py to match — they are duplicated, not shared.
 
 APPLE TOUCH ICON
-  Same geometry, but it cannot reuse the favicon's tricks. iOS composites any
-  transparency onto black, so a transparent PNG with the dark #111 mark would
-  render as a black square. It is therefore drawn opaque, #111 on #ffffff.
+  Same geometry, but it cannot reuse the favicon's tricks. iOS composites any transparency onto black, so a transparent PNG with the dark #111 mark would render as a black square. It is therefore drawn opaque, #111 on #ffffff.
 
-  It is redrawn from primitives rather than recoloured from the favicon's
-  512px render: that render is antialiased grey on transparency, and flattening
-  it onto white leaves grey fringing on every stroke.
+  It is redrawn from primitives rather than recoloured from the favicon's 512px render: that render is antialiased grey on transparency, and flattening it onto white leaves grey fringing on every stroke.
 
-  The mark is inset to 84% of the tile. Edge-to-edge looked cramped beside
-  other home screen icons. Do NOT round the corners — iOS applies its own mask,
-  and pre-rounded art gets clipped twice.
+  The mark is inset to 84% of the tile. Edge-to-edge looked cramped beside other home screen icons. Do NOT round the corners — iOS applies its own mask, and pre-rounded art gets clipped twice.
 
-  Only the 180px size is shipped. iOS downscales it cleanly for every smaller
-  slot; the per-size apple-touch-icon-NNxNN.png variants have not been needed
-  since iOS 8.
+  Only the 180px size is shipped. iOS downscales it cleanly for every smaller slot; the per-size apple-touch-icon-NNxNN.png variants have not been needed since iOS 8.
 
 OPENGRAPH
-  Tags live in professional/index.html, after <link rel="canonical">.
-  og:description is intentionally shorter than the page's meta description.
-  twitter:title/description/image are omitted: they fall back to the og:* tags.
+  Tags live in professional/index.html, after <link rel="canonical">. og:description is intentionally shorter than the page's meta description. twitter:title/description/image are omitted: they fall back to the og:* tags.
 
-  The card is a terminal mock: `finger robin@localhost`, name, tagline, three
-  asterism bullets, URL. Monochrome: pure black background, pure white text,
-  saved as a grayscale PNG (the greys are text antialiasing only, not palette).
-  Rendered with Pango markup at -pointsize 22; at 30 the
-  block overflowed 1200px. Font is Noto Sans Mono, one of the few monospace
-  faces here with U+2042.
+  The card is a terminal mock: `finger robin@localhost`, name, tagline, three asterism bullets, URL. Monochrome: pure black background, pure white text, saved as a grayscale PNG (the greys are text antialiasing only, not palette). Rendered with Pango markup at -pointsize 22; at 30 the block overflowed 1200px. Font is Noto Sans Mono, one of the few monospace faces here with U+2042.
 
-  The stats on the card (pool score, CVE status) are point-in-time and scrapers
-  cache images hard. After re-running makeOg.sh, bust the caches via
-  Facebook's Sharing Debugger and LinkedIn's Post Inspector, or the old card
-  will keep appearing for weeks.
+  The stats on the card (pool score, CVE status) are point-in-time and scrapers cache images hard. After re-running makeOg.sh, bust the caches via Facebook's Sharing Debugger and LinkedIn's Post Inspector, or the old card will keep appearing for weeks.
 
-  Filename gotcha: the file is ogimage.png, NOT og.png. makeOg.sh defaulted to
-  og.png until 2026-08-27, which would have silently written an orphan and left
-  the real card stale. The default now matches. Do not "tidy" the name —
-  scrapers cache og:image URLs hard and a rename costs a re-scrape everywhere.
+  Filename gotcha: the file is ogimage.png, NOT og.png. makeOg.sh defaulted to og.png until 2026-08-27, which would have silently written an orphan and left the real card stale. The default now matches. Do not "tidy" the name — scrapers cache og:image URLs hard and a rename costs a re-scrape everywhere.
 
 HEAD TAGS  (professional/index.html)
-  Deliberately present: author, robots (max-image-preview:large so Google may
-  use the full og card in results), theme-color as a light/dark PAIR with media
-  attributes, og:locale (en_US — underscore, not the hyphen used by lang=""),
-  profile:first_name/last_name/username (og:type is "profile", which defines
-  them), twitter:image:alt.
+  Deliberately present: author, robots (max-image-preview:large so Google may use the full og card in results), theme-color as a light/dark PAIR with media attributes, og:locale (en_US — underscore, not the hyphen used by lang=""), profile:first_name/last_name/username (og:type is "profile", which defines them), twitter:image:alt.
 
-  Deliberately ABSENT: <meta name="color-scheme">. The inline CSS in the same
-  <head> already sets html{color-scheme:light dark}, which is equivalent. Do
-  not add it back "for completeness" — it is a second source of truth for the
-  same setting.
+  Deliberately ABSENT: <meta name="color-scheme">. The inline CSS in the same <head> already sets html{color-scheme:light dark}, which is equivalent. Do not add it back "for completeness" — it is a second source of truth for the same setting.
 
-  profile:gender is also omitted: optional, spec only accepts male/female, and
-  nothing meaningful consumes it.
+  profile:gender is also omitted: optional, spec only accepts male/female, and nothing meaningful consumes it.
 
 SITEMAP
-  GENERATED by assetsBuild/makeMeta.py on every commit. Do not hand-edit it;
-  the next commit overwrites it. Discovered via the Sitemap: line in robots.txt
-  (a sitemap nothing points at is a sitemap nobody reads).
+  GENERATED by assetsBuild/makeMeta.py on every commit. Do not hand-edit it; the next commit overwrites it. Discovered via the Sitemap: line in robots.txt (a sitemap nothing points at is a sitemap nobody reads).
 
-  Two kinds of entry. The seven fixed pages — /, /professional/,
-  /professional/status, /resume.pdf, /personal/, /personal/blog.html,
-  /personal/ntpuserinfo.html — are a literal list at the top of the script. The
-  blog posts are derived from <ul class="posts"> in personal/blog.html, the
-  same source of truth the feeds use, so a new post lands in the sitemap on the
-  commit that adds it and there is no second list to forget.
+  Two kinds of entry. The seven fixed pages — /, /professional/, /professional/status, /resume.pdf, /personal/, /personal/blog.html, /personal/ntpuserinfo.html — are a literal list at the top of the script. The blog posts are derived from <ul class="posts"> in personal/blog.html, the same source of truth the feeds use, so a new post lands in the sitemap on the commit that adds it and there is no second list to forget.
 
-  NO lastmod ON THE FIXED PAGES, deliberately. lastmod is optional, consumers
-  discount one they can catch being wrong, and this repo has no honest source
-  for a modification date on those files — a git-derived one lags by exactly
-  one commit under a pre-commit hook, and a clock-derived one would put a diff
-  in every commit and fight the working tree. An absent lastmod is strictly
-  better than a wrong one. The posts DO carry one, because there it is a real
-  date the page states out loud and the generator reads it from that statement.
+  NO lastmod ON THE FIXED PAGES, deliberately. lastmod is optional, consumers discount one they can catch being wrong, and this repo has no honest source for a modification date on those files — a git-derived one lags by exactly one commit under a pre-commit hook, and a clock-derived one would put a diff in every commit and fight the working tree. An absent lastmod is strictly better than a wrong one. The posts DO carry one, because there it is a real date the page states out loud and the generator reads it from that statement.
 
   No priority. changefreq only on /professional/status, which is a live CGI.
 
@@ -137,21 +77,12 @@ SITEMAP
                 These must never be indexed.
     /oldsite/*  superseded by /personal/.
     the unlinked /personal/*.html orphans carried over from oldsite.
-  The exclusions are enforced by the fixed list being a list: nothing is
-  globbed, so an orphan cannot wander in.
+  The exclusions are enforced by the fixed list being a list: nothing is globbed, so an orphan cannot wander in.
 
 STRUCTURED DATA (JSON-LD)
-  ONE GRAPH ACROSS THE WHOLE SITE, split across documents and joined by @id.
-  professional/index.html is its root: it defines #website, #robin, and the
-  project nodes. The nine themed pages under /personal/ join it rather than
-  restating it.
+  ONE GRAPH ACROSS THE WHOLE SITE, split across documents and joined by @id. professional/index.html is its root: it defines #website, #robin, and the project nodes. The nine themed pages under /personal/ join it rather than restating it.
 
-  THE RULE, and the whole reason the split works: descriptive properties live
-  in EXACTLY ONE document per node. A node defined in full elsewhere appears
-  again with IDENTITY ONLY — @type, @id, name, url. That is enough for a
-  consumer that only ever sees the one page, and it leaves no second copy of a
-  description to drift out of step. So personal/index.html names !~ATH and
-  links to it; professional/index.html is where !~ATH is described.
+  THE RULE, and the whole reason the split works: descriptive properties live in EXACTLY ONE document per node. A node defined in full elsewhere appears again with IDENTITY ONLY — @type, @id, name, url. That is enough for a consumer that only ever sees the one page, and it leaves no second copy of a description to drift out of step. So personal/index.html names !~ATH and links to it; professional/index.html is where !~ATH is described.
 
   Who owns what:
     professional/index.html   #website, #robin, #jade, and every project node
@@ -164,38 +95,18 @@ STRUCTURED DATA (JSON-LD)
     personal/ntpuserinfo.html #ntp, the NTP/NTS service, and the TechArticle
                               about using it
 
-  BLOG.HTML'S BLOCK IS GENERATED, the only JSON-LD on the site that is. Its
-  blogPost array restates the post list, so it comes from the same source of
-  truth the feeds do. The markers sit OUTSIDE the <script> —
+  BLOG.HTML'S BLOCK IS GENERATED, the only JSON-LD on the site that is. Its blogPost array restates the post list, so it comes from the same source of truth the feeds do. The markers sit OUTSIDE the <script> —
 
     <!-- blogld:start GENERATED by assetsBuild/makeMeta.py ... -->
     <!-- blogld:end -->
 
-  — because JSON HAS NO COMMENT SYNTAX and a marker inside the script would be
-  parsed as data and break the block. The whole block is therefore rewritten,
-  which means the CollectionPage and the Blog's own description are constants
-  in makeMeta.py, not in the page. That is the price of generating it.
+  — because JSON HAS NO COMMENT SYNTAX and a marker inside the script would be parsed as data and break the block. The whole block is therefore rewritten, which means the CollectionPage and the Blog's own description are constants in makeMeta.py, not in the page. That is the price of generating it.
 
-  DATES EXIST IN FOUR PLACES for each post, by design: blog.html's <ul>, the
-  feeds, the post's own visible dateline, and the post's BlogPosting node. The
-  first two cannot disagree — one is generated from the other. The last two are
-  hand-written, because a post page is hand-written, so makeMeta.py CHECKS them
-  against the list and returns non-zero on a mismatch, which aborts the commit.
-  It also checks article:published_time / article:modified_time, that every
-  JSON-LD block in rootdomain/ is valid JSON, and that no @id is referenced
-  without being defined somewhere — the one failure the split-by-@id design
-  introduces, and the one no single page can reveal.
+  DATES EXIST IN FOUR PLACES for each post, by design: blog.html's <ul>, the feeds, the post's own visible dateline, and the post's BlogPosting node. The first two cannot disagree — one is generated from the other. The last two are hand-written, because a post page is hand-written, so makeMeta.py CHECKS them against the list and returns non-zero on a mismatch, which aborts the commit. It also checks article:published_time / article:modified_time, that every JSON-LD block in rootdomain/ is valid JSON, and that no @id is referenced without being defined somewhere — the one failure the split-by-@id design introduces, and the one no single page can reveal.
 
-  THAT FAILURE IS FATAL ON PURPOSE, unlike a stale feed. Structured data that
-  contradicts the page is worse than none, a block with a stray comma is
-  silently no structured data at all, and neither is self-correcting on the
-  next commit.
+  THAT FAILURE IS FATAL ON PURPOSE, unlike a stale feed. Structured data that contradicts the page is worse than none, a block with a stray comma is silently no structured data at all, and neither is self-correcting on the next commit.
 
-  DO NOT ADD A "@type": "WebSite" NODE to any /personal/ page. datestampHook.pl
-  stamps dateModified into the first one it finds in a staged file, and that
-  node belongs to professional/index.html. The hook gates on the @type for this
-  reason; the site @id alone is not a sufficient test, because it appears as an
-  isPartOf reference on every /personal/ page.
+  DO NOT ADD A "@type": "WebSite" NODE to any /personal/ page. datestampHook.pl stamps dateModified into the first one it finds in a staged file, and that node belongs to professional/index.html. The hook gates on the @type for this reason; the site @id alone is not a sufficient test, because it appears as an isPartOf reference on every /personal/ page.
 
 VERIFY
   curl -sS -o /dev/null -w '%{http_code} %{content_type}\n' \
@@ -220,9 +131,7 @@ VERIFY
 THE 88x31 WALL
   The button shelf at the foot of /personal/. Ten badges, on eight pages.
 
-  SOURCE OF TRUTH IS webBadges.csv IN THE REPO ROOT — row order is display
-  order, and the columns are the source filename, the alt text, and the link
-  (empty link = a bare <img>, for the two badges that point nowhere).
+  SOURCE OF TRUTH IS webBadges.csv IN THE REPO ROOT — row order is display order, and the columns are the source filename, the alt text, and the link (empty link = a bare <img>, for the two badges that point nowhere).
 
     webBadges.csv                     the wall: order, alt text, links
     assetsBuild/badgesSrc/            source images, never served
@@ -230,55 +139,24 @@ THE 88x31 WALL
     assetsBuild/badgeManifest.txt     generated: encode cache + audit trail
     rootdomain/personal/badges/       generated: what is actually served
 
-  ADDING A BADGE: drop the image in assetsBuild/badgesSrc/, add a row to the
-  CSV, commit. Nothing else. ADDING A PAGE TO THE WALL: paste the two marker
-  comments into it; the builder finds pages by scanning for the start marker,
-  so it holds no list of pages.
+  ADDING A BADGE: drop the image in assetsBuild/badgesSrc/, add a row to the CSV, commit. Nothing else. ADDING A PAGE TO THE WALL: paste the two marker comments into it; the builder finds pages by scanning for the start marker, so it holds no list of pages.
 
-  DO NOT HAND-EDIT the <ul class="badges"> block in the HTML, or anything in
-  rootdomain/personal/badges/. Both are generated on every commit and your edit
-  goes away without a word. The block is fenced by
+  DO NOT HAND-EDIT the <ul class="badges"> block in the HTML, or anything in rootdomain/personal/badges/. Both are generated on every commit and your edit goes away without a word. The block is fenced by
 
     <!-- badges:start GENERATED by assetsBuild/badgeBuild.pl ... -->
     <!-- badges:end -->
 
-  and the <ul> itself sits outside the fence, so a page can still carry its own
-  classes on it.
+  and the <ul> itself sits outside the fence, so a page can still carry its own classes on it.
 
-  WHY THE MARKUP IS GENERATED and not just the images: each badge is re-encoded
-  to lossless WebP and kept ONLY IF SMALLER, so the served extension is not
-  knowable until the encoder has run. The wall serves 88x31.webp and nginx.png
-  side by side. Hand-written src= attributes would have to be re-audited across
-  eight pages every time a source image changed; they would rot into 404s
-  instead. 15643 -> 9144 bytes, 42% off, nine badges of ten winning.
+  WHY THE MARKUP IS GENERATED and not just the images: each badge is re-encoded to lossless WebP and kept ONLY IF SMALLER, so the served extension is not knowable until the encoder has run. The wall serves 88x31.webp and nginx.png side by side. Hand-written src= attributes would have to be re-audited across eight pages every time a source image changed; they would rot into 404s instead. 15643 -> 9144 bytes, 42% off, nine badges of ten winning.
 
-  nginx.png LOSES BY 4 BYTES and is served as PNG. That is the system working,
-  not a bug — do not "fix" it by forcing WebP everywhere. zero-javascript.png
-  wins by the same tiny margin the other way. At 88x31 the answer is per-image
-  and cannot be guessed, which is the entire reason the script compares.
+  nginx.png LOSES BY 4 BYTES and is served as PNG. That is the system working, not a bug — do not "fix" it by forcing WebP everywhere. zero-javascript.png wins by the same tiny margin the other way. At 88x31 the answer is per-image and cannot be guessed, which is the entire reason the script compares.
 
   GOTCHAS
-    - cwebp CANNOT READ GIF, at any frame count — it fails with "Cannot read
-      input picture file", which reads like a missing file. GIFs go through
-      gif2webp. trans-flag.gif is 8 animated frames and survives as an animated
-      WebP; verified frame-by-frame against the GIF at zero pixel difference.
-    - Lossless always. These are pixel art with hard edges and tiny palettes:
-      the case lossy WebP is worst at. Do not try -q 80.
-    - The manifest is COMMITTED so a fresh clone is already warm. Mtimes play
-      no part in the cache, because git does not preserve them.
-    - webBadges.csv is RFC 4180: CRLF line endings, no comment syntax (which is
-      why all of this is documented here and in the script instead of in it).
-      .gitattributes carries `text eol=crlf` so a checkout re-establishes the
-      line endings whatever the editor did.
-    - badgeBuild.pl reads and writes EVERYTHING AS BYTES, deliberately. The alt
-      text contains an emoji; decoding it would make the page a character
-      string, and Perl would then re-encode the page's existing UTF-8 as
-      Latin-1 — turning every curly quote in the file into mojibake, far from
-      anything the script meant to touch. It announces itself only as "Wide
-      character in print". There is a guard in the page writer that refuses to
-      write a page that has gone wide.
+    - cwebp CANNOT READ GIF, at any frame count — it fails with "Cannot read input picture file", which reads like a missing file. GIFs go through gif2webp. trans-flag.gif is 8 animated frames and survives as an animated WebP; verified frame-by-frame against the GIF at zero pixel difference.
+    - Lossless always. These are pixel art with hard edges and tiny palettes: the case lossy WebP is worst at. Do not try -q 80.
+    - The manifest is COMMITTED so a fresh clone is already warm. Mtimes play no part in the cache, because git does not preserve them.
+    - webBadges.csv is RFC 4180: CRLF line endings, no comment syntax (which is why all of this is documented here and in the script instead of in it). .gitattributes carries `text eol=crlf` so a checkout re-establishes the line endings whatever the editor did.
+    - badgeBuild.pl reads and writes EVERYTHING AS BYTES, deliberately. The alt text contains an emoji; decoding it would make the page a character string, and Perl would then re-encode the page's existing UTF-8 as Latin-1 — turning every curly quote in the file into mojibake, far from anything the script meant to touch. It announces itself only as "Wide character in print". There is a guard in the page writer that refuses to write a page that has gone wide.
 
-  THE PANGRAM BADGE IS NOT PART OF THIS. personal/pangramHumanBadge.webp sits
-  in five post <h1>s with a different link per page, so it is hand-written
-  markup and outside the CSV. It was re-encoded by hand (2723 -> 1482 B,
-  lossless); if it ever needs re-encoding again, do that by hand too.
+  THE PANGRAM BADGE IS NOT PART OF THIS. personal/pangramHumanBadge.webp sits in five post <h1>s with a different link per page, so it is hand-written markup and outside the CSV. It was re-encoded by hand (2723 -> 1482 B, lossless); if it ever needs re-encoding again, do that by hand too.

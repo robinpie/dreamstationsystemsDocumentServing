@@ -1,13 +1,9 @@
 nginx
 =====
 
-Serves /srv/http/ on port 80, scoped to dreamstation.systems /
-www.dreamstation.systems only. Content is intentionally minimal —
-index.html just tells visitors to use something else.
+Serves /srv/http/ on port 80, scoped to dreamstation.systems / www.dreamstation.systems only. Content is intentionally minimal — index.html just tells visitors to use something else.
 
-nginx dispatches on the Host header, so each hostname gets its own
-server block — this sets up name-based virtual hosting for future
-subdomains.
+nginx dispatches on the Host header, so each hostname gets its own server block — this sets up name-based virtual hosting for future subdomains.
 
 Config layout:
   /etc/nginx/conf.d/logFormat.conf                   — defines the `combinedHost`
@@ -149,27 +145,17 @@ Config layout:
 
 APEX HTTPS — was working by accident, now stated
 ------------------------------------------------
-https://dreamstation.systems/ worked long before it had a server block of its
-own. The mta-sts block was the only :443 server for this domain, so nginx used
-it as the default server for any unmatched :443 request, and the certificate it
-loads happens to carry dreamstation.systems as a SAN:
+https://dreamstation.systems/ worked long before it had a server block of its own. The mta-sts block was the only :443 server for this domain, so nginx used it as the default server for any unmatched :443 request, and the certificate it loads happens to carry dreamstation.systems as a SAN:
 
     subject=CN=dreamstation.systems
     SAN: DNS:dreamstation.systems, DNS:mta-sts.dreamstation.systems
 
-That is a coincidence of block ordering and SAN contents, not a configuration.
-Adding any :443 block that sorted earlier would have silently broken the apex —
-and with it professional/index.html's declared https canonical and the status
-page. There is now an explicit block:
+That is a coincidence of block ordering and SAN contents, not a configuration. Adding any :443 block that sorted earlier would have silently broken the apex — and with it professional/index.html's declared https canonical and the status page. There is now an explicit block:
 
     server { listen 443 ssl; server_name dreamstation.systems www....;
              root /srv/http; include snippets/statusCgi.conf; }
 
-Same certificate, same content, same blast radius (deliberately NOT merged with
-grandexchange's separate cert — see that file's note about keeping inbound
-mail's TLS out of a web deploy's blast radius). Port 80 is still deliberately
-not redirected to HTTPS: this box's character is serving plain old protocols,
-and nothing here is sensitive.
+Same certificate, same content, same blast radius (deliberately NOT merged with grandexchange's separate cert — see that file's note about keeping inbound mail's TLS out of a web deploy's blast radius). Port 80 is still deliberately not redirected to HTTPS: this box's character is serving plain old protocols, and nothing here is sensitive.
   /etc/nginx/sites-available/pool.ntp.org            — server_name pool.ntp.org,
                                                        *.pool.ntp.org,
                                                        ntppool.org,
@@ -310,21 +296,11 @@ and nothing here is sensitive.
                                                        doesn't match a real
                                                        server block
 
-All are symlinked into /etc/nginx/sites-enabled/. EDIT sites-available —
-`tee` into a sites-enabled path writes THROUGH the symlink and silently
-clobbers the real config (cost ten confusing minutes once; see openget.txt).
+All are symlinked into /etc/nginx/sites-enabled/. EDIT sites-available — `tee` into a sites-enabled path writes THROUGH the symlink and silently clobbers the real config (cost ten confusing minutes once; see openget.txt).
 
-Content is SERVED from /srv/http/ but its SOURCE OF TRUTH is the monorepo at
-~/configNotes/documentServing/rootdomain/. Do not hand-edit /srv/http — edit
-rootdomain/, commit (the hook stages it to /srv/httpstaging), and run
-~/configNotes/documentServing/promoteSite.sh (rsync --delete to /srv/http,
-preserving certbot's .well-known/acme-challenge/ webroot dir and
-ntpstats.txt). Nothing goes live without that second step — see githooks.txt,
-and ~/configNotes/documentServing/README.md.
+Content is SERVED from /srv/http/ but its SOURCE OF TRUTH is the monorepo at ~/configNotes/documentServing/rootdomain/. Do not hand-edit /srv/http — edit rootdomain/, commit (the hook stages it to /srv/httpstaging), and run ~/configNotes/documentServing/promoteSite.sh (rsync --delete to /srv/http, preserving certbot's .well-known/acme-challenge/ webroot dir and ntpstats.txt). Nothing goes live without that second step — see githooks.txt, and ~/configNotes/documentServing/README.md.
 
-THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every
-hand-authored file above lives in ~/configNotes/documentServing/nginx/ and is
-installed by promoteSite.sh:
+THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every hand-authored file above lives in ~/configNotes/documentServing/nginx/ and is installed by promoteSite.sh:
 
     nginx/conf.d/logFormat.conf
     nginx/sites-available/000-default-catchall
@@ -343,42 +319,22 @@ installed by promoteSite.sh:
     nginx/snippets/theme.conf
     nginx/snippets/wkd.conf
 
-DO NOT HAND-EDIT /etc/nginx for any of these. The next PROMOTE reinstalls them
-and your edit is gone with no warning. (Until 2026-09-07 that was "the next
-commit". A hand-edit now survives longer, which makes it MORE likely to be
-forgotten, not less.) Edit the repo copy and commit.
+DO NOT HAND-EDIT /etc/nginx for any of these. The next PROMOTE reinstalls them and your edit is gone with no warning. (Until 2026-09-07 that was "the next commit". A hand-edit now survives longer, which makes it MORE likely to be forgotten, not less.) Edit the repo copy and commit.
 
-Not in the repo, and deliberately: sites-available/default and
-snippets/{fastcgi-php,snakeoil}.conf are Debian's, unmodified; the sites-enabled
-symlinks are made once by hand; and the certificates are certbot's. That is why
-promoteSite.sh installs a NAMED LIST of files one at a time instead of rsyncing
-the tree — an rsync --delete into /etc/nginx would eat all of the above. Adding
-a file to nginx/ therefore does nothing until it is added to NGINX_SITES or
-NGINX_SNIPPETS at the top of promoteSite.sh, AND symlinked into sites-enabled
-if it is a vhost.
+Not in the repo, and deliberately: sites-available/default and snippets/{fastcgi-php,snakeoil}.conf are Debian's, unmodified; the sites-enabled symlinks are made once by hand; and the certificates are certbot's. That is why promoteSite.sh installs a NAMED LIST of files one at a time instead of rsyncing the tree — an rsync --delete into /etc/nginx would eat all of the above. Adding a file to nginx/ therefore does nothing until it is added to NGINX_SITES or NGINX_SNIPPETS at the top of promoteSite.sh, AND symlinked into sites-enabled if it is a vhost.
 
-nginx config cannot be syntax-checked before it is installed — the vhosts
-`include snippets/...` relative to nginx's own prefix, so a copy in the repo
-does not resolve. promoteSite.sh therefore installs, runs `nginx -t`, and rolls
-the files back from a backup if the test fails. The running server is never at
-risk: the reload happens only after `nginx -t` passes, and until then nginx
-keeps serving the last good config out of memory.
+nginx config cannot be syntax-checked before it is installed — the vhosts `include snippets/...` relative to nginx's own prefix, so a copy in the repo does not resolve. promoteSite.sh therefore installs, runs `nginx -t`, and rolls the files back from a backup if the test fails. The running server is never at risk: the reload happens only after `nginx -t` passes, and until then nginx keeps serving the last good config out of memory.
 
-Before this, the only history these files had was the .bak / .bak2 /
-.bak-20260827-150428 copies sitting in sites-available/. Those are inert
-(sites-enabled/* globs symlinks, and nothing links to them) and are left where
-they are for now, but git supersedes them.
+Before this, the only history these files had was the .bak / .bak2 / .bak-20260827-150428 copies sitting in sites-available/. Those are inert (sites-enabled/* globs symlinks, and nothing links to them) and are left where they are for now, but git supersedes them.
   index.html   — "use something else" page
   resume.png
   robots.txt
 
 OPENPGP WEB KEY DIRECTORY (WKD)
 -------------------------------
-Publishes the PGP key so `gpg --locate-keys robin@dreamstation.systems` just
-works, with no keyserver involved. Spec: draft-koch-openpgp-webkey-service.
+Publishes the PGP key so `gpg --locate-keys robin@dreamstation.systems` just works, with no keyserver involved. Spec: draft-koch-openpgp-webkey-service.
 
-Both methods are served, because GnuPG tries ADVANCED first and only falls
-back to DIRECT:
+Both methods are served, because GnuPG tries ADVANCED first and only falls back to DIRECT:
 
   advanced  https://openpgpkey.dreamstation.systems/.well-known/openpgpkey/
               dreamstation.systems/hu/<hash>
@@ -389,59 +345,32 @@ back to DIRECT:
 Recompute with: gpg-wks-client --print-wkd-hash robin@dreamstation.systems
 
 Three things are easy to get wrong here:
-  - The key file must be BINARY OpenPGP, not ASCII-armored. Generate it with
-    `gpg --dearmor < rootdomain/pgp.asc`. An armored file is served happily by
-    nginx and rejected silently by gpg.
-  - The empty `policy` file next to each hu/ dir is REQUIRED. Without it the
-    method is not considered supported.
-  - Content-Type must be application/octet-stream. The hu/ files are
-    extensionless, so they inherit nginx.conf's default_type and this is
-    already correct — do NOT add a types{} entry for them.
+  - The key file must be BINARY OpenPGP, not ASCII-armored. Generate it with `gpg --dearmor < rootdomain/pgp.asc`. An armored file is served happily by nginx and rejected silently by gpg.
+  - The empty `policy` file next to each hu/ dir is REQUIRED. Without it the method is not considered supported.
+  - Content-Type must be application/octet-stream. The hu/ files are extensionless, so they inherit nginx.conf's default_type and this is already correct — do NOT add a types{} entry for them.
 
-snippets/wkd.conf holds the CORS header and is included from BOTH the apex
-:443 block and the openpgpkey block, same anti-drift reasoning as
-statusCgi.conf. The openpgpkey vhost shares /srv/http as its docroot (so one
-rsync covers it) but returns 404 for everything outside the WKD tree.
+snippets/wkd.conf holds the CORS header and is included from BOTH the apex :443 block and the openpgpkey block, same anti-drift reasoning as statusCgi.conf. The openpgpkey vhost shares /srv/http as its docroot (so one rsync covers it) but returns 404 for everything outside the WKD tree.
 
-The openpgpkey name resolved via the *.dreamstation.systems wildcard long
-before this existed, and the apex :443 block answered it — but the cert had no
-SAN for it, so advanced lookups died in the TLS handshake and fell back to
-direct without ever saying so. Adding the SAN is what actually enabled it.
+The openpgpkey name resolved via the *.dreamstation.systems wildcard long before this existed, and the apex :443 block answered it — but the cert had no SAN for it, so advanced lookups died in the TLS handshake and fell back to direct without ever saying so. Adding the SAN is what actually enabled it.
 
 Verify:
-  gpg --locate-external-keys robin@dreamstation.systems   (from an empty
-    GNUPGHOME, or it just reads the local keyring and proves nothing)
+  gpg --locate-external-keys robin@dreamstation.systems   (from an empty GNUPGHOME, or it just reads the local keyring and proves nothing)
   gpg-wks-client --check robin@dreamstation.systems
 
 /pgp.asc CONTENT-TYPE
 ---------------------
-The armored key linked from /professional is a DIFFERENT file from the WKD
-ones above, and wants the opposite treatment. .asc is absent from
-/etc/nginx/mime.types, so it inherited default_type application/octet-stream
-and browsers downloaded it instead of showing it. snippets/pgpKey.conf now
-serves it as text/plain; charset=utf-8, included from both apex blocks (:80
-and :443) — the same anti-drift pattern as clacks/statusCgi/wkd.
+The armored key linked from /professional is a DIFFERENT file from the WKD ones above, and wants the opposite treatment. .asc is absent from /etc/nginx/mime.types, so it inherited default_type application/octet-stream and browsers downloaded it instead of showing it. snippets/pgpKey.conf now serves it as text/plain; charset=utf-8, included from both apex blocks (:80 and :443) — the same anti-drift pattern as clacks/statusCgi/wkd.
 
-text/plain rather than the registered application/pgp-keys (RFC 3156): the
-registered type also triggers a download in browsers, which is the whole
-behaviour being fixed, and this file exists to be read and copy-pasted.
-Anything consuming keys by content type uses the WKD tree.
+text/plain rather than the registered application/pgp-keys (RFC 3156): the registered type also triggers a download in browsers, which is the whole behaviour being fixed, and this file exists to be read and copy-pasted. Anything consuming keys by content type uses the WKD tree.
 
-It is an exact-match `location = /pgp.asc`, so it cannot touch the WKD regex
-location — the hu/ files stay application/octet-stream. Verified after the
-change; both still correct. No add_header in the snippet, so clacks is still
-inherited.
+It is an exact-match `location = /pgp.asc`, so it cannot touch the WKD regex location — the hu/ files stay application/octet-stream. Verified after the change; both still correct. No add_header in the snippet, so clacks is still inherited.
 
 CERTIFICATE (dreamstation.systems lineage)
 ------------------------------------------
-authenticator = webroot, webroot_path = /srv/http. Expanded 2026-08-27 from
-2 SANs to 4:
-  dreamstation.systems, mta-sts.dreamstation.systems,
-  openpgpkey.dreamstation.systems, www.dreamstation.systems
+authenticator = webroot, webroot_path = /srv/http. Expanded 2026-08-27 from 2 SANs to 4:
+  dreamstation.systems, mta-sts.dreamstation.systems, openpgpkey.dreamstation.systems, www.dreamstation.systems
 
-www was in the :443 server_name but NOT in the cert, so
-https://www.dreamstation.systems/ failed hostname verification outright —
-config implied it worked, TLS disagreed. Fixed in the same expand.
+www was in the :443 server_name but NOT in the cert, so https://www.dreamstation.systems/ failed hostname verification outright — config implied it worked, TLS disagreed. Fixed in the same expand.
 
 To expand again:
   sudo certbot certonly --webroot -w /srv/http \
@@ -449,15 +378,9 @@ To expand again:
     -d dreamstation.systems -d www.dreamstation.systems \
     -d mta-sts.dreamstation.systems -d openpgpkey.dreamstation.systems
 
-renewal-hooks/deploy/fix-perms-restart-mail.sh fixes privkey perms
-(root:ssl-cert 640) and reloads nginx + postfix/dovecot/vsftpd. It runs on
-manual issuance too, not just scheduled renewal — check with
-`ls -lL /etc/letsencrypt/live/dreamstation.systems/privkey.pem` if mail breaks
-after a cert operation.
+renewal-hooks/deploy/fix-perms-restart-mail.sh fixes privkey perms (root:ssl-cert 640) and reloads nginx + postfix/dovecot/vsftpd. It runs on manual issuance too, not just scheduled renewal — check with `ls -lL /etc/letsencrypt/live/dreamstation.systems/privkey.pem` if mail breaks after a cert operation.
 
-NOTE: adding a :443 block for a name NOT in the cert is worse than useless —
-the wildcard DNS means it will resolve and connect, then fail verification.
-Expand the cert first.
+NOTE: adding a :443 block for a name NOT in the cert is worse than useless — the wildcard DNS means it will resolve and connect, then fail verification. Expand the cert first.
 
 X-CLACKS-OVERHEAD
 -----------------
@@ -465,44 +388,22 @@ Every server block for this domain sends:
 
     X-Clacks-Overhead: GNU Terry Pratchett
 
-It lives in snippets/clacks.conf and is INCLUDED FROM every server block
-(both dreamstation.systems blocks, openpgpkey, mta-sts, and both
-grandexchange blocks) rather than being set once in nginx.conf's http block.
-Same anti-drift reasoning as statusCgi.conf and wkd.conf, plus it keeps
-pool.ntp.org's redirect — a name we do not own — out of it.
+It lives in snippets/clacks.conf and is INCLUDED FROM every server block (both dreamstation.systems blocks, openpgpkey, mta-sts, and both grandexchange blocks) rather than being set once in nginx.conf's http block. Same anti-drift reasoning as statusCgi.conf and wkd.conf, plus it keeps pool.ntp.org's redirect — a name we do not own — out of it.
 
 Two traps, both already handled:
-  - add_header is inherited into a nested block ONLY IF that block sets no
-    add_header of its own. wkd.conf's location sets the CORS header, so it
-    would have silently dropped the clacks header; it includes clacks.conf
-    again for that reason. theme.conf's location is the second such place
-    (it sets Set-Cookie and Vary) and does the same. Any FUTURE location
-    that adds a header must too.
-  - openget sets this header itself (openget/internal/web/server.go), so
-    grandexchange's :443 block carried it twice until a
-    `proxy_hide_header X-Clacks-Overhead;` was added there. nginx is now the
-    single authority for every host, which also means a 502 from a stopped
-    openget daemon still carries the header.
+  - add_header is inherited into a nested block ONLY IF that block sets no add_header of its own. wkd.conf's location sets the CORS header, so it would have silently dropped the clacks header; it includes clacks.conf again for that reason. theme.conf's location is the second such place (it sets Set-Cookie and Vary) and does the same. Any FUTURE location that adds a header must too.
+  - openget sets this header itself (openget/internal/web/server.go), so grandexchange's :443 block carried it twice until a `proxy_hide_header X-Clacks-Overhead;` was added there. nginx is now the single authority for every host, which also means a 502 from a stopped openget daemon still carries the header.
 
-`always` is set so it survives error responses too. Not served over Gopher,
-Gemini, Spartan or finger — none of them have response headers to put it in.
+`always` is set so it survives error responses too. Not served over Gopher, Gemini, Spartan or finger — none of them have response headers to put it in.
 
 Check with: curl -sI https://dreamstation.systems/ | grep -i clacks
 
-security.txt (RFC 9116) lives at rootdomain/.well-known/security.txt and its
-Expires: field must be refreshed before 2027-08-26 or the file is formally
-invalid.
+security.txt (RFC 9116) lives at rootdomain/.well-known/security.txt and its Expires: field must be refreshed before 2027-08-26 or the file is formally invalid.
 
 Adding a new subdomain later:
-  1. Point DNS for the subdomain at this VPS. (Often already done — there is a
-     wildcard A record, which is why an unconfigured subdomain still resolves
-     and connects instead of failing fast. See the NOTE above.)
-  2. Expand the cert to cover it FIRST — see CERTIFICATE above. A :443 block
-     for a name missing from the cert resolves, connects, and then fails
-     hostname verification, which is a much more confusing failure than a
-     404.
-  3. Add /etc/nginx/sites-available/<subdomain>.dreamstation.systems with
-     its own server_name and root/content.
+  1. Point DNS for the subdomain at this VPS. (Often already done — there is a wildcard A record, which is why an unconfigured subdomain still resolves and connects instead of failing fast. See the NOTE above.)
+  2. Expand the cert to cover it FIRST — see CERTIFICATE above. A :443 block for a name missing from the cert resolves, connects, and then fails hostname verification, which is a much more confusing failure than a 404.
+  3. Add /etc/nginx/sites-available/<subdomain>.dreamstation.systems with its own server_name and root/content.
   4. Symlink it into sites-enabled/.
   5. sudo nginx -t && sudo systemctl reload nginx
 
@@ -515,10 +416,7 @@ Useful commands:
 
 THEME SELECTION (/personal/)
 ----------------------------
-The nine themed pages under /personal/ (index, blog, hypnospace, lanfalsehoods,
-ntppool, ntppost, ntpuserinfo, slowqotd, gzipt) let a visitor pick one of five
-stylesheets. The choice is resolved entirely by nginx, server-side: no
-JavaScript is involved, and the right stylesheet is in the markup as served.
+The nine themed pages under /personal/ (index, blog, hypnospace, lanfalsehoods, ntppool, ntppost, ntpuserinfo, slowqotd, gzipt) let a visitor pick one of five stylesheets. The choice is resolved entirely by nginx, server-side: no JavaScript is involved, and the right stylesheet is in the markup as served.
 
 Two halves, in two files, because map is only valid in http context:
 
@@ -527,108 +425,38 @@ Two halves, in two files, because map is only valid in http context:
   snippets/theme.conf                    the location that turns SSI on, and
                                          the internal /personal/chrome/ one
 
-FOUR maps, not two. $theme_cookie and $theme resolve the precedence chain
-below; $theme_color_light and $theme_color_dark then key off the RESOLVED
-$theme to give the page its <meta name="theme-color">, so the browser's own
-chrome is tinted to match the stylesheet that was actually served instead of
-carrying one value that is wrong for four themes out of five. They key off
-$theme and not off the cookie or the query parameter precisely so they cannot
-disagree with the stylesheet.
+FOUR maps, not two. $theme_cookie and $theme resolve the precedence chain below; $theme_color_light and $theme_color_dark then key off the RESOLVED $theme to give the page its <meta name="theme-color">, so the browser's own chrome is tinted to match the stylesheet that was actually served instead of carrying one value that is wrong for four themes out of five. They key off $theme and not off the cookie or the query parameter precisely so they cannot disagree with the stylesheet.
 
-Four of the five themes are fixed-appearance, so their light and dark entries
-are identical on purpose; only `plain` — which is almost an empty stylesheet,
-i.e. browser defaults — really follows prefers-color-scheme, and it is the one
-theme whose two values differ. The colour values are QUOTED in the map: an
-unquoted # opens a comment in nginx.conf and would silently truncate every one
-of them to the empty string.
+Four of the five themes are fixed-appearance, so their light and dark entries are identical on purpose; only `plain` — which is almost an empty stylesheet, i.e. browser defaults — really follows prefers-color-scheme, and it is the one theme whose two values differ. The colour values are QUOTED in the map: an unquoted # opens a comment in nginx.conf and would silently truncate every one of them to the empty string.
 
-Precedence is one chain: ?theme=<id> if it names a known theme, else the
-cookie if IT names a known theme, else ubuntu804. Both maps list the themes
-explicitly, so an unknown value from either source lands on the default and
-can never reach the page.
+Precedence is one chain: ?theme=<id> if it names a known theme, else the cookie if IT names a known theme, else ubuntu804. Both maps list the themes explicitly, so an unknown value from either source lands on the default and can never reach the page.
 
-The default lives in ONE place: `default` in the $theme_cookie map. It was
-gtk2 until the ubuntu804 theme landed. Nothing is hard-coded in the pages.
+The default lives in ONE place: `default` in the $theme_cookie map. It was gtk2 until the ubuntu804 theme landed. Nothing is hard-coded in the pages.
 
-The switcher is a GET form submitting to ?theme=<id>. It is NOT a set of
-links carrying the parameter around the site: that would have meant editing
-every <a href> on every themed page to append it, and one forgotten link
-resets the theme mid-navigation. The cookie carries it instead, so no href
-anywhere had to change.
+The switcher is a GET form submitting to ?theme=<id>. It is NOT a set of links carrying the parameter around the site: that would have meant editing every <a href> on every themed page to append it, and one forgotten link resets the theme mid-navigation. The cookie carries it instead, so no href anywhere had to change.
 
 WHY THE QUERY PARAMETER IS SERVED, NOT REDIRECTED
-  The obvious design is: ?theme= sets the cookie, then 302 to the bare path.
-  Do not do this. With cookies disabled the redirect drops the parameter and
-  the cookie never comes back, so the page reloads looking identical and the
-  switcher appears broken — a silent no-op, worse than the localStorage
-  version it replaced (that at least applied the theme for the pageview).
-  Serving the requested theme on the same request means a cookieless visitor
-  gets what they asked for and merely loses it on the next navigation. Also
-  one round trip cheaper, and the ?theme= URL is bookmarkable as a way to pin
-  a theme with no cookie at all.
+  The obvious design is: ?theme= sets the cookie, then 302 to the bare path. Do not do this. With cookies disabled the redirect drops the parameter and the cookie never comes back, so the page reloads looking identical and the switcher appears broken — a silent no-op, worse than the localStorage version it replaced (that at least applied the theme for the pageview). Serving the requested theme on the same request means a cookieless visitor gets what they asked for and merely loses it on the next navigation. Also one round trip cheaper, and the ?theme= URL is bookmarkable as a way to pin a theme with no cookie at all.
 
 A THEME THAT NEEDS MARKUP (ubuntu804)
-  Four of the five themes are only a stylesheet. ubuntu804 is not: it draws an
-  Ubuntu 8.04 desktop around the page — GNOME panel, window frame, a Firefox 3
-  menu bar whose menus really open, location bar, status bar — and none of that
-  markup exists in the pages. It lives in three fragments under
-  /personal/chrome/ and each themed page pulls them in guarded on the theme, so
-  the other four expand them to nothing and ship not a byte of it. The SSI that
-  was already selecting the stylesheet is what makes this cost nothing new.
+  Four of the five themes are only a stylesheet. ubuntu804 is not: it draws an Ubuntu 8.04 desktop around the page — GNOME panel, window frame, a Firefox 3 menu bar whose menus really open, location bar, status bar — and none of that markup exists in the pages. It lives in three fragments under /personal/chrome/ and each themed page pulls them in guarded on the theme, so the other four expand them to nothing and ship not a byte of it. The SSI that was already selecting the stylesheet is what makes this cost nothing new.
 
   Served by its own location, `internal` and `ssi on`. Both matter:
-    - ssi on HERE TOO. An #include virtual is a subrequest, and whether its
-      output gets SSI-parsed is decided by the config of the location serving
-      IT, not the parent. Without it the panel clock ships to the browser as a
-      literal SSI comment and silently never renders.
-    - internal because the three files are deliberately unbalanced HTML — top
-      opens what bottom closes — so they are meaningless alone. Subrequests
-      still reach them; a direct hit gets 404.
+    - ssi on HERE TOO. An #include virtual is a subrequest, and whether its output gets SSI-parsed is decided by the config of the location serving IT, not the parent. Without it the panel clock ships to the browser as a literal SSI comment and silently never renders.
+    - internal because the three files are deliberately unbalanced HTML — top opens what bottom closes — so they are meaningless alone. Subrequests still reach them; a direct hit gets 404.
 
   See ubuntu804theme.txt for the whole design.
 
 THINGS THAT WILL BITE
-  - The file list in theme.conf's regex is explicit. A new themed page that
-    is not added there is served WITHOUT SSI, so its stylesheet href comes
-    out as themes/.css and the page renders unstyled. This is the loud
-    failure mode; it is loud on purpose.
-  - /personal/ with no filename works only because the server-level `index`
-    makes it an internal redirect to /personal/index.html and location
-    matching runs AGAIN on the rewritten URI. Verified, not assumed. If
-    `index` is ever moved into a location that the regex does not follow,
-    the bare directory URL starts serving raw SSI comments.
-  - NEVER add gzip_static for this tree. The SSI filter cannot parse a
-    precompressed body. (Not currently used anywhere here.)
-  - SSI drops Content-Length and disables sendfile for these eight files.
-    Irrelevant at this site's traffic; noted so it is not a surprise.
-  - Adding a theme is now THREE steps, not one: themes/<id>.css, the id in
-    ALL FOUR maps, and an <option> in each page's form. The stylesheet alone
-    does nothing — the two $theme maps are the whitelist. A missing entry in
-    the two colour maps is the quiet one: it does not fall back to an
-    unstyled page, it just serves the default theme's theme-color, which
-    merely looks slightly wrong.
-  - NGINX VARIABLES DO NOT SURVIVE AN #include virtual. They are re-evaluated
-    against the subrequest, which has the fragment's URI and no query args, so
-    inside a fragment $document_uri names the fragment and $theme resolves to
-    the map default rather than the visitor's theme. Variables set with #set
-    DO arrive, because SSI looks them up in the main request too — which is
-    why ubuntu804's page title and location-bar path are handed in that way.
-    Both behaviours verified against nginx 1.26.3 on this box, not assumed.
-  - SSI DOES NOT UNDERSTAND HTML COMMENT NESTING. It scans the byte stream for
-    its own opening sequence, so an SSI directive written inside an HTML
-    comment as documentation is not an example, it is executed. This bit once,
-    in chrome/top.html, where a commented illustration of the theme guard ran
-    and left its output in the page.
+  - The file list in theme.conf's regex is explicit. A new themed page that is not added there is served WITHOUT SSI, so its stylesheet href comes out as themes/.css and the page renders unstyled. This is the loud failure mode; it is loud on purpose.
+  - /personal/ with no filename works only because the server-level `index` makes it an internal redirect to /personal/index.html and location matching runs AGAIN on the rewritten URI. Verified, not assumed. If `index` is ever moved into a location that the regex does not follow, the bare directory URL starts serving raw SSI comments.
+  - NEVER add gzip_static for this tree. The SSI filter cannot parse a precompressed body. (Not currently used anywhere here.)
+  - SSI drops Content-Length and disables sendfile for these eight files. Irrelevant at this site's traffic; noted so it is not a surprise.
+  - Adding a theme is now THREE steps, not one: themes/<id>.css, the id in ALL FOUR maps, and an <option> in each page's form. The stylesheet alone does nothing — the two $theme maps are the whitelist. A missing entry in the two colour maps is the quiet one: it does not fall back to an unstyled page, it just serves the default theme's theme-color, which merely looks slightly wrong.
+  - NGINX VARIABLES DO NOT SURVIVE AN #include virtual. They are re-evaluated against the subrequest, which has the fragment's URI and no query args, so inside a fragment $document_uri names the fragment and $theme resolves to the map default rather than the visitor's theme. Variables set with #set DO arrive, because SSI looks them up in the main request too — which is why ubuntu804's page title and location-bar path are handed in that way. Both behaviours verified against nginx 1.26.3 on this box, not assumed.
+  - SSI DOES NOT UNDERSTAND HTML COMMENT NESTING. It scans the byte stream for its own opening sequence, so an SSI directive written inside an HTML comment as documentation is not an example, it is executed. This bit once, in chrome/top.html, where a commented illustration of the theme guard ran and left its output in the page.
   - The pages do not render correctly from disk over file://. Serve them.
-  - CHANGING THE DEFAULT DOES NOT MOVE EXISTING VISITORS. theme.conf re-sends
-    Set-Cookie on every request with a one-year Max-Age, so anyone who has
-    loaded a themed page in the last year carries an explicit cookie naming
-    whatever the default was THEN, and the cookie beats the map default. A
-    default change therefore reaches cookieless visitors only, and nothing in
-    the config can tell a cookie that records a real choice from one that
-    merely records the old default. If a default change ever has to reach
-    everybody, the only lever is renaming the cookie, which also discards the
-    genuine choices — decide which you want before reaching for it.
+  - CHANGING THE DEFAULT DOES NOT MOVE EXISTING VISITORS. theme.conf re-sends Set-Cookie on every request with a one-year Max-Age, so anyone who has loaded a themed page in the last year carries an explicit cookie naming whatever the default was THEN, and the cookie beats the map default. A default change therefore reaches cookieless visitors only, and nothing in the config can tell a cookie that records a real choice from one that merely records the old default. If a default change ever has to reach everybody, the only lever is renaming the cookie, which also discards the genuine choices — decide which you want before reaching for it.
 
 VERIFYING
   Config test, then the behaviours that actually matter:
@@ -642,9 +470,6 @@ VERIFYING
     curl -s 'localhost/personal/index.html?theme=plain' | grep theme-color
     curl -s 'localhost/personal/index.html?theme=motif' | grep theme-color
 
-  The theme-color pair must track the stylesheet on the line above it: plain
-  is the only theme whose two values differ (#ffffff / #121212).
+  The theme-color pair must track the stylesheet on the line above it: plain is the only theme whose two values differ (#ffffff / #121212).
 
-  The last two are the regressions worth guarding: raw SSI leaking on the
-  directory URL, and the clacks header being dropped by this location's own
-  add_header.
+  The last two are the regressions worth guarding: raw SSI leaking on the directory URL, and the clacks header being dropped by this location's own add_header.

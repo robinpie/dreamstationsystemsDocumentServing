@@ -1,25 +1,11 @@
 ubuntu804 — an Ubuntu 8.04 desktop as a /personal/ theme
 ========================================================
 
-The fifth theme in the /personal/ switcher, and since shortly after it landed
-the DEFAULT one — so this is what /personal/ looks like to anyone arriving
-without a theme cookie. It wraps the page in a picture of an Ubuntu 8.04 LTS
-"Hardy Heron" desktop running Firefox 3: GNOME panel with a live clock,
-metacity window frame, a menu bar whose seven menus really open, the
-navigation toolbar, the bookmarks toolbar, a status bar, and the exposed
-wallpaper strip along the bottom with the badge shelf on it.
+The fifth theme in the /personal/ switcher, and since shortly after it landed the DEFAULT one — so this is what /personal/ looks like to anyone arriving without a theme cookie. It wraps the page in a picture of an Ubuntu 8.04 LTS "Hardy Heron" desktop running Firefox 3: GNOME panel with a live clock, metacity window frame, a menu bar whose seven menus really open, the navigation toolbar, the bookmarks toolbar, a status bar, and the exposed wallpaper strip along the bottom with the badge shelf on it.
 
-Being the default is one line — `default` in the $theme_cookie map — but it
-does NOT move visitors who already have a cookie, and the cookie is re-sent on
-every request with a one-year life. See THINGS THAT WILL BITE in nginx.txt.
-Being the default also means this theme is the first thing a stranger sees, so
-a mistake in the chrome is not confined to people who went looking for it.
+Being the default is one line — `default` in the $theme_cookie map — but it does NOT move visitors who already have a cookie, and the cookie is re-sent on every request with a one-year life. See THINGS THAT WILL BITE in nginx.txt. Being the default also means this theme is the first thing a stranger sees, so a mistake in the chrome is not confined to people who went looking for it.
 
-THE CONSTRAINT THAT SHAPES EVERYTHING: the pages are hand-written, predate the
-theme by years, and must still render under four other stylesheets. Nothing may
-be generated and nothing may be permanently restructured — the chrome is bolted
-on around markup it does not control, which is why it leans on SSI fragments
-and on re-casting elements the pages already have.
+THE CONSTRAINT THAT SHAPES EVERYTHING: the pages are hand-written, predate the theme by years, and must still render under four other stylesheets. Nothing may be generated and nothing may be permanently restructured — the chrome is bolted on around markup it does not control, which is why it leans on SSI fragments and on re-casting elements the pages already have.
 
 WHERE EVERYTHING IS
 -------------------
@@ -39,30 +25,17 @@ WHERE EVERYTHING IS
   nginx/snippets/theme.conf                     the internal chrome location
   nginx/sites-available/dreamstation.systems    ubuntu804 in both theme maps
 
-Those assets were duplicated out of the template's tree rather than shared with
-it, on purpose: that tree documented its own removal with a `git rm -r`, and a
-theme that dies when a temporary template is deleted is a theme with a trapdoor
-under it. The removal happened and the theme did not notice, which was the
-point. It was 464 kB, most of it the two fonts; the fonts are subset on every
-commit now, so what ships is about 168 kB. CREDITS.txt carries the full
-attribution, records that the faces are modified, and says where the originals
-went — they are in the repo at assetsBuild/fontsSrc/, unmodified.
+Those assets were duplicated out of the template's tree rather than shared with it, on purpose: that tree documented its own removal with a `git rm -r`, and a theme that dies when a temporary template is deleted is a theme with a trapdoor under it. The removal happened and the theme did not notice, which was the point. It was 464 kB, most of it the two fonts; the fonts are subset on every commit now, so what ships is about 168 kB. CREDITS.txt carries the full attribution, records that the faces are modified, and says where the originals went — they are in the repo at assetsBuild/fontsSrc/, unmodified.
 
 HOW IT WORKS
 ------------
-The eight themed pages already run through nginx with `ssi on` — that is how
-they pick a stylesheet at all. So the chrome rides the same machinery: each
-page carries three include lines, each guarded on the theme, and under
-gtk2/motif/skeuslop/plain nginx expands them to nothing. Measured: 5.5 kB for a
-page under any other theme, 21.7 kB under this one.
+The eight themed pages already run through nginx with `ssi on` — that is how they pick a stylesheet at all. So the chrome rides the same machinery: each page carries three include lines, each guarded on the theme, and under gtk2/motif/skeuslop/plain nginx expands them to nothing. Measured: 5.5 kB for a page under any other theme, 21.7 kB under this one.
 
-The fragments are served from their own location — `internal`, and `ssi on`
-again. Both are load-bearing; see THINGS THAT WILL BITE.
+The fragments are served from their own location — `internal`, and `ssi on` again. Both are load-bearing; see THINGS THAT WILL BITE.
 
 THREE FRAGMENTS, NOT TWO
 ------------------------
-The obvious split is a prologue and an epilogue. It does not work, because one
-piece of the desktop has to come from the page itself and land in the middle.
+The obvious split is a prologue and an epilogue. It does not work, because one piece of the desktop has to come from the page itself and land in the middle.
 
     [top]      .desktop > .panel, .window > .titlebar,
                .client > .menubar, .navbar            (.client left open)
@@ -73,16 +46,11 @@ piece of the desktop has to come from the page itself and land in the middle.
     [bottom]   close #page/.viewport, .statusbar, close .client/.window,
                close .desktop
 
-The site nav has to sit BETWEEN the navigation toolbar and the viewport,
-because on a real Firefox window the bookmarks toolbar is chrome and does not
-scroll, while the masthead is the top of the document and does. Those two are
-on opposite sides of the scroll container's boundary, and no stylesheet can
-move an element across it. Hence a fragment on each side of the header.
+The site nav has to sit BETWEEN the navigation toolbar and the viewport, because on a real Firefox window the bookmarks toolbar is chrome and does not scroll, while the masthead is the top of the document and does. Those two are on opposite sides of the scroll container's boundary, and no stylesheet can move an element across it. Hence a fragment on each side of the header.
 
 THREE ELEMENTS RE-CAST
 ----------------------
-The pages needed almost nothing added because three things they already had
-turned out to be the things the desktop wanted:
+The pages needed almost nothing added because three things they already had turned out to be the things the desktop wanted:
 
   header.site-header  ->  the bookmarks toolbar. Already a row of links, which
                           is what that toolbar is. `display: contents` on the
@@ -96,182 +64,69 @@ turned out to be the things the desktop wanted:
   footer ul.badges    ->  the badge shelf on the exposed wallpaper. Both were
                           already 88x31 walls. They line up exactly.
 
-The footer is the one that needs a trick. The shelf sits OUTSIDE the window,
-but the footer's place in the markup is inside it, in the middle of the page,
-where no include split can reach. So the theme gives it `position: fixed` and
-pins it to the bottom strip, and .desktop is short by exactly that strip's
-height to leave the gap. Fixed descendants are not clipped by an ancestor's
-overflow, so the shelf stays put while the page scrolls behind it — which is
-the behaviour wanted anyway.
+The footer is the one that needs a trick. The shelf sits OUTSIDE the window, but the footer's place in the markup is inside it, in the middle of the page, where no include split can reach. So the theme gives it `position: fixed` and pins it to the bottom strip, and .desktop is short by exactly that strip's height to leave the gap. Fixed descendants are not clipped by an ancestor's overflow, so the shelf stays put while the page scrolls behind it — which is the behaviour wanted anyway.
 
-The theme switcher needed no trick at all: base.css already pins it with
-position:fixed, so it was never in the flow to begin with. This theme puts it
-back (position:static) and lets it ride the right end of the bookmarks toolbar,
-because under this theme the top-right corner of the viewport is the middle of
-the GNOME panel.
+The theme switcher needed no trick at all: base.css already pins it with position:fixed, so it was never in the flow to begin with. This theme puts it back (position:static) and lets it ride the right end of the bookmarks toolbar, because under this theme the top-right corner of the viewport is the middle of the GNOME panel.
 
 WHAT IS PER-PAGE, AND HOW IT GETS THERE
 ---------------------------------------
-Two things in the chrome differ per page: the window title and the location
-bar. Both are handed in by the page, on the same line as the first include:
+Two things in the chrome differ per page: the window title and the location bar. Both are handed in by the page, on the same line as the first include:
 
     set wtitle -> the page's own <title>, verbatim
     set path   -> $document_uri
 
-and the fragment echoes them. It has to be this way round; see the first trap
-below. #echo defaults to encoding=entity, so a value taken from a request
-variable is HTML-escaped before it lands in the markup.
+and the fragment echoes them. It has to be this way round; see the first trap below. #echo defaults to encoding=entity, so a value taken from a request variable is HTML-escaped before it lands in the markup.
 
-$document_uri is right even for /personal/ with no filename: the server-level
-`index` makes that an internal redirect to /personal/index.html before the
-variable is read. Verified, not assumed.
+$document_uri is right even for /personal/ with no filename: the server-level `index` makes that an internal redirect to /personal/index.html before the variable is read. Verified, not assumed.
 
 THE WAY OUT (.themenote)
 ------------------------
-Below the skip link, chrome/top.html carries one off-screen sentence: "Using
-accessibility tools or a text browser? Switch to another theme to get rid of
-the chrome.", the middle clause linking to $path plus ?theme=plain.
+Below the skip link, chrome/top.html carries one off-screen sentence: "Using accessibility tools or a text browser? Switch to another theme to get rid of the chrome.", the middle clause linking to $path plus ?theme=plain.
 
-It exists because this theme puts a GNOME panel, a title bar, a menu bar, a
-toolbar and a URL bar between a screen reader and the first word of the page,
-and because it is the DEFAULT — a stranger on a text browser gets it without
-having chosen it. The theme switcher was always the escape hatch, but it sits
-in the top-right corner of the viewport, which under this theme is a long way
-into the reading order. This puts the same escape at the very top.
+It exists because this theme puts a GNOME panel, a title bar, a menu bar, a toolbar and a URL bar between a screen reader and the first word of the page, and because it is the DEFAULT — a stranger on a text browser gets it without having chosen it. The theme switcher was always the escape hatch, but it sits in the top-right corner of the viewport, which under this theme is a long way into the reading order. This puts the same escape at the very top.
 
-  - It is off-screen (left: -9999px), not display:none and not
-    visibility:hidden. Those two would drop it from the accessibility tree,
-    which is the only tree it exists for. A text browser ignores the
-    positioning and simply reads it.
-  - It is revealed on :focus-within, like .skip, so the link is never an
-    invisible tab stop. focus-within rather than focus because the focusable
-    thing is the link and the sentence around it is what makes it make sense.
-  - It comes SECOND, after the skip link, so the first tab stop is still the
-    one a sighted keyboard user wants.
-  - It lives in the chrome fragment, so it appears under this theme and no
-    other. That is not just tidiness: under the other four the sentence would
-    be a lie, since there is no chrome to get rid of.
-  - The link is safe by construction. $path is $document_uri, which
-    theme.conf's regex constrains to eight literal filenames, and
-    $document_uri never carries a query string, so the appended ?theme=plain
-    is always the only one. Following it also persists the choice, because
-    theme.conf stamps the cookie on every response.
+  - It is off-screen (left: -9999px), not display:none and not visibility:hidden. Those two would drop it from the accessibility tree, which is the only tree it exists for. A text browser ignores the positioning and simply reads it.
+  - It is revealed on :focus-within, like .skip, so the link is never an invisible tab stop. focus-within rather than focus because the focusable thing is the link and the sentence around it is what makes it make sense.
+  - It comes SECOND, after the skip link, so the first tab stop is still the one a sighted keyboard user wants.
+  - It lives in the chrome fragment, so it appears under this theme and no other. That is not just tidiness: under the other four the sentence would be a lie, since there is no chrome to get rid of.
+  - The link is safe by construction. $path is $document_uri, which theme.conf's regex constrains to eight literal filenames, and $document_uri never carries a query string, so the appended ?theme=plain is always the only one. Following it also persists the choice, because theme.conf stamps the cookie on every response.
 
 THINGS THAT WILL BITE
 ---------------------
-  - NGINX VARIABLES DO NOT SURVIVE AN #include virtual. The include is a
-    subrequest and they are re-evaluated against it, so inside a fragment
-    $document_uri names THE FRAGMENT and $theme resolves to the map default
-    rather than the visitor's theme. Variables set with #set do arrive, because
-    SSI looks them up in the main request as well as the subrequest. This is
-    why wtitle and path are set by the page and not read in the fragment, and
-    it is silent when you get it wrong — the location bar just shows
-    /personal/chrome/top.html and nothing errors.
+  - NGINX VARIABLES DO NOT SURVIVE AN #include virtual. The include is a subrequest and they are re-evaluated against it, so inside a fragment $document_uri names THE FRAGMENT and $theme resolves to the map default rather than the visitor's theme. Variables set with #set do arrive, because SSI looks them up in the main request as well as the subrequest. This is why wtitle and path are set by the page and not read in the fragment, and it is silent when you get it wrong — the location bar just shows /personal/chrome/top.html and nothing errors.
 
-  - SSI DOES NOT UNDERSTAND HTML COMMENT NESTING. It scans the byte stream for
-    its own opening sequence, so an SSI directive written inside an HTML
-    comment as documentation is not an example, it is executed. This bit once
-    already: chrome/top.html's header comment illustrated the theme guard, and
-    the illustration ran. Describe the syntax in these files; do not spell it.
+  - SSI DOES NOT UNDERSTAND HTML COMMENT NESTING. It scans the byte stream for its own opening sequence, so an SSI directive written inside an HTML comment as documentation is not an example, it is executed. This bit once already: chrome/top.html's header comment illustrated the theme guard, and the illustration ran. Describe the syntax in these files; do not spell it.
 
-  - `ssi on` IS NEEDED ON THE FRAGMENT LOCATION TOO, not just on the pages.
-    Whether a subrequest's output is SSI-parsed is decided by the config of the
-    location that serves IT. Without it the panel clock reaches the browser as
-    a literal SSI comment and never renders, and nothing warns you.
+  - `ssi on` IS NEEDED ON THE FRAGMENT LOCATION TOO, not just on the pages. Whether a subrequest's output is SSI-parsed is decided by the config of the location that serves IT. Without it the panel clock reaches the browser as a literal SSI comment and never renders, and nothing warns you.
 
-  - MALFORMED MARKUP IN A PAGE NOW BREAKS THE WINDOW. Under a plain stylesheet
-    an unclosed tag near the end of a page is cosmetic. Here everything after
-    it gets nested inside it, including bottom.html's closing structure.
-    index.html had exactly this — a footer <img> missing its ">" swallowed the
-    </a>, and the status bar ended up inside a link to archlinux.org. Fixed.
-    If the chrome ever comes out visibly wrong on one page and right on the
-    others, parse that page before suspecting the theme.
+  - MALFORMED MARKUP IN A PAGE NOW BREAKS THE WINDOW. Under a plain stylesheet an unclosed tag near the end of a page is cosmetic. Here everything after it gets nested inside it, including bottom.html's closing structure. index.html had exactly this — a footer <img> missing its ">" swallowed the </a>, and the status bar ended up inside a link to archlinux.org. Fixed. If the chrome ever comes out visibly wrong on one page and right on the others, parse that page before suspecting the theme.
 
-  - THE VIEWPORT IS A NESTED SCROLLER. body has overflow:hidden and the
-    document scrolls inside .viewport, which is deliberate — a real browser
-    window scrolls its content, not the desktop behind it. The long posts (gzipt, ntppost, slowqotd) therefore scroll
-    inside the window rather than moving the page. Correct, but it is a
-    different feel from the other four themes and is the thing most likely to
-    be reported as a bug.
+  - THE VIEWPORT IS A NESTED SCROLLER. body has overflow:hidden and the document scrolls inside .viewport, which is deliberate — a real browser window scrolls its content, not the desktop behind it. The long posts (gzipt, ntppost, slowqotd) therefore scroll inside the window rather than moving the page. Correct, but it is a different feel from the other four themes and is the thing most likely to be reported as a bug.
 
   - SUBSET FONTS SHIP, built on every commit. 382 kB down to 45 kB.
 
-    ubuntu804.css declares NO unicode-range, and MUST NOT GAIN ONE. Without a
-    range the browser does ordinary per-glyph fallback, so a character the
-    subset lacks is rendered from the next family in the stack. With one, the
-    browser consults the range BEFORE it looks inside the file, so a codepoint
-    in range but absent from the font falls out of the family rather than
-    through to the next @font-face. That would break these pages: they are full
-    of emoji and DejaVu has none at any weight — 🌠🏠🏰💼📈📓📧🚀, checked
-    against the shipped woff2, none present — so the emoji come from a system
-    emoji font, which only works while the fallback chain is live.
+    ubuntu804.css declares NO unicode-range, and MUST NOT GAIN ONE. Without a range the browser does ordinary per-glyph fallback, so a character the subset lacks is rendered from the next family in the stack. With one, the browser consults the range BEFORE it looks inside the file, so a codepoint in range but absent from the font falls out of the family rather than through to the next @font-face. That would break these pages: they are full of emoji and DejaVu has none at any weight — 🌠🏠🏰💼📈📓📧🚀, checked against the shipped woff2, none present — so the emoji come from a system emoji font, which only works while the fallback chain is live.
 
-    A subset CAN rot when a page gains a character. That is why the census is
-    recomputed by assetsBuild/makeFontSubset.py on EVERY commit rather than
-    being cut once by hand — see the header of that script, which carries the
-    rest of the reasoning, and githooks.txt for the pre-commit chain.
+    A subset CAN rot when a page gains a character. That is why the census is recomputed by assetsBuild/makeFontSubset.py on EVERY commit rather than being cut once by hand — see the header of that script, which carries the rest of the reasoning, and githooks.txt for the pre-commit chain.
 
-    Fidelity was measured, not assumed: zero advance-width differences against
-    the full faces, identical hhea and OS/2 metrics, GPOS kerning retained
-    (--layout-features='' would save another 1.6 kB and drop it, which would
-    move spacing this theme was measured against). The subsets are a reduction
-    in coverage and nothing else.
+    Fidelity was measured, not assumed: zero advance-width differences against the full faces, identical hhea and OS/2 metrics, GPOS kerning retained (--layout-features='' would save another 1.6 kB and drop it, which would move spacing this theme was measured against). The subsets are a reduction in coverage and nothing else.
 
-    IF A CHARACTER EVER COMES OUT IN THE WRONG FONT, this is the first thing to
-    suspect — but the symptom is a style mismatch, not tofu, and the margin in
-    makeFontSubset.py (Latin-1, General Punctuation, arrows, box drawing) is
-    sized to make it unlikely. DO NOT FIX IT BY ADDING A unicode-range; the
-    emoji go with it. Add to the margin, or to THEMED if a page was added to
-    theme.conf's regex and not to the script.
+    IF A CHARACTER EVER COMES OUT IN THE WRONG FONT, this is the first thing to suspect — but the symptom is a style mismatch, not tofu, and the margin in makeFontSubset.py (Latin-1, General Punctuation, arrows, box drawing) is sized to make it unlikely. DO NOT FIX IT BY ADDING A unicode-range; the emoji go with it. Add to the margin, or to THEMED if a page was added to theme.conf's regex and not to the script.
 
-    THAT SECOND CASE HAS ALREADY HAPPENED ONCE. gzipt.html was added to
-    theme.conf's regex and not to THEMED, and sat uncensused until 2026-09-07.
-    It caused nothing — gzipt.html turns out to contribute zero codepoints the
-    other seven pages and the chrome do not already carry, so the shipped woff2
-    files were byte-identical before and after the fix. That is luck, not
-    design, and it is the argument for checking THEMED whenever the regex
-    changes rather than waiting for a glyph to look wrong.
+    THAT SECOND CASE HAS ALREADY HAPPENED ONCE. gzipt.html was added to theme.conf's regex and not to THEMED, and sat uncensused until 2026-09-07. It caused nothing — gzipt.html turns out to contribute zero codepoints the other seven pages and the chrome do not already carry, so the shipped woff2 files were byte-identical before and after the fix. That is luck, not design, and it is the argument for checking THEMED whenever the regex changes rather than waiting for a glyph to look wrong.
 
 WHAT CAME FROM THE TEMPLATE'S CHROME
 ------------------------------------
-The template carried the same menus and the same window furniture in a single
-chrome.html, and the two were maintained by hand in parallel rather than
-generated from a common source — a look at what differed says why sharing would
-have bought little: the menu destinations differ (this one's View and Bookmarks
-menus mirror /personal/'s nav, its Help menu points at this theme's own
-CREDITS.txt), the per-page values arrive by a completely different mechanism,
-and this one is split in three around markup the other did not have. What was
-genuinely shared is the artwork and the measurements: the images are byte
-copies, and the stylesheet's chrome rules came over from the template's
-site.css with their reasoning attached.
+The template carried the same menus and the same window furniture in a single chrome.html, and the two were maintained by hand in parallel rather than generated from a common source — a look at what differed says why sharing would have bought little: the menu destinations differ (this one's View and Bookmarks menus mirror /personal/'s nav, its Help menu points at this theme's own CREDITS.txt), the per-page values arrive by a completely different mechanism, and this one is split in three around markup the other did not have. What was genuinely shared is the artwork and the measurements: the images are byte copies, and the stylesheet's chrome rules came over from the template's site.css with their reasoning attached.
 
-That parallel is now gone, and with it the obligation to change the menus in
-two places. Nothing outside rootdomain/personal/ needs touching when this
-theme changes.
+That parallel is now gone, and with it the obligation to change the menus in two places. Nothing outside rootdomain/personal/ needs touching when this theme changes.
 
 CHANGING THE STRIP HEIGHT
 -------------------------
---strip-h in ubuntu804.css, and nowhere else. It was already the single source
-of truth before the template went, and now there is not even a second tree
-carrying the same number in its own config.
+--strip-h in ubuntu804.css, and nowhere else. It was already the single source of truth before the template went, and now there is not even a second tree carrying the same number in its own config.
 
-The template ended its badge row with a line of white text saying the window
-was short of the screen on purpose. This theme deliberately does not: there the
-note explained a template being shown off, here the desktop is simply how the
-site looks, and a page does not need to narrate its own layout. Dropping it is
-also what took --strip-h down to one place, since the note was generated
-content and could not read the custom property.
+The template ended its badge row with a line of white text saying the window was short of the screen on purpose. This theme deliberately does not: there the note explained a template being shown off, here the desktop is simply how the site looks, and a page does not need to narrate its own layout. Dropping it is also what took --strip-h down to one place, since the note was generated content and could not read the custom property.
 
 TESTING IT
 ----------
-There is no browser on the server, so this was verified structurally: every
-page parsed with html5lib to confirm the chrome nests as intended, every asset
-URL fetched for a 200, every theme fetched to confirm the fragments expand to
-nothing under the other four and that an unknown theme id falls back to the
-default.
-The look itself has NOT been eyeballed on the server and cannot be. Do that on
-a workstation. Run a loopback nginx that serves the repo without committing
-anything: point the root at rootdomain/ and include nginx/snippets/theme.conf
-plus the two map blocks out of the vhost. (The template's devserver.sh was the
-model for this and went with it; it is in the archived copy if you want it
-back.)
+There is no browser on the server, so this was verified structurally: every page parsed with html5lib to confirm the chrome nests as intended, every asset URL fetched for a 200, every theme fetched to confirm the fragments expand to nothing under the other four and that an unknown theme id falls back to the default. The look itself has NOT been eyeballed on the server and cannot be. Do that on a workstation. Run a loopback nginx that serves the repo without committing anything: point the root at rootdomain/ and include nginx/snippets/theme.conf plus the two map blocks out of the vhost. (The template's devserver.sh was the model for this and went with it; it is in the archived copy if you want it back.)

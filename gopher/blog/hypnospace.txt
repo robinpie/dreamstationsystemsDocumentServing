@@ -66,7 +66,7 @@ The notable functions I found were:
     UpdateZOrder                      z-order is the array order reversed
     ElementEventWeb                   conditional state selection
     ColorToRGB                        colours are packed BGR
-    Scripts                           the cmd:param|cmd:param mini-language
+    Scripts                           the cmd:param|cmd:param mini‐language
                                       used by links and page onload
 
 ReplaceText, which handles the /n, /t, /p, and #VAR# escapes, is native JavaScript (HypnoSpecial_ReplaceText in c2runtime.js) and not in the event sheet. Additionally, font geometry is stored as editor properties on Spritefontanim objects in the layout instance data in data.js.
@@ -103,4 +103,3 @@ The pages contain music in two formats. 450 pages refer to .ogg files. Every .og
 Another 527 pages refer to .hsm files. These are also Construct 2 data files, but they contain small tracker‐style compositions made from short audio samples. The music logic is in the HypnOS event sheet alongside the rest of the page logic. Therefore, the same reverse‐engineering approach works: the "Play Music Sounds" group sends music information to a three‐dimensional sequence (step, pattern×track, parameter). The "BPM Timer" event group calculates secPerStep = 1 / (BPM/60) / 4 — one step is a 1/16th note. The FREQOUT object at ID 60 converts pitch numbers into audio frequencies (using a different method for long notes).
 
 tools/hsmrender.py converts all of the music data into looping audio files. It does this offline. It extracts all of the short samples using ffmpeg, then combines them with NumPy into a single waveform containing all of the short sounds. Audio that would otherwise continue past the end of the sequence is wrapped around to the beginning. This makes the resulting audio loop cleanly.
-

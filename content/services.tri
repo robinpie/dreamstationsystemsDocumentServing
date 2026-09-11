@@ -1,86 +1,102 @@
-other protocols on dreamstation.systems
-=======================================
+---
+id: services
+kind: page
+targets: gemini gopher
+title: other protocols on dreamstation.systems
+// The gemini copy was the fuller of the two, so it is the one that became
+// the source; the gopher copy now follows it instead of drifting from it.
+---
+
+@links
+selfgem   gemini=/ gopher=-
+selfgoph  gemini=gopher://dreamstation.systems gopher=-
+ftparch   url=ftp://dreamstation.systems
+dictsrv   url=dict://dreamstation.systems
+@end
 
 (more comprehensive explainer coming soon)
 
 this box runs a few retro/fun/quirky internet services. here's everything it speaks:
 
-Gemini / Spartan
-----------------
+## Gemini / Spartan
 
-identical content served on Gemini and Spartan.
+identical content served on Gemini and Spartan.{gemini: you’re here.}
 
-Gopher
-------
+## Gopher
 
-you’re here.
+{gemini:mostly the same content as this capsule, over Gopher.}{gopher:you’re here.}
 
-Finger
-------
+=> only=gemini [gopher://dreamstation.systems](@selfgoph)
+
+## Finger
 
 currently being set up. in your terminal: finger @dreamstation.systems
 
-FTP
----
+## FTP
 
 an anonymous, read-only file archive. plain FTP or explicit FTPS
 
-ftp://dreamstation.systems: <ftp://dreamstation.systems>
+=> [ftp://dreamstation.systems](@ftparch)
 
-NTP
----
+## NTP
 
 part of pool.ntp.org. i also serve NTS on TCP/4460
 
-NTP server stats (auto-regenerating): /0/ntpstats.txt
+=> [NTP server stats (auto-regenerating)](@ntpstats)
 
-Email
------
+## Email
 
 i also run a small personal-only email server here - email me at robin@dreamstation.systems 
 
-DICT
-----
+## DICT
 
 a dictionary server (RFC 2229), port 2628.
 
-in your favorite graphical dictd frontend, or in your terminal with dictd: dict -h dreamstation.systems -d jargon "amiga persecution complex" (or similar commands): <dict://dreamstation.systems>
+=> [in your favorite graphical dictd frontend, or in your terminal with dictd: dict -h dreamstation.systems -d jargon "amiga persecution complex" (or similar commands)](@dictsrv)
 
-QOTD
-----
+## QOTD
 
 quote of the day (RFC 865), TCP/UDP port 17. in your terminal: nc dreamstation.systems 17
 
+@ indent=0
+```
 nc dreamstation.systems 17
-
-Daytime
--------
+```
+## Daytime
 
 the current date and time (RFC 867), TCP/UDP port 13. in your terminal: nc dreamstation.systems 13
 
+@ indent=0
+```
 nc dreamstation.systems 13
-
-Echo
-----
+```
+## Echo
 
 whatever you type sent straight back to you (RFC 862), TCP/UDP port 7. in your terminal: nc dreamstation.systems 7
 
+@ indent=0
+```
 nc dreamstation.systems 7
-
-Discard
--------
+```
+## Discard
 
 everything you send is thrown away (RFC 863), TCP/UDP port 9. in your terminal: nc dreamstation.systems 9
 
+@ indent=0
+```
 nc dreamstation.systems 9
-
-Chargen
--------
+```
+## Chargen
 
 an endless stream of ASCII (RFC 864), TCP/UDP port 19. in your terminal, ctrl-C to escape: nc dreamstation.systems 19
 
+@ indent=0
+```
 nc dreamstation.systems 19
+```
 
---------------------------------------------------------------------------------
+::: only gopher
+----
 
 back to home: gopher://dreamstation.systems
+:::

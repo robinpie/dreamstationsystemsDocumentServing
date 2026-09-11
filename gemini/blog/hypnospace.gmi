@@ -69,7 +69,7 @@ The notable functions I found were:
     UpdateZOrder                      z-order is the array order reversed
     ElementEventWeb                   conditional state selection
     ColorToRGB                        colours are packed BGR
-    Scripts                           the cmd:param|cmd:param mini-language
+    Scripts                           the cmd:param|cmd:param mini‐language
                                       used by links and page onload
 ```
 

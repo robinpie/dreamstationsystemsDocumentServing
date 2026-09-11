@@ -1,12 +1,9 @@
 githooks
 ========
 
-Hooks for the site repo, which is ~/configNotes/documentServing (NOT
-~/configNotes -- that directory holds these notes and contains a stray empty
-.git that makes git refuse to run there).
+Hooks for the site repo, which is ~/configNotes/documentServing (NOT ~/configNotes -- that directory holds these notes and contains a stray empty .git that makes git refuse to run there).
 
-Convention, already used by the deploy hook: the script lives at the repo
-root, versioned, and .git/hooks/<name> is a relative symlink to it.
+Convention, already used by the deploy hook: the script lives at the repo root, versioned, and .git/hooks/<name> is a relative symlink to it.
 
 Installed hooks:
 
@@ -18,10 +15,14 @@ Installed hooks:
 
 NO HOOK PUBLISHES ANYTHING. See "stage and promote" below.
 
-pre-commit was a symlink straight to datestampHook.pl until there was a
-second step to run. git runs exactly ONE pre-commit hook, so it now points at
-preCommit.sh, which calls each step in turn:
+FIRST IN THE CHAIN IS triptych.pl, and it has to be: it renders the main site's pages to all three protocols from content/*.tri, and three of the steps below rewrite regions of what it produced (badgeBuild.pl the badge wall, makeMeta.py blog.html's JSON-LD, datestampHook.pl the dateModified). Those regions are carried through from the file on disk rather than regenerated, so the order is stable in both directions. Do not hand-edit the 29 generated files -- `./triptych.pl --source-of <file>` says whether a file is one of them. Full account in triptych.md.
 
+datestampHook.pl asks --source-of before it stamps. For a generated page it rewrites `updated:` in the .tri's front matter and re-renders, rather than writing a date into HTML that the next render would throw away.
+
+pre-commit was a symlink straight to datestampHook.pl until there was a second step to run. git runs exactly ONE pre-commit hook, so it now points at preCommit.sh, which calls each step in turn:
+
+    triptych.pl                    content/*.tri -> all three protocols
+                                                            (triptych.md)
     datestampHook.pl               schema.org dateModified stamp       (below)
     ntpStatHook.pl                 NTP unique-client sentence          (below)
     assetsBuild/makeFeed.py        Atom + RSS for the blog         (feeds.txt)
@@ -30,21 +31,11 @@ preCommit.sh, which calls each step in turn:
                                                           (ubuntu804theme.txt)
     assetsBuild/badgeBuild.pl      the 88x31 wall             (siteAssets.txt)
 
-Any step added there must re-stage what it rewrites, or the commit will not
-match what the hook computed.
+Any step added there must re-stage what it rewrites, or the commit will not match what the hook computed.
 
-The last four produce COMMITTED ARTIFACTS, and for the same reason: promote is
-a plain rsync of rootdomain/ with no build step, so anything served has to
-exist in the repo. (That invariant is why the font subsetting went here rather
-than into stageSite.sh, where it would have been just as easy to run and
-would have left the live docroot holding files that exist in no commit.)
+The last four produce COMMITTED ARTIFACTS, and for the same reason: promote is a plain rsync of rootdomain/ with no build step, so anything served has to exist in the repo. (That invariant is why the font subsetting went here rather than into stageSite.sh, where it would have been just as easy to run and would have left the live docroot holding files that exist in no commit.)
 
-All four are no-ops when their inputs have not changed, so an unrelated commit
-does not list feeds, sitemap, fonts or badges among its changes. For the fonts that is
-load-bearing rather than cosmetic: without it every commit would put two new
-20 kB binaries into git history. The badges get there differently — a source
-sha256 matching assetsBuild/badgeManifest.txt skips the encoders outright,
-which also keeps a slow -z 9 encode off the critical path of every commit.
+All four are no-ops when their inputs have not changed, so an unrelated commit does not list feeds, sitemap, fonts or badges among its changes. For the fonts that is load-bearing rather than cosmetic: without it every commit would put two new 20 kB binaries into git history. The badges get there differently — a source sha256 matching assetsBuild/badgeManifest.txt skips the encoders outright, which also keeps a slow -z 9 encode off the critical path of every commit.
 
 THE FOUR STEPS GUARD DIFFERENTLY, and none of it is accidental.
 
@@ -80,8 +71,7 @@ THE FOUR STEPS GUARD DIFFERENTLY, and none of it is accidental.
 
 Same tree, four different failure modes, four different guards.
 
-DO NOT set core.hooksPath. It replaces .git/hooks wholesale, which would
-silently disable the deploy hooks and both git-lfs hooks. Symlink instead.
+DO NOT set core.hooksPath. It replaces .git/hooks wholesale, which would silently disable the deploy hooks and both git-lfs hooks. Symlink instead.
 
 
 stage and promote
@@ -92,38 +82,19 @@ Publishing is two steps.
     ./stageSite.sh      rootdomain/ -> /srv/httpstaging     AUTOMATIC (hook)
     ./promoteSite.sh    everything  -> live                 BY HAND
 
-Preview the staged copy at https://staging.dreamstation.systems (basic auth,
-user robinpie; see "staging vhost" below). Then promote.
+Preview the staged copy at https://staging.dreamstation.systems (basic auth, user robinpie; see "staging vhost" below). Then promote.
 
-THE FAILURE MODE TO KNOW ABOUT: "I fixed it, and forgot to promote." The live
-site does not move on its own. If a change is not showing up, that is the
-first thing to check, before touching nginx or the cache.
+THE FAILURE MODE TO KNOW ABOUT: "I fixed it, and forgot to promote." The live site does not move on its own. If a change is not showing up, that is the first thing to check, before touching nginx or the cache.
 
-Only rootdomain/ stages. cgi/, statusSample/ and nginx/ are system state --
-executables, systemd units, the server's own config -- with nowhere to stand
-them up that is not simply "live", so they are promote-only and are read from
-the REPO, not from the staging tree.
+Only rootdomain/ stages. cgi/, statusSample/ and nginx/ are system state -- executables, systemd units, the server's own config -- with nowhere to stand them up that is not simply "live", so they are promote-only and are read from the REPO, not from the staging tree.
 
-Content, by contrast, is promoted from /srv/httpstaging and not from the repo,
-so the live docroot is byte-identical to the tree you actually previewed
-rather than a second render of the same commit. If those two could differ,
-staging would not be telling you anything.
+Content, by contrast, is promoted from /srv/httpstaging and not from the repo, so the live docroot is byte-identical to the tree you actually previewed rather than a second render of the same commit. If those two could differ, staging would not be telling you anything.
 
-promoteSite.sh refuses to run when /srv/httpstaging is missing or empty --
-promoting an empty tree would --delete the live site -- and warns, with a
-y/N prompt, when rootdomain/ has uncommitted changes, because the hook fires
-on COMMIT and your working tree is therefore not what you previewed. That
-check asks git rather than diffing the two trees: stageSite.sh chowns and
-chmods everything it copies, so the trees differ in owner, group and mode on
-every file by design.
+promoteSite.sh refuses to run when /srv/httpstaging is missing or empty -- promoting an empty tree would --delete the live site -- and warns, with a y/N prompt, when rootdomain/ has uncommitted changes, because the hook fires on COMMIT and your working tree is therefore not what you previewed. That check asks git rather than diffing the two trees: stageSite.sh chowns and chmods everything it copies, so the trees differ in owner, group and mode on every file by design.
 
-The syntax gates (perl -c on the CGIs, bash -n on statusSample.sh) run in
-BOTH scripts. Not an oversight: at stage time the mistake is fresh and one
---amend away, and a promote can happen at any distance from the commit that
-staged it.
+The syntax gates (perl -c on the CGIs, bash -n on statusSample.sh) run in BOTH scripts. Not an oversight: at stage time the mistake is fresh and one --amend away, and a promote can happen at any distance from the commit that staged it.
 
-To roll the live site back without touching git: stage the old tree by hand
-and promote it.
+To roll the live site back without touching git: stage the old tree by hand and promote it.
 
     sudo rsync -a --delete /some/known-good/tree/ /srv/httpstaging/
     ./promoteSite.sh           # will warn that rootdomain/ is dirty; say y
@@ -132,8 +103,7 @@ and promote it.
 promote: the rest of the tree
 -----------------------------
 
-After the web content, promoteSite.sh installs everything else in dependency
-order: content, then the things that read it, then nginx last.
+After the web content, promoteSite.sh installs everything else in dependency order: content, then the things that read it, then nginx last.
 
   gopher / gemini    rsync gopher/ -> /srv/gopher and gemini/ -> /srv/gemini.
                      NO RESTART: gophernicus is socket-activated per
@@ -182,11 +152,7 @@ order: content, then the things that read it, then nginx last.
                      config costs a few seconds of downtime, not zero. The
                      offline gate exists to make that rare.
 
-  jail.local IS DELIBERATELY NOT in ETC_FILES. It holds every fail2ban jail on
-  the box, and its [DEFAULT]/[sshd] ignoreip lines carry a home IP and an
-  institutional range; this repo is public on GitHub. The filter regexes carry
-  nothing and are installed; the jails that reference them stay out of git. See
-  fail2ban.txt.
+  jail.local IS DELIBERATELY NOT in ETC_FILES. It holds every fail2ban jail on the box, and its [DEFAULT]/[sshd] ignoreip lines carry a home IP and an institutional range; this repo is public on GitHub. The filter regexes carry nothing and are installed; the jails that reference them stay out of git. See fail2ban.txt.
 
 
 staging vhost
@@ -194,35 +160,19 @@ staging vhost
 
 nginx/sites-available/staging.dreamstation.systems, docroot /srv/httpstaging.
 
-Its own Let's Encrypt cert, separate from the dreamstation.systems lineage
-because that one also covers mta-sts and re-issuing it for a staging host
-would put inbound mail's TLS in the blast radius of a web deploy. Issued with
-the webroot method against the LIVE docroot /srv/http, which is where renewals
-will look and which promoteSite.sh already protects from --delete.
+Its own Let's Encrypt cert, separate from the dreamstation.systems lineage because that one also covers mta-sts and re-issuing it for a staging host would put inbound mail's TLS in the blast radius of a web deploy. Issued with the webroot method against the LIVE docroot /srv/http, which is where renewals will look and which promoteSite.sh already protects from --delete.
 
-WITHOUT that vhost file the name is not closed: staging.dreamstation.systems
-resolves via the wildcard A record, and the apex's *.dreamstation.systems
-server_name answers it with the LIVE site and no password. The vhost's more
-specific server_name is the entire security boundary. Do not "disable staging"
-by unlinking it from sites-enabled -- that opens the site up, it does not shut
-it down.
+WITHOUT that vhost file the name is not closed: staging.dreamstation.systems resolves via the wildcard A record, and the apex's *.dreamstation.systems server_name answers it with the LIVE site and no password. The vhost's more specific server_name is the entire security boundary. Do not "disable staging" by unlinking it from sites-enabled -- that opens the site up, it does not shut it down.
 
-Port 80 for this host redirects to HTTPS and serves nothing, which is the
-opposite of the apex's deliberate no-redirect policy. Basic auth is base64,
-not a hash: the password is on the wire in cleartext on every single request,
-so there must be no plaintext path to a page that asks for it.
+Port 80 for this host redirects to HTTPS and serves nothing, which is the opposite of the apex's deliberate no-redirect policy. Basic auth is base64, not a hash: the password is on the wire in cleartext on every single request, so there must be no plaintext path to a page that asks for it.
 
-Adding a vhost to NGINX_SITES in promoteSite.sh installs it into
-sites-available but does NOT symlink it into sites-enabled -- that is still a
-manual step, and the order matters:
+Adding a vhost to NGINX_SITES in promoteSite.sh installs it into sites-available but does NOT symlink it into sites-enabled -- that is still a manual step, and the order matters:
 
     ./promoteSite.sh                                   # installs the file
     sudo ln -s /etc/nginx/sites-available/<name> /etc/nginx/sites-enabled/
     sudo nginx -t && sudo systemctl reload nginx
 
-Link it first and the next promote aborts at its own "already failing nginx
--t" guard, having deployed the content but not the config, because the symlink
-points at a file that does not exist yet.
+Link it first and the next promote aborts at its own "already failing nginx -t" guard, having deployed the content but not the config, because the symlink points at a file that does not exist yet.
 
 
 password file
@@ -230,57 +180,40 @@ password file
 
     /etc/nginx/.htpasswd-staging      root:www-data, 640, bcrypt
 
-NOT in this repo and NOT installed by promoteSite.sh, so no password hash is
-ever committed. It was created once, by hand, and needs apache2-utils:
+NOT in this repo and NOT installed by promoteSite.sh, so no password hash is ever committed. It was created once, by hand, and needs apache2-utils:
 
     sudo apt install apache2-utils
     sudo htpasswd -B -c /etc/nginx/.htpasswd-staging robinpie
     sudo chown root:www-data /etc/nginx/.htpasswd-staging
     sudo chmod 640 /etc/nginx/.htpasswd-staging
 
--B is bcrypt; htpasswd's default is MD5-crypt, which is not worth using in
-2026. -c CREATES, and truncates an existing file -- omit it to add a user.
+-B is bcrypt; htpasswd's default is MD5-crypt, which is not worth using in 2026. -c CREATES, and truncates an existing file -- omit it to add a user.
 
-nginx does not check that the file exists at `nginx -t` time, so if it goes
-missing the config still tests clean and every request just 403s. Fail-closed,
-which is the right direction, but it means a lost password file looks like a
-broken site rather than a config error.
+nginx does not check that the file exists at `nginx -t` time, so if it goes missing the config still tests clean and every request just 403s. Fail-closed, which is the right direction, but it means a lost password file looks like a broken site rather than a config error.
 
 
 datestampHook.pl (pre-commit)
 ------------------------------
 
-Perl. Stamps schema.org "dateModified" on the WebSite node of staged HTML and
-re-stages the file, so the JSON-LD date cannot drift from the last real change
-to the page.
+Perl. Stamps schema.org "dateModified" on the WebSite node of staged HTML and re-stages the file, so the JSON-LD date cannot drift from the last real change to the page.
 
 Currently affects one file:
 
     rootdomain/professional/index.html
 
-Applies to any staged .html holding a JSON-LD node of "@type": "WebSite" whose
-object also contains the @id https://dreamstation.systems/#website.
+Applies to any staged .html holding a JSON-LD node of "@type": "WebSite" whose object also contains the @id https://dreamstation.systems/#website.
 
 Behaviour:
 
-  - Date only (YYYY-MM-DD), not a timestamp. Several commits in one day
-    therefore produce no diff on the line.
-  - Inserts "dateModified" after the @id line if absent, updates it if
-    present, does nothing if it already reads today.
-  - Re-parses every JSON-LD block after editing. If the edit would produce
-    invalid JSON the file is left alone and the commit aborts.
-  - Skips, with a warning, any file that has unstaged changes, so it never
-    sweeps uncommitted work into the commit. Stage the file first or it is
-    passed over.
+  - Date only (YYYY-MM-DD), not a timestamp. Several commits in one day therefore produce no diff on the line.
+  - Inserts "dateModified" after the @id line if absent, updates it if present, does nothing if it already reads today.
+  - Re-parses every JSON-LD block after editing. If the edit would produce invalid JSON the file is left alone and the commit aborts.
+  - Skips, with a warning, any file that has unstaged changes, so it never sweeps uncommitted work into the commit. Stage the file first or it is passed over.
   - Files with no matching WebSite node are ignored.
 
-Anchoring detail if this is ever rewritten: the hook keys on "@type":
-"WebSite", not on the site @id. That @id also appears as an isPartOf reference
-inside the ProfilePage and Blog nodes, earlier in the file, so keying on the
-@id matches the wrong object and silently does nothing.
+Anchoring detail if this is ever rewritten: the hook keys on "@type": "WebSite", not on the site @id. That @id also appears as an isPartOf reference inside the ProfilePage and Blog nodes, earlier in the file, so keying on the @id matches the wrong object and silently does nothing.
 
-Test without git -- pass paths as arguments and it stamps them in place, no
-staging, no re-adding:
+Test without git -- pass paths as arguments and it stamps them in place, no staging, no re-adding:
 
     cp rootdomain/professional/index.html /tmp/t.html
     ./datestampHook.pl /tmp/t.html
@@ -297,32 +230,18 @@ Perl. Keeps one hand-written sentence in
 
     rootdomain/professional/index.html
 
-in step with the live NTP analytics page, so its two upward-drifting
-figures do not have to be hand-edited:
+in step with the live NTP analytics page, so its two upward-drifting figures do not have to be hand-edited:
 
     Around 123 million unique client IP addresses seen, or about one in
     every 30 routable IPv4 addresses.
 
-SOURCE is /srv/http/ntpstats.txt, the copy ntpstatsgen.timer rewrites every
-five minutes (see ntpstatsgen.txt). Override with $NTP_STATS_FILE. That file
-is a generated, gitignored, server-only artifact, so OFF THE VPS it does not
-exist -- the hook then warns and leaves the line untouched, and the commit
-proceeds. A stale count is generous, not a lie; same call as the font subset.
+SOURCE is /srv/http/ntpstats.txt, the copy ntpstatsgen.timer rewrites every five minutes (see ntpstatsgen.txt). Override with $NTP_STATS_FILE. That file is a generated, gitignored, server-only artifact, so OFF THE VPS it does not exist -- the hook then warns and leaves the line untouched, and the commit proceeds. A stale count is generous, not a lie; same call as the font subset.
 
-  - "Around N million" is the unique-IP count rounded to whole millions;
-    "one in every N" is the integer the stats page itself already rounds to.
-  - No diff on the line unless one of those integers actually moved, so an
-    unrelated commit does not get dragged into touching the page.
-  - Like datestampHook, it only acts on a staged .html that already contains
-    the sentence, and skips (with a warning) a file that has unstaged
-    changes. It refreshes the page when you commit it for other reasons; it
-    is not a substitute for editing the page.
-  - Re-parses every JSON-LD block after editing and aborts the commit if the
-    edit somehow broke one (the sentence is not in JSON-LD, but the guard is
-    cheap).
-  - The match is deliberately tied to the exact wording. Reword the line and
-    the hook falls silent rather than mangling it -- update the regex in
-    ntpStatHook.pl to match the new phrasing.
+  - "Around N million" is the unique-IP count rounded to whole millions; "one in every N" is the integer the stats page itself already rounds to.
+  - No diff on the line unless one of those integers actually moved, so an unrelated commit does not get dragged into touching the page.
+  - Like datestampHook, it only acts on a staged .html that already contains the sentence, and skips (with a warning) a file that has unstaged changes. It refreshes the page when you commit it for other reasons; it is not a substitute for editing the page.
+  - Re-parses every JSON-LD block after editing and aborts the commit if the edit somehow broke one (the sentence is not in JSON-LD, but the guard is cheap).
+  - The match is deliberately tied to the exact wording. Reword the line and the hook falls silent rather than mangling it -- update the regex in ntpStatHook.pl to match the new phrasing.
 
 Test without git -- pass paths as arguments and it rewrites them in place:
 

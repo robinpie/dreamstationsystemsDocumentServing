@@ -7,6 +7,11 @@
 #
 # Test mode: pass file paths as arguments to stamp them directly, with no git
 # involvement and no re-staging.  ./datestampHook.pl some/page.html
+#
+# GENERATED PAGES: a page rendered by triptych.pl is not the source of its own
+# dates — stamping the HTML would be undone by the next render. For those the
+# stamp goes into the .tri's front matter instead, and the page is re-rendered.
+# See triptych.md and githooks.txt.
 use strict;
 use warnings;
 use POSIX qw(strftime);
@@ -60,6 +65,37 @@ sub stamp {
     return jsonld_ok($html) ? $html : '';           # '' signals broken output
 }
 
+# Stamp the source instead of the output: rewrite `updated:` in the front
+# matter, re-render, and stage all of it together. A page with no `updated`
+# field is not date-stamped at all, and says so rather than being edited.
+sub stamp_source {
+    my ($src, $out) = @_;
+    open my $fh, '<:encoding(UTF-8)', $src or do {
+        warn "pre-commit: cannot read $src: $!\n";
+        return 1;
+    };
+    my @lines = <$fh>;
+    close $fh;
+    unless (grep { /^updated:/ } @lines) {
+        warn "pre-commit: $out is generated from $src, which has no"
+            . " `updated:` field; dateModified not stamped\n";
+        return 0;
+    }
+    return 0 if grep { /^updated:\s*\Q$today\E\s*$/ } @lines;    # current
+    s/^updated:.*$/updated: $today/ for @lines;
+    open my $o, '>:encoding(UTF-8)', $src or do {
+        warn "pre-commit: cannot write $src: $!\n";
+        return 1;
+    };
+    print {$o} @lines;
+    close $o;
+    my ($id) = $src =~ m{([^/]+)\.tri$};
+    system('./triptych.pl', $id) == 0 or return 1;
+    system('git', 'add', '--', $src) == 0 or return 1;
+    print "pre-commit: updated -> $today in $src (re-rendered)\n";
+    return 0;
+}
+
 my @files;
 if ($test) {
     @files = @ARGV;
@@ -79,6 +115,17 @@ for my $f (@files) {
     # Don't silently sweep unstaged edits into the commit.
     if (!$test && length `git diff --name-only -- "$f"`) {
         warn "pre-commit: $f has unstaged changes; dateModified not stamped\n";
+        next;
+    }
+
+    # A generated page? Then its dates live in the .tri, not here.
+    my $src = '';
+    if (!$test) {
+        chomp($src = `./triptych.pl --source-of "$f" 2>/dev/null`);
+        $src = '' if $?;
+    }
+    if ($src ne '') {
+        if (stamp_source($src, $f)) { $failed = 1 }
         next;
     }
 

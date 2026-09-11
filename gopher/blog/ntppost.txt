@@ -108,4 +108,3 @@ It also trained everyone to think client‐server is natural. “My device talks
 NAT certainly isn’t the only reason why the modern internet is full of centralized walled gardens, but it was the first — it’s why it’s hard to send a file to someone, it’s why you don’t run your email on your own computer, and why running your own services at all is difficult and often expensive (if you can’t port forward from your own internet connection, you have to buy a VPS instead of using hardware you already have).
 
 [1] Yes, I’m conflating NAT and PAT here. Sorry.
-

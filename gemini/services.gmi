@@ -6,9 +6,7 @@ this box runs a few retro/fun/quirky internet services. here's everything it spe
 
 ## Gemini / Spartan
 
-identical content served on Gemini and Spartan. you're here.
-
-=> /   you're here
+identical content served on Gemini and Spartan. you’re here.
 
 ## Gopher
 

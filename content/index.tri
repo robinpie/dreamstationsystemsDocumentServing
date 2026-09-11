@@ -1,0 +1,146 @@
+---
+id: index
+kind: index
+title: robin’s page 🌠🏰🚀
+gopher.title: robin’s page
+html.page_title: robin’s page
+description: robin’s personal site: a blog, the services this box runs on the small and old internet protocols, and the programming projects behind them.
+html.tight: sections
+gopher.map: 1
+gopher.notitle: 1
+---
+
+@links
+// The projects live on GitHub for the web and in the FTP archive for the
+// retro protocols — one row each, instead of one file each.
+ath         html=https://github.com/robinpie/ath \
+            gemini=ftp://dreamstation.systems/robinsSoftware/ath \
+            gopher=ftp://dreamstation.systems/robinsSoftware/ath
+viewpoint   html=https://github.com/robinpie/viewpoint \
+            gemini=ftp://dreamstation.systems/robinsSoftware/viewpoint \
+            gopher=ftp://dreamstation.systems/robinsSoftware/viewpoint
+fontlib     html=https://github.com/robinpie/fontliberator \
+            gemini=ftp://dreamstation.systems/robinsSoftware/fontliberator \
+            gopher=ftp://dreamstation.systems/robinsSoftware/fontliberator
+xcaca       html=https://github.com/robinpie/xcaca \
+            gemini=ftp://dreamstation.systems/robinsSoftware/xcaca \
+            gopher=ftp://dreamstation.systems/robinsSoftware/xcaca
+hsp         html=/hsptohtml/README/pages/README.html \
+            gemini=https://dreamstation.systems/hsptohtml/README/pages/README.html \
+            gopher=https://dreamstation.systems/hsptohtml/README/pages/README.html
+oboe        url=https://github.com/OboeLang/oboe
+sushii      url=https://sushii64.com/
+nnycap      url=https://nnycap.neocities.org/
+fervor      url=https://fervor.diy/ gemini.label=https://fervor.diy
+mail        html=mailto:robin@dreamstation.systems gemini=- gopher=-
+blogpage    html=/personal/blog.html gemini=/blog/ gopher=/blog
+statuspage  html=/professional/status \
+            gemini=https://dreamstation.systems/professional/status \
+            gopher=https://dreamstation.systems/professional/status \
+            html.label="status page"
+@end
+
+my name is robin. thinkpad enthusiast. tokiponist. programmer.
+
+@ html.as=p
+=> [check out my blog please!](@blogpage)
+
+## services this box runs
+
+@ html.as=p gemini.align=line
+=> only=gemini,gopher [other protocols, explained ({gopher:Gemini}{gemini:Gopher}, DICT, QOTD, FTP...)](@services)
+=> [status page (HTTP only)](@statuspage)
+
+@ html.class=projects gopher.indent=2
+- a NTP/NTS-KE server in the NTP Pool{html: [[html:<span class="sep">|</span>]] [how to use the dreamstation.systems NTP server](@ntpuser)}
+- this {html:website}{gemini:capsule}{gopher:gopher hole}, including {html:[OpenGET](@openget)}{!html:OpenGET}
+- {html:[Gopher](@gopherurl)}{!html:Gopher}
+- {html:[Gemini](@geminiurl)}{!html:Gemini}
+- {html:[Spartan](@spartan)}{!html:Spartan}
+- finger (try{!html::} `finger @dreamstation.systems`)
+- DICT
+- {html:[a FTP archive](@ftp)}{!html:a FTP archive}
+- QOTD
+- Daytime
+- Echo
+- Discard
+- Chargen
+
+::: only gemini gopher
+@ gemini.col=32
+=> [how to use the dreamstation.systems NTP server](@ntpuser)
+=> [NTP server stats (auto-regenerating)](@ntpstats)
+=> [OpenGET](@openget)
+=> [the same place, over Gopher](@gopherurl)
+=> [the same place, over Gemini](@geminiurl)
+=> [the same place, over Spartan](@spartan)
+=> [the FTP archive](@ftp)
+:::
+
+## my projects
+
+@ html.class=projects html.pair=1 gemini.col=58
+=> [!~ATH | my Homestuck‐inspired esoteric programming language](@ath)
+=> [viewpoint | a WIMPy terminal emulator](@viewpoint)
+=> [fontliberator | a fully automatic font clean‐room reimplementor](@fontlib)
+=> [xcaca | an X server in ASCII art](@xcaca)
+=> [convert Hypnospace Outlaw pages to real webpages](@hsp)
+=> only=gemini,gopher [Oboe, a general‐purpose programming language I'm co‐creating with Jade K.](@oboe)
+=> only=gemini [Jade K.](@sushii)
+=> raw=html   <li><a href="https://github.com/OboeLang/oboe">Oboe</a>, a general‐purpose programming language I'm co‐creating with <a href="https://sushii64.com/">Jade K.</a>.</li>
+
+## contact
+
+@ gopher.wrap=72
+please [send me an {html:📧}email](@mail), even just to say hi! i love hearing from people visiting my site
+
+@ pair=labels html.class=contact
+- email: | [robin@dreamstation.systems](@mail)
+- signal: | g9ij.47
+- discord: | g9ij
+
+## friends
+
+@ gemini.col=32
+=> [https://nnycap.neocities.org/](@nnycap)
+=> [https://sushii64.com](@sushii)
+
+@ gopher.tight=1
+## other sites i think are cool
+
+@ gemini.col=32 gopher.tight=1
+=> [https://fervor.diy/](@fervor)
+
+::: only gemini gopher
+@ indent=0 gopher.blank=3
+```
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::                                                    ::
+::    --                        --                    ::
+::          ::####::                                  ::
+::          ########                            --    ::
+::          ########                                  ::
+::          ::####::                    ::            ::
+::                                    ::--::          ::
+::                --                ::--##--::        ::
+::                                    ::::::          ::
+::                                  ==@@======        ::
+::--                                  ::::            ::
+::                                --  ====::    ::    ::
+::                              ::@@  ====::::  @@::  ::
+::                              ::==::@@==::::::==::  ::
+::      ==                  --    ==::::::    ::==    ::
+::    ======        ::    ::::    ::==@@@@==::::::    ==
+::  ::::::::::    ::::      ==::::            ::::::::==
+::::::::::::::::    ==::::  ::==::::        ::::==::::==
+::::::::::::::::::  ::::----::  ::==@@@@======::  ::  ==
+::::::::::::::--------------::  ::  @@    ==  ::  ::  ==
+::--------------------------::::::  ==    ==  ::::----**
+**------------------------------::::@@    @@::::------@@
+@@**--**--**--------------------------::::------------@@
+@@**********----**------------**----::::::--**------**@@
+@@****************--**----****--==::::::::==--********@@
+@@**************************--::::::::::::::==--******@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+```
+:::

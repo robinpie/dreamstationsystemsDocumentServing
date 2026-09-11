@@ -98,4 +98,3 @@ I may add more if I ever decide to do more with this. Right now it’s basically
 the Still Alive .sqotd script: <ftp://dreamstation.systems/qotdArchive/20260623.sqotd>
 
 The client sees the Still Alive output as 473 bytes total; remember, the delays aren’t part of the bytestream, it’s just a slow network.
-

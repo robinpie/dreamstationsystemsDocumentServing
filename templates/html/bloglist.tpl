@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Welcome to the dreamstation.systems NTP server!</title>
-  <meta name="description" content="How to use the dreamstation.systems public NTP and NTS server">
+  <title>{{title}} — robin’s page</title>
+  <meta name="description" content="{{description}}">
   <meta name="author" content="robin">
-  <link rel="canonical" href="https://dreamstation.systems/personal/ntpuserinfo.html">
+  <link rel="canonical" href="{{url}}">
 
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
@@ -22,10 +22,15 @@
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="Welcome to the dreamstation.systems NTP server!">
-  <meta property="og:description" content="How to use the dreamstation.systems public NTP and NTS server">
-  <meta property="og:url" content="https://dreamstation.systems/personal/ntpuserinfo.html">
+  <!-- Feed autodiscovery. Both files are generated from the post list in
+       blog.html by assetsBuild/makeFeed.py; see feeds.txt. -->
+  <link rel="alternate" type="application/atom+xml" title="robin’s blog (Atom)" href="/personal/feed.xml">
+  <link rel="alternate" type="application/rss+xml" title="robin’s blog (RSS)" href="/personal/rss.xml">
+
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="{{title}} — robin’s page">
+  <meta property="og:description" content="{{description}}">
+  <meta property="og:url" content="{{url}}">
   <meta property="og:site_name" content="robin’s page">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary">
@@ -33,42 +38,14 @@
   <!-- JSON-LD. Every claim here mirrors something stated in the body below.
        Part of the site-wide graph rooted at /professional/index.html and
        joined to it by @id; nodes defined in full there appear here with
-       identity only. See that file, and index.html in this directory. -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "TechArticle",
-        "@id": "https://dreamstation.systems/personal/ntpuserinfo.html#usage",
-        "mainEntityOfPage": "https://dreamstation.systems/personal/ntpuserinfo.html",
-        "url": "https://dreamstation.systems/personal/ntpuserinfo.html",
-        "headline": "Welcome to the dreamstation.systems NTP server!",
-        "description": "How to use the dreamstation.systems public NTP and NTS server",
-        "inLanguage": "en",
-        "isPartOf": { "@id": "https://dreamstation.systems/#website" },
-        "author": { "@id": "https://dreamstation.systems/professional/#robin" },
-        "publisher": { "@id": "https://dreamstation.systems/professional/#robin" },
-        "about": { "@id": "https://dreamstation.systems/#ntp" }
-      },
-      {
-        "@type": "Service",
-        "@id": "https://dreamstation.systems/#ntp",
-        "name": "dreamstation.systems public NTP and NTS server",
-        "serviceType": "Network Time Protocol (NTP) and Network Time Security (NTS) server",
-        "description": "A stratum 2 time server in pool.ntp.org, serving plain NTP on UDP/123 and NTS-KE on TCP/4460.",
-        "provider": { "@id": "https://dreamstation.systems/professional/#robin" },
-        "areaServed": "Worldwide",
-        "isRelatedTo": {
-          "@type": "Organization",
-          "name": "NTP Pool Project",
-          "url": "https://www.ntppool.org/"
-        },
-        "subjectOf": { "@id": "https://dreamstation.systems/personal/ntpuserinfo.html#usage" }
-      }
-    ]
-  }
-  </script>
+       identity only. See that file, and index.html in this directory.
+
+       GENERATED, unlike every other JSON-LD block on this site: the blogPost
+       array restates the post list in <ul class="posts"> below, so it comes
+       from the same source of truth the feeds do rather than being a second
+       copy to keep in step. Adding a post stays a one-line edit to that list.
+       The markers are outside the <script> because JSON has no comments. -->
+{{blogld}}
 
   <link rel="stylesheet" href="base.css">
   <link rel="stylesheet" href="themes/<!--# echo var="theme" -->.css">
@@ -91,7 +68,7 @@
        desktop. The chrome is three fragments under chrome/, pulled in by
        nginx; every other theme expands these to nothing. chrome/top.html
        explains the split, and why the title and path are handed in by hand. -->
-<!--# if expr="$theme = ubuntu804" --><!--# set var="wtitle" value="Welcome to the dreamstation.systems NTP server!" --><!--# set var="path" value="$document_uri" --><!--# include virtual="/personal/chrome/top.html" --><!--# endif -->
+<!--# if expr="$theme = ubuntu804" --><!--# set var="wtitle" value="blog — robin’s page" --><!--# set var="path" value="$document_uri" --><!--# include virtual="/personal/chrome/top.html" --><!--# endif -->
   <header class="site-header">
     <nav class="site-nav">
       <a href="index.html">🏠 home</a>
@@ -119,40 +96,7 @@
 <!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/mid.html" --><!--# endif -->
 
   <main id="content">
-    <h1>Welcome to the dreamstation.systems NTP server!</h1>
-
-    <h2>How to use my NTP server</h2>
-
-    <p>Point your NTP client to, preferably, <code>dreamstation.systems</code>. If your NTP client is IP‐only, you can hardcode <code>67.215.249.229</code>. Unfortunately currently IPv4‐only, my VPS provider lives in the stone age.</p>
-
-    <p>We serve NTP on 123/UDP, as well as NTS-KE on 4460/TCP using a Let's Encrypt certificate.</p>
-
-    <p>We use chrony <code>ratelimit interval 2 burst 32</code>: burst of 32 requests, refilling 1 per 4 seconds per source IP. Your packets will be dropped if you exceed this. This should be more than enough for single clients and small NATs. Please do not hardcode <code>dreamstation.systems</code> on every host in a large NAT; use <code>pool.ntp.org</code>.</p>
-
-    <p>If you are a vendor, please do not hardcode <code>dreamstation.systems</code> in your devices; use <a href="https://www.ntppool.org/en/vendors.html#vendor-zone">a NTP pool vendor zone</a>.</p>
-
-    <p>Please never use <code>dreamstation.systems</code> for safety‐critical systems.</p>
-
-    <h2>About the time we serve</h2>
-
-    <p>We do <strong>not</strong> do leap smearing. Leap seconds are handled per RFC 5905.</p>
-
-    <!-- link to the HTTP ntpstats.txt page, the gopher ntpstats.txt page, or the
-         gemini ntpstats.gmi page depending on what document we're turning this
-         into. preserve this as a comment for if we convert further from this page -->
-    <p>We serve stratum 2 time off a variety of stratum 1 upstreams: see <a href="../ntpstats.txt">ntpstats.txt</a> for details.</p>
-
-    <h2>Warnings</h2>
-
-    <p>This is hobbyist‐operated. I intend to keep this up for the foreseeable future, and hopefully forever, but don’t yell at me if this disappears tomorrow.</p>
-
-    <p>Please never use <code>dreamstation.systems</code> for safety‐critical systems.</p>
-
-    <p>We also retain some data. We log IPs answered, and we publish aggregate information about GeoIP countries and ASNs we’ve talked to.</p>
-
-    <p>Will reboot with no warning at any time, but downtime will be less than one minute.</p>
-
-    <p>Again, no formal guarantees, but I’ll try to give at least one week’s notice on this page for downtime longer than that.</p>
+    {{indent:body}}
   </main>
   <footer>
     <ul class="badges">

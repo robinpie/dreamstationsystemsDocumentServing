@@ -1,0 +1,27 @@
+---
+id: blog
+kind: bloglist
+title: blog
+description: the least consistent blog on the W3: posts on NTP, networking, old internet protocols and odd programming projects.
+html.tight: all
+gopher.map: 1
+gopher.notitle: 1
+---
+
+::: only html
+::: raw html
+    <!-- Also the feeds' <subtitle>/<description>, and the Blog node's
+         description above. It was only ever in those two; now the page
+         it describes says it too. -->
+:::
+
+@ html.class=tagline
+the least consistent blog on the W3
+:::
+
+@ html.class=posts gemini.gap=1
+@postlist
+
+::: raw html
+    <p class="subscribe">subscribe: <a href="feed.xml">Atom</a> <span class="sep">|</span> <a href="rss.xml">RSS</a></p>
+:::

@@ -1,6 +1,7 @@
 #!/bin/bash
 # pre-commit: run every pre-commit step, in order.
 #
+#     triptych.pl                    render content/*.tri to all three protocols
 #     datestampHook.pl               schema.org dateModified on staged HTML
 #     ntpStatHook.pl                 NTP unique-client figures on staged HTML
 #     assetsBuild/makeFeed.py        Atom + RSS for /personal/blog.html
@@ -18,6 +19,30 @@ set -eu
 # .git/hooks, so $0's directory is not the repo. Same as deployHook.sh.
 ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
+
+# --------------------------------------------------------------- triptych
+#
+# One source per page, three protocols out. FIRST, because everything below
+# it rewrites what this produces: badgeBuild.pl fills the badge markers,
+# makeMeta.py the blog's JSON-LD, datestampHook.pl the dateModified (which it
+# writes back into the .tri, then re-renders — see datestampHook.pl).
+#
+# UNSTAGED GUARD, the feeds' shape: rendering from a half-finished .tri would
+# put a page in the commit that no source in that commit describes.
+tri_dirty=$(git diff --name-only -- 'content/*.tri' 'content/post/*.tri' \
+	'templates/*' triptych.conf || true)
+
+if [ -n "$tri_dirty" ]; then
+	echo "pre-commit: unstaged changes under content/ or templates/ —" >&2
+	echo "pre-commit: the three trees were NOT re-rendered." >&2
+	echo "$tri_dirty" | sed 's/^/pre-commit:   /' >&2
+else
+	./triptych.pl
+	for f in $(git diff --name-only -- rootdomain/personal gemini gopher || true); do
+		git add "$f"
+		echo "pre-commit: re-staged $f (triptych)"
+	done
+fi
 
 # ------------------------------------------------------- schema.org datestamp
 ./datestampHook.pl

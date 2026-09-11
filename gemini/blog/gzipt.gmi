@@ -79,7 +79,7 @@ Of course, my first thought was “we have better than DEFLATE nowadays, can we 
 ```
     algo     output
     ----     ------
-    zlib     recognizable Shakespeare-ish text
+    zlib     recognizable Shakespeare‐ish text
     bz2      ScdMENIURy3dywyywyyywyy...
     zstd     I tell you,; e. ...eee e a
     brotli   ' \n \n '...

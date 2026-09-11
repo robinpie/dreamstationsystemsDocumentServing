@@ -1,0 +1,96 @@
+---
+id: ntpuserinfo
+kind: page
+title: Welcome to the dreamstation.systems NTP server!
+description: How to use the dreamstation.systems public NTP and NTS server
+// the text copies of this page use plain spaces where the web binds units
+gemini.nbsp: strip
+gopher.nbsp: strip
+---
+
+// The page's own structured data: a TechArticle plus the Service node it is
+// about. Verbatim, because this graph is unique to this page.
+::: raw html head
+  <!-- JSON-LD. Every claim here mirrors something stated in the body below.
+       Part of the site-wide graph rooted at /professional/index.html and
+       joined to it by @id; nodes defined in full there appear here with
+       identity only. See that file, and index.html in this directory. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "TechArticle",
+        "@id": "https://dreamstation.systems/personal/ntpuserinfo.html#usage",
+        "mainEntityOfPage": "https://dreamstation.systems/personal/ntpuserinfo.html",
+        "url": "https://dreamstation.systems/personal/ntpuserinfo.html",
+        "headline": "Welcome to the dreamstation.systems NTP server!",
+        "description": "How to use the dreamstation.systems public NTP and NTS server",
+        "inLanguage": "en",
+        "isPartOf": { "@id": "https://dreamstation.systems/#website" },
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "publisher": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "about": { "@id": "https://dreamstation.systems/#ntp" }
+      },
+      {
+        "@type": "Service",
+        "@id": "https://dreamstation.systems/#ntp",
+        "name": "dreamstation.systems public NTP and NTS server",
+        "serviceType": "Network Time Protocol (NTP) and Network Time Security (NTS) server",
+        "description": "A stratum 2 time server in pool.ntp.org, serving plain NTP on UDP/123 and NTS-KE on TCP/4460.",
+        "provider": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "areaServed": "Worldwide",
+        "isRelatedTo": {
+          "@type": "Organization",
+          "name": "NTP Pool Project",
+          "url": "https://www.ntppool.org/"
+        },
+        "subjectOf": { "@id": "https://dreamstation.systems/personal/ntpuserinfo.html#usage" }
+      }
+    ]
+  }
+  </script>
+:::
+
+@links
+ntpstatsdoc html=../ntpstats.txt gemini=/ntpstats.gmi \
+            gopher=gopher://dreamstation.systems/0/ntpstats.txt \
+            gemini.label=ntpstats.gmi gopher.mode=after
+@end
+
+## How to use my NTP server
+
+Point your NTP client to, preferably, `dreamstation.systems`. If your NTP client is IP‐only, you can hardcode `67.215.249.229`. Unfortunately currently IPv4‐only, my VPS provider lives in the stone age.
+
+We serve NTP on 123/UDP, as well as NTS-KE on 4460/TCP using a Let's Encrypt certificate.
+
+We use chrony {!html:"}`ratelimit interval 2 burst 32`{!html:"}: burst of 32 requests, refilling 1 per 4 seconds per source IP. Your packets will be dropped if you exceed this. This should be more than enough for single clients and small NATs. Please do not hardcode `dreamstation.systems` on every host in a large NAT; use `pool.ntp.org`.
+
+If you are a vendor, please do not hardcode `dreamstation.systems` in your devices; use [a NTP pool vendor zone](https://www.ntppool.org/en/vendors.html#vendor-zone).
+
+Please never use `dreamstation.systems` for safety‐critical systems.
+
+## About the time we serve
+
+We do {html:**not**}{!html:*not*} do leap smearing. Leap seconds are handled per RFC 5905.
+
+::: raw html
+    <!-- link to the HTTP ntpstats.txt page, the gopher ntpstats.txt page, or the
+         gemini ntpstats.gmi page depending on what document we're turning this
+         into. preserve this as a comment for if we convert further from this page -->
+:::
+
+@ html.tight=1
+We serve stratum 2 time off a variety of stratum 1 upstreams: see [{gemini:ntpstats.gmi}{!gemini:ntpstats.txt}](@ntpstatsdoc) for details.
+
+## Warnings
+
+This is hobbyist‐operated. I intend to keep this up for the foreseeable future, and hopefully forever, but don’t yell at me if this disappears tomorrow.
+
+Please never use `dreamstation.systems` for safety‐critical systems.
+
+We also retain some data. We log IPs answered, and we publish aggregate information about GeoIP countries and ASNs we’ve talked to.
+
+Will reboot with no warning at any time, but downtime will be less than one minute.
+
+Again, no formal guarantees, but I’ll try to give at least one week’s notice on this page for downtime longer than that.

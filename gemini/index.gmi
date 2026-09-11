@@ -1,4 +1,4 @@
-# robin's page 🌠🏰🚀
+# robin’s page 🌠🏰🚀
 
 my name is robin. thinkpad enthusiast. tokiponist. programmer.
 
@@ -32,12 +32,12 @@ my name is robin. thinkpad enthusiast. tokiponist. programmer.
 
 ## my projects
 
-=> ftp://dreamstation.systems/robinsSoftware/ath             !~ATH | my Homestuck-inspired esoteric programming language
+=> ftp://dreamstation.systems/robinsSoftware/ath             !~ATH | my Homestuck‐inspired esoteric programming language
 => ftp://dreamstation.systems/robinsSoftware/viewpoint       viewpoint | a WIMPy terminal emulator
-=> ftp://dreamstation.systems/robinsSoftware/fontliberator   fontliberator | a fully automatic font clean-room reimplementor
+=> ftp://dreamstation.systems/robinsSoftware/fontliberator   fontliberator | a fully automatic font clean‐room reimplementor
 => ftp://dreamstation.systems/robinsSoftware/xcaca           xcaca | an X server in ASCII art
 => https://dreamstation.systems/hsptohtml/README/pages/README.html   convert Hypnospace Outlaw pages to real webpages
-=> https://github.com/OboeLang/oboe                          Oboe, a general-purpose programming language I'm co-creating with Jade K.
+=> https://github.com/OboeLang/oboe                          Oboe, a general‐purpose programming language I'm co‐creating with Jade K.
 => https://sushii64.com/                                     Jade K.
 
 ## contact

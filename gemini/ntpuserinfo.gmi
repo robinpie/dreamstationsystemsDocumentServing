@@ -2,7 +2,7 @@
 
 ## How to use my NTP server
 
-Point your NTP client to, preferably, dreamstation.systems. If your NTP client is IP-only, you can hardcode 67.215.249.229. Unfortunately currently IPv4-only, my VPS provider lives in the stone age.
+Point your NTP client to, preferably, dreamstation.systems. If your NTP client is IP‐only, you can hardcode 67.215.249.229. Unfortunately currently IPv4‐only, my VPS provider lives in the stone age.
 
 We serve NTP on 123/UDP, as well as NTS-KE on 4460/TCP using a Let's Encrypt certificate.
 
@@ -12,7 +12,7 @@ If you are a vendor, please do not hardcode dreamstation.systems in your devices
 
 => https://www.ntppool.org/en/vendors.html#vendor-zone   a NTP pool vendor zone
 
-Please never use dreamstation.systems for safety-critical systems.
+Please never use dreamstation.systems for safety‐critical systems.
 
 ## About the time we serve
 
@@ -24,14 +24,14 @@ We serve stratum 2 time off a variety of stratum 1 upstreams: see ntpstats.gmi f
 
 ## Warnings
 
-This is hobbyist-operated. I intend to keep this up for the foreseeable future, and hopefully forever, but don't yell at me if this disappears tomorrow.
+This is hobbyist‐operated. I intend to keep this up for the foreseeable future, and hopefully forever, but don’t yell at me if this disappears tomorrow.
 
-Please never use dreamstation.systems for safety-critical systems.
+Please never use dreamstation.systems for safety‐critical systems.
 
-We also retain some data. We log IPs answered, and we publish aggregate information about GeoIP countries and ASNs we've talked to.
+We also retain some data. We log IPs answered, and we publish aggregate information about GeoIP countries and ASNs we’ve talked to.
 
 Will reboot with no warning at any time, but downtime will be less than one minute.
 
-Again, no formal guarantees, but I'll try to give at least one week's notice on this page for downtime longer than that.
+Again, no formal guarantees, but I’ll try to give at least one week’s notice on this page for downtime longer than that.
 
 => /   back to home
