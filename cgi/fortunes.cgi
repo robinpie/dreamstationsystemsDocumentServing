@@ -42,6 +42,23 @@ sub url_decode {
 	return $s;
 }
 
+# "Last fortune added", from the newest mtime among the fortune files (not the
+# .dat files), in Central Time. A hand edit to a file counts too: nothing
+# records adds separately.
+sub last_added {
+	my ($newest, $when);
+	for my $f (fortune_files()) {
+		my $m = (stat "$DIR/$f")[9] // next;
+		($newest, $when) = ($f, $m) if !defined $when || $m > $when;
+	}
+	return '' unless defined $when;
+	require POSIX;
+	local $ENV{TZ} = 'America/Chicago';
+	POSIX::tzset();
+	my $ts = POSIX::strftime('%Y-%m-%d %H:%M:%S %Z', localtime $when);
+	return '<p>Last fortune added: ' . html_escape("$ts ($newest)") . "</p>\n";
+}
+
 sub page {
 	my ($status, $msg, $selected) = @_;
 	$selected //= '';
@@ -50,6 +67,7 @@ sub page {
 		"<option" . ($_ eq $selected ? ' selected' : '') . ">$e</option>\n"
 	} fortune_files();
 	my $note = defined $msg ? '<p>' . html_escape($msg) . "</p>\n" : '';
+	$note .= last_added();
 	print "Status: $status\r\nContent-Type: text/html; charset=utf-8\r\n",
 		"Cache-Control: no-store\r\n\r\n";
 	print <<"EOF";
