@@ -1,0 +1,70 @@
+# fortunes.dreamstation.systems — add fortunes to /srv/http/fortunes/, or
+# download them all. The whole site is one CGI, cgi/fortunes.cgi.
+#
+# A more specific server_name than the *.dreamstation.systems wildcard in
+# dreamstation.systems, so nginx prefers this block. As with staging, that
+# preference is the whole security boundary: without this file the name still
+# resolves (wildcard A record) and the apex answers it, no password.
+#
+# Its own certificate, for the same reason as grandexchange and staging: the
+# dreamstation.systems cert also covers mta-sts, and re-issuing it for this
+# host would put inbound mail's TLS in the blast radius of a web deploy.
+#
+# See ~/configNotes/fortunes.txt.
+
+server {
+    include snippets/clacks.conf;
+    include snippets/accessLog.conf;
+    listen 80;
+    listen [::]:80;
+    server_name fortunes.dreamstation.systems;
+
+    # Basic auth is cleartext on the wire, so :80 redirects before any
+    # credential is asked for — same policy as staging.
+    #
+    # certbot's webroot is the live docroot, where this cert was issued from
+    # and where renewals will look. promote protects acme-challenge/.
+    location /.well-known/acme-challenge/ {
+        root /srv/http;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    include snippets/clacks.conf;
+    include snippets/accessLog.conf;
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name fortunes.dreamstation.systems;
+
+    ssl_certificate     /etc/letsencrypt/live/fortunes.dreamstation.systems/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/fortunes.dreamstation.systems/privkey.pem;
+
+    # The password file is NOT in this repo and NOT deployed by any script;
+    # it is created by hand (fortunes.txt records how). A missing file is not
+    # an nginx -t error: every request just 403s. Fail-closed.
+    auth_basic           "fortunes";
+    auth_basic_user_file /etc/nginx/.htpasswd-fortunes;
+
+    add_header X-Robots-Tag "noindex, nofollow" always;
+
+    # The CGI caps a POST body at 64k itself; this makes nginx refuse larger
+    # ones before they ever reach fcgiwrap.
+    client_max_body_size 64k;
+
+    location = / {
+        fastcgi_pass  unix:/run/fcgiwrap.socket;
+        include       fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME /srv/cgi/fortunes.cgi;
+        fastcgi_param SCRIPT_NAME     /;
+        fastcgi_read_timeout 30s;
+    }
+
+    location / {
+        return 404;
+    }
+}

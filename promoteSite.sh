@@ -24,6 +24,7 @@ NGINX_SITES=(
 	000-default-catchall
 	bare-ip
 	dreamstation.systems
+	fortunes.dreamstation.systems
 	grandexchange.dreamstation.systems
 	pool-ntp.tesla.com
 	pool.ntp.org
@@ -183,14 +184,21 @@ if [ -d "$ROOT/etc" ]; then
 fi
 
 # -------------------------------------------------------------------- content
+#
+# /fortunes/ is not in the repo at all: it is live data written by
+# cgi/fortunes.cgi (fortunes.dreamstation.systems). It is carved out of the
+# --delete AND out of the chown/chmod below, since that CGI runs as www-data
+# and needs write access there. Leading slash anchors it to the top level.
+# See ~/configNotes/fortunes.txt.
 sudo rsync -a --delete \
 	--exclude '.well-known/acme-challenge/' \
 	--exclude 'ntpstats.txt' \
+	--exclude '/fortunes/' \
 	"$STAGING/" /srv/http/
 
 # Match the rest of the served tree: root-owned, world-readable.
-sudo chown -R root:root /srv/http/
-sudo chmod -R u=rwX,go=rX /srv/http/
+sudo find /srv/http -path /srv/http/fortunes -prune -o -exec chown root:root {} +
+sudo find /srv/http -path /srv/http/fortunes -prune -o -exec chmod u=rwX,go=rX {} +
 
 echo "Promoted $STAGING → /srv/http"
 

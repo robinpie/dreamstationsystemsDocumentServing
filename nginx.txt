@@ -260,6 +260,17 @@ Same certificate, same content, same blast radius (deliberately NOT merged with 
                                                        same reasoning as
                                                        grandexchange. Full
                                                        details in githooks.txt.
+  /etc/nginx/sites-available/fortunes.dreamstation.systems
+                                                     — add-a-fortune form and
+                                                       tarball download, one
+                                                       CGI (cgi/fortunes.cgi),
+                                                       behind HTTP basic auth.
+                                                       :80 redirects only. Own
+                                                       cert. Writes to
+                                                       /srv/http/fortunes/,
+                                                       which promote carves
+                                                       out. Full details in
+                                                       ~/configNotes/fortunes.txt.
   /etc/nginx/sites-available/bare-ip                 — server_name
                                                        67.215.249.229; serves
                                                        the site to anyone who
@@ -306,6 +317,7 @@ THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every hand
     nginx/sites-available/000-default-catchall
     nginx/sites-available/bare-ip
     nginx/sites-available/dreamstation.systems
+    nginx/sites-available/fortunes.dreamstation.systems
     nginx/sites-available/grandexchange.dreamstation.systems
     nginx/sites-available/pool-ntp.tesla.com
     nginx/sites-available/pool.ntp.org
