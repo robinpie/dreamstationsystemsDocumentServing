@@ -2,7 +2,7 @@
 
 # UPDATE: RESOLVED
 
-Patrik from Assetnote reached out to me and let me know it has been resolved. Thank you!
+Patrik from Assetnote reached out to me with a very gracious message, it has been resolved. Thank you!
 
 While it’s not unusual for everything on the dark dungeons of the IPv4 Internet to be subject to a barrage of drive-by scanner traffic and the occasional bizarrely persistent attacker, I noticed something strange while looking through my nginx logs. Persistent attack traffic coming from three particular IPs, with the strange thing being that they were arriving with Host or Referer headers from pool-ntp.tesla.com, carried Assetnote user agents, and were trying to SSRF me to Assetnote callback URLs:
 
