@@ -26,7 +26,7 @@ Assetnote, a legitimate attack surface management tool now called Searchlight Cy
 
 ## How this happened
 
-Tesla publishes `pool-ntp.tesla.com` as a CNAME to `pool.ntp.org`. `pool.ntp.org` is the [NTP Pool](@ntppoolorg), a round‐robin of volunteer NTP servers that [I’m a part of](@ntpuserinfo). 
+Tesla publishes `pool-ntp.tesla.com` as a CNAME to `pool.ntp.org`. `pool.ntp.org` is the [NTP Pool](@ntppoolorg), a round‐robin of volunteer NTP servers that [I’m a part of](@ntpuserinfo). (Sidenote, they should be using a vendor zone, not their own CNAME under `tesla.com`.)
 
 Speculation: Assetnote pulled in everything it could find under `tesla.com`, including `pool-ntp.tesla.com`, which CNAMEs to `pool.ntp.org`, which can resolve to my machine — `67.215.249.229`. The asset inventory saves this as a Tesla asset, and starts throwing exploits at me, a stranger.
 

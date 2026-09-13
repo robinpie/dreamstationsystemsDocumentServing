@@ -130,7 +130,7 @@
 
     <h2>How this happened</h2>
 
-    <p>Tesla publishes <code>pool-ntp.tesla.com</code> as a CNAME to <code>pool.ntp.org</code>. <code>pool.ntp.org</code> is the <a href="https://www.ntppool.org/">NTP Pool</a>, a round‐robin of volunteer NTP servers that <a href="ntpuserinfo.html">I’m a part of</a>. </p>
+    <p>Tesla publishes <code>pool-ntp.tesla.com</code> as a CNAME to <code>pool.ntp.org</code>. <code>pool.ntp.org</code> is the <a href="https://www.ntppool.org/">NTP Pool</a>, a round‐robin of volunteer NTP servers that <a href="ntpuserinfo.html">I’m a part of</a>. (Sidenote, they should be using a vendor zone, not their own CNAME under <code>tesla.com</code>.)</p>
 
     <p>Speculation: Assetnote pulled in everything it could find under <code>tesla.com</code>, including <code>pool-ntp.tesla.com</code>, which CNAMEs to <code>pool.ntp.org</code>, which can resolve to my machine — <code>67.215.249.229</code>. The asset inventory saves this as a Tesla asset, and starts throwing exploits at me, a stranger.</p>
 

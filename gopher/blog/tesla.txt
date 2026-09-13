@@ -12,7 +12,7 @@ Assetnote, a legitimate attack surface management tool now called Searchlight Cy
 How this happened
 -----------------
 
-Tesla publishes pool-ntp.tesla.com as a CNAME to pool.ntp.org. pool.ntp.org is the NTP Pool, a round‐robin of volunteer NTP servers that I’m a part of. 
+Tesla publishes pool-ntp.tesla.com as a CNAME to pool.ntp.org. pool.ntp.org is the NTP Pool, a round‐robin of volunteer NTP servers that I’m a part of. (Sidenote, they should be using a vendor zone, not their own CNAME under tesla.com.)
 
 the NTP Pool: <https://www.ntppool.org/>
 I’m a part of: ntpuserinfo.txt
