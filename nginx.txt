@@ -428,7 +428,7 @@ Useful commands:
 
 THEME SELECTION (/personal/)
 ----------------------------
-The nine themed pages under /personal/ (index, blog, hypnospace, lanfalsehoods, ntppool, ntppost, ntpuserinfo, slowqotd, gzipt) let a visitor pick one of five stylesheets. The choice is resolved entirely by nginx, server-side: no JavaScript is involved, and the right stylesheet is in the markup as served.
+The ten themed pages under /personal/ (index, blog, hypnospace, lanfalsehoods, ntppool, ntppost, ntpuserinfo, slowqotd, gzipt, tesla) let a visitor pick one of five stylesheets. The choice is resolved entirely by nginx, server-side: no JavaScript is involved, and the right stylesheet is in the markup as served.
 
 Two halves, in two files, because map is only valid in http context:
 

@@ -37,7 +37,7 @@ OUT = PERSONAL / "themes" / "ubuntu804" / "f"
 # location regex — a page in the regex but not here gets the theme without its
 # characters. See ubuntu804theme.txt ("SUBSET FONTS SHIP").
 THEMED = ["index", "blog", "hypnospace", "lanfalsehoods",
-          "ntppool", "ntppost", "ntpuserinfo", "slowqotd", "gzipt"]
+          "ntppool", "ntppost", "ntpuserinfo", "slowqotd", "gzipt", "tesla"]
 
 FACES = [
     ("DejaVuSans.ttf", "dejavu.woff2"),
