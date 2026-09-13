@@ -2,7 +2,7 @@
 id: blog
 kind: bloglist
 title: blog
-description: the least consistent blog on the W3: posts on NTP, networking, old internet protocols and odd programming projects.
+description: the least consistent blog on the internetwork.
 html.tight: all
 gopher.map: 1
 gopher.notitle: 1

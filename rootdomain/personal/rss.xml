@@ -5,8 +5,15 @@
     <link>https://dreamstation.systems/personal/blog.html</link>
     <description>the least consistent blog on the W3</description>
     <language>en</language>
-    <lastBuildDate>Tue, 08 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 13 Sep 2026 00:00:00 +0000</lastBuildDate>
     <atom:link rel="self" type="application/rss+xml" href="https://dreamstation.systems/personal/rss.xml"/>
+    <item>
+      <title>I’m being cyberattacked by Tesla, Inc.</title>
+      <link>https://dreamstation.systems/personal/tesla.html</link>
+      <pubDate>Sun, 13 Sep 2026 00:00:00 +0000</pubDate>
+      <guid isPermaLink="true">https://dreamstation.systems/personal/tesla.html</guid>
+      <description>A bungled Assetnote scan</description>
+    </item>
     <item>
       <title>Please consider running a NTP server in the NTP Pool</title>
       <link>https://dreamstation.systems/personal/ntppool.html</link>
