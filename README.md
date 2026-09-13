@@ -2,6 +2,8 @@
 
 Monorepo for content served on the W3, Gopher, and Gemini, as well as config, software, and tools.
 
+This probably won’t be very useful for anyone but me, I’m publishing this for transparency.
+
 mta-sts.dreamstation.systems and openpgpkey.dreamstation.systems are separate vhosts in `nginx/` sharing one docroot, so `.well-known/mta-sts.txt` and `.well-known/openpgpkey/` are in `rootdomain/` too.
 
 The main site’s pages (`rootdomain/personal/`’s index, blog, and posts, plus `gopher`/`gemini`’s `services` page) are generated from one source per page under `content/`, rendered to HTML, Gopher, and Gemini by `triptych.pl`. 

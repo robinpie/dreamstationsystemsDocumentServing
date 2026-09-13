@@ -1228,7 +1228,6 @@ sub render_page {
 		year       => (localtime)[5] + 1900,
 	);
 	$vars{title_esc}   = esc_html($fm->{title} // '');
-	$vars{title_class} = $fm->{'html.title_class'} // "$fm->{id}-title";
 	# The h1 may carry inline markup the <title> and og: tags cannot.
 	$vars{title_h1} = inline_out('html',
 		parse_inline($fm->{title_markup} // $fm->{title} // ''), $doc, []);

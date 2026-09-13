@@ -8,18 +8,6 @@ updated: 2026-06-22
 description: How far you can push RFC 865 when the only lever you have left is the sending itself.
 pangram: https://www.pangram.com/history/c646313b-8370-4f0a-be6a-cc6391ba98e2?ucc=tp64Jv2K7C4
 html.style: |
-  .slowqotd-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-
-  .slowqotd-title a {
-    flex: none;
-    line-height: 0;
-  }
-
   /* The sixel QOTD is a 22×38 sprite. Blow it up without smearing it. */
   .sixel {
     width: 110px;

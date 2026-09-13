@@ -117,7 +117,7 @@
 <!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/mid.html" --><!--# endif -->
 
   <main id="content">
-    <h1 class="{{title_class}}"><span>{{title_h1}}</span><a href="{{pangram}}"><img src="pangramHumanBadge.webp" alt="Pangram 100% Human badge" width="88" height="31"></a></h1>
+    <h1 class="post-title"><span>{{title_h1}}</span><a href="{{pangram}}"><img src="pangramHumanBadge.webp" alt="Pangram 100% Human badge" width="88" height="31"></a></h1>
     <!-- The post's own dateline. Cross-checked against the list in
          blog.html by assetsBuild/makeMeta.py, along with the dates in
          the JSON-LD above. -->

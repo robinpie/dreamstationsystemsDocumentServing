@@ -60,14 +60,12 @@ date: 2026-09-05
 updated: 2026-09-05
 description: A list of things that are not reliably true about the local network.
 pangram: https://www.pangram.com/history/…
-html.style: |
-  .lanfalsehoods-title { … }
 ---
 ```
 
 | key | meaning |
 |---|---|
-| `id` | filename stem of every output; also the default `title_class` |
+| `id` | filename stem of every output |
 | `kind` | template set (above) |
 | `title` | plain text: `<title>`, og tags, index entries, injected `<h1>` |
 | `title_markup` | the title with inline markup, for the `<h1>` only |
@@ -84,7 +82,6 @@ Any key may be scoped with a target prefix, and templates ask for it by its bare
 | `<t>.notitle` | suppress the injected heading; the template supplies it |
 | `<t>.template` | use a differently‐named template |
 | `<t>.nbsp: strip` | U+00A0 becomes a plain space on that target |
-| `html.title_class` | class on a post’s `<h1>` (default `<id>-title`) |
 | `html.tight` | `all` — no blank lines between blocks; `sections` — blanks only before a heading; `headings` — no blank after a heading |
 | `gopher.map` | this output is a gophermap: non‐link lines become `i` rows |
 | `gopher.gophermap_extra` | a verbatim row this page contributes to the blog gophermap |

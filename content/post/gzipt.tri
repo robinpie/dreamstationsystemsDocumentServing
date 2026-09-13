@@ -7,18 +7,6 @@ updated: 2026-06-17
 description: Exploring whether gzip can generate text by treating compression as prediction.
 gopher.gophermap_extra: ggzipt-generated CSS demo (screenshot, GIF)	/blog/supportingFiles/gzipt_css_demo.gif	dreamstation.systems	70
 pangram: https://www.pangram.com/history/b023922b-64cb-44d1-9133-b6a1645df135?ucc=tp64Jv2K7C4
-html.style: |
-  .gzipt-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-
-  .gzipt-title a {
-    flex: none;
-    line-height: 0;
-  }
 ---
 
 @links

@@ -1,10 +1,6 @@
-/* base.css — shared structure loaded under every theme.
-   Keep this minimal: only things that are true regardless of theme.
+/* Shared structure loaded under every theme. Keep this minimal.
    Anything visual/aesthetic belongs in a theme file under themes/. */
 
-/* The theme switcher is always pinned to the top-right corner, so every
-   theme (including the unstyled "plain" one) gets it in the right place
-   for free. A theme may override this if it wants to. */
 #theme-switcher {
   position: fixed;
   top: 0.5rem;
@@ -12,10 +8,6 @@
   z-index: 1000;
 }
 
-/* The switcher is a GET form (no JavaScript — nginx reads ?theme= and SSI
-   stamps the choice back into the page). The form is pure plumbing and must
-   contribute no layout of its own: browsers give <form> a default margin,
-   which would push the widget off its corner. */
 #theme-switcher form {
   display: flex;
   align-items: center;
@@ -47,16 +39,23 @@ img {
   max-width: none;
 }
 
-/* Skip link. Structural, not aesthetic: it lives here rather than in a theme
-   because every theme needs one — that is exactly the base.css test. It is in
-   the pages themselves (just before the ubuntu804 chrome include), so the four
-   stylesheet-only themes get it too.
+/* Every blog post's <h1> is a row: the title on the left, the Pangram
+   "100% Human" badge pinned to the right. */
+.post-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
 
-   :not(:focus) rather than a fixed off-screen position plus an on-screen
-   override, so a theme that says nothing about .skip still behaves correctly:
-   hidden until focused, then laid out in normal flow at the top of the page
-   in whatever that theme's ordinary link styling is. ubuntu804.css overrides
-   both states to place and paint it against the desktop. */
+.post-title a {
+  flex: none;
+  line-height: 0;
+}
+
+/* Skip link.
+
+ubuntu804.css overrides both states to place and paint it against the desktop. */
 .skip:not(:focus) {
   position: absolute;
   left: -100vw;
