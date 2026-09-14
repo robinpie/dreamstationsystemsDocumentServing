@@ -31,6 +31,7 @@ NGINX_SITES=(
 	staging.dreamstation.systems
 )
 NGINX_CONFD=(
+	compression.conf
 	logFormat.conf
 )
 NGINX_SNIPPETS=(
