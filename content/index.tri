@@ -40,7 +40,7 @@ statuspage  html=/professional/status \
             html.label="status page"
 @end
 
-my name is robin. thinkpad enthusiast. tokiponist. programmer.
+my name is robin! thinkpad enthusiast, tokiponist, computer infra hobbyist.
 
 @ html.as=p
 => [check out my blog please!](@blogpage)
