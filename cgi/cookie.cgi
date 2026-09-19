@@ -2,6 +2,10 @@
 #
 # cookie.cgi — one random fortune, as text/plain.
 #
+#   GET /cookie          from all files
+#   GET /cookie/<name>   from that file only; 404 if there is no such file (or
+#                        it has no fortunes)
+#
 # Deployed to /srv/cgi/cookie.cgi by promoteSite.sh; served at
 # http(s)://fortunes.dreamstation.systems/cookie via fcgiwrap, with NO auth:
 # the rest of that vhost is the password-protected fortunes.cgi, but this is
@@ -68,6 +72,16 @@ opendir(my $dh, $DIR) or respond('500 Internal Server Error', "No fortunes.\n");
 my @files = sort grep { /$NAME_RE/ && -f "$DIR/$_" } readdir $dh;
 closedir $dh;
 
+# /cookie/<name>: nginx passes whatever follows /cookie/ (already URL-decoded)
+# as COOKIE_FILE. It must be exactly one of the fortune files listed above,
+# which is also the path-traversal guard. Unset means plain /cookie: all files.
+my $want = $ENV{COOKIE_FILE};
+if (defined $want) {
+	respond('404 Not Found', "No such fortune file.\n")
+		unless grep { $_ eq $want } @files;
+	@files = ($want);
+}
+
 my (@pool, $total);
 for my $f (@files) {
 	my @o = offsets($f);
@@ -75,7 +89,10 @@ for my $f (@files) {
 	push @pool, [$f, \@o];
 	$total += @o;
 }
-respond('503 Service Unavailable', "No fortunes.\n") unless $total;
+unless ($total) {
+	respond('404 Not Found', "No fortunes in $want.\n") if defined $want;
+	respond('503 Service Unavailable', "No fortunes.\n");
+}
 
 my $k = int rand $total;
 my ($file, $off);
