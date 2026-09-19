@@ -38,6 +38,7 @@ NGINX_SNIPPETS=(
 	accessLog.conf
 	clacks.conf
 	feeds.conf
+	fortuneCookie.conf
 	pgpKey.conf
 	statusCgi.conf
 	teslaNotice.conf

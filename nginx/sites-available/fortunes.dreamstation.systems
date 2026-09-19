@@ -1,5 +1,6 @@
 # fortunes.dreamstation.systems — add fortunes to /srv/http/fortunes/, or
-# download them all. The whole site is one CGI, cgi/fortunes.cgi.
+# download them all. The whole site is one CGI, cgi/fortunes.cgi, except
+# /cookie (cgi/cookie.cgi, one random fortune), which is public on :80 and :443.
 #
 # A more specific server_name than the *.dreamstation.systems wildcard in
 # dreamstation.systems, so nginx prefers this block. As with staging, that
@@ -28,6 +29,10 @@ server {
         root /srv/http;
     }
 
+    # Public and password-free, so it is served here too rather than
+    # redirected: `curl fortunes.dreamstation.systems/cookie` just works.
+    include snippets/fortuneCookie.conf;
+
     location / {
         return 301 https://$host$request_uri;
     }
@@ -55,6 +60,9 @@ server {
     # The CGI caps a POST body at 64k itself; this makes nginx refuse larger
     # ones before they ever reach fcgiwrap.
     client_max_body_size 64k;
+
+    # The one public URI on this vhost; the snippet turns auth_basic off.
+    include snippets/fortuneCookie.conf;
 
     location = / {
         fastcgi_pass  unix:/run/fcgiwrap.socket;
