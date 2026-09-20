@@ -124,7 +124,7 @@ sub build {
     my @b;
 
     my $gen = num($d->{generated_at});
-    push @b, [ p => '<strong>lawa</strong> is my web crawler. It crawls the web '
+    push @b, [ p => 'lawa is my web crawler. It crawls the web '
         . 'and writes down the HTTP headers that come back from each site. Everything below is '
         . 'regenerated every few minutes from what it has seen so far.' ];
     if ($now - $gen > 5400) {
