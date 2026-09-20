@@ -64,6 +64,8 @@ Point your NTP client to, preferably, `dreamstation.systems`. If your NTP client
 
 We serve NTP on 123/UDP, as well as NTS-KE on 4460/TCP using a Let's Encrypt certificate.
 
+We also have a NTP‐only secondary server at `starport.dreamstation.systems` / `198.44.55.245` that directly feeds off of `dreamstation.systems`. It is also in the pool and you are free to use this too.
+
 We use chrony {!html:"}`ratelimit interval 2 burst 32`{!html:"}: burst of 32 requests, refilling 1 per 4 seconds per source IP. Your packets will be dropped if you exceed this. This should be more than enough for single clients and small NATs. Please do not hardcode `dreamstation.systems` on every host in a large NAT; use `pool.ntp.org`.
 
 If you are a vendor, please do not hardcode `dreamstation.systems` in your devices; use [a NTP pool vendor zone](https://www.ntppool.org/en/vendors.html#vendor-zone).

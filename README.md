@@ -23,5 +23,6 @@ Some scripting and layout is AI-assisted, and there’s some AI‐slop documenta
 | `etc/`           | the rest of `/etc` (gophernicus, molly-brown, fail2ban, …) | mixed / messy |
 | `statusSample/`  | `/usr/local/bin` + systemd                                 | mixed / messy |
 | `assetsBuild/`   | build-time only, not served                                | mixed / messy |
+| `lawaPage/`      | builds the lawa stats page                                 | mixed / messy |
 | `content/`       | source for `triptych.pl`, not served directly              | mixed / messy |
 | `templates/`     | page chrome for `triptych.pl`, not served directly         | mixed / messy |
