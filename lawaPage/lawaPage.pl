@@ -82,21 +82,21 @@ sub hostname { my ($v) = @_; return defined $v && !ref $v && $v =~ /^[a-z0-9][a-
 sub tbl { my ($v) = @_; return ref $v eq 'HASH' ? $v : {} }
 
 sub commas { my $n = sprintf '%.0f', shift; 1 while $n =~ s/^(-?\d+)(\d{3})/$1,$2/; return $n }
-sub pct { my ($n, $d) = @_; return $d > 0 ? sprintf('%.1f%%', 100 * $n / $d) : '-' }
+sub pct { my ($n, $d) = @_; return $d > 0 ? sprintf('%.1f%%', 100 * $n / $d) : '—' }
 sub bytes {
     my ($n) = @_;
     for my $u ([ 'TB', 1e12 ], [ 'GB', 1e9 ], [ 'MB', 1e6 ], [ 'kB', 1e3 ]) {
-        return sprintf('%.2f %s', $n / $u->[1], $u->[0]) if $n >= $u->[1];
+        return sprintf("%.2f\x{A0}%s", $n / $u->[1], $u->[0]) if $n >= $u->[1];
     }
-    return sprintf '%d bytes', $n;
+    return sprintf "%d\x{A0}bytes", $n;
 }
 sub span {
     my ($s) = @_;
-    return sprintf('%.1f years', $s / 31557600) if $s >= 2 * 31557600;
-    return sprintf('%.0f days', $s / 86400)      if $s >= 3 * 86400;
-    return sprintf('%.1f hours', $s / 3600)      if $s >= 2 * 3600;
-    return sprintf('%.0f minutes', $s / 60)      if $s >= 120;
-    return sprintf('%.0f seconds', $s);
+    return sprintf("%.1f\x{A0}years", $s / 31557600) if $s >= 2 * 31557600;
+    return sprintf("%.0f\x{A0}days", $s / 86400)      if $s >= 3 * 86400;
+    return sprintf("%.1f\x{A0}hours", $s / 3600)      if $s >= 2 * 3600;
+    return sprintf("%.0f\x{A0}minutes", $s / 60)      if $s >= 120;
+    return sprintf("%.0f\x{A0}seconds", $s);
 }
 sub stamp { return strftime('%Y-%m-%d %H:%M UTC', gmtime shift) }
 
@@ -173,10 +173,10 @@ sub build {
     my $meas = num $K->{measured};
     if ($meas) {
         push @b, [ h => 'Bad time' ];
-        push @b, [ p => 'A Date only has one-second resolution and the network adds delay, so "on time" means '
-            . '"within about ' . (num($d->{slack}) || 2) . ' seconds".' ];
-        my @rows = ([ 'on time', num $K->{ontime} ], [ 'up to 10 seconds off', num $K->{b10s} ],
-                    [ '10 seconds to a minute', num $K->{b1m} ], [ 'a minute to an hour', num $K->{b1h} ],
+        push @b, [ p => 'A Date only has one‐second resolution and the network adds delay, so “on time” means '
+            . '“within about ' . (num($d->{slack}) || 2) . "\x{A0}seconds”." ];
+        my @rows = ([ 'on time', num $K->{ontime} ], [ "up to 10\x{A0}seconds off", num $K->{b10s} ],
+                    [ "10\x{A0}seconds to a minute", num $K->{b1m} ], [ 'a minute to an hour', num $K->{b1h} ],
                     [ 'an hour to a day', num $K->{b1d} ], [ 'more than a day', num $K->{bmore} ]);
         push @b, [ table => { head => [ 'server clock', 'servers', 'share' ], rows => [ map { [ @$_, $_->[1] / $meas ] } @rows ] } ];
         my $wrong = $meas - num $K->{ontime};
@@ -209,13 +209,13 @@ sub build {
     if ($tls) {
         push @b, [ h => 'TLS' ];
         push @b, [ p => pct($https, $ans) . ' of servers answered over HTTPS at least once. lawa connects even when the '
-            . 'certificate is bad, so here\'s what was wrong. '
+            . 'certificate is bad, so here’s what was wrong. '
             . pct(num $T->{broken}, $tls) . ' of HTTPS servers would have failed in a browser.' ];
         my $V = tbl($T->{verify});
         push @b, [ table => { head => [ 'certificate problem', 'servers', 'share of HTTPS' ], rows => [
             map { [ $_->[0], $_->[1], $_->[1] / $tls ] }
                 [ 'wrong hostname', num $T->{name_bad} ], [ 'unknown or incomplete issuer', num $V->{'unknown issuer'} ],
-                [ 'expired', num $V->{expired} ], [ 'self-signed', num $V->{'self-signed'} ],
+                [ 'expired', num $V->{expired} ], [ 'self‐signed', num $V->{'self-signed'} ],
         ] } ];
         push @b, [ table => { head => [ 'protocol', 'servers', 'share of HTTPS' ],
             rows => [ map { [ txt($_->[0], 12), $_->[1], $_->[1] / $tls ] } top($T->{version}, 4) ] } ];
@@ -233,10 +233,10 @@ sub build {
             [ 'every header name in lowercase',      num $H->{names_lower} ],
             [ 'answered HTTP/1.1 with HTTP/1.0',     num $F->{http10} ],
             [ 'bare LF line endings (no CR)',        num $F->{bare_lf} ],
-            [ 'folded (multi-line) header values',   num $F->{obs_fold} ],
+            [ 'folded (multi‐line) header values',   num $F->{obs_fold} ],
     ] } ];
     push @b, [ p => 'The average response carried ' . sprintf('%.1f', $resp ? num($N->{hdr_lines}) / $resp : 0)
-        . ' header lines in ' . commas($resp ? num($N->{hdr_bytes}) / $resp : 0) . ' bytes. In total, lawa has read '
+        . ' header lines in ' . commas($resp ? num($N->{hdr_bytes}) / $resp : 0) . "\x{A0}bytes. In total, lawa has read "
         . bytes(num $N->{hdr_bytes}) . ' of headers.' ] if $resp;
 
     # ---- status codes and manners
@@ -252,7 +252,7 @@ sub build {
         . ' were 451 Unavailable For Legal Reasons. lawa asked for ' . commas(num $N->{robots}) . ' robots.txt files and, '
         . 'because of what they said, left ' . commas(num $SK->{robots}) . ' pages alone. it walked away from '
         . commas(num $FN->{pushback}) . ' servers entirely because of 429, 503, or repeated 403s, and '
-        . commas(num $FN->{dns}) . ' linked-to servers turned out not to exist any more.' ];
+        . commas(num $FN->{dns}) . ' linked‐to servers turned out not to exist any more.' ];
 
     # ---- geography
     if (num $d->{geo}) {
@@ -267,7 +267,7 @@ sub build {
             . 'Fastly, because an anycast address is in every country at once. IP geolocation by DB-IP.' ];
     }
     my $tld_total = 0; $tld_total += num($_) for values %{ tbl($H->{tld}) };
-    push @b, [ table => { head => [ 'top-level domain', 'servers', 'share' ],
+    push @b, [ table => { head => [ 'top‐level domain', 'servers', 'share' ],
         rows => [ map { [ '.' . txt($_->[0], 20), $_->[1], $tld_total ? $_->[1] / $tld_total : undef ] } top($H->{tld}, 10) ] } ];
 
     # ---- fun headers
@@ -281,7 +281,7 @@ sub build {
         cross-origin-opener-policy cross-origin-embedder-policy cross-origin-resource-policy origin-agent-cluster
         timing-allow-origin accept-ch critical-ch content-location p3p x-powered-by x-ua-compatible x-robots-tag
         reporting-endpoints priority);
-    push @b, [ h => 'Non-standard headers' ];
+    push @b, [ h => 'Non‐standard headers' ];
     push @b, [ table => { head => [ 'header', 'servers', 'share' ],
         rows => [ map { [ txt($_->[0], 34), $_->[1], $ans ? $_->[1] / $ans : undef ] } top($H->{hdr_names}, 12, \%standard) ] } ];
     my $C = tbl($H->{clacks});
@@ -299,25 +299,25 @@ sub build {
     push @rec, [ 'fastest clock', span(num $r->[0]) . ' ahead', hostname($r->[1]) ]  if ($r = $R->{fast_clock}) && ref $r eq 'ARRAY';
     push @rec, [ 'oldest Last-Modified', strftime('%Y-%m-%d', gmtime num $r->[0]), hostname($r->[1]) ]
         if ($r = $R->{oldest_lm}) && ref $r eq 'ARRAY';
-    push @rec, [ 'biggest header block', commas(num $r->[0]) . ' bytes', hostname($r->[1]) ]   if ($r = $R->{hdr_bytes}) && ref $r eq 'ARRAY';
+    push @rec, [ 'biggest header block', commas(num $r->[0]) . "\x{A0}bytes", hostname($r->[1]) ]   if ($r = $R->{hdr_bytes}) && ref $r eq 'ARRAY';
     push @rec, [ 'most header lines', commas(num $r->[0]), hostname($r->[1]) ]                 if ($r = $R->{hdr_lines}) && ref $r eq 'ARRAY';
     push @rec, [ 'most cookies in one response', commas(num $r->[0]), hostname($r->[1]) ]      if ($r = $R->{cookies}) && ref $r eq 'ARRAY';
     push @rec, [ 'farthest from this site', commas(num $r->[0]) . ' links away', hostname($r->[1]) ] if ($r = $R->{hops}) && ref $r eq 'ARRAY';
     if (@rec) {
         push @b, [ h => 'record holders' ];
         push @b, [ rec => \@rec ];
-        push @b, [ note => commas(num $N->{lm_before_web}) . ' pages claimed implausibly old Last-Modified (before the W3 existed, mostly 1970 (epoch fail!))  '
+        push @b, [ note => commas(num $N->{lm_before_web}) . ' pages claimed implausibly old Last-Modified (before the W3 existed, mostly 1970 (epoch fail!)) '
             . 'and ' . commas(num $N->{lm_in_future}) . ' claimed one from the future; neither counts.' ];
     }
 
     # ---- small print
     push @b, [ h => 'Details' ];
-    push @b, [ p => 'lawa obeys robots.txt (its name there is "lawa"), waits at least ten seconds between requests to the '
+    push @b, [ p => 'lawa obeys robots.txt (its name there is “lawa”), waits at least ten seconds between requests to the '
         . 'same server, and takes at most 25 pages from any one. If it is bothering you, '
         . 'a robots.txt rule is honored within a day, and I read my email robin@dreamstation.systems regularly.' ];
     my ($t0, $t1) = (num $A->{t_first}, num $A->{t_last});
     push @b, [ note => 'Figures cover ' . stamp($t0) . ' to ' . stamp($t1) . ' (' . commas(num $d->{segments})
-        . ' data segments); the crawl is constantly running, and the newest ~45 minutes are not in yet.' ] if $t0 && $t1;
+        . " data segments); the crawl is constantly running, and the newest ~45\x{A0}minutes are not in yet." ] if $t0 && $t1;
     return \@b;
 }
 
@@ -351,7 +351,7 @@ sub html {
             for my $r (@{ $v->{rows} }) {
                 my $bar = defined $r->[2] && $peak > 0 ? "\x{2588}" x int(16 * $r->[2] / $peak + 0.5) : '';
                 push @o, '        <tr><th scope="row">' . esc($r->[0]) . '</th><td>' . commas($r->[1]) . '</td><td>'
-                    . (defined $r->[2] ? sprintf('%.1f%%', 100 * $r->[2]) : '-') . '</td><td aria-hidden="true">' . $bar . '</td></tr>';
+                    . (defined $r->[2] ? sprintf('%.1f%%', 100 * $r->[2]) : '—') . '</td><td aria-hidden="true">' . $bar . '</td></tr>';
             }
             push @o, '      </tbody>', '    </table>';
         }
@@ -363,7 +363,7 @@ sub wrap {
     my ($text, $width, $indent) = @_;
     $indent //= '';
     my (@lines, $cur);
-    for my $w (split ' ', $text) {
+    for my $w (grep { length } split /[ \t\n]+/, $text) {    # not split ' ': that also breaks at U+00A0
         if (defined $cur && length($cur) + 1 + length($w) > $width) { push @lines, $cur; undef $cur }
         $cur = defined $cur ? "$cur $w" : "$indent$w";
     }
@@ -381,7 +381,7 @@ sub text_table {
     for my $r (@{ $v->{rows} }) {
         my $bar = defined $r->[2] && $peak > 0 ? '#' x int(14 * $r->[2] / $peak + 0.5) : '';
         push @o, sprintf('%-34s %10s %6s %s', substr($r->[0], 0, 34), commas($r->[1]),
-            (defined $r->[2] ? sprintf('%.1f%%', 100 * $r->[2]) : '-'), $bar);
+            (defined $r->[2] ? sprintf('%.1f%%', 100 * $r->[2]) : '—'), $bar);
     }
     return @o;
 }
