@@ -10,6 +10,8 @@
 #
 # Output, /run/status/starport/:
 #   cpu.hist meminfo uptime disk.txt   as written by starport's sampler
+#   ntp.json                           starport's NTP server stats, for ntpstatsgen
+#                                      (meta gains "ntp_age <s>" when present)
 #   meta                               "pulled_at <epoch, OUR clock>"
 #                                      "sample_age <s>"  age of the sample at
 #                                      the moment of export, by STARPORT's
@@ -51,7 +53,7 @@ timeout 20 ssh -i "$KEY" -o BatchMode=yes -o IdentitiesOnly=yes \
 awk -v dir="$work" '
 	/^@@ / {
 		f = ""
-		if ($2 ~ /^(now|stamp|cpu\.hist|meminfo|uptime|disk\.txt)$/) f = dir "/f." $2
+		if ($2 ~ /^(now|stamp|cpu\.hist|meminfo|uptime|disk\.txt|ntp\.json)$/) f = dir "/f." $2
 		next
 	}
 	f != "" { print > f }
@@ -72,7 +74,27 @@ for f in cpu.hist meminfo uptime disk.txt; do
 	mv -f "$work/f.$f" "$OUT/$f"
 done
 
+# ntp.json is for ntpstatsgen, not the CGI: starport's own NTP server stats,
+# collected there every 5 minutes. Its age gets the same one-clock treatment
+# as the sample's (starport's `now` minus starport's collected_at), recorded
+# as ntp_age. No usable ntp.json -> no ntp_age line -> ntpstatsgen shows "?"
+# for starport rather than trusting whatever older copy is lying here.
+ntp_age=
+if [ -s "$work/f.ntp.json" ]; then
+	cat=$(grep -o '"collected_at": *[0-9]\+' "$work/f.ntp.json" | head -n1 | grep -o '[0-9]\+$' || true)
+	if [[ $cat =~ ^[0-9]+$ ]]; then
+		ntp_age=$((rnow - cat))
+		[ "$ntp_age" -lt 0 ] && ntp_age=0
+		chmod 644 "$work/f.ntp.json"
+		mv -f "$work/f.ntp.json" "$OUT/ntp.json"
+	fi
+fi
+
 # meta LAST: it is what vouches for the files above.
-printf 'pulled_at %s\nsample_age %s\n' "$(date +%s)" "$age" >"$work/meta"
+{
+	printf 'pulled_at %s\nsample_age %s\n' "$(date +%s)" "$age"
+	[ -n "$ntp_age" ] && printf 'ntp_age %s\n' "$ntp_age"
+	true
+} >"$work/meta"
 chmod 644 "$work/meta"
 mv -f "$work/meta" "$OUT/meta"
