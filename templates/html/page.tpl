@@ -71,8 +71,8 @@
       <form method="get" action="/personal/proto<!--# echo var="document_uri" -->">
         <input type="hidden" name="theme" value="<!--# echo var="theme" -->">
         <select name="to" aria-label="Protocol">
-          <option value="http"<!--# if expr="$proto_now = http" --> selected<!--# endif -->>HTTP</option>
           <option value="https"<!--# if expr="$proto_now = https" --> selected<!--# endif -->>HTTPS</option>
+          <option value="http"<!--# if expr="$proto_now = http" --> selected<!--# endif -->>HTTP</option>
           <option value="onion"<!--# if expr="$proto_now = onion" --> selected<!--# endif -->>.onion (Tor)</option>
         </select>
         <button type="submit">Go</button>
