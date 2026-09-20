@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="tok">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>kulupu lili li lawa e linluwi: ike open pi nasin NAT</title>
+  <meta name="description" content="nasin NAT li pakala e sona pi linja linluwi. ni li kama kepeken nasin seme?">
+  <meta name="author" content="robin">
+  <link rel="canonical" href="https://dreamstation.systems/personal/ntppost.tok.html">
+  <link rel="alternate" hreflang="en" href="https://dreamstation.systems/personal/ntppost.html">
+  <link rel="alternate" hreflang="tok" href="https://dreamstation.systems/personal/ntppost.tok.html">
+  <link rel="alternate" hreflang="x-default" href="https://dreamstation.systems/personal/ntppost.html">
+
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Follows the server-selected theme: nginx maps $theme to a colour and
+       SSI stamps it in, the same way the stylesheet above it is chosen. Four
+       of the five themes are fixed-appearance, so their two values are equal
+       on purpose; only `plain` (browser defaults) really differs. The maps
+       are in nginx/sites-available/dreamstation.systems. -->
+  <meta name="theme-color" content="<!--# echo var="theme_color_light" -->" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="<!--# echo var="theme_color_dark" -->" media="(prefers-color-scheme: dark)">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="kulupu lili li lawa e linluwi: ike open pi nasin NAT">
+  <meta property="og:description" content="nasin NAT li pakala e sona pi linja linluwi. ni li kama kepeken nasin seme?">
+  <meta property="og:url" content="https://dreamstation.systems/personal/ntppost.tok.html">
+  <meta property="og:site_name" content="robin’s page">
+  <meta property="og:locale" content="tok">
+  <meta property="article:published_time" content="2026-08-30">
+  <meta property="article:modified_time" content="2026-08-30">
+  <meta property="article:author" content="https://dreamstation.systems/professional/">
+  <meta name="twitter:card" content="summary">
+
+  <!-- JSON-LD. Every claim here mirrors something stated in the body below.
+       Part of the site-wide graph rooted at /professional/index.html and
+       joined to it by @id; nodes defined in full there appear here with
+       identity only. See that file, and index.html in this directory. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        "@id": "https://dreamstation.systems/personal/ntppost.tok.html#post",
+        "mainEntityOfPage": "https://dreamstation.systems/personal/ntppost.tok.html",
+        "url": "https://dreamstation.systems/personal/ntppost.tok.html",
+        "headline": "kulupu lili li lawa e linluwi: ike open pi nasin NAT",
+        "description": "nasin NAT li pakala e sona pi linja linluwi. ni li kama kepeken nasin seme?",
+        "inLanguage": "tok",
+        "datePublished": "2026-08-30",
+        "dateModified": "2026-08-30",
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "publisher": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "isPartOf": { "@id": "https://dreamstation.systems/personal/blog.html#blog" }
+      },
+      {
+        "@type": "Blog",
+        "@id": "https://dreamstation.systems/personal/blog.html#blog",
+        "name": "robin’s blog",
+        "url": "https://dreamstation.systems/personal/blog.html"
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="themes/<!--# echo var="theme" -->.css">
+  <style>
+    ol table {
+      table-layout: fixed;
+      width: 100%;
+      max-width: 28rem;
+    }
+
+    ol table th {
+      width: 50%;
+    }
+  </style>
+</head>
+<body>
+  <!-- FIRST thing in the document, so it is the first tab stop under every
+       theme. It used to live in chrome/top.html, which meant it existed only
+       under ubuntu804 and the other four themes shipped no skip link at all —
+       while the accessibilitySummary on the #website node in
+       /professional/index.html claims one for the whole site. Being here it
+       also precedes the chrome include below, so it stays ahead of the
+       desktop's six menus and the nav row.
+
+       base.css holds it off-screen until focus; ubuntu804.css restyles it to
+       match the desktop. Geometry is unchanged by the move: it is absolutely
+       positioned against the initial containing block either way, since
+       neither .desktop nor body is positioned. -->
+  <a class="skip" href="#content">o tawa insa lipu</a>
+  <!-- The ubuntu804 theme wraps this page in a picture of an Ubuntu 8.04
+       desktop. The chrome is three fragments under chrome/, pulled in by
+       nginx; every other theme expands these to nothing. chrome/top.html
+       explains the split, and why the title and path are handed in by hand. -->
+<!--# if expr="$theme = ubuntu804" --><!--# set var="wtitle" value="kulupu lili li lawa e linluwi: ike open pi nasin NAT" --><!--# set var="path" value="$document_uri" --><!--# include virtual="/personal/chrome/top.html" --><!--# endif -->
+  <header class="site-header">
+    <nav class="site-nav">
+      <a href="index.tok.html">🏠 lipu open</a>
+      <a href="blog.tok.html">📓 lipu toki</a>
+      <a href="/professional">💼 lipu pali mi</a>
+      <a href="https://grandexchange.dreamstation.systems">📈 OpenGET</a>
+      <a href="ntppost.html" hreflang="en" lang="en">🌐 English</a>
+
+    </nav>
+    <div id="theme-switcher" class="theme-switcher">
+      <!-- Protocol switcher: the same page over HTTP, HTTPS or the onion
+           service. Also a plain GET form with no JavaScript; nginx answers it
+           with a redirect (the /personal/proto/ location in
+           nginx/snippets/theme.conf). The hidden field carries the current
+           theme across, since the cookie does not follow to another origin. -->
+      <form method="get" action="/personal/proto<!--# echo var="document_uri" -->">
+        <input type="hidden" name="theme" value="<!--# echo var="theme" -->">
+        <select name="to" aria-label="nasin toki">
+          <option value="https"<!--# if expr="$proto_now = https" --> selected<!--# endif -->>HTTPS</option>
+          <option value="http"<!--# if expr="$proto_now = http" --> selected<!--# endif -->>HTTP</option>
+          <option value="onion"<!--# if expr="$proto_now = onion" --> selected<!--# endif -->>.onion (Tor)</option>
+        </select>
+        <button type="submit">o tawa</button>
+      </form>
+      <!-- A GET form, so switching themes is a plain form submission to
+           ?theme=<id> and needs no JavaScript. nginx reads the parameter and
+           SSI stamps the choice back in below - see nginx/snippets/theme.conf. -->
+      <form method="get">
+        <select name="theme" aria-label="selo">
+          <option value="gtk2"<!--# if expr="$theme = gtk2" --> selected<!--# endif -->>GTK2</option>
+          <option value="motif"<!--# if expr="$theme = motif" --> selected<!--# endif -->>Motif</option>
+          <option value="skeuslop"<!--# if expr="$theme = skeuslop" --> selected<!--# endif -->>skeuslop</option>
+          <option value="ubuntu804"<!--# if expr="$theme = ubuntu804" --> selected<!--# endif -->>Ubuntu 8.04</option>
+          <option value="plain"<!--# if expr="$theme = plain" --> selected<!--# endif -->>Plain</option>
+        </select>
+        <button type="submit">o ante</button>
+      </form>
+    </div>
+  </header>
+<!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/mid.html" --><!--# endif -->
+
+  <main id="content">
+    <h1 class="post-title"><span>kulupu lili li lawa e linluwi: ike open pi nasin NAT</span></h1>
+    <!-- The post's own dateline. Cross-checked against the list in
+         blog.html by assetsBuild/makeMeta.py, along with the dates in
+         the JSON-LD above. -->
+    <p class="dateline"><time datetime="2026-08-30">2026-08-30</time></p>
+
+    <figure>
+      <a href="https://xkcd.com/949/">
+        <img src="https://imgs.xkcd.com/comics/file_transfer.png" alt="sitelen XKCD, nimi ona li “File Transfer”. [jan Cueball li lon poka pi ilo sona. ona li toki tawa jan ante kepeken ilo toki.] jan Cueball: “You want your cousin to send you a file? easy. He can email it to- ...Oh, it's 25 MB? Hmm...” jan Cueball: “Do either of you have an FTP server? No, right.” jan Cueball: “If you had web hosting, you could upload it...” jan Cueball: “Hm. We could try one of those MegaShareUpload sites, but they're flaky and full of delays and porn popups.” jan Cueball: “How about AIM Direct Connect? Anyone still use that?” jan Cueball: “Oh, wait, Dropbox! It's this recent startup from a few years back that syncs folders between computers. You just need to make an account, install the-” jan Cueball: “Oh, he just drove over to your house with a USB drive?” jan Cueball: “Uh, cool, that works too.” [toki lon anpa sitelen:] “I like how we've had the internet for decades, yet &quot;sending files&quot; is something early adopters are still figuring out how to do.” [toki pona la: jan li wile kama jo e lipu pi 25 MB tan jan sama ona. jan Cueball li alasa e nasin. lipu linluwi la lipu ni li suli ike. jan tu ni li jo ala e ilo pana FTP, e ilo pana W3. lipu MegaShareUpload li ike. jan ala li kepeken ilo AIM Direct Connect. ilo Dropbox li wile e pali mute. pini la jan sama li tawa tomo kepeken ilo USB. toki anpa: linluwi li lon tenpo sike mute. taso “pana lipu” li awen pali sin tawa jan.]">
+      </a>
+      <figcaption>
+        sitelen <cite>File Transfer</cite>, jan Randall Munroe,
+        <a href="https://xkcd.com/949/">https://xkcd.com/949</a>,
+        <a href="https://xkcd.com/license.html">lipu lawa Creative Commons Attribution-NonCommercial 2.5</a>
+      </figcaption>
+    </figure>
+
+    <p>sitelen ni la, ken ni li weka lon tenpo lili: jan pi nasa ala li jo e ilo pana FTP. lon a, jan mute li jo ala e ona. jan mute li kepeken ilo sona. tawa ona la, ni li nasa, li ike kin: jan ante li ken… <em>open e linja</em> tawa ilo sona sina — o lukin e pilin ike musi ni pi jan mute: jan ante lon linluwi li sona e nanpa IP sina.</p>
+
+    <p>jan li “sona pona e ilo sona”, taso ona li jan pi sona linluwi ala la, ken la sona ona pi linluwi li sama ni: “ilo pana” anu “kon” (toki Inli la “the cloud”) li ijo ante a, li sama ala ilo sona pi jan wan. nasin “peer‐to‐peer” lon la ilo tu li toki, ilo ante li lon ala insa ona. jan ni li pilin e nasin ni la, nasin li pali suli tawa ona: ilo WebRTC, nasin STUN, nasin TURN, nasin ICE, ijo ante. tenpo ni la nasin NAT en nasin CGNAT li lon ale. kulupu pi pana linluwi (ISP) li weka e ken mute. tan ni la sona ni li pakala ale ala. taso tenpo open la linluwi li jo e nasin pona a. ni li pakala e nasin ni.</p>
+
+    <h2>sina jo ala e ilo pana FTP tan seme</h2>
+
+    <p>tenpo sike 1994 la <a href="https://datatracker.ietf.org/doc/html/rfc1631">lipu RFC 1631</a> li pana e nasin NAT (“Network Address Translation”: ante pi nanpa linluwi). ni li tenpo nanpa wan lon lipu lawa. open lipu la ona li toki e ni:</p>
+
+    <blockquote>
+      <p>The two most compelling problems facing the IP Internet are IP address depletion and scaling in routing. Long‐term and short‐term solutions to these problems are being developed. The short‐term solution is CIDR (Classless InterDomain Routing). The long‐term solutions consist of various proposals for new internet protocols with larger addresses.</p>
+    </blockquote>
+
+    <p>toki pona la: linluwi IP li jo e ike suli tu. nanpa IP li kama pini. pali pi alasa nasin li kama suli ike. jan li pali e nasin pona pi tenpo suli, e nasin pona pi tenpo lili. nasin pi tenpo lili li nasin CIDR (“Classless InterDomain Routing”). nasin pi tenpo suli li ni: jan li pana e nasin toki sin mute. nanpa IP ona li suli.</p>
+
+    <p>nasin CIDR li suli ala tawa lipu ni. taso lili la: mi mute li open pana e linluwi pi suli ante mute tawa jan. pali ona li ike. taso nasin ona la, utala li lon ala.</p>
+
+    <p>lipu RFC 1631 li pana e nasin nanpa 2 pi tenpo lili tawa ike tu ni: nasin NAT. tenpo ni la nasin NAT li lon ilo nasin (Router) pi tomo ale. ona li sama ale ala nasin NAT pi lipu ni. taso nasin suli ona li sama: ilo mute li ken kepeken nanpa IP sama (ilo lon poka ante pi ilo nasin li lukin e nanpa IP wan taso). ni li ken tan ni: poki lili li tawa lon ilo nasin la, ilo nasin li ante e nanpa IP lon nimi sewi pi poki lili. ni li pini la mi mute li awen e <a href="https://datatracker.ietf.org/doc/html/rfc1918">kulupu pi nanpa IP</a> tawa kepeken insa taso. linluwi IP mute la ijo tu ni li pali kulupu — nanpa IP insa li lon insa linluwi. ilo nasin li ante e ona tawa nanpa IP selo wan kepeken nasin NAT. (nanpa IP selo li nanpa lon linluwi suli.) tomo sina la ilo nasin li kepeken nasin NAT. sina open e linja tawa ilo pana weka la, ni li kama<sup><a href="#footnote-1" id="footnote-ref-1">1</a></sup>:</p>
+
+    <ol>
+      <li>
+        <p>ilo sona sina li pana e poki lili ni:</p>
+        <table>
+          <tbody>
+            <tr><th scope="row">tan: nanpa IP</th><td>10.11.70.21</td></tr>
+            <tr><th scope="row">tan: lupa</th><td>50413</td></tr>
+            <tr><th scope="row">tawa: nanpa IP</th><td>67.215.249.229</td></tr>
+            <tr><th scope="row">tawa: lupa</th><td>70</td></tr>
+          </tbody>
+        </table>
+      </li>
+      <li>
+        <p>ona li kama lon ilo nasin sina. ilo nasin li ante e ona tawa ni:</p>
+        <table>
+          <tbody>
+            <tr><th scope="row">tan: nanpa IP</th><td>146.7.15.85</td></tr>
+            <tr><th scope="row">tan: lupa</th><td>60612</td></tr>
+            <tr><th scope="row">tawa: nanpa IP</th><td>67.215.249.229</td></tr>
+            <tr><th scope="row">tawa: lupa</th><td>70</td></tr>
+          </tbody>
+        </table>
+      </li>
+      <li>
+        <p>ilo pana li pana e toki ni:</p>
+        <table>
+          <tbody>
+            <tr><th scope="row">tawa: nanpa IP</th><td>146.7.15.85</td></tr>
+            <tr><th scope="row">tawa: lupa</th><td>60612</td></tr>
+          </tbody>
+        </table>
+      </li>
+      <li>
+        <p>ilo nasin sina li ante sin e ona tawa ni:</p>
+        <table>
+          <tbody>
+            <tr><th scope="row">tawa: nanpa IP</th><td>10.11.70.21</td></tr>
+            <tr><th scope="row">tawa: lupa</th><td>50413</td></tr>
+          </tbody>
+        </table>
+      </li>
+    </ol>
+
+    <p>sina pilin mute e ni la, ken la sina wile sona e ni: ilo pana weka li wile open e toki tawa sina la, seme li kama? ona li pana e poki lili tawa 146.7.15.85. ilo nasin sina li…</p>
+
+    <p>ike a. ona li sona ala e ni: poki ni li tawa ilo seme.</p>
+
+    <h2>nasin poka</h2>
+
+    <p>jan li lukin e ike ni lon tenpo lili a. tan ni: jan li wile lawa e ilo pana musi, e ilo pana FTP, e ilo pana W3 lon tomo lape ona tan open pi tenpo ale. tan ni la kulupu suli pi nasin poka li kama lon poka pi nasin NAT. ona ale li pana sin ala e wile open pi linluwi. nasin wan ala li pona tawa ijo ale.</p>
+
+    <h3>nasin Port Forwarding</h3>
+
+    <p>nasin pi lili nanpa wan la, o toki e ni tawa ilo nasin sina: “o kute. poki lili li kama lon lupa 60612 la, o pana e ona tawa 10.11.70.21 lon lupa 50413. o wile sona ala.” ni li nasin Port Forwarding (lupa li open). jan mute li sona e nasin poka ni. ona li sona lili e nasin poka ante. nasin ni li jo e ike. wan li ni: nanpa IP selo wan en lupa wan li ken tawa ilo wan taso <em>lon tenpo wan</em>. tan ni la ilo tu li ken ala kama ilo pana lon nanpa IP selo sama, lon lupa sama, lon tenpo sama. kute la ike ni li lili. taso ona li suli. linluwi suli pi kulupu esun anu pi tomo sona la, ilo mute mute li kepeken nanpa IP pi mute lili, anu wan taso. ni la sina ken ala lawa e ilo pana lon tomo sina. sina pali e jaki pi ike namako la, sina ken. tenpo ante la kulupu ISP sina li pana e <em>nanpa IP selo sina</em> lon monsi pi nasin NAT kin — nimi ona li “carrier‐grade NAT” (CGNAT). ni la ilo ante li ante e nanpa. sina lawa ala e ilo ni. tan ni la sina ken ala open e lupa. sina kama jo e kipisi lili tan kipisi lili pi nanpa IP wan.</p>
+
+    <p>ike ante pi nasin NAT li ni: <strong>jan ala li wile pali e ijo ni</strong>. tan ni la mi mute li pali e ni:</p>
+
+    <h3>nasin UPnP</h3>
+
+    <p>nasin UPnP en nasin sama sin ona — nasin NAT‐PMP en nasin PCP — li alasa pona e ike “jan ala li wile pali e ijo ni”. nasin ni la ilo li ken pana e wile tawa ilo nasin: “o open e lupa ni”. ni li sama nasin Port Forwarding pi luka jan: wile li tawa ilo nasin <em>sina</em> — kulupu ISP sina li pali ike tawa sina la, sina ken ala. kin la jan mute li pini e nasin UPnP tan pilin awen pakala — tan wan li ni: tenpo open la ilo pi mute lili li pali e nasin ni, li jo e pakala. tan ante li ni: <em>jan ante li ken open e linja tawa ilo sona sina la, ni li nasa, li ike kin tawa jan mute</em>. sina ken wile e sinpin awen (Firewall) tan pona mute. taso sina wile e ona la, o pali e ona tan wile sina. nasin NAT li sona ala e ni: poki lili li tawa seme. o kepeken ala ni sama sinpin awen.</p>
+
+    <h3>nasin STUN en nasin TURN en nasin ICE</h3>
+
+    <h4>nasin STUN</h4>
+
+    <p>nasin STUN (“Session Traversal Utilities for NAT”) li alasa ala e ni: sinpin awen li pali lon poka ona. ona li toki taso tawa ilo pana lon linluwi suli: “poki lili mi li kama tawa sina la, ona li lukin seme?” ilo pana STUN li pana e nanpa IP selo e lupa selo — nasin NAT sina li pana e ona tu tawa sina. ken la ona li 146.7.15.85:60612. nasin “cone NAT” la, ilo nasin li kepeken lupa selo sama tawa linja ale tan ilo sina. ni la nasin STUN li pona a. sina ken toki e nanpa IP ni e lupa ni tawa ilo pi jan ante. ni la ona li ken pana e poki lili tawa sina. ilo insa li lon ala. nimi pi nasin ni li <i>Hole Punching</i> (pali lupa). taso nasin “symmetric NAT” la — ona li lon mute lon nasin CGNAT, lon linluwi pi kulupu suli — sina kama jo e lupa selo ante tawa <em>ilo weka ale</em>. ni la sona tan ilo pana STUN li pona ala tawa ni: sina wile open e linja tawa ilo pi jan ante. tan ni: ilo pana STUN li lukin e lupa wan. ilo pi jan ante li lukin e lupa ante.</p>
+
+    <h4>nasin TURN: mi anpa</h4>
+
+    <p>nasin TURN (“Traversal Using Relays around NAT”) li ni taso: toki ale li tawa lon ilo pana insa (Relay). ilo tu li open e linja tawa ona. ni li pona lon ma mute mute. taso jan li wile lawa e ilo pana ni. linluwi pona la ona li lon ala. poki lili ale li tawa sike lon ilo pi jan nanpa 3. tan ni la ona li kama lon tenpo suli. sina wile pilin e tenpo namako ni. nasin ni li ike a.</p>
+
+    <h4>nasin ICE: mi alasa e ale</h4>
+
+    <p>nasin ICE (“Interactive Connectivity Establishment”) li sona e ni: nasin ala li pona lon tenpo ale. ona li alasa e nasin ale. nasin pi pona nanpa wan li open. o lukin e ale: linja pi ilo insa ala, nanpa IP selo tan nasin STUN, ilo pana insa pi nasin TURN. o pana e lipu ni tawa ilo ante, o kama jo e lipu ona. o pana e jaki tawa sinpin. ijo wan li pona la, o pini. ilo WebRTC li pali e ni. linluwi pi tenpo ni la ni li pona nanpa wan. taso <strong>linja pona li tawa tan ilo wan tawa ilo ante taso. mi mute li weka e ona, li kepeken ilo pi jan ante lon tenpo mute</strong>.</p>
+
+    <h2>nasin pona pi tenpo suli li kama ala</h2>
+
+    <p>lipu RFC 1631 li toki e “nasin pona pi tenpo suli”. tenpo ona la jan li pali e nasin ni. nasin ni la nasin IPv6 li nanpa wan. ona li wile pona e ike ni kepeken nasin ni: jan ale li kama jo e nanpa IP lon. ma ale la nanpa ni li wan taso. ni la jan li wile ala e nasin NAT. taso <a href="https://www.google.com/intl/en/ipv6/statistics.html">kama pi nasin IPv6 li linja Sigmoid. lukin la linja ni li kama supa. ona li wile awen tawa sewi</a>. ma li jo kin e nasin IPv6 la, kulupu ISP mute en linluwi mute pi kulupu suli li awen pali e ijo sama nasin NAT. tan wan li ni: ona li pali sama tenpo pini taso. tan ante li pilin awen pakala namako: sinpin awen li weka e linja kama tawa <em>lupa ale a</em> (ilo pana pi sona len la, sinpin awen lili li pona lon open) tan ni taso: nasin NAT li pali sama lon tenpo suli. mi mute li sona e ni taso. anu ona li <em>pana e nasin NAT lon tawa nasin IPv6</em>. jan ala li wile e ni a! tenpo mute la ona li kepeken nanpa Unique Local Address (fc00::/7) sama nanpa IP insa RFC1918 pi nasin IPv4. ni li nasa a tawa mi.</p>
+
+    <h2>linluwi li kama seme tan ni</h2>
+
+    <p>linluwi open li moli. sina ken toki e ni: ijo mute li moli e ona. taso mi pilin e ni: ijo ni mute la, nasin NAT li kama lon tenpo open. tenpo pini la, jan li wile lawa e ilo pana la, pali li lili: o open e ilo, o toki e nanpa IP sina tawa jan, pini. tenpo ni la, pona li kama tawa sina la, sina wile pali e nasin Port Forwarding taso. taso sina lon monsi pi nasin CGNAT, anu lon linluwi pi kulupu suli la, tenpo mute la sina ken ala pali e ni kin.</p>
+
+    <p>kin la nasin NAT li pana e pilin ni tawa jan ale: nasin “ilo kute li toki tawa ilo pana” li nasin pi nasa ala. “ilo mi li toki tawa kon. kon li toki tawa ilo ante” li nasa ala tawa jan. taso pilin ni li kama tan ni taso: nanpa IP li mute lili. jan pi sitelen XKCD lon sewi lipu li jo e ike ni: ona li wile toki lon insa pi ilo tu taso. taso ilo tu ale li ken open e linja tawa weka taso. ni li nasa a. ijo pi nasa musi namako li ni: tawa jan la nasin NAT li kama <em>ijo awen</em> — “ilo sina li len!” — tan ni la jan li utala e ijo ni: ona li ken pona e ike.</p>
+
+    <p>linluwi pi tenpo ni li jo e ma mute pi sinpin suli. kulupu lili li lawa e ma ni. ni li kama tan ijo mute. nasin NAT li wan taso. taso ona li nanpa wan — tan ona la, sina wile pana e lipu tawa jan la, ni li pali suli. tan ona la, sina lawa ala e ilo pana pi lipu linluwi lon ilo sona sina. tan ona la, sina wile lawa e ilo pana sina la, ni li pali suli. tenpo mute la ni li wile e mani mute (sina ken ala open e lupa lon linja linluwi sina la, sina wile pana e mani tawa ilo pana VPS. sina jo e ilo lon tenpo ni. taso sina ken ala kepeken ona).</p>
+
+    <hr>
+
+    <aside id="footnote-1" role="doc-footnote">
+      <p><sup>1</sup> lon, mi toki e nasin NAT e nasin PAT sama ijo wan. mi pakala. <a href="#footnote-ref-1">↩</a></p>
+    </aside>
+  </main>
+  <footer>
+    <ul class="badges">
+    <!-- badges:start GENERATED by assetsBuild/badgeBuild.pl from webBadges.csv - do not edit -->
+        <li><a href="https://eightyeightthirty.one/"><img src="badges/88x31.webp" alt="eightyeightthirty.one" width="88" height="31"></a></li>
+        <li><img src="badges/zero-javascript.webp" alt="Proudly ZERO JavaScript!" width="88" height="31"></li>
+        <li><a href="https://debian.org/"><img src="badges/debian-powered.webp" alt="debian POWERED" width="88" height="31"></a></li>
+        <li><img src="badges/trans-flag.webp" alt="Transgender pride flag" width="88" height="31"></li>
+        <li><a href="https://nginx.org"><img src="badges/nginx.png" alt="nginx powered" width="88" height="31"></a></li>
+        <li><a href="https://xkcd.com"><img src="badges/xkcd.webp" alt="xkcd" width="88" height="31"></a></li>
+        <li><a href="https://www.getmonero.org/"><img src="badges/monero.webp" alt="I ❤️ MONERO" width="88" height="31"></a></li>
+        <li><a href="https://homestuck.com/"><img src="badges/mspaintadventures.webp" alt="MS Paint Adventures" width="88" height="31"></a></li>
+        <li><a href="https://archlinux.org"><img src="badges/Arch.webp" alt="Arch Linux" width="88" height="31"></a></li>
+        <li><a href="https://www.sbnation.com/a/17776-football"><img src="badges/17776.webp" alt="17776" width="88" height="31"></a></li>
+        <li><a href="https://pi.dev/"><img src="badges/pi.webp" alt="pi agent harness" width="88" height="31"></a></li>
+        <li><a href="https://ristar.itch.io/secret-little-haven"><img src="badges/secretlittlehaven.webp" alt="Secret Little Haven" width="88" height="31"></a></li>
+    <!-- badges:end -->
+    </ul>
+  </footer>
+<!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/bottom.html" --><!--# endif -->
+</body>
+</html>

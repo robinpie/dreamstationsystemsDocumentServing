@@ -1,0 +1,18 @@
+---
+id: lawa
+// toki pona version of content/lawa.tri. kind, targets (html only) and the
+// rest are inherited; only what is language is restated here.
+draft: 1
+title: lawa
+description: ilo lawa li ilo alasa. ona li lukin e nimi sewi HTTP lon linluwi open. ilo pana li toki e ona sama la nanpa pi tenpo ni li lon lipu ni.
+---
+
+// Everything a visitor reads is GENERATED: lawaPage.timer rewrites
+// /personal/lawa-data.html every 5 minutes (documentServing/lawaPage/, and
+// ~/configNotes/lawa.txt "The public page"), and nginx splices it in here.
+// That fragment is still English; only the shell is translated.
+// The block is what shows if that file is missing.
+::: raw html
+    <!--# block name="lawa_nodata" --><p>ilo lawa li ilo alasa mi. ona li kama sona e nimi sewi HTTP lon linluwi. tenpo mute la lipu ni li pana e sona ni. tenpo ni la nanpa li weka &mdash; tenpo lili li pini la o lukin sin.</p><!--# endblock -->
+    <!--# include virtual="/personal/lawa-data.html" stub="lawa_nodata" -->
+:::

@@ -1,0 +1,246 @@
+---
+id: gzipt
+draft: 1
+title: mi musi kepeken ken toki pi ilo gzip
+description: ilo li lili e lipu la ona li toki kin e ijo kama. tan ni la ilo gzip li ken ala ken pali e toki sin? mi alasa sona.
+gopher.gophermap_extra: gtoki CSS tan ilo gzipt (sitelen lipu, GIF)	/blog/supportingFiles/gzipt_css_demo.gif	dreamstation.systems	70
+---
+
+// Lowercase by nature: compressor names and the three stylesheets.
+// nimiCheck: allow zlib zstd brotli lzma normalize sakura mvp
+
+@links
+demo     html=demo.html gemini=gzipt_css_demo.png gopher=- \
+          gemini.label="sitelen lipu: toki CSS ale pi lipu ni li tan ilo gzipt"
+@end
+
+::: only html
+pona tawa jan Nathan Barry tan lipu [“Can gzip be a language model?”](@gziplm)
+:::
+
+::: only gemini
+pona tawa ni:
+
+@ tight=1
+=> [lipu “Can gzip be a language model?” pi jan Nathan Barry](@gziplm)
+:::
+
+::: only gopher
+pona tawa jan Nathan Barry tan lipu “Can gzip be a language model?”
+
+@ tight=1
+=> [“Can gzip be a language model?”](@gziplm)
+:::
+
+@ skip=gemini
+----
+
+@ html.em
+o sona: lipu ni la mi toki e nimi “gzip” e nimi “zlib” e nimi “DEFLATE” sama nimi wan. ni li lon ala. mi pakala.
+
+ilo ni li musi mute tawa mi: ona li ken pali lon nasin tu, tan ni: nasin nanpa tu li nasin nanpa wan, taso ona li tawa monsi. sina kepeken ilo pi kute kalama lon nasin monsi la, ona li kama ilo kalama (ike a). sina kepeken ilo kalama lon nasin monsi la, ona li kama ilo pi kute kalama (kalama anpa la ona li pona lon a). ilo kalama li kama jo e wawa linja. wawa ni li tawa e linja sike lon poka pi kiwen wawa. tawa ni li tawa e kon. ilo pi kute kalama la kon li tawa e linja sike lon poka pi kiwen wawa. tawa ni li pali e wawa linja.
+
+sama la pali tu ni li pali wan: ilo li lili e lipu (ni li pali lili). ilo li toki e ijo kama (ni li toki pi ijo kama). pali lili la, nasin pi pona nanpa wan li ni: “mi sitelen e sona ni kepeken lipu pi lili nanpa wan”. toki pi ijo kama la, ilo pi pona nanpa wan li ni: “jan li pana e sona pi lili nanpa wan tawa mi la mi toki e sona ni ale”. pali tu ni li pali wan a. nimi taso li ante. ni la wile sona li kama: ilo pi pali lili li sin ala. mi ken kama jo e toki sin pi mute seme tan ona?
+
+lipu [{html:Language Modeling Is Compression (2023)}{!html:"Language Modeling Is Compression" (2023)}](@lmic) li toki lili e ni: ilo gzip li ken pali e toki sin. taso lipu li toki mute e ijo ante. kin la nasin ona li nasin pi lili nanpa wan: tenpo wan la ona li lukin e sitelen kama wan taso. nasin ni li ike tawa ilo gzip.
+
+@ indent=0
+// The only duplicated passage in the tree: the web wraps this in a
+// titled blockquote with a <pre>, the text protocols indent it.
+::: raw html
+    <blockquote>
+      <p class="quote-title">Context Text (1948 Bytes)</p>
+      <blockquote>
+        <p>[...] Moreover, some non-party life peers (the number being determined by the Prime Minister) are nominated by an independent House of Lords Appointments Commission. If an hereditary peer also holds a life peerage, he or</p>
+      </blockquote>
+      <p class="quote-title">gzip Samples (100 Bytes)</p>
+      <pre class="samples">&ndash; (0k5Ezatme,isbebmvcsouL(nxscbiife peu7vevwt parr,iswfommeeaa are nombban hm, c,on. , pncmm.sexg uam
+&ndash; Suasa8g thformp0iufoof Lo e7vkoasaeka w8viiufoounb,xbepe,deto.,5mdrSu r,teepe,rgesgS,be.dcyh2vLnary
+&ndash; CxOsic,*auEfOlnknm } eaa0oplutfpq(afcnuChanm,areovervr LoventiL.myehm;nrhvnywsaO7seeg Apo,arelyehm;.</pre>
+    </blockquote>
+:::
+
+::: only gemini gopher
+>>>
+  Context Text (1948 Bytes)
+    [...] Moreover, some non-party life peers (the number being
+    determined by the Prime Minister) are nominated by an independent
+    House of Lords Appointments Commission. If an hereditary peer also
+    holds a life peerage, he or
+
+  gzip Samples (100 Bytes)
+    - (0k5Ezatme,isbebmvcsouL(nxscbiife peu7vevwt parr,iswfommeeaa are nombban hm, c,on. , pncmm.sexg uam
+    - Suasa8g thformp0iufoof Lo e7vkoasaeka w8viiufoounb,xbepe,deto.,5mdrSu r,teepe,rgesgS,be.dcyh2vLnary
+    - CxOsic,*auEfOlnknm } eaa0oplutfpq(afcnuChanm,areovervr LoventiL.myehm;nrhvnywsaO7seeg Apo,arelyehm;.
+>>>
+:::
+
+ike. nasin DEFLATE li pali kepeken nimi tawa: kipisi toki li lon tenpo pini la, ona li sitelen sin ala e kipisi ni. ona li sitelen e nimi tawa lili. nimi ni li tawa toki pini. taso kipisi li wile suli: 3 B anu mute. lili la nimi tawa li ken ala. sina pali e sitelen wan taso (1 B) lon tenpo wan la, nimi tawa li kama ala. nanpa pi nasin Huffman taso li awen. ilo gzip li lon tan ni a: kipisi toki pi sitelen mute li lon tenpo mute la, ona li kama ijo lili.
+
+ilo [gzipt](@gziptrepo) li tan jan Nathan Barry (nimi tawa pi lipu ona li lon sewi). ona li pona mute e nasin ni. ilo gzipt li kepeken lawa pi ilo gzip lon nasin pi pona mute: ona li alasa e sitelen kama kepeken *alasa pi toki ken mute* (toki Inli la “beam search”). ilo gzipt li awen e toki ken mute lon tenpo sama. ona li sitelen ala lon tenpo open. ona li lukin e sitelen kama mute (lipu ni la 24 B. toki ken li 32). ni li pini la ona li sitelen. tan ni la kipisi toki suli li ken kama. kipisi li suli la ilo gzip li ken lili mute e ona. ni li wawa nasa ona a. sina pana e nanpa ni tawa ilo gzipt: toki ken li 1, sitelen kama li 1. ni la ona li kama nasin pi lili nanpa wan. nasin ni li lon lipu {html:*Language Modeling Is Compression*}{!html:"Language Modeling Is Compression"}. nanpa tu ni li suli la sina ken lukin e nasin lon toki ona:
+
+>>>
+    MENENIUS:
+    'Though all at once canq
+
+    MARCIUS:
+    Pray now, nocamest thou to a morsel .
+
+    LARTIUS:
+    Hence, and
+    I' the end admire, where G
+    again; and after it ag .
+
+    LARTIUS:
+    Hence, and
+    I' the end ad
+
+    LARTIUS:
+    fame and
+>>>
+kin la ilo zlib li jo e nasin pona. tan ona la pali ni li wile ala e tenpo suli: sina ken jasima e ilo pi pali lili. sona ale ona li lon jasima:
+
+@ join=1
+```python
+base = zlib.compressobj(level)
+base.compress(context) # do the expensive work once
+for cand in candidates:
+    clone = base.copy() # fork the encoder state
+    cost = len(clone.compress(cand) + clone.flush()) # marginal cost of cand
+```
+
+```bash
+$ time python3 gzipt.py --corpus data/tinyshakespeare.txt --prompt $'MENENIUS:\n' --length 200 1>/dev/null
+
+real    0m12.826s
+user    1m8.207s
+sys     0m2.413s
+```
+epiku a. mi ken pali e seme kepeken ona?
+
+## mi wile ala wile e ilo gzip taso?
+
+pali toki la, wile.
+
+pilin mi nanpa wan li ni: “tenpo ni la nasin pi pona mute li lon. nasin DEFLATE li pona lili. mi ken ala ken ante e lawa?” mi pana e nimi `--algo` tawa ilo, li lukin e nasin 5:
+
+@ gap=3
+| nasin | pana |
+| --- | --- |
+| zlib | toki li sama lili toki pi jan Shakespeare |
+| bz2 | `ScdMENIURy3dywyywyyywyy...` |
+| zstd | `I tell you,; e. ...eee e a` |
+| brotli | `' \n \n '...` |
+| lzma | sitelen pi linja sin taso. ante li lili a (kin la pali ni li kepeken 1 h a!) |
+ilo zlib taso li pona. ilo ante ale li pakala lon tenpo lili: ona li pana e sitelen sama lon tenpo ale. sitelen ni li mute lili taso, li suli lili tawa ilo. tan seme? sina pana e sitelen sin wan la, suli pi lipu lili li ante sama ni:
+
+@ gap=5
+| nasin | lili e `a` | lili e `aa` |
+| --- | --- | --- |
+| zlib | 9 | 10 |
+| bz2 | 37 | 37 |
+| lzma | 60 | 60 |
+ni li pali lili pona. taso alasa pi ilo gzipt li ken ala lukin e ante pi toki ken. toki ken ale li sama tawa ona la, ona li wile e sitelen ni: ona li suli lili lon lipu ale. pakala ni li pakala nanpa: alasa li wile lukin e ante sona. taso ante ni li lili a: 1 B li suli tawa ona. mi nanpa e suli kepeken B taso. ijo li lili tawa 1 B la mi ken ala lukin e ona.
+
+(toki lili musi ni la nanpa pi ilo zstd en ilo brotli li ante. taso pali lon la toki open li 32 KB. ni la ante pi 1 B li weka lon nanpa suli pi lipu ale. ilo tu ni kin li pakala)
+
+ilo zlib li pona tan seme? tan nasin jasima taso. toki ken wan la mi lukin e ni taso: ona li suli e lipu lili kepeken nanpa seme? nanpa pi lipu ale li lon ala la, ante lili li weka ala. ilo ante la nasin API li ken ala jasima e ilo pi pali lili. tan ni la mi wile lili sin e toki open ale e toki ken. ni li kama lon tenpo ale a. ni la ante lili li weka.
+
+### mi pona e ilo bz2
+
+mi wile e ni: ilo ante kin li pana e toki pona. tan ni la mi pali e nasin sin. mi pana e nimi “nasin kipisi” tawa ona — toki ken li sitelen wan ala. ona li kipisi pi 8 B. kin la kipisi ni li lon lipu mama (“corpus”): ilo li lukin e pini pi toki open, li alasa e sama ona lon lipu mama, li lanpan e 8 B kama. (alasa ni li kepeken nasin “n‐gram”, li wile e tenpo lili taso.) ni la kipisi pona en kipisi ike li ante kepeken B mute. nasin ni li pona a (ni li tan ilo bz2):
+
+>>>
+    I tell you, friends, most charitable care
+    Have the patricians of you. For your wants,
+    Your suffering in this dearth, you
+>>>
+taso ike li lon: nasin kipisi la toki ken ale li tan lipu mama. mi pali ala e toki sin. mi kipisi e lipu mama, li wan e kipisi lon nasin sin. ni li pona, taso ona li “jaki” lili. tan ni la ona li nasin nanpa tu taso.
+
+## ona li ken pali e seme?
+
+### HellaSwag
+
+lukin la ilo ni li sona lili e toki jan. sina ken toki e ni. ilo gzip li ken ala ken pana e sona pona tawa wile sona pi [kulupu HellaSwag](@hellaswag)?
+
+ken.
+
+ni la mi pali ala e toki sin kepeken ilo gzipt. mi sitelen e ilo ante lili. ona la ilo pi pali lili li ken pana e sona tawa wile sona ni: pana ken mute li lon, wan taso li pona. alasa pi toki ken mute li lon ala. ijo sama kin li lon ala. mi lili e toki open e pini wan lon tenpo sama, li lukin e suli. pini pi suli lili nanpa wan li pini mi. nasin ni li pona lukin a. kin la ilo ante li ken kama sin.
+
+open la ilo li lukin e toki open pi wile sona ni taso. ni la nanpa mi li 26.4%. ni li sewi lili taso tawa pana pi sona ala, taso sewi ni li lon a. pona. mi kama jo e wile sona ante pi kulupu HellaSwag kepeken nasin pi sona ala, li pana e ona tawa ilo pi pali lili lon open. ni la nanpa li kama 27%. wile sona ante li tan kulupu pali sama la nanpa li kama 28.7%. (taso mi weka e wile sona ni: `source_id` ona li sama.) epiku a.
+
+ni la ilo ante li ken sin. tan ni la mi pana e ilo zstd e ilo lzma tawa pali ni. nasin li sama. ona li pana e **32.5%** e **33.0%** — ni li anpa e ilo GPT-2-124M a!!!!!! sona ni li epiku nanpa wan, li pana e pilin wawa nanpa wan tawa mi. nasin pi pali lili li wawa nasa pimeja, pakala a. ona li jo e sona pi mute jaki, li pana e pilin nasa tawa mi
+
+### pali pi toki ilo
+
+tenpo sike 2026 li lon. mi pali lon toki jan. ni la mi wile lukin e ni a: ilo gzip li ken ala ken sitelen e toki ilo?
+
+mi kama jo e toki ilo pi ilo PostgreSQL. (mi wile e ona tan ni: jan mute li sona e ni: toki ilo ona li jo e toki poka pona mute.) mi pana e kipisi ona tawa ilo pi pali lili. toki open li toki poka ni:
+
+```c
+/*
+ * Release a lock previously acquired with LWLockAcquire.
+ */
+```
+mi pana e ni e toki open ante lili kepeken nasin pi sitelen wan. tenpo mute la ona li pana e toki poka sin, li pana jaki e nimi mute lili pi toki ilo, li pana e nimi pali lon (ken la), li kama sike. taso nasin kipisi li pana e ni:
+
+```c
+int
+LWLockNewTrancheId(const char *name)
+{
+	int			idx;
+
+	if (!name)
+		ereport(ERROR,
+				(errcode(ERRCODE_INVALID_NAME),
+				 errmsg("tranche name cannot be NULL")));
+```
+pakala a, ni li pona lukin. taso ike li lon: mi pali e ona lon tenpo suli la (mi pana ala e ni lon lipu ni tan suli ona), ona li musi taso, li sitelen e leko pakala `ereport` suli. ilo li ken lili mute e leko ni. ona li sitelen ala e pali lon. (pilin mi la tan li ni: pali lon li jo e sona mute lon sitelen lili. ni la ona li ken ala lili mute. ni la ilo gzip li olin ala e ona.)
+
+#### toki ilo seme la ona li ken pali?
+
+ilo gzip li pali kepeken nasin seme? mi wile e seme tawa ni: ona li sitelen e toki ilo pona? pilin mi:
+
+@ gopher.indent=2
+- toki ilo wan o wile ala e ijo lon ma weka pi lipu sama. ilo gzip li lukin e ni taso: nimi seme li lon poka pi nimi seme? ona li sona ala e ni: ijo seme li wile e ijo seme?
+- mi wile e *pali lon* ni: ona li ken lili mute. kin la toki sama pi sona ala o lili. ilo li ken kama olin ike e toki ni, li sitelen e ona taso.
+
+toki SQL li ken ala ken? ona la mi wile ala pilin e ni: sona li awen lon ma seme pi ilo sona? mi wile ala lawa e poki nimi. nasin tawa kin li suli ala (toki SELECT wan li ken pali lon ma ale. ijo poka li suli ala).
+
+mi pali e nasin pi poki sona lili lon tenpo lili. mi sitelen e lipu mama kepeken luka mi: toki SELECT mute pi pakala ala li lon ona. mi pana e toki open SELECT tawa nasin kipisi. pana ale la **toki 91% li pakala ala. toki 55% li sin, li pakala ala!** ilo gzip li ken sitelen e toki ilo a!
+
+```sql
+SELECT name, dept_id FROM employees WHERE salary > 50000 ORDER BY age ASC;
+SELECT MIN(dept_id) FROM employees WHERE age < 25 ORDER BY dept_id DESC;
+```
+taso mute la ona li *pona tawa pali* ala. toki wan ona li ni. ona li musi:
+
+```sql
+SELECT name, dept_id FROM employees WHERE age >= 80000
+```
+#### toki ilo pona tawa pali
+
+mi wile e toki ilo ni: ona li supa. toki wan li wile ala e toki ante. toki sama li lon tenpo mute. mi lukin e ken ante tu, li kama sona e ni: toki CSS li pona nanpa wan tawa ni. lipu CSS li kulupu pi lawa selo. lawa wan li wile ala e lawa ante. lawa wan li kulupu pi toki `property: value;`. toki ni kin li wile ala e toki ante. poki li wan taso: poki li lon ala insa pi poki ante. ilo li sona ala e nimi la ni li pakala ala e ale. kin la mi kama jo e toki CSS tan ilo pi toki ilo open. ona li sitelen e `padding: 0;` e `color: #fff;` lon tenpo 1000000.
+
+tan ni la mi pana e lipu CSS lon tawa ona: lipu normalize en lipu sakura en lipu mvp. lipu ni li wile ala e nimi `class`. ni li pini la ona li sitelen. kin la tenpo ni la wile mi li suli. mi lukin e ni: nimi ale li nimi lon pi toki CSS. nimi sama `--custom` li ken ala tan ni: ona la ale li ken. kin la mi wile e ni: lawa selo li sin lon. ona li pana e toki CSS sama ni:
+
+```css
+button { height: auto; padding-top: 0; }
+ul { padding-left: 1.4em; margin-top: 0px; margin-bottom: 2.5rem; background-color: transparent; }
+input[type="radio"] { box-sizing: border-box; padding: 0; }
+```
+ni li pona suli a. lawa selo ni li pona, li pakala ala, li sin. kin la mi pana e lipu HTML musi tawa ona. ona li pali e [ijo pona lukin ni](@demo){gopher: (sitelen lipu li lon poka pi lipu ni: o lukin e `/blog/supportingFiles/gzipt_css_demo.gif`.)}{!gopher::}
+
+::: raw html
+    <figure>
+      <img src="gzipt_css_demo.png" alt="lipu W3. toki CSS ale ona li tan ilo gzipt">
+    </figure>
+:::
+
+toki CSS ale pi lipu musi ni li tan ilo gzip, pakala a. lon, ona li ike lukin pakala. taso ilo pi alasa pakala li toki e pona. ilo li ken sitelen e lipu kepeken ona. kin la ona li lanpan ala e ale pi lipu ante. suwi a.
+
+@ gemini.level=3
+@ gemini.level=3
+#### pini
+
+ilo pi pali lili li sin ala. ona li ilo toki la ona li pona ala pona? ala. taso ilo lzma li tan tenpo sike 1998, li ken anpa e ilo GPT-2-124M lon kulupu HellaSwag. ni li epiku a. kin la ni la sina ken lukin pona e ni: pali lili en toki pi ijo kama li pali wan.

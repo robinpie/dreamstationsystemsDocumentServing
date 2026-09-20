@@ -1,20 +1,132 @@
 ---
 id: index
-// STUB. Technical bones only: not a translation yet. `draft` keeps it off the
-// retro protocols, out of the search indexes, and unlinked from the English
-// page everywhere except staging. Delete the line to publish. triptych.md §9.
+// toki pona. `draft` keeps it html-only, noindex and unlinked outside staging;
+// delete the line to publish. triptych.md §9.
 draft: 1
-title: robin’s page 🌠🏰🚀
-html.page_title: robin’s page
-description: lipu ni li pini ala.
+title: lipu pi jan Apen 🌠🏰🚀
+gopher.title: lipu pi jan Apen
+html.page_title: lipu pi jan Apen
+description: ni li lipu pi jan Apen. lipu toki li lon. ilo pana li lon: ona li kepeken nasin toki linluwi lili pi tenpo pini. pali mi pi toki ilo li lon kin. ilo ni li kama tan pali ni.
 ---
 
-mi pali e lipu ni. ona li pini ala.
+// nimiCheck: allow viewpoint fontliberator xcaca
+@links
+// Only the rows whose label text is English are restated (README: the WHOLE
+// row). Everything else is inherited from content/index.tri and triptych.conf.
+statuspage  html=/professional/status \
+            gemini=https://dreamstation.systems/professional/status \
+            gopher=https://dreamstation.systems/professional/status \
+            html.label="lipu pi pilin ilo"
+ftp         html=ftp://dreamstation.systems gemini=ftp://dreamstation.systems gopher=ftp://dreamstation.systems \
+            gopher.label="ftp://dreamstation.systems  (poki lipu FTP)"
+geminiurl   html=gemini://dreamstation.systems/ gemini=- gopher=gemini://dreamstation.systems \
+            gopher.label="gemini://dreamstation.systems  (ma sama, kepeken nasin Gemini)"
+spartan     html=spartan://dreamstation.systems/ gemini=spartan://dreamstation.systems gopher=spartan://dreamstation.systems \
+            gopher.label="spartan://dreamstation.systems  (ma sama, kepeken nasin Spartan)"
+@end
 
-// These three exercise link localisation: the first two name pages that have
-// a toki pona version and so stay in the language; the third names one that
-// does not, and falls back to English by itself.
+@ gopher.wrap=72
+mi jan Apen! mi olin e ilo ThinkPad. mi jan pi toki pona. mi musi kepeken ilo pana.
+
 @ html.as=p
-=> [lipu blog](@blogpage)
-=> [Falsehoods Programmers Believe About LANs](@post:lanfalsehoods)
-=> [how to use the dreamstation.systems NTP server](@ntpuser)
+=> [o lukin e lipu toki mi a!](@blogpage)
+
+## ilo pana lon ilo sona ni
+
+@ html.as=p gemini.align=line
+=> only=gemini,gopher [sona pi nasin toki ante ({gopher:Gemini}{gemini:Gopher}, DICT, QOTD, FTP...)](@services)
+=> [lipu pi pilin ilo (nasin HTTP taso)](@statuspage)
+
+@ html.class=projects gopher.indent=2
+- ilo pana tenpo NTP/NTS-KE lon kulupu NTP Pool{html: [[html:<span class="sep">|</span>]] [nasin kepeken pi ilo pana NTP lon dreamstation.systems](@ntpuser)}
+- {html:kulupu lipu}{gemini:poki Gemini}{gopher:lupa Gopher} ni (ilo {html:[OpenGET](@openget)}{!html:OpenGET} li lon insa)
+- {html:[nasin Gopher](@gopherurl)}{!html:nasin Gopher}
+- {html:[nasin Gemini](@geminiurl)}{!html:nasin Gemini}
+- {html:[nasin Spartan](@spartan)}{!html:nasin Spartan}
+- nasin Finger (o kepeken{!html::} `finger @dreamstation.systems`)
+- nasin DICT
+- {html:[poki lipu FTP](@ftp)}{!html:poki lipu FTP}
+- nasin QOTD
+- nasin Daytime
+- nasin Echo
+- nasin Discard
+- nasin Chargen
+
+::: only gemini gopher
+@ gemini.col=32
+=> [nasin kepeken pi ilo pana NTP lon dreamstation.systems](@ntpuser)
+=> [nanpa pi ilo pana NTP (ilo li sin e ona lon tenpo ale)](@ntpstats)
+=> [ilo OpenGET](@openget)
+=> [ma sama, kepeken nasin Gopher](@gopherurl)
+=> [ma sama, kepeken nasin Gemini](@geminiurl)
+=> [ma sama, kepeken nasin Spartan](@spartan)
+=> [poki lipu FTP](@ftp)
+:::
+
+## pali mi
+
+@ html.class=projects html.pair=1 gemini.col=58
+=> [!~ATH | toki ilo nasa mi tan lipu Homestuck](@ath)
+=> [viewpoint | ilo pi toki tawa ilo sona, kepeken nasin WIMP](@viewpoint)
+=> [fontliberator | ilo li pali sin e nasin sitelen, li lanpan ala. jan li pali ala](@fontlib)
+=> [xcaca | ilo pana X lon sitelen ASCII](@xcaca)
+=> [ilo ni la lipu pi musi Hypnospace Outlaw li kama lipu W3 lon](@hsp)
+=> only=gemini,gopher [toki ilo Oboe. ona li tawa pali ale. mi en jan Jade K. li pali e ona](@oboe)
+=> only=gemini [jan Jade K.](@sushii)
+=> raw=html   <li>toki ilo <a href="https://github.com/OboeLang/oboe">Oboe</a>. ona li tawa pali ale. mi en <a href="https://sushii64.com/">jan Jade K.</a> li pali e ona.</li>
+
+## o toki tawa mi
+
+@ gopher.wrap=72
+o [pana e {html:📧}lipu linluwi tawa mi](@mail) a! sina wile toki e “toki!” taso la, ni kin li pona. jan lukin pi lipu mi li toki tawa mi la, mi pilin pona mute
+
+@ pair=labels html.class=contact
+- lipu linluwi: | [robin@dreamstation.systems](@mail)
+- ilo Signal: | g9ij.47
+- ilo Discord: | g9ij
+
+## jan pona
+
+@ gemini.col=32
+=> [https://nnycap.neocities.org/](@nnycap)
+=> [https://sushii64.com](@sushii)
+
+@ gopher.tight=1
+## lipu ante ni li epiku tawa mi
+
+@ gemini.col=32 gopher.tight=1
+=> [https://fervor.diy/](@fervor)
+
+::: only gemini gopher
+@ indent=0 gopher.blank=3
+```
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::                                                    ::
+::    --                        --                    ::
+::          ::####::                                  ::
+::          ########                            --    ::
+::          ########                                  ::
+::          ::####::                    ::            ::
+::                                    ::--::          ::
+::                --                ::--##--::        ::
+::                                    ::::::          ::
+::                                  ==@@======        ::
+::--                                  ::::            ::
+::                                --  ====::    ::    ::
+::                              ::@@  ====::::  @@::  ::
+::                              ::==::@@==::::::==::  ::
+::      ==                  --    ==::::::    ::==    ::
+::    ======        ::    ::::    ::==@@@@==::::::    ==
+::  ::::::::::    ::::      ==::::            ::::::::==
+::::::::::::::::    ==::::  ::==::::        ::::==::::==
+::::::::::::::::::  ::::----::  ::==@@@@======::  ::  ==
+::::::::::::::--------------::  ::  @@    ==  ::  ::  ==
+::--------------------------::::::  ==    ==  ::::----**
+**------------------------------::::@@    @@::::------@@
+@@**--**--**--------------------------::::------------@@
+@@**********----**------------**----::::::--**------**@@
+@@****************--**----****--==::::::::==--********@@
+@@**************************--::::::::::::::==--******@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+```
+:::

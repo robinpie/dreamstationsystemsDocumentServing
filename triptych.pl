@@ -938,6 +938,7 @@ sub blocks_out {
 				}
 			}
 		} elsif ($b->{type} eq 'postlist') {
+			my $edited = str($doc, 'edited');
 			my $host = $CONF{gopher}{host};
 			my $port = $CONF{gopher}{port};
 			my @rows;
@@ -952,14 +953,14 @@ sub blocks_out {
 					my $sep = ' <span class="sep">|</span> ';
 					my $line = sprintf '<li><a href="%s">%s</a>%s<time datetime="%s">%s</time>',
 						(spellings('html', $pp))[0], $title, $sep, $f->{date}, $f->{date};
-					$line .= sprintf '%sedited <time datetime="%s">%s</time>', $sep, $ed, $ed if $ed;
+					$line .= sprintf '%s%s <time datetime="%s">%s</time>', $sep, $edited, $ed, $ed if $ed;
 					push @rows, '  ' . $line . '</li>';
 				} elsif ($t eq 'gemini') {
 					push @rows, { url => "$f->{id}.gmi",
-						label => "$title | $f->{date}" . ($ed ? " | edited $ed" : '') };
+						label => "$title | $f->{date}" . ($ed ? " | $edited $ed" : '') };
 				} else {
 					push @rows, sprintf "0%s\t%s\t%s\t%s",
-						"$title | $f->{date}" . ($ed ? " | edited $ed" : ''),
+						"$title | $f->{date}" . ($ed ? " | $edited $ed" : ''),
 						(spellings('gopher', $pp))[1], $host, $port;
 				}
 			}
@@ -1285,6 +1286,13 @@ sub preserved_block {
 # keeps a block (the index's hand-written JSON-LD, say) off the translations.
 my $ROBOTS = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
 my $GATE   = '<!--# if expr="$drafts" -->';    # see nginx: true on staging only
+
+# One chrome string, in the language of the page asking.
+sub str {
+	my ($doc, $k) = @_;
+	my $lang = $doc->{lang} // $SRCLANG;
+	return $CONF{"strings.$lang"}{$k} // $CONF{strings}{$k} // $k;
+}
 
 sub lang_vars {
 	my ($v, $doc, $t) = @_;

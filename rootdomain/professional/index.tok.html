@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <!--
-  STUB: the toki pona translation of index.html. Technical bones only; there
-  is no translation here yet.
-
-  This page is hand-written, like index.html, so translating it means copying
-  index.html over everything below the <head> and translating in place. What
-  must survive that copy is in this file already: lang="tok", the canonical,
-  the three hreflang lines (the same three index.html carries), and the
-  language link back. Leave the JSON-LD behind: those nodes are the site
-  graph's definitions and may be defined once. Leave out the "unique client
-  IP addresses" sentence's markers too, or teach ntpStatHook.pl this file.
+  The toki pona translation of index.html. Hand-maintained, like index.html:
+  same body structure, same section ids (they are nav anchors and stay in
+  English), text translated in place. Language rules: content/tok/README.md.
 
   It is a DRAFT: noindex here, and index.html's links to it are gated to
-  staging. index.html's head says how to publish. nginx parses this page for
-  SSI (snippets/statusCgi.conf), so the status box include works here as well.
+  staging. index.html's head says how to publish.
+
+  Deliberately absent: the JSON-LD (those nodes are the site graph's
+  definitions and are defined once, on the English page), and the
+  ntpStatHook.pl-maintained "unique client IP addresses" figure, which is
+  stated here without exact numbers so that nothing goes stale.
+
+  The comment after this one vouches for the lowercase proper names on the
+  page (project, package and program names that are right as written), so
+  that nimiCheck.pl passes without wrapping them in code tags.
 -->
+<!-- nimiCheck: allow lapo onion nftables syslog xcaca libcaca evdev viewpoint
+     notcurses libvterm libsixel reedbed monopd dinky dinky-git
+     warpinator-windows plasma-claude-usage atlantik-git chessament-git
+     kdominate-git hash-o-matic-git localquens -->
 <html lang="tok">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Robin Reel</title>
-  <meta name="description" content="lipu ni li pini ala.">
+  <title>jan Apen (Robin Reel) ⁂ ilo sona, ilo pana, linluwi, nasin awen</title>
+  <meta name="description" content="jan Apen (Robin Reel) ⁂ ilo sona, ilo pana, linluwi, nasin awen ⁂ ma tomo Springfield lon ma Missouri.">
   <meta name="author" content="Robin Reel">
   <link rel="canonical" href="https://dreamstation.systems/professional/index.tok.html">
   <link rel="alternate" hreflang="en" href="https://dreamstation.systems/professional/">
@@ -28,21 +33,385 @@
   <link rel="alternate" hreflang="x-default" href="https://dreamstation.systems/professional/">
   <meta name="robots" content="noindex, nofollow">
 
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <style>html{color-scheme:light dark}body{padding:1rem;font:100%/1.5 system-ui,sans-serif}.proto{font-size:.85rem}:focus-visible{outline:2px solid;outline-offset:2px}</style>
+  <style>html{color-scheme:light dark}body{padding:1rem;font:100%/1.5 system-ui,sans-serif}.skip:not(:focus){position:absolute;left:-100vw}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(20rem,100%),1fr));gap:1rem}section{margin-block:2rem}article,th,td,.statbox{border:1px solid#888}article{border-radius:.5rem;padding:1rem}article>:first-child{margin-top:0}article>:last-child{margin-bottom:0}table{border-collapse:collapse;width:100%}caption,th,td{padding:.5em}caption{text-align:left}header{display:flow-root}header ul{display:flex;flex-wrap:wrap;gap:.25rem 1rem;list-style:none;padding:0}header li+li:before{content:"⁂"/"";margin-inline-end:1rem}header a{display:inline-block;padding:.25rem 0}ul{padding-left:1.2em}a{overflow-wrap:anywhere}pre,.scroll{overflow-x:auto}.proto{font-size:.85rem}.statbox{float:right;width:min(15rem,100%);border-radius:.5rem;padding:.5rem .75rem;margin:0 0 1rem 1.5rem;font-size:.85rem}.sbrow{display:grid;grid-template-columns:2.2rem 1fr 2.4rem;gap:.5rem;align-items:center;margin-block:.35rem}.bar{display:flex;height:.7rem;border:1px solid;border-radius:.25rem;overflow:hidden}.bar>*{height:100%;background:currentColor}.bar u{opacity:.3}.sbval{font-variant:tabular-nums;text-align:right}.sbmore{margin:.5rem 0 0;text-align:center}@media(max-width:40rem){.statbox{float:none;width:auto;margin-left:0}}:focus-visible{outline:2px solid;outline-offset:2px}</style>
 </head>
+
 <body>
 
+<a class="skip" href="#main">o tawa insa pi lipu ni</a>
+
 <header>
-  <nav class="proto" aria-label="Language"><a href="./" hreflang="en" lang="en">English</a></nav>
-  <h1>Robin Reel</h1>
+
+  <!-- Server vitals box, injected by nginx SSI from status.cgi in box mode.
+       See ~/configNotes/status.txt. The <aside> element itself comes from the
+       CGI, so if the include fails this expands to nothing and the page is
+       unchanged rather than left with an empty bordered box. -->
+  <!--#include virtual="/professional/status-box" -->
+
+  <!-- Protocol switcher. After the status box in source so the float sits to
+       its right; absolute URLs so each link means the same thing whichever of
+       the three you are reading this over. Each points at this translation,
+       not at /professional/. -->
+  <nav class="proto" aria-label="nasin toki">
+    <a href="https://dreamstation.systems/professional/index.tok.html">HTTPS</a> |
+    <a href="http://dreamstation.systems/professional/index.tok.html">HTTP (ilo lukin linluwi sin li ante e ni tawa HTTPS)</a> |
+    <a href="http://dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion/professional/index.tok.html">.onion (ni li wile e ilo Tor Browser)</a>
+  </nav>
+  <!-- Language switcher. Relative, unlike the links above: it should keep you
+       on whichever of the three origins you arrived over. -->
+  <nav class="proto" aria-label="toki"><a href="./" hreflang="en" lang="en">English</a></nav>
+
+  <h1>jan Apen (Robin Reel)</h1>
+  <p>mi jan pali pi ilo sona. mi pali lon ilo pana, lon linluwi, lon ijo ante mute. nasin awen li suli tawa mi lon pali ale.</p>
+
+  <address>
+    <ul>
+      <li>ma tomo Springfield lon ma Missouri (mi ken pali tan ma weka, mi ken tawa ma ante)</li>
+      <li><a href="mailto:robin@dreamstation.systems">robin@dreamstation.systems</a></li>
+      <li><a href="tel:+14174140502">(417) 414‒0502</a></li>
+      <li><a href="https://github.com/robinpie" rel="me">lipu GitHub</a></li>
+      <li><a href="https://www.linkedin.com/in/robin-reel/" rel="me">lipu LinkedIn</a></li>
+      <li><a href="../personal/blog.tok.html" rel="me">lipu toki mi (ona li lon lipu musi mi, li lipu pali ala)</a></li>
+      <li><a href="../resume.html">lipu lili pi pali mi (Resume)</a></li>
+    </ul>
+  </address>
+
+  <nav aria-label="kipisi lipu">
+    <ul>
+      <li><a href="#about">mi jan seme</a></li>
+      <li><a href="#experience">pali mi</a></li>
+      <li><a href="#security">alasa pi lupa ike tan wile mi</a></li>
+      <li><a href="#infrastructure">ilo pana en linluwi mi</a></li>
+      <li><a href="#software">ilo tan mi</a></li>
+      <li><a href="#opensource">ilo pi toki ilo open</a></li>
+      <li><a href="#skills">sona mi</a></li>
+      <li><a href="#education">kama sona</a></li>
+    </ul>
+  </nav>
 </header>
 
 <main id="main">
-  <p>mi pali e lipu ni. ona li pini ala.</p>
+
+<section id="about">
+  <h2>mi jan seme</h2>
+
+  <p>mi jan pali pi ilo sona (IT Specialist) lon kulupu misikeke. kulupu ni li lon ma tomo Springfield lon ma Missouri. lon ni la mi lawa e linluwi, e ilo pana, e ilo sona pi jan pali. mi awen kin e ona ale. mi kama sona lon tomo sona Missouri State University. tenpo mun 5 pi tenpo sike 2027 la mi pini e ni, mi kama jo e lipu sona “BS in Information Technology” pi nasin “IT Infrastructure”.</p>
+
+  <p>jan mute li kepeken ijo, li wile e ona la pali lon ijo ni li pona nanpa wan tawa mi. mi lawa e ilo pana tenpo pi nasin NTP tawa jan ale. mi lawa kin e ilo pana mi pi lipu linluwi. mi kama lukin kin e lupa ike mute lon ilo ni: jan li kepeken ona lon pali ona. lupa wan la jan pi wile misikeke li ken kama pakala.</p>
+
+  <p>mi wile pali lon ilo pana, lon linluwi, lon lawa pi ilo sona, lon nasin awen. mi wile mute e pali ni: ilo li wile pali lon tenpo ale, li wile awen tan jan ike. ona li pakala la ike lon li kama. <time datetime="2027-05">tenpo mun 5 pi tenpo sike 2027</time> la mi ken open e pali pi tenpo ale (“full‐time”). ken la mi ken open e pali pi kama sona (Internship) anu pali pi tenpo lili lon tenpo ni kin: tenpo mun ni li kama ala.</p>
+</section>
+
+
+<section id="experience">
+  <h2>pali mi</h2>
+
+  <div class="cards">
+
+  <article>
+    <h3>jan pali pi ilo sona (IT Specialist), <time datetime="2026-08">tenpo mun 8 pi tenpo sike 2026</time> – tenpo ni ✦ jan pali pi kama sona (IT Intern), <time datetime="2026-04">tenpo mun 4 pi tenpo sike 2026</time> – <time datetime="2026-08">tenpo mun 8 pi tenpo sike 2026</time></h3>
+    <p><strong>kulupu Health Hub Clinic &amp; Health Guardian Imaging</strong></p>
+    <p>mi pali e ale pi ilo sona tawa tomo misikeke, tawa kulupu poka ona pi sitelen sijelo. lon ni la pali ale li wile kute e lawa HIPAA.</p>
+
+    <h4>ilo pana en linluwi</h4>
+    <ul>
+      <li>ilo pana lipu en ilo lawa pi nasin Active Directory (Domain Controller) li kepeken ilo Windows Server 2016. mama ona li pini pona e ilo ni (“end‐of‐support”). mi weka e ona, mi pana e ilo Samba lon ilo Debian Linux lon ma ona. tan ni la kulupu li wile ala pana e mani tawa lipu ken sin (License), tawa ilo sin. mani ni li $3,000 anu mute.</li>
+      <li>ilo lupa PACS (PACS Gateway) li lon tenpo suli. sijelo ona li open pakala. mi tawa e ona tawa ilo sona pi sijelo ala: ona li lon insa pi ilo sona ante. tenpo pini la ilo pi sitelen sijelo li pini pali lon tenpo mute. tenpo ni la ni li kama ala.</li>
+      <li>ilo nasin (Router) pi linluwi kon li lon. ona li ilo tawa tomo pi jan wan, li tawa ala kulupu pali. ona li pali e nasin NAT lon sewi pi nasin NAT ante (Double NAT). mi weka e ona, mi pana e ilo Access Point. mi ken lawa e ona ale lon ma wan. sinpin awen (Firewall) SonicWall TZ600 la mama ona li pini pona e ona. mi tawa e ale ona tawa ilo SonicWall TZ670.</li>
+      <li>ilo NAS li lon ma weka, li toki tawa tomo pali kepeken nasin VPN. mi tawa e ona tawa linluwi tomo pi tomo pali. mi pali e ni: ona li ken toki sin tawa sinpin awen, tawa ilo sona Windows, tawa ilo kute pi sitelen sijelo.</li>
+      <li>kon wawa li pakala e ilo sona lupa (Jumpbox) la jan li ken ala kama tawa ilo pana. tenpo ilo 2 (“2 hours”) li pini ala la mi pona e ni. mi alasa e pakala, mi kama lukin e ona: palisa lili wan pi ilo lawa RAID (RAID Controller) li jo e lupa lili tan wawa linja. mi pana e lipu lili lon anpa ona la wawa li ken tawa sin.</li>
+      <li>linluwi li jo ala e lipu sona. mi pali e lipu sona nanpa wan ona. mi kepeken ilo Nmap, mi lukin e lawa pi sinpin awen, mi alasa e nasin pi linja ale kepeken luka mi.</li>
+    </ul>
+
+    <h4>nasin awen</h4>
+    <ul>
+      <li>mi kama lukin e lupa toki wan (Endpoint). ona li lukin ala e ni: jan toki li jan seme. kepeken ona la jan ike li ken ante e lipu sijelo (Patient Chart) kepeken nasin HTTP PATCH. lipu ni li toki e misikeke pi jan wan, e ijo ni kin: seme li ike tawa sijelo ona (Allergy). mi kama lukin kin e lupa ike lon ilo EMR. kulupu pali mi li pali e ilo EMR ona. kepeken lupa ni la jan li ken kama insa lon poka pi nasin awen (Authentication Bypass). ni la ona li ken lukin e sona sijelo len (PHI). mi kama lukin e lupa ike 3 ante lon ilo ante. kulupu ni li pali e ilo ni kin. lupa wan li Stored XSS: jan kepeken li ken sitelen e toki lon ilo. ilo li weka pona ala e toki ilo ike tan toki ni. lupa tu ante li Broken Access Control: kepeken ona la jan li ken lukin e toki len pi jan ante. lupa ale ni li 5. mi pona e lupa 2. mi toki e lupa 3 ante tawa jan pali pi ilo ni. ni li pini la mi alasa sin e lupa ale ni. ona ale li weka.</li>
+      <li>mi open e ilo Wazuh SIEM. ilo Agent ona li lon ilo pana pi tomo pali, li lon ilo lupa PACS, li lon ilo sona pi jan pali. ilo sona ni li 20 anu nanpa poka.</li>
+      <li>mi pali e lawa Compliance Baseline lon ilo Microsoft Intune, e lawa Conditional Access lon ilo Entra ID. lawa ni li pana e pona tawa ni: ilo Windows en ilo Office en ilo Teams li kute e lawa HIPAA.</li>
+      <li>mi kama lukin e ni lon nimi linluwi wan (Domain): lon tenpo suli la nasin DMARC ona li lawa ala e ijo. nasin SPF ona li pakala. mi pana lukin e ni: jan ale li ken pana e lipu linluwi kepeken nimi pana pi lon ala. ni li pini la mi pona e lipu SPF, mi wawa e nasin DMARC lon nimi linluwi pi kulupu ni: tenpo ni la nasin DMARC li lawa lon.</li>
+      <li>mi pali e alasa Phishing pi lon ala (Phishing Simulation). jan lawa li pana e ken tawa ni. mi pali e ale ona: mi pali e toki pi lon ala (Pretext), e lipu kama (Landing Page), e ale ante. pini la mi toki e ni tawa jan lawa: seme li kama.</li>
+      <li>mi kama lukin e ike ante pi nasin awen, mi pona e ona: nasin SMB Signing li pali ala. ilo sona mute pi jan pali li kepeken ilo ni: mama ona li pini pona e ona. sona DICOM li len ala, li tawa lon linluwi tomo pi jan pali ale.</li>
+    </ul>
+
+
+  </article>
+  </div>
+</section>
+
+
+<section id="security">
+  <h2>alasa pi lupa ike tan wile mi</h2>
+
+  <div class="cards">
+
+  <article>
+    <h3>lipu Manifold Markets — mani sama li tawa lon tenpo tu (Double Spend) lon esun “dependent multiple‐choice”</h3>
+    <p>mi kama lukin e lupa ike ni. mi toki e ona tawa kulupu Manifold kepeken nasin pona (Responsible Disclosure). kulupu li pana e mani tawa mi tan ni (Bug Bounty).</p>
+    <p>lon esun “dependent multiple‐choice” pi lipu Manifold la ken mute li lon. pini la ken wan taso li kama YES. ken ante ale li kama NO. tan ni la ilo esun (Automated Market Maker, AMM) li ante e nanpa pi ken ale lon tenpo ale: kulupu pi nanpa ale li wile awen 100%. jan wan li ken jo e wile esun awen mute (Limit Order) lon esun. tenpo pini la jan li ken pali e ni: lon ante wan taso la ilo AMM li pali e wile esun awen mute pi jan wan. ni la ilo li pali e wile ale ni. jan ni li jo e mani tawa wile wan taso la ni kin li kama. tenpo pini la ni li ken kama: esun li jo e ken 3. nanpa ona li 33/33/33. jan li pana e mani tawa YES lon ken nanpa 1. tan ni la ilo AMM li anpa e ken tu ante lon tenpo sama. wile esun awen 2 li lon ni la ilo li ken pali e ona tu. ni la mani sama li tawa lon tenpo tu.</p>
+  </article>
+
+  <article>
+    <h3>ilo OpenEMR — ike pi awen sona (Integrity)</h3>
+    <p>mi taso li kama lukin e ona, li toki e ona tawa kulupu OpenEMR. lipu GitHub Security Advisory li toki e ni: mi jan alasa (Finder) pi ike ni. tenpo ni la lipu ni li open ala tawa jan ale. nanpa CVE kin li lon ala. mi awen e ni: lipu li kama open, nanpa CVE li kama lon.</p>
+  </article>
+  </div>
+</section>
+
+
+<section id="infrastructure">
+  <h2>ilo pana en linluwi mi</h2>
+
+  <div class="cards">
+
+  <article>
+    <h3>ilo pana tenpo tawa jan ale: nasin NTP en nasin NTS</h3>
+    <p>ilo pana tenpo pi nanpa Stratum 2. ona li lon kulupu NTP Pool (<a href="https://www.ntppool.org/scores/67.215.249.229">pool.ntp.org</a>). ona li pana e tenpo kepeken nasin NTP pi len ala lon lupa UDP/123, kepeken nasin NTS lon lupa TCP/4460. ona li kepeken ilo chrony lon ilo Debian. tenpo ni la ilo lukin pi kulupu ni li pana e nanpa 20 tawa ona. nanpa ni li ken ala kama sewi.</p>
+    <p>ilo pana tenpo nanpa 2 mi. ona kin li lon kulupu NTP Pool (<a href="https://www.ntppool.org/scores/198.44.55.245">pool.ntp.org</a>). ona li pana e tenpo kepeken nasin NTP pi len ala lon lupa UDP/123. ona kin li kepeken ilo chrony lon ilo Debian.</p>
+    <ul>
+      <li>nanpa lili li lon <a href="/professional/status">lipu pi pilin ilo</a>. nanpa mute li lon <a href="../ntpstats.txt">ntpstats.txt</a></li>
+      <li><a href="/personal/ntpuserinfo.tok.html">sona tawa jan kepeken</a></li>
+      <li>ilo kute pi nanpa IP ante li mute mute: nanpa IP 100,000,000 anu mute li wile e tenpo tan ilo pana tenpo mi. nanpa IPv4 ale pi ken lon linluwi la kipisi ona li kama tawa ilo pana mi. nanpa pi tenpo ni li lon <a href="../ntpstats.txt">ntpstats.txt</a>.</li>
+      <li>ilo kute ike li pana e wile pi mute ike la ilo nftables li weka e wile ona. lawa ona li lukin e mute wile (Rate Limiter).</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3>ilo pana ante lon dreamstation.systems</h3>
+    <ul>
+      <li>ilo pana mi pi lipu linluwi. nasin SPF en DKIM en DMARC en MTA-STS en TLS-RPT li pona ale lon ona. tan ni la nanpa ona lon ilo SpamAssassin li 4.9 lon tenpo pini, li 0.6 lon tenpo ni.</li>
+      <li>linluwi DMZ. nasin WireGuard li wan e ona e ilo VPS. tan ni la mi ken lawa e ilo pana tawa jan ale lon linluwi tomo mi. sijelo pi ilo pana ni li lon monsi pi nasin NAT.</li>
+      <li>ilo Bridge pi linluwi Tor. ona li kepeken nasin obfs4. tenpo mun wan la sona pi 500 GB anu nanpa poka li tawa lon ona.</li>
+      <li>nasin Gopher, nasin Gemini, nasin Spartan, nasin Finger, nasin toki lili ante.</li>
+      <li><a href="/professional/status">lipu pi pilin ilo</a>.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3>kulupu lipu ni <a href="https://github.com/robinpie/dreamstationsystemsDocumentServing">(poki pi toki ilo ona)</a></h3>
+    <ul>
+      <li>lipu pi pilin ilo. ona li lukin e ilo pana mi (ale ala, taso mute), e wawa pi ilo sona. ilo CGI lili pi toki ilo Perl li pali e ona</li>
+      <li>sona JSON-LD suli (Profile Graph) li lon kulupu lipu ni. tan ni la ilo li ken lukin e sona mi, li ken sona e ona.</li>
+      <li>ma pi lukin open (Staging) li lon. ona li len kepeken nasin HTTP Basic Authentication. mi wile pana e lipu sin tawa jan ale la mi lukin e ni lon ma ni lon tenpo nanpa wan: ilo pana lon li pana pona ala pona e lipu?</li>
+      <li>ni li lon: nasin Web Key Directory, lipu <code>/.well-known/security.txt</code>, lipu <code>robots.txt</code>, lipu <code>llms.txt</code>, lipu <code>humans.txt</code>.</li>
+      <li>kulupu lipu ni li lon kin lon linluwi Tor (Onion Service): <a href="http://dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion/professional/">http://dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion/professional/</a></li>
+    </ul>
+  </article>
+
+  <article>
+    <h3><a href="../personal/lawa.tok.html">ilo lawa</a> (ilo alasa lon linluwi)</h3>
+    <ul>
+      <li>tenpo ni la ona li kama jo e nimi sewi HTTP tan ilo pana mute lon linluwi. tenpo kama la mi lukin pona e sona ni. sona open lili li lon lipu ona: o lukin e nimi tawa lon sewi.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3>linluwi tomo mi pi kipisi mute</h3>
+    <ul>
+      <li>nasin VLAN li kipisi e linluwi. ilo Wazuh SIEM li kama jo e lipu pi pali ilo (Log). toki nasa li tawa lon linluwi la ilo li toki e ni tawa mi.</li>
+      <li>ilo sona pi tenpo pini suli li ken ala kepeken ilo Agent pi ilo Wazuh. ilo Windows ona li jo ala e nasin syslog. ilo ona taso la lipu pi pali ilo li ken ala tawa ilo ante. taso mi kama jo e lipu ona kin. mi taso li pali e ilo tawa lipu (Shipper), e ilo lukin lipu (Parser) kepeken toki ilo Perl. ilo Qwen li lon ilo sona mi, li pana e toki lili pi sona ni.</li>
+    </ul>
+  </article>
+  </div>
+</section>
+
+
+<section id="software">
+  <h2>ilo tan mi</h2>
+
+  <div class="cards">
+
+  <article>
+    <h3><a href="https://grandexchange.dreamstation.systems">OpenGET</a></h3>
+    <p>ilo ni li lukin e esun lon insa pi musi Old School RuneScape, li awen sona e mani pi ijo esun lon tenpo. insa ona li kepeken toki ilo Go. poki sona ona li ilo SQLite.</p>
+    <ul>
+      <li>ona li kama jo e nanpa mani tan ilo “real‐time prices API” pi lipu OSRS Wiki, li pana e ona tawa poki sona pi leko mute (Tiered Archive). poki ni li jo kin e nanpa pi tenpo sike 5 pini (Backfill). ona li kepeken ilo SQLite lon nasin WAL, li kepeken kulupu linja tu (Dual Pool). tenpo pimeja ale la ona li wan e nanpa lili tawa nanpa suli (Rollup), li weka e nanpa pi wile ala (Prune), li lili e poki (Compaction).</li>
+      <li>jan kepeken li wile ala e lipu jan (Account). ilo li sona e jan kepeken lipu lili Cookie taso. nimi len (Token) li 128 bit, li lon sitelen Crockford Base32. ilo pana li awen e nanpa SHA-256 pi nimi len taso, li awen ala e nimi len.</li>
+      <li>lipu ale li kepeken nasin lipu wan taso. mi ante e ijo lon ma wan la ilo li pali e lipu ale lon nasin HTML, lon nasin Gemtext, lon nasin Gophermap, lon sitelen taso.</li>
+      <li>ona li kute e lawa WCAG 2.2 Level AA.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3><a href="https://github.com/robinpie/ath">!~ATH</a></h3>
+    <p>toki ilo nasa (Esoteric Programming Language) pi pali mute lon tenpo sama (Concurrent). lon ona la nasin pali ale li ni: ilo li awen. ijo li moli la pali li kama. ona li tan toki ilo ~ATH pi lon ala. toki ilo ~ATH li tan lipu musi Homestuck. sike pali (Loop) li awen e moli pi ijo wan. ijo li moli la insa sike li pali (Death Callback).</p>
+    <ul>
+      <li>ona li pali e ona sama (Self‐hosting): ilo ante toki (Transpiler) ona li kepeken toki ilo !~ATH, li pana e toki ilo C89. ni la ona li kepeken nasin “continuation‐passing style”. linja pi toki ilo !~ATH li 19,000 anu nanpa poka. alasa pakala 497 (Test Case) li lon.</li>
+      <li>ijo ni li ken moli (Entity): ilo tenpo, pali ilo (Process), linja linluwi, ilo lukin lipu (File Watcher), lupa IPv4 pi selo ala (Raw Socket). toki ilo ni li ken toki lon linluwi, li ken kama jo e sona, li ken pana e sona (I/O), li ken toki tawa toki ilo C (C FFI). ona li pali lon ilo Linux, lon ilo Windows, lon nasin WebAssembly.</li>
+      <li>ona li jo e <a href="https://robinpie.neocities.org/ath/">ma musi lon ilo lukin linluwi</a> tawa toki ilo !~ATH nanpa 1.3.</li>
+      <li><strong>!^CAKE</strong> li toki ilo poka. ona li toki e selo sona (Schema Definition Language), li toki pi pali pan suwi. ona li pini e lupa lon nasin FFI pi toki ilo !~ATH: tenpo pini la nasin FFI li ken pana e nanpa wan (Scalar), e nanpa ma (Pointer), taso li ken ala pana e kulupu nanpa (Aggregate). lipu pan (Recipe) li toki e ni: sona li lon nasin seme lon poki sona, sama toki ilo C (Byte Layout). lipu pan li ken wan kepeken ilo “merge”, kepeken ilo “tagged‐union”. lipu pan ale li kama nimi lili pi sitelen 8. nasin ni li sama lon tenpo ale (Deterministic). ilo tu li ken lukin e nimi lili ni lon linja, li ken sona e ni: ona li sama ala sama? ni li pini la ona li open pana e sona.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3><a href="https://github.com/robinpie/xcaca">xcaca</a></h3>
+    <p>ilo pana X11. ona li sitelen e sitelen ona lon ilo Terminal kepeken sitelen ASCII (ASCII Art). tan ni la ilo kute X pi nasa ala li ken pali lon nasin SSH, li ken pali lon ilo sona pi sinpin lukin ala (Headless).</p>
+    <ul>
+      <li>ona li lon sewi pi ilo Kdrive, li kepeken ilo libcaca tawa sitelen.</li>
+      <li>ilo libcaca li pana e sona pi nena sitelen. tan sona ni la ilo xcaca li pali e nanpa nena pi nasin evdev (Scancode). tan ni la ilo kute X li kama jo e sona pi supa nena, e sona pi ilo luka (Mouse), lon nasin SSH, lon ilo sona sama kin.</li>
+      <li>jan kepeken li ken ante e nasin Dithering, e kulupu sitelen (Character Set). ona li ken ante e suno (Brightness), e nanpa Gamma, e ante pi walo en pimeja (Contrast). open la ilo li kama sona e ni kepeken TIOCGWINSZ: leko sitelen wan pi ilo Terminal li suli seme lon poka, li suli seme lon sewi (Aspect Ratio).</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3><a href="https://github.com/robinpie/.hsp-to-web">ilo ante lipu pi musi Hypnospace Outlaw</a></h3>
+    <p>pali ni li pini ala. ona li ante e lipu pi musi <cite>Hypnospace Outlaw</cite> tawa lipu linluwi lon. nasin lipu pi musi ni li jo ala e lipu sona. tan ni la mi wile kama sona e nasin ni lon tenpo nanpa wan. mi kama sona tan lukin taso (Reverse Engineering).</p>
+    <ul>
+      <li>mi sitelen e sona ale pi nasin <code>.hsp</code>: ona li kulupu nanpa (Array) tan ilo Construct 2. ona li jo e nasin 3: nasin wan li jo e ijo lipu (Element), nasin ante li jo e pilin ijo (State), nasin pini li jo e sona ijo (Property). mi sitelen kin e nasin ni: toki musi li kama ante (Story Flag) la musi li ante e insa lipu kepeken pilin ijo ante. mi sitelen kin e lawa pi ma ijo (Coordinate), e lawa pi nasin lipu (Layout), lon lipu ale 1,292 pi musi ni.</li>
+      <li>musi ni li kalama e kalama musi kepeken nasin Tracker. mi pali sin e nasin ni. pali mi li pona tawa ni: mi ken ante e lipu <code>.hsm</code> ale tawa lipu kalama. ni li lon pali mi: nasin pi kulupu kalama (Pattern Sequencing), nanpa BPM pi kulupu kalama wan, lipu pi ilo kalama (Instrument Table), sewi kalama (Pitch), wawa kalama lon leko wan (Volume), poka kalama (Pan), suli tenpo kalama (Note Gating).</li>
+      <li>pali nanpa wan mi li pali sama musi taso. tenpo ni la mi sitelen sin e nasin sitelen lipu. mi wile e ni: nasin pi ken jan ale (Accessibility) li pali pona.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3><a href="https://github.com/robinpie/viewpoint">viewpoint</a></h3>
+    <p>pali ni li pini ala. ilo ni li pana e ilo Terminal mute lon ilo Terminal wan (Terminal Multiplexer). ona li sama ilo lawa lupa (Window Manager) lon supa pali pi ilo sona: lupa li ken tawa. ona li jo e linja nimi lon sewi, e selo pi ken tawa, e nena Minimize, e nena Maximize. lupa li kama lon pini supa la ona li awen lon ni (Edge Snapping). supa ilo (Taskbar) li lon. lupa ale li lawa e ilo ona lon ilo PTY ona taso. toki ilo C ona li linja 11,000 anu nanpa poka. ona li lon sewi pi ilo notcurses, libvterm, libsixel, GPM.</p>
+    <ul>
+      <li>jan li ken ante e nena ale pi supa nena. lipu lawa li lon insa ilo: ona li lawa e nena (Keybinding), e selo (Theme), e awen pi sitelen pini (Scrollback), e sitelen lili lon supa pali (Desktop Icon). jan kepeken li ken pali e sitelen lili ni. lipu lawa pi nasin XDG li awen e ale ni.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3 lang="tok">ilo toki nasa</h3>
+    <p>ilo toki lili. ona li ilo Decoder pi nasin smolGPT, li jo e nanpa 11M (Parameter). mi open tan ala, mi pana e sona pi toki pona taso tawa ona. mi pali e kulupu lipu (Corpus) tan <a href="https://github.com/kulupu-lapo/poki" lang="tok">kulupu lapo poki</a>: mi weka e sona pi toki ala (Metadata). mi kepeken ilo pi lukin nasin toki (Grammar Analyzer) la mi weka e toki ni: ona li toki pona lon ala. tenpo ni la toki ona li kama jo e kon. taso ni li pini ala.</p>
+  </article>
+
+  <article>
+    <h3><a href="https://github.com/OboeLang/oboe">Oboe</a></h3>
+    <p>toki ilo tawa pali ale (General‐purpose). mi en <a href="https://sushii64.com">jan Jade K.</a> li pali e ona.</p>
+    <ul>
+      <li>ilo Compiler ona li pali e ona sama (Self‐hosting): ilo Lexer, ilo Parser, ilo pi pana toki ilo (Code Generator), toki pakala (Diagnostics) li kepeken toki ilo Oboe, li kama toki ilo C.</li>
+      <li>kulupu ilo (Toolchain) en ilo lawa poki (Package Manager) li lon. ilo lawa poki li kepeken lipu awen (Lockfile). ilo <a href="https://github.com/OboeLang/reedbed">reedbed</a> kin li lon: ona li ilo pana pi poki ale (Package Registry).</li>
+    </ul>
+  </article>
+  </div>
+</section>
+
+
+<section id="opensource">
+  <h2>ilo pi toki ilo open</h2>
+
+  <div class="cards">
+
+  <article>
+    <h3>pana mi tawa pali pi jan ante</h3>
+    <p>mi pana e ante (Pull Request) tawa pali pi jan ante. jan lawa pi pali ni li kama jo e ante mi (Merged). ante ni li lon ona (ale ala):</p>
+    <ul>
+      <li><a href="https://github.com/sedwards2009/dinky">dinky</a>, ilo sitelen lipu lon ilo Terminal: mi pana e ken pi ilo luka kepeken ilo GPM. mi pona e lukin ona lon TTY. mi pana e palisa tawa poka (Horizontal Scrollbar): ona li ken len e ona sama, li ken kama jo e ilo luka (Mouse Capture). mi pana e ni: jan li ken tawa e nena lipu (Tab) kepeken ilo luka la nena ante li tawa kepeken sitelen tawa (Reflow Animation).</li>
+      <li><a href="https://github.com/slowscript/warpinator-windows">warpinator-windows</a>: ilo li wile e ni: jan li toki e pona tawa lipu lawa GPL. wile ni li lon tan ala. mi weka e ona.</li>
+      <li><a href="https://github.com/izll/plasma-claude-usage">plasma-claude-usage</a>: ilo li pana lukin e nanpa pi sitelen mute. taso sitelen pini ona li sona lon ala (False Precision). mi weka e ona.</li>
+      <li><a href="https://github.com/HunterRDev/AC-Letter-Scorer">AC-Letter-Scorer</a>: mi pona e nasin ni: ilo li kama jo e sitelen seme? tenpo ni la ona li lukin ala e sitelen kon lon open (Leading Whitespace).</li>
+    </ul>
+    <p>ante ni li open, li awen e lukin pi jan lawa:</p>
+    <ul>
+      <li><a href="https://invent.kde.org/utilities/konsole/-/merge_requests/1233">KDE Konsole</a>: ante ni la ilo Konsole li ken pana e tawa poka pi sike luka (Horizontal Scrolling) tawa ilo insa. tenpo pini la ilo Konsole li weka e tawa poka ni.</li>
+      <li><a href="https://invent.kde.org/sdk/eloquens/-/merge_requests/7">KDE Eloquens</a>: ilo API wan li moli. ilo Eloquens li wile e ona. ante ni li pana e nasin sama lon insa pi ilo Eloquens.</li>
+    </ul>
+    <p>mi jan pali kin lon pali ni: jan li ante e toki pi ilo Firefox tawa toki pona.</p>
+  </article>
+
+  <article>
+    <h3>poki Arch User Repository</h3>
+    <p>mi lawa e poki ilo 7 (Package). mi sitelen e lipu pali ona (Build Script). lipu ni li lukin e ni: sitelen nimi pi jan pali ilo (Upstream Signature) li pona ala pona?</p>
+    <ul>
+      <li><a href="https://aur.archlinux.org/packages/dinky">dinky</a> en <a href="https://aur.archlinux.org/packages/dinky-git">dinky-git</a> — ilo sitelen lipu lon ilo Terminal</li>
+      <li><a href="https://aur.archlinux.org/packages/atlantik-git">atlantik-git</a> — ilo kute KDE tawa musi supa pi ilo monopd</li>
+      <li><a href="https://aur.archlinux.org/packages/chessament-git">chessament-git</a> — ilo lawa tawa kulupu utala pi musi Chess. ona li kepeken nasin “Swiss‐system”</li>
+      <li><a href="https://aur.archlinux.org/packages/kdominate-git">kdominate-git</a> — musi supa pi lanpan ma</li>
+      <li><a href="https://aur.archlinux.org/packages/hash-o-matic-git">hash-o-matic-git</a> — ilo ni li pali e nanpa Checksum, li lukin e ona</li>
+      <li><a href="https://aur.archlinux.org/packages/localquens">localquens</a> — ilo ni li pali e toki pi kon ala (Placeholder Text) lon ilo sona sina taso. ona li tan ilo KDE Eloquens (Fork)</li>
+    </ul>
+  </article>
+  </div>
+
+</section>
+
+
+<section id="skills">
+  <h2>sona mi</h2>
+
+  <div class="scroll" role="region" aria-labelledby="skills-cap" tabindex="0">
+  <table>
+    <caption id="skills-cap">sona mi lon kulupu, lon suli sona</caption>
+    <thead>
+      <tr>
+        <th scope="col">kulupu</th>
+        <th scope="col">sona pona</th>
+        <th scope="col">sona lili</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">ilo lawa pi ilo sona (Operating System)</th>
+        <td>Linux lon ilo pana, lon ilo sona supa (Desktop); Windows lon ilo sona supa</td>
+        <td>Windows Server</td>
+      </tr>
+      <tr>
+        <th scope="row">ilo pana en linluwi</th>
+        <td>SonicWall, DNS, ilo pana pi lipu linluwi, nasin awen ona (Email Authentication), Wazuh</td>
+        <td>VMware ESXi, Samba, Nmap, Wireshark, Git, systemd</td>
+      </tr>
+      <tr>
+        <th scope="row">lawa lon ilo sona pi jan pali (Endpoint Management)</th>
+        <td>Microsoft Intune, Entra ID</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <th scope="row">toki ilo</th>
+        <td>C, Bash</td>
+        <td>Perl, SQL, Python, JavaScript en TypeScript, Go</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+
+<section id="education">
+  <h2>kama sona en lipu sona</h2>
+
+  <div class="cards">
+
+  <article>
+    <h3>tomo sona Missouri State University</h3>
+    <p>lipu sona “BS, Information Technology”, nasin “IT Infrastructure”. ma tomo Springfield lon ma Missouri. mi pini lon tenpo kama: <time datetime="2027-05">tenpo mun 5 pi tenpo sike 2027</time>.</p>
+  </article>
+
+  <article>
+    <h3>lipu sona (Certifications)</h3>
+    <ul>
+      <li>CompTIA Security+ (2026)</li>
+      <li>CompTIA Network+ (2026)</li>
+      <li>CompTIA A+ (2026)</li>
+    </ul>
+  </article>
+  </div>
+</section>
+
 </main>
+
+<footer>
+  <p>sina wile toki e ijo la o <a href="mailto:robin@dreamstation.systems">📧pana e lipu linluwi tawa mi</a>. ijo ale li pona. jan li toki tawa mi la mi pilin pona mute. mi kute e lawa pi lipu <a href="https://datatracker.ietf.org/doc/rfc1855/">RFC 1855</a> 🤪</p>
+  <p><a href="/pgp.asc">ilo open PGP mi (Public Key)</a> (sitelen luka ona: <code>FB62 3E21 D6B8 7867 1C5E 2603 63CC BF0C D99F 2C2E</code>)</p>
+
+  <p>mi pali e lipu ni. mi kepeken ala ilo Framework. toki ilo CSS pi 1,381 B taso li lon ✨</p>
+
+<pre>#!/usr/bin/env perl
+&{('#/)%'^'``{`').'::'.(',&,(,)*%'^'____^@^@')}(('()?/()'^'{}{`}}'),('**,*@?./*(%,@+%,,@(?#+%,'^'`__^`^@@^@@^`{@^@`@^@@@^').',')</pre>
+
+<a href="https://www.w3.org/WAI/WCAG2AA-Conformance" title="sona pi lawa WCAG 2 Level AA"><img height="31" width="88" src="https://www.w3.org/WAI/WCAG22/wcag2.2AA" alt="lipu ni li kute e lawa Level AA pi lipu W3C Web Content Accessibility Guidelines 2.2"></a>
+
+<img src="/professional/Proudly ZERO JavaScript!.png" alt="toki ilo JavaScript li lon ala a! mi pilin wawa tan ni.">
+
+<img src="/professional/thing2.webp" alt="lipu lili — pali lili la ona li <20 KB">
+
+</footer>
 
 </body>
 </html>

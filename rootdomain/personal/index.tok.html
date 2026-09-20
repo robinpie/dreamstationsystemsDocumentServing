@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>robin’s page</title>
-  <meta name="description" content="lipu ni li pini ala.">
+  <title>lipu pi jan Apen</title>
+  <meta name="description" content="ni li lipu pi jan Apen. lipu toki li lon. ilo pana li lon: ona li kepeken nasin toki linluwi lili pi tenpo pini. pali mi pi toki ilo li lon kin. ilo ni li kama tan pali ni.">
   <meta name="author" content="robin">
   <link rel="canonical" href="https://dreamstation.systems/personal/index.tok.html">
   <link rel="alternate" hreflang="en" href="https://dreamstation.systems/personal/">
@@ -31,8 +31,8 @@
   <link rel="alternate" type="application/rss+xml" title="robin’s blog (RSS)" href="/personal/rss.xml">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="robin’s page">
-  <meta property="og:description" content="lipu ni li pini ala.">
+  <meta property="og:title" content="lipu pi jan Apen">
+  <meta property="og:description" content="ni li lipu pi jan Apen. lipu toki li lon. ilo pana li lon: ona li kepeken nasin toki linluwi lili pi tenpo pini. pali mi pi toki ilo li lon kin. ilo ni li kama tan pali ni.">
   <meta property="og:url" content="https://dreamstation.systems/personal/index.tok.html">
   <meta property="og:site_name" content="robin’s page">
   <meta property="og:locale" content="tok">
@@ -54,7 +54,7 @@
        match the desktop. Geometry is unchanged by the move: it is absolutely
        positioned against the initial containing block either way, since
        neither .desktop nor body is positioned. -->
-  <a class="skip" href="#content">Skip to page content</a>
+  <a class="skip" href="#content">o tawa insa lipu</a>
   <!-- The ubuntu804 theme wraps this page in a picture of an Ubuntu 8.04
        desktop. The chrome is three fragments under chrome/, pulled in by
        nginx; every other theme expands these to nothing. chrome/top.html
@@ -62,9 +62,9 @@
 <!--# if expr="$theme = ubuntu804" --><!--# set var="wtitle" value="robin’s page" --><!--# set var="path" value="$document_uri" --><!--# include virtual="/personal/chrome/top.html" --><!--# endif -->
   <header class="site-header">
     <nav class="site-nav">
-      <a href="index.tok.html">🏠 home</a>
-      <a href="blog.tok.html">📓 blog</a>
-      <a href="/professional">💼 my professional site</a>
+      <a href="index.tok.html">🏠 lipu open</a>
+      <a href="blog.tok.html">📓 lipu toki</a>
+      <a href="/professional">💼 lipu pali mi</a>
       <a href="https://grandexchange.dreamstation.systems">📈 OpenGET</a>
       <a href="index.html" hreflang="en" lang="en">🌐 English</a>
 
@@ -77,36 +77,81 @@
            theme across, since the cookie does not follow to another origin. -->
       <form method="get" action="/personal/proto<!--# echo var="document_uri" -->">
         <input type="hidden" name="theme" value="<!--# echo var="theme" -->">
-        <select name="to" aria-label="Protocol">
+        <select name="to" aria-label="nasin toki">
           <option value="https"<!--# if expr="$proto_now = https" --> selected<!--# endif -->>HTTPS</option>
           <option value="http"<!--# if expr="$proto_now = http" --> selected<!--# endif -->>HTTP</option>
           <option value="onion"<!--# if expr="$proto_now = onion" --> selected<!--# endif -->>.onion (Tor)</option>
         </select>
-        <button type="submit">Go</button>
+        <button type="submit">o tawa</button>
       </form>
       <!-- A GET form, so switching themes is a plain form submission to
            ?theme=<id> and needs no JavaScript. nginx reads the parameter and
            SSI stamps the choice back in below - see nginx/snippets/theme.conf. -->
       <form method="get">
-        <select name="theme" aria-label="Theme">
+        <select name="theme" aria-label="selo">
           <option value="gtk2"<!--# if expr="$theme = gtk2" --> selected<!--# endif -->>GTK2</option>
           <option value="motif"<!--# if expr="$theme = motif" --> selected<!--# endif -->>Motif</option>
           <option value="skeuslop"<!--# if expr="$theme = skeuslop" --> selected<!--# endif -->>skeuslop</option>
           <option value="ubuntu804"<!--# if expr="$theme = ubuntu804" --> selected<!--# endif -->>Ubuntu 8.04</option>
           <option value="plain"<!--# if expr="$theme = plain" --> selected<!--# endif -->>Plain</option>
         </select>
-        <button type="submit">Apply</button>
+        <button type="submit">o ante</button>
       </form>
     </div>
   </header>
 <!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/mid.html" --><!--# endif -->
 
   <main id="content">
-    <h1>robin’s page 🌠🏰🚀</h1>
-    <p>mi pali e lipu ni. ona li pini ala.</p>
-    <p><a href="/personal/blog.tok.html">lipu blog</a></p>
-    <p><a href="lanfalsehoods.tok.html">Falsehoods Programmers Believe About LANs</a></p>
-    <p><a href="ntpuserinfo.html">how to use the dreamstation.systems NTP server</a></p>
+    <h1>lipu pi jan Apen 🌠🏰🚀</h1>
+    <p>mi jan Apen! mi olin e ilo ThinkPad. mi jan pi toki pona. mi musi kepeken ilo pana.</p>
+    <p><a href="/personal/blog.tok.html">o lukin e lipu toki mi a!</a></p>
+
+    <h2>ilo pana lon ilo sona ni</h2>
+    <p><a href="/professional/status">lipu pi pilin ilo</a></p>
+    <ul class="projects">
+      <li>ilo pana tenpo NTP/NTS-KE lon kulupu NTP Pool <span class="sep">|</span> <a href="ntpuserinfo.tok.html">nasin kepeken pi ilo pana NTP lon dreamstation.systems</a></li>
+      <li>kulupu lipu ni (ilo <a href="https://grandexchange.dreamstation.systems">OpenGET</a> li lon insa)</li>
+      <li><a href="gopher://dreamstation.systems/">nasin Gopher</a></li>
+      <li><a href="gemini://dreamstation.systems/">nasin Gemini</a></li>
+      <li><a href="spartan://dreamstation.systems/">nasin Spartan</a></li>
+      <li>nasin Finger (o kepeken <code>finger @dreamstation.systems</code>)</li>
+      <li>nasin DICT</li>
+      <li><a href="ftp://dreamstation.systems">poki lipu FTP</a></li>
+      <li>nasin QOTD</li>
+      <li>nasin Daytime</li>
+      <li>nasin Echo</li>
+      <li>nasin Discard</li>
+      <li>nasin Chargen</li>
+    </ul>
+
+    <h2>pali mi</h2>
+    <ul class="projects">
+      <li><a href="https://github.com/robinpie/ath">!~ATH</a> <span class="sep">|</span> toki ilo nasa mi tan lipu Homestuck</li>
+      <li><a href="https://github.com/robinpie/viewpoint">viewpoint</a> <span class="sep">|</span> ilo pi toki tawa ilo sona, kepeken nasin WIMP</li>
+      <li><a href="https://github.com/robinpie/fontliberator">fontliberator</a> <span class="sep">|</span> ilo li pali sin e nasin sitelen, li lanpan ala. jan li pali ala</li>
+      <li><a href="https://github.com/robinpie/xcaca">xcaca</a> <span class="sep">|</span> ilo pana X lon sitelen ASCII</li>
+      <li><a href="/hsptohtml/README/pages/README.html">ilo ni la lipu pi musi Hypnospace Outlaw li kama lipu W3 lon</a></li>
+      <li>toki ilo <a href="https://github.com/OboeLang/oboe">Oboe</a>. ona li tawa pali ale. mi en <a href="https://sushii64.com/">jan Jade K.</a> li pali e ona.</li>
+    </ul>
+
+    <h2>o toki tawa mi</h2>
+    <p>o <a href="mailto:robin@dreamstation.systems">pana e 📧lipu linluwi tawa mi</a> a! sina wile toki e “toki!” taso la, ni kin li pona. jan lukin pi lipu mi li toki tawa mi la, mi pilin pona mute</p>
+    <ul class="contact">
+      <li><span class="label">lipu linluwi:</span> <a href="mailto:robin@dreamstation.systems">robin@dreamstation.systems</a></li>
+      <li><span class="label">ilo Signal:</span> g9ij.47</li>
+      <li><span class="label">ilo Discord:</span> g9ij</li>
+    </ul>
+
+    <h2>jan pona</h2>
+    <ul>
+      <li><a href="https://nnycap.neocities.org/">https://nnycap.neocities.org/</a></li>
+      <li><a href="https://sushii64.com/">https://sushii64.com</a></li>
+    </ul>
+
+    <h2>lipu ante ni li epiku tawa mi</h2>
+    <ul>
+      <li><a href="https://fervor.diy/">https://fervor.diy/</a></li>
+    </ul>
 
   </main>
   <footer>

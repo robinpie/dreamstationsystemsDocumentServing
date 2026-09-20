@@ -282,12 +282,16 @@ A promote does carry the draft *file* to the live docroot, where it is reachable
 
 **Chrome strings** are `[strings]` in `triptych.conf`, overridden key by key in `[strings.<lang>]`; templates ask for `{{s_<key>}}`. A missing translation falls back to English rather than shipping empty. Template variables: `lang`, `og_locale`, `canonical`, `robots`, `alternates`, `langswitch`, `nav_home`, `nav_blog` (and `_p`, padded for gemtext’s aligned columns), and `original` — set on a source page and empty on a translation, which is how `index.tpl` keeps its hand‐written JSON-LD off the translations.
 
+**The language itself** has its own guide: `content/tok/README.md` fixes the vocabulary (nimi ku suli + `linluwi`), the names rule and a shared glossary, and `assetsBuild/nimiCheck.pl <file>` checks a `.tri` or a hand‐written `.html` against that vocabulary — a spell‐checker for stray English and nimi sin, not a judge of the toki pona. It is not part of the commit chain.
+
 **Not done yet**, deliberately — none of it blocks translating:
 
 - JSON-LD for translated `index`/`blog` (posts have it; `inLanguage` follows the page). Needs a decision about `@id`s, and `makeMeta.py` only knows `blog.html`.
 - The sitemap and the feeds are English‐only.
 - The retro index pages have no language link yet: `services`, the gophermap and the capsule root would each want a row once there is something non‐draft to point at.
-- `chrome/*.html` (the ubuntu804 desktop’s menus) is English.
+- `chrome/*.html` (the ubuntu804 desktop’s menus) is English, and so is the generated fragment `lawa.tok.html` includes (`lawa-data.html`).
+- `ntpuserinfo`’s hand‐written JSON-LD head block is left off its translation, for the same `@id` reason.
+- Label text in the site‐wide `[links]` table is English; `content/tok/index.tri` restates the three rows it needs. A `[links.<lang>]` section would be the tidy version.
 - `/professional/` is hand‐written, so its translation is too: `index.tok.html` beside `index.html`, same suffix convention, the same `$drafts` gate written by hand. The stub’s leading comment says how to fill it in.
 
 ## 10. Notes for later

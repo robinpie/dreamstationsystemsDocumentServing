@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>lipu blog — robin’s page</title>
-  <meta name="description" content="lipu ni li pini ala.">
+  <title>lipu toki — robin’s page</title>
+  <meta name="description" content="lipu toki pi nasin ala nanpa wan lon linluwi ale.">
   <meta name="author" content="robin">
   <link rel="canonical" href="https://dreamstation.systems/personal/blog.tok.html">
   <link rel="alternate" hreflang="en" href="https://dreamstation.systems/personal/blog.html">
@@ -31,8 +31,8 @@
   <link rel="alternate" type="application/rss+xml" title="robin’s blog (RSS)" href="/personal/rss.xml">
 
   <meta property="og:type" content="blog">
-  <meta property="og:title" content="lipu blog — robin’s page">
-  <meta property="og:description" content="lipu ni li pini ala.">
+  <meta property="og:title" content="lipu toki — robin’s page">
+  <meta property="og:description" content="lipu toki pi nasin ala nanpa wan lon linluwi ale.">
   <meta property="og:url" content="https://dreamstation.systems/personal/blog.tok.html">
   <meta property="og:site_name" content="robin’s page">
   <meta property="og:locale" content="tok">
@@ -66,7 +66,7 @@
        match the desktop. Geometry is unchanged by the move: it is absolutely
        positioned against the initial containing block either way, since
        neither .desktop nor body is positioned. -->
-  <a class="skip" href="#content">Skip to page content</a>
+  <a class="skip" href="#content">o tawa insa lipu</a>
   <!-- The ubuntu804 theme wraps this page in a picture of an Ubuntu 8.04
        desktop. The chrome is three fragments under chrome/, pulled in by
        nginx; every other theme expands these to nothing. chrome/top.html
@@ -74,9 +74,9 @@
 <!--# if expr="$theme = ubuntu804" --><!--# set var="wtitle" value="blog — robin’s page" --><!--# set var="path" value="$document_uri" --><!--# include virtual="/personal/chrome/top.html" --><!--# endif -->
   <header class="site-header">
     <nav class="site-nav">
-      <a href="index.tok.html">🏠 home</a>
-      <a href="blog.tok.html">📓 blog</a>
-      <a href="/professional">💼 my professional site</a>
+      <a href="index.tok.html">🏠 lipu open</a>
+      <a href="blog.tok.html">📓 lipu toki</a>
+      <a href="/professional">💼 lipu pali mi</a>
       <a href="https://grandexchange.dreamstation.systems">📈 OpenGET</a>
       <a href="blog.html" hreflang="en" lang="en">🌐 English</a>
 
@@ -89,35 +89,46 @@
            theme across, since the cookie does not follow to another origin. -->
       <form method="get" action="/personal/proto<!--# echo var="document_uri" -->">
         <input type="hidden" name="theme" value="<!--# echo var="theme" -->">
-        <select name="to" aria-label="Protocol">
+        <select name="to" aria-label="nasin toki">
           <option value="https"<!--# if expr="$proto_now = https" --> selected<!--# endif -->>HTTPS</option>
           <option value="http"<!--# if expr="$proto_now = http" --> selected<!--# endif -->>HTTP</option>
           <option value="onion"<!--# if expr="$proto_now = onion" --> selected<!--# endif -->>.onion (Tor)</option>
         </select>
-        <button type="submit">Go</button>
+        <button type="submit">o tawa</button>
       </form>
       <!-- A GET form, so switching themes is a plain form submission to
            ?theme=<id> and needs no JavaScript. nginx reads the parameter and
            SSI stamps the choice back in below - see nginx/snippets/theme.conf. -->
       <form method="get">
-        <select name="theme" aria-label="Theme">
+        <select name="theme" aria-label="selo">
           <option value="gtk2"<!--# if expr="$theme = gtk2" --> selected<!--# endif -->>GTK2</option>
           <option value="motif"<!--# if expr="$theme = motif" --> selected<!--# endif -->>Motif</option>
           <option value="skeuslop"<!--# if expr="$theme = skeuslop" --> selected<!--# endif -->>skeuslop</option>
           <option value="ubuntu804"<!--# if expr="$theme = ubuntu804" --> selected<!--# endif -->>Ubuntu 8.04</option>
           <option value="plain"<!--# if expr="$theme = plain" --> selected<!--# endif -->>Plain</option>
         </select>
-        <button type="submit">Apply</button>
+        <button type="submit">o ante</button>
       </form>
     </div>
   </header>
 <!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/mid.html" --><!--# endif -->
 
   <main id="content">
-    <h1>lipu blog</h1>
+    <h1>lipu toki</h1>
+    <!-- Also the feeds' <subtitle>/<description>, and the Blog node's
+         description above. It was only ever in those two; now the page
+         it describes says it too. -->
+    <p class="tagline">lipu toki pi nasin ala nanpa wan lon linluwi W3</p>
     <ul class="posts">
-      <li><a href="lanfalsehoods.tok.html">Falsehoods Programmers Believe About LANs</a> <span class="sep">|</span> <time datetime="2026-09-05">2026-09-05</time></li>
+      <li><a href="tesla.tok.html">kulupu Tesla li utala e mi lon linluwi</a> <span class="sep">|</span> <time datetime="2026-09-13">2026-09-13</time></li>
+      <li><a href="ntppool.tok.html">o toki insa e ni: sina ken pana e ilo pana tenpo tawa kulupu NTP Pool</a> <span class="sep">|</span> <time datetime="2026-09-08">2026-09-08</time></li>
+      <li><a href="lanfalsehoods.tok.html">linluwi lili la jan pi toki ilo li pilin e ijo pi lon ala</a> <span class="sep">|</span> <time datetime="2026-09-05">2026-09-05</time></li>
+      <li><a href="ntppost.tok.html">kulupu lili li lawa e linluwi: ike open pi nasin NAT</a> <span class="sep">|</span> <time datetime="2026-08-30">2026-08-30</time></li>
+      <li><a href="hypnospace.tok.html">lipu pi musi Hypnospace Outlaw li kama tawa linluwi lon</a> <span class="sep">|</span> <time datetime="2026-08-27">2026-08-27</time></li>
+      <li><a href="slowqotd.tok.html">toki QOTD nasa li kute kin e lawa; anu, ilo pana QOTD pi <em>tawa lili mute</em></a> <span class="sep">|</span> <time datetime="2026-06-22">2026-06-22</time></li>
+      <li><a href="gzipt.tok.html">mi musi kepeken ken toki pi ilo gzip</a> <span class="sep">|</span> <time datetime="2026-06-17">2026-06-17</time></li>
     </ul>
+    <p class="subscribe">o awen kute: <a href="feed.xml">Atom</a> <span class="sep">|</span> <a href="rss.xml">RSS</a></p>
   </main>
   <footer>
     <ul class="badges">

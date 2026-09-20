@@ -1,11 +1,25 @@
 ---
 id: blog
-// STUB — see content/tok/index.tri.
+// Lists the posts that exist under content/tok/post/, and no others.
 draft: 1
-title: lipu blog
-description: lipu ni li pini ala.
+title: lipu toki
+description: lipu toki pi nasin ala nanpa wan lon linluwi ale.
 ---
 
-// Lists the posts that exist under content/tok/post/, and no others.
+::: only html
+::: raw html
+    <!-- Also the feeds' <subtitle>/<description>, and the Blog node's
+         description above. It was only ever in those two; now the page
+         it describes says it too. -->
+:::
+
+@ html.class=tagline
+lipu toki pi nasin ala nanpa wan lon linluwi W3
+:::
+
 @ html.class=posts gemini.gap=1
 @postlist
+
+::: raw html
+    <p class="subscribe">o awen kute: <a href="feed.xml">Atom</a> <span class="sep">|</span> <a href="rss.xml">RSS</a></p>
+:::
