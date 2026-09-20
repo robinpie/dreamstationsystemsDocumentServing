@@ -36,6 +36,16 @@ server {
 
     access_log off;
 
+    # nginx's own redirects — above all the automatic /personal -> /personal/
+    # one — are built as absolute URLs from the port nginx is LISTENING on, so
+    # they came out as http://<addr>.onion:8081/personal/, a port the onion
+    # does not expose: "connection refused" in Tor Browser on the first click.
+    # tor maps onion :80 to our :8081 and nginx cannot know that. Relative
+    # Location headers sidestep the question (and any future port change);
+    # every browser resolves them. Also covers the `return 301 /path` in
+    # statusCgi.conf.
+    absolute_redirect off;
+
     root /srv/http;
     index index.html;
 
@@ -73,6 +83,10 @@ server {
 
     access_log off;
     error_log  /var/log/nginx/openget-error.log;
+
+    # As above. OpenGET's own redirects come from the upstream and are not
+    # affected either way; this only covers anything nginx itself issues.
+    absolute_redirect off;
 
     client_max_body_size 1m;
 
