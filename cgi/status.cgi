@@ -57,6 +57,11 @@ use constant {
 	DISK_SNAP   => '/run/status/disk.txt',
 	SEEN_SET    => '/var/lib/dashboard/ntp_clients_seen.bin',
 
+	# The second host. statusPull.service leaves starport's vitals here, in the
+	# same formats as our own files, once a minute. See read_remote().
+	REMOTE_DIR   => '/run/status/starport',
+	REMOTE_STALE => 200,   # seconds; ~3 missed pulls. Older than this is "unknown"
+
 	CACHE_TTL      => 20,    # seconds a rendered sweep stays authoritative
 	SWEEP_DEADLINE => 8,     # give up starting new probes after this
 	TCP_TIMEOUT    => 1.5,   # per plain probe (measured max on loopback: 281ms)
@@ -236,7 +241,10 @@ sub read_cpu {
 	# The span is reported honestly rather than always claiming 5 minutes:
 	# after a reboot, or if the timer has been stopped, the window is short
 	# and the label says so.
-	open my $fh, '<', CPU_HIST or return undef;
+	# The path argument is for the second host — see read_remote(). The same
+	# goes for read_mem(), read_uptime() and read_disk() below.
+	my $path = shift // CPU_HIST;
+	open my $fh, '<', $path or return undef;
 	my @l = <$fh>;
 	close $fh;
 	return undef if @l < 2;
@@ -253,7 +261,8 @@ sub read_cpu {
 }
 
 sub read_mem {
-	open my $fh, '<', '/proc/meminfo' or return undef;
+	my $path = shift // '/proc/meminfo';
+	open my $fh, '<', $path or return undef;
 	my %m;
 	while (<$fh>) { $m{$1} = $2 if /^(\w+):\s+(\d+)/ }
 	close $fh;
@@ -291,7 +300,8 @@ sub read_mem {
 }
 
 sub read_uptime {
-	open my $fh, '<', '/proc/uptime' or return undef;
+	my $path = shift // '/proc/uptime';
+	open my $fh, '<', $path or return undef;
 	my $l = <$fh>; close $fh;
 	my ($secs) = split ' ', $l;
 	return $secs;
@@ -378,7 +388,8 @@ sub read_qps {
 # condensed by statusSample.sh. The persistent history is never opened here
 # — see status.txt. At most ~360 "p" lines, so this is a ~4KB read of tmpfs.
 sub read_disk {
-	open my $fh, '<', DISK_SNAP or return undef;
+	my $path = shift // DISK_SNAP;
+	open my $fh, '<', $path or return undef;
 	my (%o, @series);
 	while (<$fh>) {
 		# "p <bucket> <ts> <used>". The two-field form is the previous
@@ -393,6 +404,43 @@ sub read_disk {
 	return undef unless $o{total} && $o{total} > 0;
 	$o{series} = \@series;    # sorted by timestamp on the way in
 	return \%o;
+}
+
+# The second host, starport. NOTHING HERE TOUCHES THE NETWORK: statusPull.service
+# fetches these files over SSH once a minute, and this is five small reads of
+# tmpfs through the same parsers as our own figures. An SSH handshake on the
+# request path would cost more than the entire sweep. See status.txt.
+#
+# Always returns a hash. `age` is how old the figures are, or undef if we have
+# never heard from the box; `fresh` says whether they are young enough to show.
+# WHEN THEY ARE NOT, THE FIGURES ARE NOT RETURNED AT ALL, so no caller can draw
+# a bar from stale data by forgetting to check — the page says "unknown".
+#
+# The age is (now - pulled_at) + sample_age: how long ago we fetched, plus how
+# old the sample already was when we fetched it. Each term is a difference of
+# two readings of the SAME clock (ours, then starport's), so skew between the
+# two boxes cancels instead of making old data look new. See statusPull.sh.
+sub read_remote {
+	my %r = (fresh => 0);
+	open my $fh, '<', REMOTE_DIR . '/meta' or return \%r;
+	my %m;
+	while (<$fh>) { $m{$1} = $2 if /^(\w+) (\d+)/ }
+	close $fh;
+	return \%r unless $m{pulled_at};
+
+	my $age = (time - $m{pulled_at}) + ($m{sample_age} // 0);
+	$age = 0 if $age < 0;
+	$r{age} = $age;
+	return \%r if $age > REMOTE_STALE;
+
+	$r{fresh} = 1;
+	$r{cpu}   = read_cpu(REMOTE_DIR . '/cpu.hist');
+	$r{mem}   = read_mem(REMOTE_DIR . '/meminfo');
+	$r{disk}  = read_disk(REMOTE_DIR . '/disk.txt');
+	# The snapshot's uptime, carried forward by the snapshot's age.
+	my $up = read_uptime(REMOTE_DIR . '/uptime');
+	$r{uptime} = $up + $age if defined $up;
+	return \%r;
 }
 
 sub read_seen {
@@ -587,7 +635,12 @@ sub bar {
 # see status.txt). Returns '' when there is not enough history to draw an
 # honest line, so the caller can simply omit the figure.
 sub disk_graph {
-	my ($d) = @_;
+	# $gid suffixes the title/desc ids, which must be unique per document now
+	# that the page draws one graph per host. $where names the host in the text
+	# alternative, for the same reason: two identical descriptions are useless.
+	my ($d, $gid, $where) = @_;
+	$gid   //= '';
+	$where //= 'dreamstation';
 	my $pts = $d->{series} || [];
 	return '' if @$pts < 2;
 
@@ -660,14 +713,15 @@ sub disk_graph {
 	# picture, because for a screen reader they ARE the picture.
 	# Both of these describe the span ACTUALLY DRAWN, not the nominal window,
 	# so they stay true while the axis is still compressed.
-	my $desc = sprintf 'Disk used on the root filesystem over the last %s: '
+	my $desc = sprintf 'Disk used on the root filesystem of %s over the last %s: '
 	         . '%s GB at the start, %s GB now, ranging between %s and %s GB, '
 	         . 'against a capacity of %s GB.',
-	         dur($span), gb($first->[2]), gb($last->[2]), gb($lo), gb($hi), gb($total);
+	         $where, dur($span), gb($first->[2]), gb($last->[2]), gb($lo), gb($hi), gb($total);
 
 	my $s = qq{<svg viewBox="0 0 } . G_W . qq{ } . G_H . qq{" role="img" }
-	      . qq{aria-labelledby="dgt dgd"><title id="dgt">Disk usage over the last }
-	      . esc(dur($span)) . qq{</title><desc id="dgd">} . esc($desc) . qq{</desc>};
+	      . qq{aria-labelledby="dgt$gid dgd$gid"><title id="dgt$gid">Disk usage on }
+	      . esc($where) . qq{ over the last }
+	      . esc(dur($span)) . qq{</title><desc id="dgd$gid">} . esc($desc) . qq{</desc>};
 
 	# Baseline and capacity ceiling. Both currentColor; the ceiling is dashed
 	# and faded so it never competes with the data line.
@@ -742,6 +796,91 @@ sub disk_graph {
 
 	$s .= qq{</svg>};
 	return $s;
+}
+
+# One host's bars, uptime line and disk graph. Shared by both Host sections so
+# the two cannot drift: same accounting, same hover titles, same graph. $h
+# needs cpu / mem / disk / uptime, any of which may be missing.
+sub host_body {
+	my ($h, $gid, $where) = @_;
+	my $out = '';
+
+	# THE METRIC ROWS ARE BUILT SEPARATELY so they can share ONE grid: a
+	# .metric{display:contents} row on the wrapper's grid puts every row on
+	# the same three tracks, so the value column is sized to the widest value
+	# across all of them and every bar ends up the same width. Deliberately
+	# not a fixed rem width for that column: these strings grow (a swap
+	# figure reaching 1024 / 3072 MB, a resized disk going to three digits),
+	# and a guessed width would clip them or waste space.
+	my $rows = '';
+
+	if ($h->{cpu}) {
+		# Δ, not an instantaneous reading: the bar is a delta between the first
+		# and last samples in cpu.hist. iowait is named explicitly because
+		# folding it into idle is a judgement call, not a given — see the
+		# sampler. The span is already beside the bar ("4m avg"), so the title
+		# says "sampled window" rather than repeating a number.
+		$rows .= qq{<div class="metric"><span>CPU</span>}
+		      . bar($h->{cpu}{pct}, undef, 0,
+		            [ T_CPU, undef ])
+		      . sprintf(qq{<span class="mval">%.0f%% · %s avg</span></div>\n},
+		                $h->{cpu}{pct}, dur($h->{cpu}{span}));
+	}
+	if ($h->{mem}) {
+		my $m = $h->{mem};
+		# Both bars are two-segment: solid = genuinely occupied, faded = the
+		# part that is cheap to reclaim (reclaimable cache for memory, pages
+		# still resident in RAM for swap). The number beside each bar is the
+		# SOLID segment only, matching htop.
+		#
+		# The hover titles below are the only place on the page that says what
+		# each segment is, and give the arithmetic verbatim rather than a
+		# friendly paraphrase — the exact meminfo fields are the whole answer
+		# to "why does this disagree with free(1)". See read_mem().
+		$rows .= qq{<div class="metric"><span>Memory</span>}
+		      . bar(100 * $m->{used} / $m->{total}, 100 * $m->{cache} / $m->{total}, 0,
+		            [ T_MEM_USED, T_MEM_CACHE ])
+		      . sprintf(qq{<span class="mval">%s / %s MB</span></div>\n}, mb($m->{used}), mb($m->{total}));
+		if ($m->{swap_total}) {
+			$rows .= qq{<div class="metric"><span>Swap</span>}
+			      . bar(100 * $m->{swap_used} / $m->{swap_total},
+			            100 * ($m->{swap_cache} // 0) / $m->{swap_total}, 0,
+			            [ T_SWAP_USED, T_SWAP_CACHE ])
+			      . sprintf(qq{<span class="mval">%s / %s MB</span></div>\n},
+			                mb($m->{swap_used}), mb($m->{swap_total}));
+		}
+	}
+	if ($h->{disk}) {
+		my $k = $h->{disk};
+		# df's Used plus Available does NOT add up to Size — the difference is
+		# ext4's reserve, still free. It shrinks toward zero if root ever
+		# writes into it, which is a signal, not a bug. Drawn at the far end
+		# of the bar (third arg to bar()), not adjacent like memory/swap's
+		# faded segment — see status.txt for why.
+		my $reserve_free = $k->{total} - $k->{used} - ($k->{avail} // 0);
+		$reserve_free = 0 if $reserve_free < 0;
+		$rows .= qq{<div class="metric"><span>Disk</span>}
+		      . bar(100 * $k->{used} / $k->{total}, 100 * $reserve_free / $k->{total}, 1,
+		            [ T_DISK_USED, T_DISK_RSVD ])
+		      . sprintf(qq{<span class="mval">%s / %s GB</span></div>\n},
+		                gb($k->{used}), gb($k->{total}));
+	}
+	# Wrapper only if there is something to put in it — on the degraded path
+	# where neither /proc read succeeded, an empty grid would still be an
+	# empty element in the markup.
+	$out .= qq{<div class="metrics">\n$rows</div>\n} if length $rows;
+
+	$out .= qq{<p>Uptime } . esc(dur($h->{uptime})) . qq{.</p>\n} if $h->{uptime};
+
+	# NO FIGCAPTION: the axis labels give the span, the dashed line is
+	# labelled with the capacity figure it sits at, and a five-minute sample
+	# interval is invisible at two-hour buckets — nothing here needs restating
+	# outside the drawing. The <title>/<desc> inside the SVG are the text
+	# alternative for anyone who cannot see it.
+	if ($h->{disk} && (my $svg = disk_graph($h->{disk}, $gid, $where))) {
+		$out .= qq{<figure class="graph">\n$svg\n</figure>\n};
+	}
+	return $out;
 }
 
 sub render {
@@ -824,80 +963,27 @@ CSS
 	$out .= qq{<p><span class="koo" aria-hidden="true">꩜</span> Debian 13 @ }
 	      . qq{RackNerd 1&nbsp;vCPU, 1&nbsp;GB RAM</p>\n};
 
-	# THE METRIC ROWS ARE BUILT SEPARATELY so they can share ONE grid: a
-	# .metric{display:contents} row on the wrapper's grid puts every row on
-	# the same three tracks, so the value column is sized to the widest value
-	# across all of them and every bar ends up the same width. Deliberately
-	# not a fixed rem width for that column: these strings grow (a swap
-	# figure reaching 1024 / 3072 MB, a resized disk going to three digits),
-	# and a guessed width would clip them or waste space.
-	my $rows = '';
+	$out .= host_body($d, '', 'dreamstation');
+	$out .= qq{</section>\n};
 
-	if ($d->{cpu}) {
-		# Δ, not an instantaneous reading: the bar is a delta between the first
-		# and last samples in cpu.hist. iowait is named explicitly because
-		# folding it into idle is a judgement call, not a given — see the
-		# sampler. The span is already beside the bar ("4m avg"), so the title
-		# says "sampled window" rather than repeating a number.
-		$rows .= qq{<div class="metric"><span>CPU</span>}
-		      . bar($d->{cpu}{pct}, undef, 0,
-		            [ T_CPU, undef ])
-		      . sprintf(qq{<span class="mval">%.0f%% · %s avg</span></div>\n},
-		                $d->{cpu}{pct}, dur($d->{cpu}{span}));
-	}
-	if ($d->{mem}) {
-		my $m = $d->{mem};
-		# Both bars are two-segment: solid = genuinely occupied, faded = the
-		# part that is cheap to reclaim (reclaimable cache for memory, pages
-		# still resident in RAM for swap). The number beside each bar is the
-		# SOLID segment only, matching htop.
-		#
-		# The hover titles below are the only place on the page that says what
-		# each segment is, and give the arithmetic verbatim rather than a
-		# friendly paraphrase — the exact meminfo fields are the whole answer
-		# to "why does this disagree with free(1)". See read_mem().
-		$rows .= qq{<div class="metric"><span>Memory</span>}
-		      . bar(100 * $m->{used} / $m->{total}, 100 * $m->{cache} / $m->{total}, 0,
-		            [ T_MEM_USED, T_MEM_CACHE ])
-		      . sprintf(qq{<span class="mval">%s / %s MB</span></div>\n}, mb($m->{used}), mb($m->{total}));
-		if ($m->{swap_total}) {
-			$rows .= qq{<div class="metric"><span>Swap</span>}
-			      . bar(100 * $m->{swap_used} / $m->{swap_total},
-			            100 * ($m->{swap_cache} // 0) / $m->{swap_total}, 0,
-			            [ T_SWAP_USED, T_SWAP_CACHE ])
-			      . sprintf(qq{<span class="mval">%s / %s MB</span></div>\n},
-			                mb($m->{swap_used}), mb($m->{swap_total}));
-		}
-	}
-	if ($d->{disk}) {
-		my $k = $d->{disk};
-		# df's Used plus Available does NOT add up to Size — the difference is
-		# ext4's reserve, still free. It shrinks toward zero if root ever
-		# writes into it, which is a signal, not a bug. Drawn at the far end
-		# of the bar (third arg to bar()), not adjacent like memory/swap's
-		# faded segment — see status.txt for why.
-		my $reserve_free = $k->{total} - $k->{used} - ($k->{avail} // 0);
-		$reserve_free = 0 if $reserve_free < 0;
-		$rows .= qq{<div class="metric"><span>Disk</span>}
-		      . bar(100 * $k->{used} / $k->{total}, 100 * $reserve_free / $k->{total}, 1,
-		            [ T_DISK_USED, T_DISK_RSVD ])
-		      . sprintf(qq{<span class="mval">%s / %s GB</span></div>\n},
-		                gb($k->{used}), gb($k->{total}));
-	}
-	# Wrapper only if there is something to put in it — on the degraded path
-	# where neither /proc read succeeded, an empty grid would still be an
-	# empty element in the markup.
-	$out .= qq{<div class="metrics">\n$rows</div>\n} if length $rows;
-
-	$out .= qq{<p>Uptime } . esc(dur($d->{uptime})) . qq{.</p>\n} if $d->{uptime};
-
-	# NO FIGCAPTION: the axis labels give the span, the dashed line is
-	# labelled with the capacity figure it sits at, and a five-minute sample
-	# interval is invisible at two-hour buckets — nothing here needs restating
-	# outside the drawing. The <title>/<desc> inside the SVG are the text
-	# alternative for anyone who cannot see it.
-	if ($d->{disk} && (my $svg = disk_graph($d->{disk}))) {
-		$out .= qq{<figure class="graph">\n$svg\n</figure>\n};
+	# ----- second host
+	#
+	# Same block, fed from files statusPull.service fetched — see read_remote().
+	# Stale or missing data is never drawn: a bar is a claim about now, and the
+	# honest thing to say about a box we have not heard from is that we have not
+	# heard from it. "unknown", not "down" — a failed pull says the PULL failed.
+	my $sp = $d->{starport} || { fresh => 0 };
+	$out .= qq{<section aria-labelledby="host-starport"><h2 id="host-starport">starport</h2>\n};
+	$out .= qq{<p><span class="koo" aria-hidden="true">꩜</span> Debian 13 @ }
+	      . qq{RackNerd 2&nbsp;vCPU, 2&nbsp;GB RAM</p>\n};
+	if ($sp->{fresh}) {
+		$out .= host_body($sp, '-starport', 'starport');
+	} else {
+		$out .= qq{<p class="unknown"><span aria-hidden="true">$MARK{unknown}</span> unknown — }
+		      . (defined $sp->{age}
+		         ? qq{last heard from } . esc(dur($sp->{age})) . qq{ ago.}
+		         : qq{no figures have been received from this host.})
+		      . qq{</p>\n};
 	}
 	$out .= qq{</section>\n};
 
@@ -979,6 +1065,9 @@ CSS
 
 	$out .= qq{</main>\n<footer>\n};
 	$out .= qq{<p>Probes run from the server against loopback.</p>\n};
+	$out .= qq{<p>starport’s figures are collected over SSH once a minute}
+	      . ($sp->{fresh} ? qq{; these are } . esc(dur($sp->{age})) . qq{ old} : '')
+	      . qq{.</p>\n};
 	$out .= qq{<p>Generated by <code>status.cgi</code>, at most once every } . CACHE_TTL . qq{ seconds.</p>\n};
 	$out .= qq{<p class="stamp">Measured <strong>} . esc(dur($age)) . qq{</strong> ago};
 	$out .= sprintf ' · sweep took %.0fms', ($d->{took} // 0) * 1000 if $d->{took};
@@ -1078,6 +1167,9 @@ eval {
 	# one small tmpfs read, cheaper than round-tripping through cache.txt, and
 	# it means the figures are never up to CACHE_TTL stale. See status.txt.
 	$data->{disk} = read_disk();
+	# So does the second host, for the same reason: five small tmpfs reads, and
+	# its freshness verdict must be made NOW, not up to CACHE_TTL ago.
+	$data->{starport} = read_remote();
 	$body = render($data, $stale, $err);
 	1;
 } or do {

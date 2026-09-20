@@ -1,0 +1,13 @@
+[Unit]
+Description=Pull starport's host vitals every 60 seconds
+
+[Timer]
+# 60s, not the sampler's 30s: CPU history accumulates on starport regardless,
+# so this only sets how fresh the page can be, and each tick is an SSH
+# handshake on a single busy vCPU. See status.txt.
+OnBootSec=45s
+OnUnitActiveSec=60s
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target

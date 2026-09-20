@@ -1,0 +1,34 @@
+[Unit]
+Description=Pull starport's host vitals for the status page
+Documentation=file:/home/robin/configNotes/status.txt
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=statuspull
+Group=statuspull
+ExecStart=/usr/local/bin/statusPull.sh
+
+# Never compete with chronyd. Same posture as statusSample.service.
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=30
+
+# A SEPARATE UNIT from statusSample.service on purpose: that one runs as root
+# with no network (AF_UNIX only). This one needs the network and so gets no
+# root. ProtectHome is fine because the key lives in /var/lib/statuspull.
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/run/status/starport
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+MemoryDenyWriteExecute=true
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM

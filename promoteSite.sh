@@ -7,6 +7,7 @@
 #   gopher/          -> /srv/gopher         gophernicus doc root
 #   gemini/          -> /srv/gemini         molly-brown doc root (Spartan too)
 #   statusSample/    -> /usr/local/bin + units  the status page's other half
+#   statusSample/starport/ -> starport, over SSH  the second host's sampler
 #   nginx/           -> /etc/nginx          vhosts and snippets
 #
 # Web content comes from the staging tree so the live docroot matches what was
@@ -107,13 +108,15 @@ if compgen -G "$ROOT/cgi/*.cgi" >/dev/null; then
 	done
 fi
 
-if [ -f "$ROOT/statusSample/statusSample.sh" ]; then
-	if ! bash -n "$ROOT/statusSample/statusSample.sh" 2>/dev/null; then
-		echo "ABORT: statusSample.sh fails syntax check — nothing promoted." >&2
-		bash -n "$ROOT/statusSample/statusSample.sh" || true
+# Every script under statusSample/, including the half that runs on starport.
+for f in "$ROOT"/statusSample/*.sh "$ROOT"/statusSample/starport/*.sh; do
+	[ -f "$f" ] || continue
+	if ! bash -n "$f" 2>/dev/null; then
+		echo "ABORT: ${f#"$ROOT"/} fails syntax check — nothing promoted." >&2
+		bash -n "$f" || true
 		exit 1
 	fi
-fi
+done
 
 # etc/ gates. Unlike nginx there is no one `-t` for these, so each file gets
 # the best offline check its own tool offers, BEFORE anything is installed.
@@ -268,6 +271,54 @@ if [ -d "$ROOT/statusSample" ]; then
 	if [ "$sample_changed" = 1 ] || [ "$units_changed" = 1 ]; then
 		sudo systemctl restart statusSample.timer
 		echo "Promoted statusSample/ → /usr/local/bin + systemd (timer restarted)"
+	fi
+
+	# ---- the second host (starport). Two halves; see status.txt.
+	#
+	# Here: statusPull, which fetches starport's figures over SSH once a minute.
+	# The statuspull user, its key and its pinned known_hosts are one-time
+	# setup and deliberately NOT created here — see status.txt.
+	pull_changed=0
+	if ! sudo cmp -s "$ROOT/statusSample/statusPull.sh" /usr/local/bin/statusPull.sh; then
+		sudo install -m755 -o root -g root \
+			"$ROOT/statusSample/statusPull.sh" /usr/local/bin/statusPull.sh
+		pull_changed=1
+	fi
+	if ! sudo cmp -s "$ROOT/statusSample/statusPull.tmpfiles.conf" /etc/tmpfiles.d/statusPull.conf; then
+		sudo install -m644 -o root -g root \
+			"$ROOT/statusSample/statusPull.tmpfiles.conf" /etc/tmpfiles.d/statusPull.conf
+		sudo systemd-tmpfiles --create /etc/tmpfiles.d/statusPull.conf
+		pull_changed=1
+	fi
+	pull_units=0
+	for u in statusPull.service statusPull.timer; do
+		if ! sudo cmp -s "$ROOT/statusSample/$u" "/etc/systemd/system/$u"; then
+			sudo install -m644 -o root -g root \
+				"$ROOT/statusSample/$u" "/etc/systemd/system/$u"
+			pull_units=1
+		fi
+	done
+	[ "$pull_units" = 1 ] && sudo systemctl daemon-reload
+	if [ "$pull_changed" = 1 ] || [ "$pull_units" = 1 ]; then
+		sudo systemctl enable --quiet statusPull.timer
+		sudo systemctl restart statusPull.timer
+		echo "Promoted statusSample/statusPull → /usr/local/bin + systemd (timer restarted)"
+	fi
+
+	# There: the sampler, shipped over robin's SSH and installed by its own
+	# idempotent install.sh, which prints only when it changed something.
+	#
+	# A FAILURE HERE WARNS AND CARRIES ON. starport being unreachable must not
+	# stop a promote of this box's website; the page reports starport as
+	# unknown on its own if the sampler there is really broken.
+	if [ -d "$ROOT/statusSample/starport" ]; then
+		if ! tar -C "$ROOT/statusSample/starport" -cf - . |
+			ssh -o BatchMode=yes -o ConnectTimeout=8 robin@starport.dreamstation.systems \
+				'rm -rf ~/.statusSample.deploy && mkdir ~/.statusSample.deploy &&
+				 tar -C ~/.statusSample.deploy -xf - &&
+				 sudo bash ~/.statusSample.deploy/install.sh'; then
+			echo "WARNING: could not deploy statusSample/starport to starport — skipped." >&2
+		fi
 	fi
 fi
 

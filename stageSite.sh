@@ -21,13 +21,15 @@ if compgen -G "$ROOT/cgi/*.cgi" >/dev/null; then
 	done
 fi
 
-if [ -f "$ROOT/statusSample/statusSample.sh" ]; then
-	if ! bash -n "$ROOT/statusSample/statusSample.sh" 2>/dev/null; then
-		echo "ABORT: statusSample.sh fails syntax check — nothing staged." >&2
-		bash -n "$ROOT/statusSample/statusSample.sh" || true
+# Every script under statusSample/, including the half that runs on starport.
+for f in "$ROOT"/statusSample/*.sh "$ROOT"/statusSample/starport/*.sh; do
+	[ -f "$f" ] || continue
+	if ! bash -n "$f" 2>/dev/null; then
+		echo "ABORT: ${f#"$ROOT"/} fails syntax check — nothing staged." >&2
+		bash -n "$f" || true
 		exit 1
 	fi
-fi
+done
 
 # -------------------------------------------------------------------- content
 #
