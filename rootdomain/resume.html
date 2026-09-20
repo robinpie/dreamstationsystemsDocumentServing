@@ -258,6 +258,18 @@ td {
   }
 }
 
+/* ---------- Screen scale ---------- */
+
+/* Everything is sized in pt for print, which reads small on a monitor
+   @media screen keeps print untouched. */
+@media screen and (min-width: 10.5in) {
+  .page { zoom: 1.2; }
+}
+
+@media screen and (min-width: 12.5in) {
+  .page { zoom: 1.4; }
+}
+
 /* ---------- Small screens ---------- */
 
 @media screen and (max-width: 8.5in) {
