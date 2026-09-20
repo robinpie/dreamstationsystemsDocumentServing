@@ -821,7 +821,7 @@ CSS
 	# The measured figures live in the bars below and in the Time service section.
 	# The ꩜ is decoration and is aria-hidden, so a screen reader reads the two
 	# halves as one phrase rather than announcing "khmer sign koomuut".
-	$out .= qq{<p><span class="koo" aria-hidden="true">꩜</span> Debian 13 @}
+	$out .= qq{<p><span class="koo" aria-hidden="true">꩜</span> Debian 13 @ }
 	      . qq{RackNerd 1&nbsp;vCPU, 1&nbsp;GB RAM</p>\n};
 
 	# THE METRIC ROWS ARE BUILT SEPARATELY so they can share ONE grid: a
