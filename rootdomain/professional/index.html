@@ -231,7 +231,7 @@
   }
   </script>
 
-  <style>html{color-scheme:light dark}body{padding:1rem;font:100%/1.5 system-ui,sans-serif}.skip:not(:focus){position:absolute;left:-100vw}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(20rem,100%),1fr));gap:1rem}section{margin-block:2rem}article,th,td,.statbox{border:1px solid#888}article{border-radius:.5rem;padding:1rem}article>:first-child{margin-top:0}article>:last-child{margin-bottom:0}table{border-collapse:collapse;width:100%}caption,th,td{padding:.5em}caption{text-align:left}header{display:flow-root}header ul{display:flex;flex-wrap:wrap;gap:.25rem 1rem;list-style:none;padding:0}header li+li:before{content:"⁂"/"";margin-inline-end:1rem}header a{display:inline-block;padding:.25rem 0}ul{padding-left:1.2em}a{overflow-wrap:anywhere}pre,.scroll{overflow-x:auto}.statbox{float:right;width:min(15rem,100%);border-radius:.5rem;padding:.5rem .75rem;margin:0 0 1rem 1.5rem;font-size:.85rem}.sbrow{display:grid;grid-template-columns:2.2rem 1fr 2.4rem;gap:.5rem;align-items:center;margin-block:.35rem}.bar{display:flex;height:.7rem;border:1px solid;border-radius:.25rem;overflow:hidden}.bar>*{height:100%;background:currentColor}.bar u{opacity:.3}.sbval{font-variant:tabular-nums;text-align:right}.sbmore{margin:.5rem 0 0;text-align:center}@media(max-width:40rem){.statbox{float:none;width:auto;margin-left:0}}:focus-visible{outline:2px solid;outline-offset:2px}</style>
+  <style>html{color-scheme:light dark}body{padding:1rem;font:100%/1.5 system-ui,sans-serif}.skip:not(:focus){position:absolute;left:-100vw}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(20rem,100%),1fr));gap:1rem}section{margin-block:2rem}article,th,td,.statbox{border:1px solid#888}article{border-radius:.5rem;padding:1rem}article>:first-child{margin-top:0}article>:last-child{margin-bottom:0}table{border-collapse:collapse;width:100%}caption,th,td{padding:.5em}caption{text-align:left}header{display:flow-root}header ul{display:flex;flex-wrap:wrap;gap:.25rem 1rem;list-style:none;padding:0}header li+li:before{content:"⁂"/"";margin-inline-end:1rem}header a{display:inline-block;padding:.25rem 0}ul{padding-left:1.2em}a{overflow-wrap:anywhere}pre,.scroll{overflow-x:auto}.proto{font-size:.85rem}.statbox{float:right;width:min(15rem,100%);border-radius:.5rem;padding:.5rem .75rem;margin:0 0 1rem 1.5rem;font-size:.85rem}.sbrow{display:grid;grid-template-columns:2.2rem 1fr 2.4rem;gap:.5rem;align-items:center;margin-block:.35rem}.bar{display:flex;height:.7rem;border:1px solid;border-radius:.25rem;overflow:hidden}.bar>*{height:100%;background:currentColor}.bar u{opacity:.3}.sbval{font-variant:tabular-nums;text-align:right}.sbmore{margin:.5rem 0 0;text-align:center}@media(max-width:40rem){.statbox{float:none;width:auto;margin-left:0}}:focus-visible{outline:2px solid;outline-offset:2px}</style>
 </head>
 
 <body>
@@ -245,6 +245,16 @@
        CGI, so if the include fails this expands to nothing and the page is
        unchanged rather than left with an empty bordered box. -->
   <!--#include virtual="/professional/status-box" -->
+
+  <!-- Protocol switcher. After the status box in source so the float sits to
+       its right; absolute URLs so each link means the same thing whichever of
+       the three you are reading this over. Port 80 is not redirected and there
+       is no HSTS, so the HTTP link really does stay HTTP. -->
+  <nav class="proto" aria-label="Protocol">
+    <a href="http://dreamstation.systems/professional/">HTTP</a> |
+    <a href="https://dreamstation.systems/professional/">HTTPS</a> |
+    <a href="http://dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion/professional/">.onion</a> (requires Tor Browser)
+  </nav>
 
   <h1>Robin Reel</h1>
   <p>Security‐minded systems and infrastructure generalist.</p>
