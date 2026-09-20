@@ -124,7 +124,7 @@ sub build {
     my @b;
 
     my $gen = num($d->{generated_at});
-    push @b, [ p => '**lawa** is my web crawler. It crawls the web '
+    push @b, [ p => '<strong>lawa</strong> is my web crawler. It crawls the web '
         . 'and writes down the HTTP headers that come back from each site. Everything below is '
         . 'regenerated every few minutes from what it has seen so far.' ];
     if ($now - $gen > 5400) {
@@ -155,7 +155,7 @@ sub build {
 
     # ---- software
     my $ans = num $H->{answered};
-    push @b, [ h => 'web servers seen' ];
+    push @b, [ h => 'Web servers seen' ];
     push @b, [ table => { head => [ 'Server header', 'servers', 'share' ],
         rows => [ map { [ txt($_->[0], 30), $_->[1], $ans ? $_->[1] / $ans : undef ] } top($H->{server}, 10) ] } ];
     my $named = $ans - num(tbl($H->{server})->{'(none)'});
