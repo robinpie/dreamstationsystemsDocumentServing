@@ -324,6 +324,29 @@ Same certificate, same content, same blast radius (deliberately NOT merged with 
                                                        for any Host that
                                                        doesn't match a real
                                                        server block
+  /etc/nginx/sites-available/onion.dreamstation.systems
+                                                     — the Tor onion service:
+                                                       two server blocks on
+                                                       127.0.0.1:8081 (main
+                                                       site; OpenGET), fed by
+                                                       tor@onion. No access
+                                                       log, absolute_redirect
+                                                       off, sub_filter on the
+                                                       OpenGET links. Full
+                                                       account in
+                                                       ~/configNotes/onion.txt.
+  /etc/nginx/conf.d/onionLocation.conf               — the two maps behind the
+                                                       Onion-Location header
+                                                       (HTTPS only; apex and
+                                                       grandexchange only).
+  /etc/nginx/snippets/onionLocation.conf             — the add_header itself.
+                                                       Same inheritance trap as
+                                                       clacks.conf, so
+                                                       theme.conf re-includes it.
+  /etc/nginx/conf.d/serverNamesHash.conf             — server_names_hash_bucket_size
+                                                       128. Onion names are 62-76
+                                                       chars; with the default 64
+                                                       nginx -t FAILS outright.
 
 All are symlinked into /etc/nginx/sites-enabled/. EDIT sites-available — `tee` into a sites-enabled path writes THROUGH the symlink and silently clobbers the real config (cost ten confusing minutes once; see openget.txt).
 
@@ -333,16 +356,20 @@ THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every hand
 
     nginx/conf.d/compression.conf
     nginx/conf.d/logFormat.conf
+    nginx/conf.d/onionLocation.conf
+    nginx/conf.d/serverNamesHash.conf
     nginx/sites-available/000-default-catchall
     nginx/sites-available/bare-ip
     nginx/sites-available/dreamstation.systems
     nginx/sites-available/fortunes.dreamstation.systems
     nginx/sites-available/grandexchange.dreamstation.systems
+    nginx/sites-available/onion.dreamstation.systems
     nginx/sites-available/pool-ntp.tesla.com
     nginx/sites-available/pool.ntp.org
     nginx/sites-available/staging.dreamstation.systems
     nginx/snippets/clacks.conf
     nginx/snippets/feeds.conf
+    nginx/snippets/onionLocation.conf
     nginx/snippets/pgpKey.conf
     nginx/snippets/accessLog.conf
     nginx/snippets/statusCgi.conf
