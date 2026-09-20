@@ -1,0 +1,11 @@
+---
+id: blog
+// STUB — see content/tok/index.tri.
+draft: 1
+title: lipu blog
+description: lipu ni li pini ala.
+---
+
+// Lists the posts that exist under content/tok/post/, and no others.
+@ html.class=posts gemini.gap=1
+@postlist

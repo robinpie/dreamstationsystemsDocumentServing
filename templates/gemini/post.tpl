@@ -1,4 +1,4 @@
 {{body}}
 
-=> /blog/   back to blog
-=> /        back to home
+=> {{nav_blog_p}}   {{s_back_blog}}
+=> {{nav_home_p}}   {{s_back_home}}

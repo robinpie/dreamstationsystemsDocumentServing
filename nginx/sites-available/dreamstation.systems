@@ -89,6 +89,24 @@ map $theme $theme_color_dark {
     plain     "#121212";
 }
 
+# ------------------------------------------------------ draft translations
+#
+# A translation still marked `draft:` is committed, and so reaches the live
+# docroot on the next promote, but nothing published may point at it. The
+# English page's link to it (and its hreflang line) is therefore wrapped in
+# <!--# if expr="$drafts" -->, which is true on the staging vhost and nowhere
+# else: staging previews the language switcher exactly as it will ship, and
+# the live site stays silent until the `draft:` line is deleted. The draft
+# page itself is reachable by URL on live, unlinked and noindex — the same
+# standing as lawa.html. See triptych.md section 9.
+#
+# Keyed on $server_name (the vhost's configured name), not $host, so no
+# request header can switch it on.
+map $server_name $drafts {
+    default                        "";
+    staging.dreamstation.systems   1;
+}
+
 # --------------------------------------------------------- protocol switcher
 #
 # The /personal/ pages carry a second dropdown beside the theme one: the same

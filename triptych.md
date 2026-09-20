@@ -251,7 +251,46 @@ The order is load‐bearing: triptych renders, the later steps fill the regions 
 
 `makeMeta.py`’s “the dateline contradicts the JSON-LD” abort is structurally unreachable for these pages: both come from one `date:`.
 
-## 9. Notes for later
+## 9. Translations
+
+A translation is a second `.tri` with the same `id`, under `content/<lang>/`:
+
+```
+content/post/gzipt.tri      ->  rootdomain/personal/gzipt.html       gemini/blog/gzipt.gmi      gopher/blog/gzipt.txt
+content/tok/post/gzipt.tri  ->  rootdomain/personal/gzipt.tok.html   gemini/tok/blog/gzipt.gmi  gopher/tok/blog/gzipt.txt
+```
+
+Languages are the rows of `[langs]` in `triptych.conf`; the id is the BCP 47 tag (`tok`, toki pona’s ISO 639‐3 code) and is what lands in `<html lang>`, `hreflang` and the paths. Adding a language is a row there, a directory here, and one more alternative in the two regexes in `nginx/snippets/theme.conf`.
+
+**Distinct URLs, not negotiation.** A language is content, not presentation, so it is not a cookie the way the theme is: each version has its own address, can be linked, cached and indexed, and works identically over the onion service. Nothing reads `Accept-Language`.
+
+**A suffix on the web, a directory on the retro protocols.** `gzipt.tok.html` sits *beside* `gzipt.html`, so every relative path the templates and the posts already use — `base.css`, `themes/`, `badges/`, a post’s images — resolves unchanged, `badgeBuild.pl`’s flat `*.html` glob finds it, and the theme cookie’s `Path=/personal/` covers it. (`<base href>` would have rescued a `/personal/tok/` directory, and broken every `#fragment` link.) Gopher cannot do the same, because a gophermap is found by being *named* `gophermap`; and nothing there is relative, so a `tok/` directory costs nothing.
+
+**A translation states only what is language.** Front matter it omits is inherited from the page it translates — `kind`, `date`, `html.style`, the gophermap switches — and so is that page’s `@links` table. Not inherited, because each would be a false claim on the translation: the titles (`title` is required), `updated`, `draft`, and `pangram`, which attests to the English text.
+
+**Links are written once, as ever.** A translation links `[…](@blog)` or `[…](@post:gzipt)` exactly as the source does. If the page it names has a translation in the same language the link goes there; if not, it goes to the source‐language page. So translating the site one page at a time never leaves a dead link and never needs a link revisited. The templates’ own nav (`{{nav_home}}`, `{{nav_blog}}`) and `@postlist` follow the same rule — a translated blog index lists the posts that exist in its language.
+
+**Every version announces the others.** Pages with more than one version get reciprocal `hreflang` lines (self‐inclusive, `x-default` on the source) and a `🌐` link in the nav per other version, named in its own language. A page with no translation gets neither, and is byte‐identical to what it was before any of this existed.
+
+**`draft: 1`** is how a translation is worked on. A draft
+
+- renders to **html only** — the web is the one protocol with a staging tree, so a gopher or gemini draft would be live the moment it was promoted;
+- is `noindex, nofollow`;
+- is linked from nothing published. The source page’s switcher link and `hreflang` line are wrapped in `<!--# if expr="$drafts" -->`, an nginx map that is true on the staging vhost only — so staging previews the switcher exactly as it will ship and the live site says nothing. Drafts do link to each other, so a half‐translated site can be walked on staging.
+
+A promote does carry the draft *file* to the live docroot, where it is reachable by URL, unlinked and unindexed — the standing `lawa.html` has. Publishing is deleting the `draft:` line.
+
+**Chrome strings** are `[strings]` in `triptych.conf`, overridden key by key in `[strings.<lang>]`; templates ask for `{{s_<key>}}`. A missing translation falls back to English rather than shipping empty. Template variables: `lang`, `og_locale`, `canonical`, `robots`, `alternates`, `langswitch`, `nav_home`, `nav_blog` (and `_p`, padded for gemtext’s aligned columns), and `original` — set on a source page and empty on a translation, which is how `index.tpl` keeps its hand‐written JSON-LD off the translations.
+
+**Not done yet**, deliberately — none of it blocks translating:
+
+- JSON-LD for translated `index`/`blog` (posts have it; `inLanguage` follows the page). Needs a decision about `@id`s, and `makeMeta.py` only knows `blog.html`.
+- The sitemap and the feeds are English‐only.
+- The retro index pages have no language link yet: `services`, the gophermap and the capsule root would each want a row once there is something non‐draft to point at.
+- `chrome/*.html` (the ubuntu804 desktop’s menus) is English.
+- `/professional/` is hand‐written, so its translation is too: `index.tok.html` beside `index.html`, same suffix convention, the same `$drafts` gate written by hand. The stub’s leading comment says how to fill it in.
+
+## 10. Notes for later
 
 - **Two protocols, one page.** `targets: gemini gopher` in the front matter renders only those; `services` uses it. Dropping the line adds the web.
 - **A passage with no shared structure** is the one thing that has to be written twice — a raw block for one target and an ordinary block for the others. It is worth a `//` comment saying why, so the duplication reads as a decision rather than an oversight. gzipt’s sample dump is the example.

@@ -7,6 +7,10 @@
 #     gemini/**.gmi                gemtext (Spartan reads the same tree)
 #     gopher/**                    gophermaps and text/plain
 #
+# content/<lang>/ holds translations, matched to their source page by id and
+# rendered beside it: <id>.<lang>.html, gemini/<lang>/…, gopher/<lang>/…
+# (triptych.md section 9).
+#
 # Design and rationale: triptych.md. Target conventions: triptych.conf.
 # Page chrome lives in templates/<target>/<kind>.tpl, never in a .tri.
 #
@@ -54,6 +58,18 @@ my %CONF = read_conf("$ROOT/triptych.conf");
 my @TARGETS = qw(html gemini gopher);
 my %SITELINKS = %{ $CONF{links} || {} };
 
+# Languages. The site's own language is the one [langs] row marked `source`;
+# every other row is a translation language, whose pages live under
+# content/<lang>/ and shadow the source page with the same id. See
+# triptych.md section 9.
+my %LANGS = %{ $CONF{langs} || { en => { name => 'English', og => 'en_US', source => 1 } } };
+my ($SRCLANG) = grep { $LANGS{$_}{source} } sort keys %LANGS;
+die "triptych: [langs] has no row marked `source`\n" unless $SRCLANG;
+my @XLANGS = grep { $_ ne $SRCLANG } sort keys %LANGS;
+my %TR;        # $TR{id}{lang} = the translated doc
+my %SRC;       # $SRC{id} = the source-language doc
+my %URLMAP;    # $URLMAP{target}{lang}{source-language URL} = [url, doc]
+
 sub read_conf {
 	my ($path) = @_;
 	open my $fh, '<:encoding(UTF-8)', $path or die "triptych: $path: $!\n";
@@ -67,12 +83,12 @@ sub read_conf {
 			$l .= ' ' . shift @lines;
 		}
 		next if $l =~ /^\s*(#|$)/;
-		if ($l =~ /^\s*\[(\w+)\]\s*$/) { $sec = $1; next }
+		if ($l =~ /^\s*\[([\w.]+)\]\s*$/) { $sec = $1; next }
 		die "triptych: $path:$.: value outside a section\n" unless $sec;
-		if ($sec eq 'links') {
+		if ($sec eq 'links' || $sec eq 'langs') {
 			my ($id, $rest) = $l =~ /^\s*(\S+)\s+(.*)$/
-				or die "triptych: $path:$.: bad link row\n";
-			$c{links}{$id} = parse_attrs($rest);
+				or die "triptych: $path:$.: bad $sec row\n";
+			$c{$sec}{$id} = parse_attrs($rest);
 		} else {
 			my ($k, $v) = $l =~ /^\s*([\w.]+)\s*=\s*(.*?)\s*$/
 				or die "triptych: $path:$.: bad key=value\n";
@@ -474,9 +490,85 @@ sub resolve_link {    # -> (url, extra attrs) for this target, or undef if none
 		my $u = attr($t, 'url', $row);
 		$u = $row->{$t} if exists $row->{$t};
 		return (undef, $row) if !defined $u || $u eq '-';
-		return ($u, $row);
+		return (localize($t, $u, $doc), $row);
 	}
-	return ($ref, {});
+	return (localize($t, $ref, $doc), {});
+}
+
+# ---- languages
+#
+# A translated page writes its links exactly as the source page does; this is
+# what turns them into links that stay in the language. A URL that names a
+# page with a translation the reader may be sent to becomes that translation's
+# URL, and everything else is left alone — so an untranslated page is simply
+# reached in the source language, with no dead link and nothing to maintain.
+sub linkable {    # may $from link to the translation $to?
+	my ($from, $to) = @_;
+	# A draft is unlinked from everything published. Drafts link to each other,
+	# so a half-translated site can be walked end to end on staging.
+	return !$to->{fm}{draft} || $from->{fm}{draft};
+}
+
+sub localize {
+	my ($t, $u, $doc) = @_;
+	my $lang = $doc->{lang} or return $u;
+	my ($base, $frag) = $u =~ /^([^#]*)(#.*)?$/;
+	if (length $base and my $hit = $URLMAP{$t}{$lang}{$base}) {
+		return $hit->[0] . ($frag // '') if linkable($doc, $hit->[1]);
+	}
+	# The retro copies of a translation sit one directory down (gemini/tok/…),
+	# so a relative URL — a sibling post, an image beside the source page —
+	# would resolve against the wrong directory. Pin it to where the source
+	# page lives. HTML needs none of this: foo.tok.html sits beside foo.html.
+	if ($t ne 'html' && length $base && $base !~ m{^(\w+:|/)}) {
+		my $dir = $doc->{fm}{kind} =~ /^(post|bloglist)$/ ? ($CONF{$t}{postdir} // '') : '';
+		return "/$dir$u";
+	}
+	return $u;
+}
+
+# Every spelling of a page's URL that a link might use, in a fixed order, so
+# that the source page's list and its translation's line up index by index.
+sub spellings {
+	my ($t, $doc) = @_;
+	my ($id, $kind, $l) = ($doc->{fm}{id}, $doc->{fm}{kind}, $doc->{lang});
+	if ($t eq 'html') {
+		my $name = ($kind eq 'bloglist' ? 'blog' : $id) . ($l ? ".$l" : '');
+		return ("$name.html", "/personal/$name.html");
+	}
+	my $d = $l ? "/$l" : '';
+	my $pd = $CONF{$t}{postdir} // '';
+	if ($t eq 'gemini') {
+		return ("$d/")     if $kind eq 'index';
+		return ("$d/$pd")  if $kind eq 'bloglist';
+		# The second is the bare sibling spelling @post: uses. It only resolves
+		# from inside blog/, and a translation may be linked from anywhere, so
+		# on a translation it is spelled out in full.
+		return ("$d/$pd$id.gmi", $l ? "$d/$pd$id.gmi" : "$id.gmi") if $kind eq 'post';
+		return ("$d/$id.gmi");
+	}
+	(my $pdir = $pd) =~ s{/$}{};
+	return ($l ? $d : '/')  if $kind eq 'index';
+	return ("$d/$pdir")     if $kind eq 'bloglist';
+	# prose spells a text file /0/<selector>; a gophermap row wants the selector
+	return ("/0$d/$pd$id.txt", "$d/$pd$id.txt") if $kind eq 'post';
+	return ("/0$d/$id.txt", "$d/$id.txt");
+}
+
+# The address a page is published at, for canonical and hreflang.
+sub public_url {
+	my ($doc) = @_;
+	my $base = 'https://dreamstation.systems/personal/';
+	return $base if $doc->{fm}{kind} eq 'index' && !$doc->{lang};
+	return $base . (spellings('html', $doc))[0];
+}
+
+sub targets_of {
+	my ($doc) = @_;
+	# Only the web has a staging tree, so a draft renders nowhere else: a
+	# gopher or gemini draft would be live the moment it was promoted.
+	return ('html') if $doc->{fm}{draft};
+	return split ' ', ($doc->{fm}{targets} // join ' ', @TARGETS);
 }
 
 # ---- inline emitters. Each returns the text, and pushes any links that this
@@ -858,17 +950,17 @@ sub blocks_out {
 					: $f->{title};
 				if ($t eq 'html') {
 					my $sep = ' <span class="sep">|</span> ';
-					my $line = sprintf '<li><a href="%s.html">%s</a>%s<time datetime="%s">%s</time>',
-						$f->{id}, $title, $sep, $f->{date}, $f->{date};
+					my $line = sprintf '<li><a href="%s">%s</a>%s<time datetime="%s">%s</time>',
+						(spellings('html', $pp))[0], $title, $sep, $f->{date}, $f->{date};
 					$line .= sprintf '%sedited <time datetime="%s">%s</time>', $sep, $ed, $ed if $ed;
 					push @rows, '  ' . $line . '</li>';
 				} elsif ($t eq 'gemini') {
 					push @rows, { url => "$f->{id}.gmi",
 						label => "$title | $f->{date}" . ($ed ? " | edited $ed" : '') };
 				} else {
-					push @rows, sprintf "0%s\t/blog/%s.txt\t%s\t%s",
+					push @rows, sprintf "0%s\t%s\t%s\t%s",
 						"$title | $f->{date}" . ($ed ? " | edited $ed" : ''),
-						$f->{id}, $host, $port;
+						(spellings('gopher', $pp))[1], $host, $port;
 				}
 			}
 			if ($t eq 'html') {
@@ -1001,7 +1093,8 @@ sub blocks_out {
 					# a gophermap row: a menu item, typed by what it points at.
 					# The item type carries what a "/0/" prefix says in a URL,
 					# so a row may give its bare selector separately.
-					$url = attr($t, 'sel', $row) // $url;
+					$url = localize($t, attr($t, 'sel', $row), $doc)
+						if defined attr($t, 'sel', $row);
 					my $type = $url =~ m{^\w+://} ? 'h' : $url =~ /\.txt$/ ? '0' : '1';
 					my $sel = $type eq 'h' ? "URL:$url" : $url;
 					push @l, sprintf "%s%s\t%s\t%s\t%s", $type, $label, $sel,
@@ -1140,17 +1233,23 @@ sub out_path {
 	my $kind = $doc->{fm}{kind};
 	my $conf = $CONF{$t};
 	my $sub  = $kind eq 'post' ? ($conf->{postdir} // '') : '';
+	# A translation is a SUFFIX on the web (gzipt.tok.html, beside gzipt.html,
+	# so every relative stylesheet, image and badge path still resolves) and a
+	# DIRECTORY on the retro targets (gemini/tok/…, because a gophermap is
+	# found by its name and so cannot carry a suffix). See triptych.md §9.
+	my $l = $doc->{lang};
 	if ($t eq 'html') {
 		my $name = $kind eq 'bloglist' ? 'blog' : $id;
-		return "$conf->{out}$name.html";
+		return "$conf->{out}$name" . ($l ? ".$l" : '') . '.html';
 	}
+	my $out = $conf->{out} . ($l ? "$l/" : '');
 	if ($t eq 'gemini') {
 		my $name = $kind eq 'index' ? 'index' : $kind eq 'bloglist' ? 'blog/index' : "$sub$id";
-		return "$conf->{out}$name.gmi";
+		return "$out$name.gmi";
 	}
 	my $name = $kind eq 'index' ? 'gophermap'
 		: $kind eq 'bloglist' ? 'blog/gophermap' : "$sub$id.txt";
-	return "$conf->{out}$name";
+	return "$out$name";
 }
 
 # The 88x31 wall is written by badgeBuild.pl AFTER this runs (preCommit.sh
@@ -1181,6 +1280,68 @@ sub preserved_block {
 	return '';
 }
 
+# Everything a template needs to know about language. `original` is set on a
+# source-language page and empty on a translation, which is how a template
+# keeps a block (the index's hand-written JSON-LD, say) off the translations.
+my $ROBOTS = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+my $GATE   = '<!--# if expr="$drafts" -->';    # see nginx: true on staging only
+
+sub lang_vars {
+	my ($v, $doc, $t) = @_;
+	my $lang = $doc->{lang} // $SRCLANG;
+	my $of   = $doc->{of} // $doc;
+	$v->{lang}      = $lang;
+	$v->{og_locale} = $LANGS{$lang}{og} // $lang;
+	$v->{original}  = $doc->{lang} ? '' : 1;
+	$v->{canonical} = public_url($doc);
+	$v->{robots}    = $doc->{fm}{draft} ? 'noindex, nofollow' : $ROBOTS;
+	# the nav's two in-site links, which stay in the language when they can
+	my ($home, $blog) = map { (spellings($t, $SRC{$_}))[0] } qw(index blog);
+	$v->{nav_home}  = localize($t, $home, $doc);
+	$v->{nav_blog}  = localize($t, $blog, $doc);
+	# _p: padded to a shared width, for gemtext's hand-aligned link columns
+	my ($w) = sort { $b <=> $a } map { length } @$v{qw(nav_home nav_blog)};
+	$v->{"${_}_p"} = sprintf '%-*s', $w, $v->{$_} for qw(nav_home nav_blog);
+
+	# Chrome strings: [strings], overridden by [strings.<lang>]. A string the
+	# translation table lacks falls back to the source language.
+	my %s = (%{ $CONF{strings} || {} }, %{ $CONF{"strings.$lang"} || {} });
+	$v->{"s_$_"} = $s{$_} for keys %s;
+
+	# Every version of this page, itself included, in a fixed order.
+	my @ver = ($of, map { $TR{ $of->{fm}{id} }{$_} // () } @XLANGS);
+	$v->{alternates} = $v->{langswitch} = '';
+	return if @ver < 2 || $t ne 'html';
+
+	# hreflang. Reciprocal, self-inclusive, x-default on the source page. A
+	# draft is announced to nobody: its line is wrapped in the staging gate,
+	# and if drafts are all there is, so is the whole group.
+	my $me  = $doc->{lang} // $SRCLANG;    # NOT a ref compare: render_page copies $doc
+	my $pub = grep { ($_->{lang} // $SRCLANG) ne $me && !$_->{fm}{draft} } @ver;
+	my @alt;
+	for my $d (@ver) {
+		my $line = sprintf '<link rel="alternate" hreflang="%s" href="%s">',
+			$d->{lang} // $SRCLANG, public_url($d);
+		$line = "$GATE$line<!--# endif -->" if $pub && $d->{fm}{draft} && !$doc->{fm}{draft};
+		push @alt, $line;
+	}
+	push @alt, sprintf '<link rel="alternate" hreflang="x-default" href="%s">', public_url($of);
+	@alt = ($GATE . join('', @alt) . '<!--# endif -->') if !$pub && !$doc->{fm}{draft};
+	$v->{alternates} = join "\n", @alt;
+
+	# The switcher: one nav link per other version, each named in its own
+	# language and marked up as such.
+	my @sw;
+	for my $d (grep { ($_->{lang} // $SRCLANG) ne $me } @ver) {
+		my $l = $d->{lang} // $SRCLANG;
+		my $a = sprintf '<a href="%s" hreflang="%s" lang="%s">🌐 %s</a>',
+			(spellings('html', $d))[0], $l, $l, esc_html($LANGS{$l}{name} // $l);
+		$a = "$GATE$a<!--# endif -->" unless linkable($doc, $d);
+		push @sw, $a;
+	}
+	$v->{langswitch} = join ' ', @sw;
+}
+
 sub render_page {
 	my ($t, $doc, $posts, $outpath) = @_;
 	my $fm   = $doc->{fm};
@@ -1188,6 +1349,11 @@ sub render_page {
 
 	# The blog index's entries are not authored anywhere: they are the post
 	# set, in each protocol's own idiom. Adding a post is dropping a file in.
+	# A translated blog index lists the posts that exist in its language.
+	if (my $l = $doc->{lang}) {
+		$posts = [ grep { $_ && linkable($doc, $_) }
+			map { $TR{ $_->{fm}{id} }{$l} } @$posts ];
+	}
 	$doc = { %$doc, posts => $posts };
 
 	# The page title is one fact, in three shapes. HTML's template owns its
@@ -1230,12 +1396,12 @@ sub render_page {
 	my %vars = (
 		%$fm,
 		%scoped,
-		url        => "https://dreamstation.systems/personal/"
-			. ($kind eq 'bloglist' ? 'blog' : $fm->{id}) . '.html',
+		url        => "https://dreamstation.systems/personal/" . (spellings('html', $doc))[0],
 		body       => $body,
 		head_extra => raw_slot($t, $doc, 'head'),
 		year       => (localtime)[5] + 1900,
 	);
+	lang_vars(\%vars, $doc, $t);
 	$vars{title_esc}   = esc_html($fm->{title} // '');
 	# The h1 may carry inline markup the <title> and og: tags cannot.
 	$vars{title_h1} = inline_out('html',
@@ -1262,6 +1428,42 @@ for my $path (sort glob("$ROOT/content/*.tri $ROOT/content/post/*.tri")) {
 my @posts = sort { $b->{fm}{date} cmp $a->{fm}{date} }
 	grep { $_->{fm}{kind} eq 'post' } @docs;
 
+# ---- translations: content/<lang>/ mirrors content/, matched by id.
+#
+# A translation states what differs — its title, its description, its body —
+# and takes the rest from the page it translates: kind, date, html.style, the
+# gophermap switches, the page's own @links table. So the two cannot drift on
+# anything that is not language. What is NOT inherited is what would be a false
+# claim on the translation: the titles, `updated`, `draft`, and the Pangram
+# badge, which attests to the English text.
+%SRC = map { $_->{fm}{id} => $_ } @docs;
+for my $lang (@XLANGS) {
+	for my $path (sort glob("$ROOT/content/$lang/*.tri $ROOT/content/$lang/post/*.tri")) {
+		my $doc = parse_file($path);
+		my $id  = $doc->{fm}{id} or die "triptych: $path: no id\n";
+		my $of  = $SRC{$id}
+			or die "triptych: $path: translates `$id`, which is not a page in content/\n";
+		die "triptych: $path: a translation needs its own title\n"
+			unless defined $doc->{fm}{title};
+		for my $k (keys %{ $of->{fm} }) {
+			next if $k =~ /(?:^|\.)(?:title|title_markup|page_title)$/;
+			next if $k =~ /^(?:pangram|draft|updated)$/;
+			$doc->{fm}{$k} //= $of->{fm}{$k};
+		}
+		$doc->{fm}{updated} //= $doc->{fm}{date};
+		$doc->{links} = { %{ $of->{links} }, %{ $doc->{links} } };
+		$doc->{lang}  = $lang;
+		$doc->{of}    = $of;
+		$TR{$id}{$lang} = $doc;
+		push @docs, $doc;
+		for my $t (targets_of($doc)) {
+			my @from = spellings($t, $of);
+			my @to   = spellings($t, $doc);
+			$URLMAP{$t}{$lang}{ $from[$_] } = [ $to[$_], $doc ] for 0 .. $#from;
+		}
+	}
+}
+
 # The post link table is implicit: [text](@post:id) resolves per target, so no
 # page ever spells out another page's three URLs.
 for my $p (@posts) {
@@ -1281,7 +1483,7 @@ if ($SOURCE_OF ne '') {
 	$want =~ s{^\./}{};
 	$want =~ s{^\Q$ROOT\E/}{};
 	for my $doc (@docs) {
-		for my $t (split ' ', ($doc->{fm}{targets} // join ' ', @TARGETS)) {
+		for my $t (targets_of($doc)) {
 			next unless out_path($t, $doc) eq $want;
 			my $src = $doc->{path};
 			$src =~ s{^\Q$ROOT\E/}{};
@@ -1295,12 +1497,11 @@ if ($SOURCE_OF ne '') {
 my ($written, $differ, $same) = (0, 0, 0);
 for my $doc (@docs) {
 	next if %only && !$only{ $doc->{fm}{id} };
-	my @t = split ' ', ($doc->{fm}{targets} // join ' ', @TARGETS);
-	for my $t (@t) {
+	for my $t (targets_of($doc)) {
 		my $path = "$ROOT/" . out_path($t, $doc);
 		my $out  = render_page($t, $doc, \@posts, $path);
 		if ($LIST) {
-			printf "%-46s <- %s\n", out_path($t, $doc), basename($doc->{path});
+			printf "%-46s <- %s\n", out_path($t, $doc), $doc->{path} =~ s{^\Q$ROOT\E/content/}{}r;
 			next;
 		}
 		if ($CHECK) {

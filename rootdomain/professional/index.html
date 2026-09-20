@@ -11,6 +11,12 @@
   <meta name="description" content="Robin Reel ⁂ systems, infrastructure and security ⁂ Springfield MO.">
   <meta name="author" content="Robin Reel">
   <link rel="canonical" href="https://dreamstation.systems/professional/">
+  <!-- hreflang for the toki pona translation, index.tok.html. While that page
+       is a draft this is gated to staging, like the switcher link in the
+       header: $drafts is a map in nginx/sites-available/dreamstation.systems.
+       TO PUBLISH: delete the if/endif here and in the header, and the noindex
+       in index.tok.html. -->
+  <!--# if expr="$drafts" --><link rel="alternate" hreflang="en" href="https://dreamstation.systems/professional/"><link rel="alternate" hreflang="tok" href="https://dreamstation.systems/professional/index.tok.html"><link rel="alternate" hreflang="x-default" href="https://dreamstation.systems/professional/"><!--# endif -->
 
   <!-- The anti-robot stuff on the internet is so stupid. How did we get so discriminatory and scared of SERVING WEBPAGES  -->
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -257,6 +263,9 @@
     <a href="http://dreamstation.systems/professional/">HTTP (modern browsers upgrade this)</a> |
     <a href="http://dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion/professional/">.onion (requires Tor Browser)</a>
   </nav>
+  <!-- Language switcher. Relative, unlike the links above: it should keep you
+       on whichever of the three origins you arrived over. -->
+  <!--# if expr="$drafts" --><nav class="proto" aria-label="Language"><a href="index.tok.html" hreflang="tok" lang="tok">toki pona</a></nav><!--# endif -->
 
   <h1>Robin Reel</h1>
   <p>Security‐minded systems and infrastructure generalist.</p>

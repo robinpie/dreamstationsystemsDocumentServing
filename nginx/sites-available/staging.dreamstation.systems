@@ -90,4 +90,18 @@ server {
     # here to preview:
     include snippets/theme.conf;
     include snippets/feeds.conf;
+
+    # statusCgi.conf is what turns SSI on for /professional/ on the live site,
+    # and it is left out above. The page now also carries a $drafts gate (the
+    # link to a draft translation — see the map in dreamstation.systems), and
+    # a gate nothing parses is just two HTML comments around visible markup.
+    # So parse it here too. The status-box include has no location to reach on
+    # this vhost, fails, and ssi_silent_errors expands it to nothing, which is
+    # what it is designed to do.
+    location ~ ^/professional/index(?:\.tok)?\.html$ {
+        ssi on;
+        ssi_silent_errors on;
+        # No add_header in here, on purpose: one would stop the server-level
+        # X-Robots-Tag and clacks headers above from inheriting.
+    }
 }

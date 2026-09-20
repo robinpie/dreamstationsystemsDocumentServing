@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html lang="{{lang}}">
+<html lang="tok">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{title}}</title>
-  <meta name="description" content="{{description}}">
+  <title>robin’s page</title>
+  <meta name="description" content="lipu ni li pini ala.">
   <meta name="author" content="robin">
-  <link rel="canonical" href="{{canonical}}">
-{{?alternates}}  {{indent:alternates}}
-{{/alternates}}
-  <meta name="robots" content="{{robots}}">
+  <link rel="canonical" href="https://dreamstation.systems/personal/index.tok.html">
+  <link rel="alternate" hreflang="en" href="https://dreamstation.systems/personal/">
+  <link rel="alternate" hreflang="tok" href="https://dreamstation.systems/personal/index.tok.html">
+  <link rel="alternate" hreflang="x-default" href="https://dreamstation.systems/personal/">
+
+  <meta name="robots" content="noindex, nofollow">
 
   <!-- Follows the server-selected theme: nginx maps $theme to a colour and
        SSI stamps it in, the same way the stylesheet above it is chosen. Four
@@ -23,55 +25,22 @@
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="{{title}}">
-  <meta property="og:description" content="{{description}}">
-  <meta property="og:url" content="{{url}}">
-  <meta property="og:site_name" content="robin’s page">
-  <meta property="og:locale" content="{{og_locale}}">
-  <meta property="article:published_time" content="{{date}}">
-  <meta property="article:modified_time" content="{{updated}}">
-  <meta property="article:author" content="https://dreamstation.systems/professional/">
-  <meta name="twitter:card" content="summary">
+  <!-- Feed autodiscovery. Both files are generated from the post list in
+       blog.html by assetsBuild/makeFeed.py; see feeds.txt. -->
+  <link rel="alternate" type="application/atom+xml" title="robin’s blog (Atom)" href="/personal/feed.xml">
+  <link rel="alternate" type="application/rss+xml" title="robin’s blog (RSS)" href="/personal/rss.xml">
 
-  <!-- JSON-LD. Every claim here mirrors something stated in the body below.
-       Part of the site-wide graph rooted at /professional/index.html and
-       joined to it by @id; nodes defined in full there appear here with
-       identity only. See that file, and index.html in this directory. -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BlogPosting",
-        "@id": "{{url}}#post",
-        "mainEntityOfPage": "{{url}}",
-        "url": "{{url}}",
-        "headline": "{{title}}",
-        "description": "{{description}}",
-        "inLanguage": "{{lang}}",
-        "datePublished": "{{date}}",
-        "dateModified": "{{updated}}",
-        "author": { "@id": "https://dreamstation.systems/professional/#robin" },
-        "publisher": { "@id": "https://dreamstation.systems/professional/#robin" },
-        "isPartOf": { "@id": "https://dreamstation.systems/personal/blog.html#blog" }
-      },
-      {
-        "@type": "Blog",
-        "@id": "https://dreamstation.systems/personal/blog.html#blog",
-        "name": "robin’s blog",
-        "url": "https://dreamstation.systems/personal/blog.html"
-      }
-    ]
-  }
-  </script>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="robin’s page">
+  <meta property="og:description" content="lipu ni li pini ala.">
+  <meta property="og:url" content="https://dreamstation.systems/personal/index.tok.html">
+  <meta property="og:site_name" content="robin’s page">
+  <meta property="og:locale" content="tok">
+  <meta name="twitter:card" content="summary">
 
   <link rel="stylesheet" href="base.css">
   <link rel="stylesheet" href="themes/<!--# echo var="theme" -->.css">
-{{?style}}  <style>
-    {{indent:style}}
-  </style>
-{{/style}}</head>
+</head>
 <body>
   <!-- FIRST thing in the document, so it is the first tab stop under every
        theme. It used to live in chrome/top.html, which meant it existed only
@@ -85,20 +54,20 @@
        match the desktop. Geometry is unchanged by the move: it is absolutely
        positioned against the initial containing block either way, since
        neither .desktop nor body is positioned. -->
-  <a class="skip" href="#content">{{s_skip}}</a>
+  <a class="skip" href="#content">Skip to page content</a>
   <!-- The ubuntu804 theme wraps this page in a picture of an Ubuntu 8.04
        desktop. The chrome is three fragments under chrome/, pulled in by
        nginx; every other theme expands these to nothing. chrome/top.html
        explains the split, and why the title and path are handed in by hand. -->
-<!--# if expr="$theme = ubuntu804" --><!--# set var="wtitle" value="{{title}}" --><!--# set var="path" value="$document_uri" --><!--# include virtual="/personal/chrome/top.html" --><!--# endif -->
+<!--# if expr="$theme = ubuntu804" --><!--# set var="wtitle" value="robin’s page" --><!--# set var="path" value="$document_uri" --><!--# include virtual="/personal/chrome/top.html" --><!--# endif -->
   <header class="site-header">
     <nav class="site-nav">
-      <a href="{{nav_home}}">{{s_home}}</a>
-      <a href="{{nav_blog}}">{{s_blog}}</a>
-      <a href="/professional">{{s_professional}}</a>
-      <a href="https://grandexchange.dreamstation.systems">{{s_openget}}</a>
-{{?langswitch}}      {{langswitch}}
-{{/langswitch}}
+      <a href="index.tok.html">🏠 home</a>
+      <a href="blog.tok.html">📓 blog</a>
+      <a href="/professional">💼 my professional site</a>
+      <a href="https://grandexchange.dreamstation.systems">📈 OpenGET</a>
+      <a href="index.html" hreflang="en" lang="en">🌐 English</a>
+
     </nav>
     <div id="theme-switcher" class="theme-switcher">
       <!-- Protocol switcher: the same page over HTTP, HTTPS or the onion
@@ -108,44 +77,57 @@
            theme across, since the cookie does not follow to another origin. -->
       <form method="get" action="/personal/proto<!--# echo var="document_uri" -->">
         <input type="hidden" name="theme" value="<!--# echo var="theme" -->">
-        <select name="to" aria-label="{{s_protocol}}">
+        <select name="to" aria-label="Protocol">
           <option value="https"<!--# if expr="$proto_now = https" --> selected<!--# endif -->>HTTPS</option>
           <option value="http"<!--# if expr="$proto_now = http" --> selected<!--# endif -->>HTTP</option>
           <option value="onion"<!--# if expr="$proto_now = onion" --> selected<!--# endif -->>.onion (Tor)</option>
         </select>
-        <button type="submit">{{s_go}}</button>
+        <button type="submit">Go</button>
       </form>
       <!-- A GET form, so switching themes is a plain form submission to
            ?theme=<id> and needs no JavaScript. nginx reads the parameter and
            SSI stamps the choice back in below - see nginx/snippets/theme.conf. -->
       <form method="get">
-        <select name="theme" aria-label="{{s_theme}}">
+        <select name="theme" aria-label="Theme">
           <option value="gtk2"<!--# if expr="$theme = gtk2" --> selected<!--# endif -->>GTK2</option>
           <option value="motif"<!--# if expr="$theme = motif" --> selected<!--# endif -->>Motif</option>
           <option value="skeuslop"<!--# if expr="$theme = skeuslop" --> selected<!--# endif -->>skeuslop</option>
           <option value="ubuntu804"<!--# if expr="$theme = ubuntu804" --> selected<!--# endif -->>Ubuntu 8.04</option>
           <option value="plain"<!--# if expr="$theme = plain" --> selected<!--# endif -->>Plain</option>
         </select>
-        <button type="submit">{{s_apply}}</button>
+        <button type="submit">Apply</button>
       </form>
     </div>
   </header>
 <!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/mid.html" --><!--# endif -->
 
   <main id="content">
-    <h1 class="post-title"><span>{{title_h1}}</span>{{?pangram}}<a href="{{pangram}}"><img src="pangramHumanBadge.webp" alt="{{s_pangram_alt}}" width="88" height="31"></a>{{/pangram}}</h1>
-    <!-- The post's own dateline. Cross-checked against the list in
-         blog.html by assetsBuild/makeMeta.py, along with the dates in
-         the JSON-LD above. -->
-    <p class="dateline"><time datetime="{{date}}">{{date}}</time>{{?edited}}, {{s_edited}} <time datetime="{{updated}}">{{updated}}</time>{{/edited}}</p>
+    <h1>robin’s page 🌠🏰🚀</h1>
+    <p>mi pali e lipu ni. ona li pini ala.</p>
+    <p><a href="/personal/blog.tok.html">lipu blog</a></p>
+    <p><a href="lanfalsehoods.tok.html">Falsehoods Programmers Believe About LANs</a></p>
+    <p><a href="ntpuserinfo.html">how to use the dreamstation.systems NTP server</a></p>
 
-    {{indent:body}}
   </main>
   <footer>
     <ul class="badges">
-    {{badges}}
+    <!-- badges:start GENERATED by assetsBuild/badgeBuild.pl from webBadges.csv - do not edit -->
+        <li><a href="https://eightyeightthirty.one/"><img src="badges/88x31.webp" alt="eightyeightthirty.one" width="88" height="31"></a></li>
+        <li><img src="badges/zero-javascript.webp" alt="Proudly ZERO JavaScript!" width="88" height="31"></li>
+        <li><a href="https://debian.org/"><img src="badges/debian-powered.webp" alt="debian POWERED" width="88" height="31"></a></li>
+        <li><img src="badges/trans-flag.webp" alt="Transgender pride flag" width="88" height="31"></li>
+        <li><a href="https://nginx.org"><img src="badges/nginx.png" alt="nginx powered" width="88" height="31"></a></li>
+        <li><a href="https://xkcd.com"><img src="badges/xkcd.webp" alt="xkcd" width="88" height="31"></a></li>
+        <li><a href="https://www.getmonero.org/"><img src="badges/monero.webp" alt="I ❤️ MONERO" width="88" height="31"></a></li>
+        <li><a href="https://homestuck.com/"><img src="badges/mspaintadventures.webp" alt="MS Paint Adventures" width="88" height="31"></a></li>
+        <li><a href="https://archlinux.org"><img src="badges/Arch.webp" alt="Arch Linux" width="88" height="31"></a></li>
+        <li><a href="https://www.sbnation.com/a/17776-football"><img src="badges/17776.webp" alt="17776" width="88" height="31"></a></li>
+        <li><a href="https://pi.dev/"><img src="badges/pi.webp" alt="pi agent harness" width="88" height="31"></a></li>
+        <li><a href="https://ristar.itch.io/secret-little-haven"><img src="badges/secretlittlehaven.webp" alt="Secret Little Haven" width="88" height="31"></a></li>
+    <!-- badges:end -->
     </ul>
-  </footer>
+    </footer>
 <!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/bottom.html" --><!--# endif -->
 </body>
 </html>
+<a href="https://en.scratch-wiki.info/wiki/Semicolon_Glitch">;</a> <!--- intentional easter egg --->

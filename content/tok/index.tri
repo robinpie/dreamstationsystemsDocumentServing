@@ -1,0 +1,20 @@
+---
+id: index
+// STUB. Technical bones only: not a translation yet. `draft` keeps it off the
+// retro protocols, out of the search indexes, and unlinked from the English
+// page everywhere except staging. Delete the line to publish. triptych.md §9.
+draft: 1
+title: robin’s page 🌠🏰🚀
+html.page_title: robin’s page
+description: lipu ni li pini ala.
+---
+
+mi pali e lipu ni. ona li pini ala.
+
+// These three exercise link localisation: the first two name pages that have
+// a toki pona version and so stay in the language; the third names one that
+// does not, and falls back to English by itself.
+@ html.as=p
+=> [lipu blog](@blogpage)
+=> [Falsehoods Programmers Believe About LANs](@post:lanfalsehoods)
+=> [how to use the dreamstation.systems NTP server](@ntpuser)

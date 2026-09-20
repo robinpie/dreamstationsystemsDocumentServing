@@ -1,3 +1,3 @@
 {{body}}
 
-=> /            back to home
+=> {{nav_home}}            {{s_back_home}}

@@ -70,6 +70,10 @@ def census() -> set[str]:
     """
     chars: set[str] = set()
     sources = [PERSONAL / f"{n}.html" for n in THEMED]
+    # ...and their translations, <n>.<lang>.html (triptych.md section 9),
+    # which theme.conf's regex serves with the same chrome.
+    for n in THEMED:
+        sources += sorted(PERSONAL.glob(f"{n}.*.html"))
     sources += sorted((PERSONAL / "chrome").glob("*.html"))
     sources += [PERSONAL / "themes" / "ubuntu804.css"]
     for path in sources:

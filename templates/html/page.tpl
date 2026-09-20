@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{lang}}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{title}}</title>
   <meta name="description" content="{{description}}">
   <meta name="author" content="robin">
-  <link rel="canonical" href="{{url}}">
-
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="{{canonical}}">
+{{?alternates}}  {{indent:alternates}}
+{{/alternates}}
+  <meta name="robots" content="{{robots}}">
 
   <!-- Follows the server-selected theme: nginx maps $theme to a colour and
        SSI stamps it in, the same way the stylesheet above it is chosen. Four
@@ -27,7 +28,7 @@
   <meta property="og:description" content="{{description}}">
   <meta property="og:url" content="{{url}}">
   <meta property="og:site_name" content="robin’s page">
-  <meta property="og:locale" content="en_US">
+  <meta property="og:locale" content="{{og_locale}}">
   <meta name="twitter:card" content="summary">
 
 {{head_extra}}
@@ -48,7 +49,7 @@
        match the desktop. Geometry is unchanged by the move: it is absolutely
        positioned against the initial containing block either way, since
        neither .desktop nor body is positioned. -->
-  <a class="skip" href="#content">Skip to page content</a>
+  <a class="skip" href="#content">{{s_skip}}</a>
   <!-- The ubuntu804 theme wraps this page in a picture of an Ubuntu 8.04
        desktop. The chrome is three fragments under chrome/, pulled in by
        nginx; every other theme expands these to nothing. chrome/top.html
@@ -56,11 +57,12 @@
 <!--# if expr="$theme = ubuntu804" --><!--# set var="wtitle" value="{{title}}" --><!--# set var="path" value="$document_uri" --><!--# include virtual="/personal/chrome/top.html" --><!--# endif -->
   <header class="site-header">
     <nav class="site-nav">
-      <a href="index.html">🏠 home</a>
-      <a href="blog.html">📓 blog</a>
-      <a href="/professional">💼 my professional site</a>
-      <a href="https://grandexchange.dreamstation.systems">📈 OpenGET</a>
-
+      <a href="{{nav_home}}">{{s_home}}</a>
+      <a href="{{nav_blog}}">{{s_blog}}</a>
+      <a href="/professional">{{s_professional}}</a>
+      <a href="https://grandexchange.dreamstation.systems">{{s_openget}}</a>
+{{?langswitch}}      {{langswitch}}
+{{/langswitch}}
     </nav>
     <div id="theme-switcher" class="theme-switcher">
       <!-- Protocol switcher: the same page over HTTP, HTTPS or the onion
@@ -70,25 +72,25 @@
            theme across, since the cookie does not follow to another origin. -->
       <form method="get" action="/personal/proto<!--# echo var="document_uri" -->">
         <input type="hidden" name="theme" value="<!--# echo var="theme" -->">
-        <select name="to" aria-label="Protocol">
+        <select name="to" aria-label="{{s_protocol}}">
           <option value="https"<!--# if expr="$proto_now = https" --> selected<!--# endif -->>HTTPS</option>
           <option value="http"<!--# if expr="$proto_now = http" --> selected<!--# endif -->>HTTP</option>
           <option value="onion"<!--# if expr="$proto_now = onion" --> selected<!--# endif -->>.onion (Tor)</option>
         </select>
-        <button type="submit">Go</button>
+        <button type="submit">{{s_go}}</button>
       </form>
       <!-- A GET form, so switching themes is a plain form submission to
            ?theme=<id> and needs no JavaScript. nginx reads the parameter and
            SSI stamps the choice back in below - see nginx/snippets/theme.conf. -->
       <form method="get">
-        <select name="theme" aria-label="Theme">
+        <select name="theme" aria-label="{{s_theme}}">
           <option value="gtk2"<!--# if expr="$theme = gtk2" --> selected<!--# endif -->>GTK2</option>
           <option value="motif"<!--# if expr="$theme = motif" --> selected<!--# endif -->>Motif</option>
           <option value="skeuslop"<!--# if expr="$theme = skeuslop" --> selected<!--# endif -->>skeuslop</option>
           <option value="ubuntu804"<!--# if expr="$theme = ubuntu804" --> selected<!--# endif -->>Ubuntu 8.04</option>
           <option value="plain"<!--# if expr="$theme = plain" --> selected<!--# endif -->>Plain</option>
         </select>
-        <button type="submit">Apply</button>
+        <button type="submit">{{s_apply}}</button>
       </form>
     </div>
   </header>
