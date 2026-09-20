@@ -249,9 +249,11 @@
   <!-- Protocol switcher. After the status box in source so the float sits to
        its right; absolute URLs so each link means the same thing whichever of
        the three you are reading this over. Port 80 is not redirected and there
-       is no HSTS, so the HTTP link really does stay HTTP. -->
+       is no HSTS, so the server really does answer the HTTP link over HTTP — but
+       Firefox (HTTPS-First) and Chrome upgrade the navigation themselves, and
+       only fall back if :443 fails, hence the label. -->
   <nav class="proto" aria-label="Protocol">
-    <a href="http://dreamstation.systems/professional/">HTTP</a> |
+    <a href="http://dreamstation.systems/professional/">HTTP (modern browsers upgrade this)</a> |
     <a href="https://dreamstation.systems/professional/">HTTPS</a> |
     <a href="http://dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion/professional/">.onion (requires Tor Browser)</a>
   </nav>
