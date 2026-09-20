@@ -3,6 +3,7 @@
 #
 #     assetsBuild/nimiCheck.pl content/tok/post/gzipt.tri ...
 #     assetsBuild/nimiCheck.pl rootdomain/professional/index.tok.html
+#     assetsBuild/nimiCheck.pl lawaPage/lawaPage.pl      (its [tok] msgstr lines)
 #
 # Reads a translation (.tri source, or hand-written .html) and reports every
 # lowercase word in its PROSE that is not in the agreed vocabulary: the 120 pu
@@ -67,7 +68,25 @@ for my $path (@ARGV) {
 	my %unknown;    # word => [line numbers]
 	my %allow;      # from `// nimiCheck: allow ...` comments in the file
 
-	if ($html) {
+	if ($path =~ /\.pl$/) {
+		# A script with gettext-style translations after __DATA__
+		# (lawaPage/lawaPage.pl): the prose is the msgstr lines of the [tok]
+		# section, minus their {placeholders}. Everything else is code.
+		my ($data, $lang) = (0, '');
+		for my $i (0 .. $#lines) {
+			local $_ = $lines[$i];
+			$lines[$i] = '';
+			if ($_ eq '__DATA__') { $data = 1; next }
+			next unless $data;
+			if (/^\[(\w+)\]\s*$/) { $lang = $1; next }
+			next unless $lang eq 'tok' && s/^msgstr ?//;
+			# a placeholder stands for a number: make it one, so that a unit
+			# symbol bound to it ({n}{nbsp}s) passes exactly as "4 s" does
+			s/\{nbsp\}/\x{A0}/g;
+			s/\{\w+\}/0/g;
+			$lines[$i] = $_;
+		}
+	} elsif ($html) {
 		# Blank out, keeping newlines so line numbers survive.
 		my $t = join "\n", @lines;
 		$allow{$_} = 1 for map { split ' ' } $t =~ /<!--\s*nimiCheck:\s*allow\s+(.*?)\s*-->/gs;

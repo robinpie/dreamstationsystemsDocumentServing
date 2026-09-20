@@ -8,11 +8,11 @@ description: ilo lawa li ilo alasa. ona li lukin e nimi sewi HTTP lon linluwi op
 ---
 
 // Everything a visitor reads is GENERATED: lawaPage.timer rewrites
-// /personal/lawa-data.html every 5 minutes (documentServing/lawaPage/, and
+// /personal/lawa-data.tok.html every 5 minutes (documentServing/lawaPage/, and
 // ~/configNotes/lawa.txt "The public page"), and nginx splices it in here.
-// That fragment is still English; only the shell is translated.
+// Its toki pona lives in lawaPage.pl's __DATA__ section, not in this file.
 // The block is what shows if that file is missing.
 ::: raw html
     <!--# block name="lawa_nodata" --><p>ilo lawa li ilo alasa mi. ona li kama sona e nimi sewi HTTP lon linluwi. tenpo mute la lipu ni li pana e sona ni. tenpo ni la nanpa li weka &mdash; tenpo lili li pini la o lukin sin.</p><!--# endblock -->
-    <!--# include virtual="/personal/lawa-data.html" stub="lawa_nodata" -->
+    <!--# include virtual="/personal/lawa-data.tok.html" stub="lawa_nodata" -->
 :::

@@ -288,7 +288,7 @@ A promote does carry the draft *file* to the live docroot, where it is reachable
 
 - JSON-LD for translated `index`/`blog` (posts have it; `inLanguage` follows the page). Needs a decision about `@id`s, and `makeMeta.py` only knows `blog.html`.
 - The sitemap and the feeds are English‐only.
-- `chrome/*.html` (the ubuntu804 desktop’s menus) is English, and so is the generated fragment `lawa.tok.html` includes (`lawa-data.html`).
+- `chrome/*.html` (the ubuntu804 desktop’s menus) is English. (The generated body of `lawa.tok.html` is not: `lawaPage.pl` renders a toki pona fragment, `lawa-data.tok.html`, from the translations in its own `__DATA__` — see `~/configNotes/lawa.txt`.)
 - `ntpuserinfo`’s hand‐written JSON-LD head block is left off its translation, for the same `@id` reason.
 - Label text in the site‐wide `[links]` table is English; `content/tok/index.tri` restates the three rows it needs. A `[links.<lang>]` section would be the tidy version.
 - `/professional/` is hand‐written, so its translation is too: `index.tok.html` beside `index.html`, same suffix convention, the same `$drafts` gate written by hand, and a two‐link language `<nav>` under the protocol one. The stub’s leading comment says how to fill it in.

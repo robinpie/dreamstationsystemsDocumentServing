@@ -213,6 +213,7 @@ sudo rsync -a --delete \
 	--exclude '.well-known/acme-challenge/' \
 	--exclude 'ntpstats.txt' \
 	--exclude '/personal/lawa-data.html' \
+	--exclude '/personal/lawa-data.tok.html' \
 	--exclude '/fortunes/' \
 	"$STAGING/" /srv/http/
 
@@ -258,8 +259,8 @@ promote_retro() { # <repo subdir> <doc root> <generated file to protect>...
 	echo "Promoted $sub/ → $dest"
 }
 
-promote_retro gopher /srv/gopher ntpstats.txt lawa.txt
-promote_retro gemini /srv/gemini ntpstats.gmi lawa.gmi
+promote_retro gopher /srv/gopher ntpstats.txt lawa.txt tok/lawa.txt
+promote_retro gemini /srv/gemini ntpstats.gmi lawa.gmi tok/lawa.gmi
 
 # --------------------------------------------------------------- statusSample
 #

@@ -50,6 +50,7 @@ done
 # staging previews the real page instead of its "no numbers" stub. See lawa.txt.
 sudo rsync -a --delete \
 	--exclude '/personal/lawa-data.html' \
+	--exclude '/personal/lawa-data.tok.html' \
 	"$ROOT/rootdomain/" "$STAGING/"
 
 sudo chown -R root:root "$STAGING/"

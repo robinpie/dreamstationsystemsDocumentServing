@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# lawaPublish.pl - copy lawaPage.pl's three finished files into the doc roots.
+# lawaPublish.pl - copy lawaPage.pl's finished files (three per language) into the doc roots.
 # Runs as ROOT (ExecStartPost=+ in lawaPage.service), because /srv/http is
 # root-owned - so it trusts nothing about the directory it reads from, which
 # belongs to the unprivileged account that just parsed data off the internet:
@@ -27,6 +27,14 @@ my @PLAN = (
     [ 'lawa-data.html', '/srv/httpstaging/personal/lawa-data.html',     'root',  1 ],
     [ 'lawa.gmi',       '/srv/gemini/lawa.gmi',                         'robin', 0 ],
     [ 'lawa.txt',       '/srv/gopher/lawa.txt',                         'robin', 0 ],
+    # The toki pona copies (lawaPage.pl renders one set per language in its
+    # __DATA__). The fragment is what content/tok/lawa.tri includes. The two
+    # retro files land in tok/, which exists only once some translation has
+    # been published there; until then the `-d $dir` test below skips them.
+    [ 'lawa-data.tok.html', '/srv/http/personal/lawa-data.tok.html',        'root',  1 ],
+    [ 'lawa-data.tok.html', '/srv/httpstaging/personal/lawa-data.tok.html', 'root',  1 ],
+    [ 'lawa.tok.gmi',       '/srv/gemini/tok/lawa.gmi',                     'robin', 0 ],
+    [ 'lawa.tok.txt',       '/srv/gopher/tok/lawa.txt',                     'robin', 0 ],
 );
 
 my $src_uid = getpwnam('lawapull') // die "lawaPublish: no lawapull user\n";

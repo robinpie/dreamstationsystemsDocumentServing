@@ -27,8 +27,11 @@ README.local.md
 # and Gopher copies. Written every 5 min by lawaPage.timer (lawaPage/), straight
 # into the doc roots; excluded from promoteSite.sh's rsyncs. See lawa.txt.
 /rootdomain/personal/lawa-data.html
+/rootdomain/personal/lawa-data.tok.html
 /gopher/lawa.txt
 /gemini/lawa.gmi
+/gopher/tok/lawa.txt
+/gemini/tok/lawa.gmi
 
 # TLS material never belongs in this repo — it is public on GitHub. molly-brown's
 # cert and key live in /etc/molly-brown/certs. Carried up from the capsule's own
