@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robin Reel – Résumé</title>
+<meta name="description" content="Robin Reel – security-minded full-stack IT and systems generalist.">
+<style>
+@font-face {
+  font-family: "Carlito";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: local("Carlito"), local("Carlito Regular"), local("Carlito-Regular"),
+       url("fonts/Carlito-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Carlito";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: local("Carlito Bold"), local("Carlito-Bold"),
+       url("fonts/Carlito-Bold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Carlito";
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  src: local("Carlito Italic"), local("Carlito-Italic"),
+       url("fonts/Carlito-Italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Carlito";
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+  src: local("Carlito Bold Italic"), local("Carlito-BoldItalic"),
+       url("fonts/Carlito-BoldItalic.woff2") format("woff2");
+}
+
+/* ---------- Page ---------- */
+
+@page {
+  size: letter;
+  margin: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: #e8e8e8;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  color: #000;
+  font: 9pt/11pt "Carlito", "Calibri", "Helvetica Neue", Arial, sans-serif;
+  font-kerning: normal;
+  font-variant-ligatures: common-ligatures;
+  /* Unhinted, subpixel glyph advances, so lines break where they do in print. */
+  text-rendering: geometricPrecision;
+}
+
+.page {
+  width: 100%;
+  max-width: 8.5in;
+  min-height: 11in;
+  margin: 0.25in auto;
+  padding: 18pt 18pt 12pt;
+  background: #fff;
+  box-shadow: 0 1pt 6pt rgba(0, 0, 0, 0.3);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus-visible {
+  text-decoration: underline;
+}
+
+h1, h2, h3, p, ul {
+  margin: 0;
+  padding: 0;
+}
+
+/* ---------- Header ---------- */
+
+header {
+  text-align: center;
+}
+
+h1 {
+  font-size: 18pt;
+  line-height: 22pt;
+  font-weight: 700;
+}
+
+header p {
+  margin-top: 1pt;
+}
+
+header p:first-of-type {
+  margin-top: 2pt;
+}
+
+/* ---------- Sections ---------- */
+
+h2 {
+  margin-top: 6.45pt;
+  padding-top: 3.05pt;
+  border-top: 0.75pt solid #555;
+  font-size: 10pt;
+  line-height: 12.2pt;
+  font-weight: 700;
+}
+
+section > p,
+.entry,
+.row {
+  margin-top: 3pt;
+}
+
+/* Title line of an entry: 9.5pt bold title, 9pt description. */
+.entry {
+  font-size: 9.5pt;
+  line-height: 11.6pt;
+}
+
+.entry h3 {
+  display: inline;
+  font-size: inherit;
+  font-weight: 700;
+}
+
+/* line-height: 1 keeps the smaller text from stretching the 11.6pt line box. */
+.entry .desc,
+.entry .sep,
+.entry .aside {
+  font-size: 9pt;
+  line-height: 1;
+}
+
+/* The job line is 9.5pt throughout. */
+.entry.job .sep,
+.entry.job .desc {
+  font-size: inherit;
+}
+
+/* "  —  " : the source whitespace provides one space per side,
+   the margin provides the second (Carlito's space is 0.226em). */
+.sep {
+  margin: 0 0.226em;
+}
+
+/* Left text with a right-aligned italic note. */
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  column-gap: 1em;
+}
+
+.row .aside {
+  flex: none;
+  font-style: italic;
+  text-align: right;
+}
+
+/* ---------- Lists ---------- */
+
+ul {
+  list-style: none;
+}
+
+li {
+  position: relative;
+  margin-top: 1pt;
+  padding-left: 18pt;
+}
+
+li::before {
+  content: "";
+  position: absolute;
+  left: 9.9pt;
+  top: 3.35pt;
+  width: 5.2pt;
+  height: 5.2pt;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+li li {
+  padding-left: 13.3pt;
+}
+
+li li::before {
+  left: 5.3pt;
+  border: 0.5pt solid currentColor;
+  background: none;
+}
+
+/* ---------- Skills table ---------- */
+
+/* Separate (not collapsed) borders with a fixed row height: collapsed
+   sub-pixel borders are rounded differently by every engine. */
+table {
+  width: 100%;
+  margin-top: 2.2pt;
+  border: solid #808080;
+  border-width: 0.5pt 0 0 0.5pt;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+col.category { width: 24.97%; }
+col.proficient { width: 37.22%; }
+col.familiar { width: 37.81%; }
+
+th,
+td {
+  height: 12.9pt;
+  padding: 0.7pt 2.5pt 0;
+  border: solid #808080;
+  border-width: 0 0.5pt 0.5pt 0;
+  font-weight: 400;
+  text-align: left;
+  vertical-align: top;
+}
+
+/* ---------- Print ---------- */
+
+@media print {
+  html {
+    background: none;
+  }
+
+  .page {
+    width: 8.5in;
+    max-width: none;
+    min-height: 0;
+    margin: 0;
+    box-shadow: none;
+  }
+
+  a:hover,
+  a:focus-visible {
+    text-decoration: none;
+  }
+}
+
+/* ---------- Small screens ---------- */
+
+@media screen and (max-width: 8.5in) {
+  .page {
+    margin: 0;
+    box-shadow: none;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .row {
+    display: block;
+  }
+
+  .row .aside {
+    display: block;
+    text-align: left;
+  }
+}
+</style>
+</head>
+<body>
+<main class="page">
+
+<header>
+  <h1>Robin Reel</h1>
+  <p>Springfield, MO (open to relocation or remote) | <a href="mailto:robin@dreamstation.systems">robin@dreamstation.systems</a> | <a href="tel:+14174140502">(417) 414-0502</a> | <a href="https://dreamstation.systems/professional/">https://dreamstation.systems/professional/</a></p>
+  <p>Security-minded full-stack IT and systems generalist. Seeking full-time employment beginning May 2027.</p>
+</header>
+
+<section>
+  <h2>Education</h2>
+  <div class="entry row">
+    <div><h3>Bachelor of Science in Information Technology</h3>, IT Infrastructure Track <i class="desc"><span class="sep">—</span> Missouri State University, Springfield, MO</i></div>
+    <span class="aside">Expected May 2027</span>
+  </div>
+</section>
+
+<section>
+  <h2>Certifications</h2>
+  <div class="row">
+    <span>CompTIA A+, CompTIA Network+, CompTIA Security+</span>
+    <span class="aside">All earned 2026</span>
+  </div>
+</section>
+
+<section>
+  <h2>Work Experience</h2>
+  <div class="entry job">
+    <h3>IT Specialist</h3> <i>(August 2026 – Present)</i> · <h3>IT Intern</h3> <i>(April 2026 – August 2026)</i> <span class="sep">—</span> <span class="desc">Health Hub Clinic &amp; Health Guardian Imaging</span>
+  </div>
+  <ul>
+    <li><b>Found and escalated a PHI-exposing authentication bypass vulnerability in the in-house EMR; verified developers’ remediation</b></li>
+    <li><b>Discovered an unauthenticated endpoint allowing attackers to HTTP PATCH patient charts, including medications and allergies; verified remediation</b></li>
+    <li>Replaced near-EoS Windows Server 2016 infrastructure (file server and AD DCs) with Samba on Debian Linux, saving ≥$3,000 in upgrade costs</li>
+    <li>Configured and deployed Wazuh SIEM, with agents on office servers, ~20 workstations, and the PACS gateway</li>
+    <li>Found three vulnerabilities in other in-house software (stored XSS via poorly sanitized UGC, two instances of broken access control exposing private messages); fixed two and escalated one to developers, verified remediation</li>
+    <li>Configured Intune compliance baselines and Entra ID Conditional Access policies supporting HIPAA compliance for Windows, Office, and Teams</li>
+    <li>Documented the network environment when no documentation existed by using Nmap, analyzing SonicWall configuration, and physical tracing
+      <ul>
+        <li>Discovered and fixed security issues during this process (SMB signing disabled, EoS software running, unencrypted DICOM on the general office LAN)</li>
+      </ul>
+    </li>
+    <li>Migrated aging PACS gateway to a virtualized environment, resolving frequent downtime after original hardware began failing</li>
+    <li>Discovered long-standing unenforced DMARC and broken SPF on one domain; demoed email spoofing and then remediated</li>
+    <li>Conducted authorized phishing simulation; crafted custom replica Google login and document sharing email; communicated results to leadership</li>
+    <li>Replaced a double-NATing wireless router with managed APs; migrated end-of-support SonicWall TZ600 to a modern TZ670</li>
+    <li>Restored server access in 2 hours after storm damage to a jumpbox; diagnosed electrical pitting on a RAID controller pin and shimmed the connection</li>
+    <li>Migrated an off-site VPN-connected NAS to the on-site LAN and reintegrated it with SonicWall, Windows clients, and imaging system clients</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Open-source Contributions and Security Research</h2>
+  <div class="entry">
+    <h3>Manifold Markets</h3> <span class="sep">—</span> <b class="desc">Discovered and responsibly disclosed a double-spending bug in limit orders and was awarded a bug bounty</b>
+  </div>
+  <div class="entry">
+    <h3>OpenEMR</h3> <span class="sep">—</span> <b class="desc">Independently discovered and reported an integrity issue; credited as Finder on GHSA; awaiting public disclosure and CVE assignment</b>
+  </div>
+  <div class="entry">
+    <h3>Arch User Repository</h3> <span class="sep">—</span> <span class="desc">Maintainer for seven packages; writing build scripts with signature verification to distribute software to Arch Linux users via Git</span>
+  </div>
+  <div class="entry">
+    <h3>Upstream Contributions</h3> <span class="sep">—</span> <span class="desc">Nine pull requests merged into existing projects; contributed to Toki Pona localizations for Firefox</span>
+  </div>
+</section>
+
+<section>
+  <h2>Projects</h2>
+
+  <div class="entry">
+    <h3>Homelab: dreamstation.systems</h3> <span class="sep">—</span> <span class="desc">Public-facing server hosting NTP, email, HTTP, Gopher, Gemini, and several other protocols</span>
+  </div>
+  <p>dreamstation.systems hosts a high-speed NTP and NTS server participating in pool.ntp.org that serves over <b>&gt;500 million NTP requests per day</b> and has seen <b>123 million unique clients</b>. I also host a secondary NTP server at starport.dreamstation.systems that serves over 250 million requests per day. dreamstation.systems also hosts a personal email server with SPF, DKIM, DMARC, MTA-STS, and TLS-RPT correctly configured, an obfs4 Tor bridge, and a VPN that my home DMZ connects to.</p>
+  <p>I also operate a web crawler called <b>lawa</b>, which is currently collecting data on the Web's HTTP headers for future analysis. Basic preliminary data is available at <a href="https://dreamstation.systems/personal/lawa.html">https://dreamstation.systems/personal/lawa.html</a>.</p>
+
+  <div class="entry">
+    <h3>Homelab: home network</h3> <span class="sep">—</span> <span class="desc">Configured a segmented home network using VLANs; using a Wazuh SIEM instance to gather logs and flag anomalous traffic. I also automated parsing and summarization of unsupported log sources using Perl scripts, Bash scripts, and local LLMs (Qwen models).</span>
+  </div>
+
+  <div class="entry">
+    <h3>!~ATH</h3> <span class="sep">—</span> <span class="desc">Esoteric programming language (<a href="https://github.com/robinpie/ath">https://github.com/robinpie/ath</a>)</span>
+  </div>
+  <ul>
+    <li>Designed and developed a concurrent programming language where all control flow waits for entity death; supports networking, I/O, and a C FFI</li>
+    <li>Wrote a self-hosting transpiler to C89 via continuation-passing style transform, including &gt;500 unit tests; supports Linux, Windows, and WASM</li>
+    <li>Simulated QUIC transport behavior in !~ATH for a class project, with congestion control, loss detection, and retransmission across 4 streams</li>
+  </ul>
+
+  <div class="entry">
+    <h3>Xcaca</h3> <span class="sep">—</span> <span class="desc">X Window System server in ASCII art (<a href="https://github.com/robinpie/xcaca">https://github.com/robinpie/xcaca</a>)</span>
+  </div>
+  <ul>
+    <li>Implemented an X server built on Kdrive that renders graphical output as ASCII art in a tty; synthesized evdev scancodes from libcaca character events</li>
+  </ul>
+
+  <div class="entry">
+    <h3>ilo toki nasa</h3> <span class="sep">—</span> <span class="desc">Trained an 11M-parameter smolGPT-style LLM decoder on the Toki Pona language; cleaned training corpus through rule-based filtering</span>
+  </div>
+
+  <div class="entry">
+    <h3>OpenGET</h3> <span class="sep">—</span> <span class="desc">Old School RuneScape Grand Exchange market analysis tool (<a href="https://grandexchange.dreamstation.systems/">https://grandexchange.dreamstation.systems</a>)</span>
+  </div>
+  <ul>
+    <li>Built a market analysis tool and price tracker for Old School RuneScape’s in-game economy using a Go backend and a SQLite database</li>
+    <li>Ingests data from a public API into a tiered archive with a 5-year backfill; dual-pool WAL SQLite with nightly rollup, prune, and compaction</li>
+    <li>Built an accountless, cookie-based identity model (128-bit tokens encoded in Crockford Base32); only SHA-256 token hashes are stored server-side</li>
+    <li>Developed a novel shared document model; make a change in one place and have it rendered into HTML, gemtext, Gopher maps, and plaintext</li>
+  </ul>
+</section>
+
+
+<section>
+  <h2>Technical Skills</h2>
+  <table>
+    <colgroup>
+      <col class="category">
+      <col class="proficient">
+      <col class="familiar">
+    </colgroup>
+    <thead>
+      <tr>
+        <td></td>
+        <th scope="col">Proficient</th>
+        <th scope="col">Familiar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Operating systems:</th>
+        <td>Linux (server and desktop), Windows desktop</td>
+        <td>Windows Server</td>
+      </tr>
+      <tr>
+        <th scope="row">Infrastructure and tools:</th>
+        <td>SonicWall, email hosting, DNS configuration, Wazuh</td>
+        <td>VMware ESXi, Samba, Nmap, Wireshark, Git, systemd</td>
+      </tr>
+      <tr>
+        <th scope="row">Endpoint management:</th>
+        <td></td>
+        <td>Microsoft Intune, Entra ID (Azure AD)</td>
+      </tr>
+      <tr>
+        <th scope="row">Programming:</th>
+        <td>C, Bash</td>
+        <td>Perl, SQL, Python, JavaScript/TypeScript, Go</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+</body>
+</html>

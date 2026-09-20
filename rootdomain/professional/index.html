@@ -54,7 +54,7 @@
       {
         "@type": "WebSite",
         "@id": "https://dreamstation.systems/#website",
-        "dateModified": "2026-09-09",
+        "dateModified": "2026-09-20",
         "url": "https://dreamstation.systems/",
         "name": "dreamstation.systems",
         "description": "The personal domain of Robin Reel: a professional profile, an informal personal site and blog, and a public status page for the services running on the host.",
@@ -257,7 +257,7 @@
       <li><a href="https://github.com/robinpie" rel="me">GitHub</a></li>
       <li><a href="https://www.linkedin.com/in/robin-reel/" rel="me">LinkedIn</a></li>
       <li><a href="../personal/blog.html" rel="me">Blog (informal personal site)</a></li>
-      <li><a href="../resume.pdf">Resume</a></li>
+      <li><a href="../resume.html">Resume</a></li>
     </ul>
   </address>
 
@@ -349,12 +349,13 @@
   <div class="cards">
 
   <article>
-    <h3>Public NTP and NTS server</h3>
+    <h3>Public NTP and NTS servesr</h3>
     <p>A stratum 2 time server in <a href="https://www.ntppool.org/scores/67.215.249.229">pool.ntp.org</a>, serving plain NTP on UDP/123 and NTS on TCP/4460, running chrony on Debian. It currently holds the maximum pool monitoring score of 20.</p>
+    <p>A secondary time server in <a href="https://www.ntppool.org/scores/198.44.55.245">pool.ntp.org</a>, serving plain NTP on UDP/123, also running chrony on Debian.</p>
     <ul>
       <li>Simple stats at <a href="/professional/status">the service status page</a>, detailed stats at <a href="../ntpstats.txt">ntpstats.txt</a></li>
       <li><a href="/personal/ntpuserinfo.html">Information for users</a></li>
-      <li>Around 123 million unique client IP addresses seen, or about one in every 30 routable IPv4 addresses.</li>
+      <li>Around 132 million unique client IP addresses seen, or about one in every 28 routable IPv4 addresses.</li>
       <li>Abusive clients shed with an nftables rate limiter.</li>
     </ul>
   </article>
@@ -377,6 +378,13 @@
       <li>Comprehensive JSON-LD Profile graph in place, making my profile information machine‐readable.</li>
       <li>Staging environment behind HTTP basic authentication for ensuring content is presented correctly over a real server before publicizing.</li>
       <li>Web Key Directory, <code>/.well-known/security.txt</code>, <code>robots.txt</code>, <code>llms.txt</code>, and <code>humans.txt</code> in place.</li>
+    </ul>
+  </article>
+  
+  <article>
+    <h3><a href="../personal/lawa.html">lawa</a> (web crawler)</h3>
+    <ul>
+      <li>Currently collecting data on the Web's HTTP headers for future analysis. Basic preliminary data is available at the link above.</li>
     </ul>
   </article>
 
