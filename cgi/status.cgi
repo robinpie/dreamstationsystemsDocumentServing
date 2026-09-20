@@ -813,13 +813,14 @@ CSS
 
 	$out .= qq{<main id="main">\n};
 
+	$out .= qq{<p><span aria-hidden="true">🖱️</span> Mouseover bar segments for details.</p>\n};
+
 	# ----- host
 	$out .= qq{<section aria-labelledby="host"><h2 id="host">dreamstation</h2>\n};
 	# Static, and deliberately so: this is what the box IS, not what it is doing.
 	# The measured figures live in the bars below and in the Time service section.
 	# The ꩜ is decoration and is aria-hidden, so a screen reader reads the two
 	# halves as one phrase rather than announcing "khmer sign koomuut".
-	$out .= qq{<p><span aria-hidden="true">🖱️</span> Mouseover bar segments for details.</p>\n};
 	$out .= qq{<p><span class="koo" aria-hidden="true">꩜</span> Debian 13 }
 	      . qq{RackNerd 1&nbsp;vCPU, 1&nbsp;GB RAM</p>\n};
 
