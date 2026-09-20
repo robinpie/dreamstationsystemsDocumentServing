@@ -7,6 +7,7 @@ description: lawa is a web crawler surveying the HTTP headers of the open web. L
 // (gemini/lawa.gmi, gopher/lawa.txt) are written whole by lawaPage.timer,
 // like ntpstats, and are gitignored.
 targets: html
+pangram: https://www.pangram.com/history/892ddc5e-eb78-48e1-8425-71de808b4242?ucc=tp64Jv2K7C4
 ---
 
 // Everything a visitor reads is GENERATED: lawaPage.timer rewrites

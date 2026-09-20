@@ -1197,10 +1197,19 @@ sub render_page {
 	# underline of the right width without anything hand-counting it.
 	if ($t ne 'html' || $kind ne 'post') {
 		my $ht = $fm->{"$t.title"} // $fm->{title_markup} // $fm->{title};
-		$doc = { %$doc, blocks => [
-			{ type => 'heading', level => 1, text => $ht, attrs => {} },
-			@{ $doc->{blocks} },
-		] } if defined $ht && !$fm->{"$t.notitle"};
+		my $h1 = { type => 'heading', level => 1, text => $ht, attrs => {} };
+		# A non-post page with `pangram:` gets the same badge row a post's
+		# template writes; the heading path has no hook for it, so it is raw.
+		if ($t eq 'html' && $fm->{pangram} && defined $ht) {
+			$h1 = { type => 'raw', target => 'html', slot => 'body', attrs => {}, lines => [
+				'    <h1 class="post-title"><span>'
+				. inline_out('html', parse_inline($ht), $doc, [])
+				. '</span><a href="' . esc_html($fm->{pangram})
+				. '"><img src="pangramHumanBadge.webp" alt="Pangram 100% Human badge" width="88" height="31"></a></h1>',
+			] };
+		}
+		$doc = { %$doc, blocks => [ $h1, @{ $doc->{blocks} } ] }
+			if defined $ht && !$fm->{"$t.notitle"};
 	}
 
 	my @bodylines = @{ render_body($t, $doc) };

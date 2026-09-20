@@ -72,7 +72,7 @@ pangram: https://www.pangram.com/history/…
 | `date`, `updated` | dateline, JSON-LD, index entries, feeds. `updated` shows as “edited …” when it differs |
 | `description` | meta description, og:description |
 | `targets` | which protocols render this page (default: all three) |
-| `pangram` | the Pangram badge URL in a post’s `<h1>` |
+| `pangram` | the Pangram badge URL in a post’s `<h1>` (a `page` with this key gets the same badge row) |
 
 Any key may be scoped with a target prefix, and templates ask for it by its bare name — `html.style` reaches `templates/html/*.tpl` as `{{style}}` and reaches no other target at all. Scoped keys the renderer itself acts on:
 
