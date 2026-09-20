@@ -37,6 +37,7 @@ server {
     # and re-added by the snippet above, so nginx is the single authority for
     # every host here and a 502 from a down daemon still carries it.
     proxy_hide_header X-Clacks-Overhead;
+    include snippets/onionLocation.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
     http2 on;

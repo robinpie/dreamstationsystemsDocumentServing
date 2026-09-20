@@ -118,6 +118,12 @@ my @SERVICES = (
 	[ 'ftp',     'FTP archive',      21,   'banner','vsftpd.service',                 ''                                   ],
 	[ 'mail',    'Mail',             25,   'banner','postfix.service',                'SMTP, submission, IMAP'             ],
 	[ 'openget', 'OpenGET',          4151, 'http',  'openget.service',                'grandexchange.dreamstation.systems' ],
+	# The onion has no port of its own to probe: tor@onion only dials OUT. So the
+	# probe is nginx's loopback listener that tor forwards to (8081 answers any
+	# Host with the main site), and the unit column is what says whether tor
+	# itself is alive. Probing through Tor would need a SOCKS client and seconds
+	# per sweep; this is the cheap honest half. See ~/configNotes/onion.txt.
+	[ 'onion',   'Tor onion service', 8081, 'http',  'tor@onion.service',              'Web, OpenGET, Gopher and Gemini over .onion' ],
 	[ 'qotd',    'Quote of the Day', 17,   'banner','qotd.service',                   'RFC 865'                            ],
 	[ 'daytime', 'Daytime',          13,   'banner','daytime.service',                'RFC 867'                            ],
 	[ 'echo',    'Echo',             7,    'echo',  'echo.service',                   'RFC 862'                            ],

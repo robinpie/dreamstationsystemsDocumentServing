@@ -127,6 +127,7 @@ server {
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
+    include snippets/onionLocation.conf;
     http2 on;
     server_name dreamstation.systems www.dreamstation.systems;
 

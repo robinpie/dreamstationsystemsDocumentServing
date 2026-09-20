@@ -1,0 +1,105 @@
+# The Tor onion service — the main site and OpenGET, over .onion.
+#
+#   http://dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion/
+#   http://grandexchange.dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion/
+#
+# A second tor instance (tor@onion, NOT the bridge's tor@default) forwards the
+# onion's port 80 to 127.0.0.1:8081. Tor ignores everything left of the
+# 56-character address, so any <sub>.<addr>.onion arrives here with that Host
+# header and nginx dispatches on it as usual — one HiddenServiceDir covers
+# both names. See ~/configNotes/onion.txt.
+#
+# Loopback-only, so nothing here is reachable except through Tor, and the
+# 000-default-catchall (which is on :80) never sees this traffic.
+#
+# Plain HTTP on purpose: the onion transport is already end-to-end encrypted
+# and authenticated by the address itself, and Tor Browser treats http://*.onion
+# as a secure context (Secure cookies included — OpenGET's still work).
+#
+# NO ACCESS LOG in either block. Every visitor arrives as 127.0.0.1, so a log
+# would carry no information worth having, and not keeping one is the point of
+# offering the site here. It also means no fail2ban jail can ever be handed
+# 127.0.0.1 by this vhost.
+#
+# The clearnet side advertises this with Onion-Location: snippets/onionLocation.conf.
+
+# --------------------------------------------------------------- the main site
+#
+# First block on this listen address, therefore its default server: an unknown
+# <sub>.<addr>.onion gets the main site, mirroring what *.dreamstation.systems
+# does on the clearnet.
+server {
+    include snippets/clacks.conf;
+    listen 127.0.0.1:8081;
+    server_name dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion
+                www.dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion;
+
+    access_log off;
+
+    root /srv/http;
+    index index.html;
+
+    # The pages' internal links are already relative, so they stay on the
+    # onion by themselves. The one link that cannot be relative is the one to
+    # OpenGET, because it is a different host — so it is rewritten on the way
+    # out, here and only here. The content stays single-source and the
+    # clearnet site is byte-for-byte unaffected.
+    #
+    # Deliberately NOT rewritten: https://dreamstation.systems/... itself. The
+    # only places that appears are rel=canonical, OpenGraph and the feeds,
+    # all of which SHOULD name the clearnet origin.
+    #
+    # sub_filter runs before the brotli/gzip filters and after SSI, so it
+    # composes with both. It is inherited by the locations in the snippets
+    # below (unlike add_header, inheritance here is only lost if a location
+    # sets a sub_filter of its own, and none does).
+    sub_filter 'https://grandexchange.dreamstation.systems' 'http://grandexchange.dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion';
+    sub_filter_once off;
+
+    include snippets/statusCgi.conf;
+    include snippets/pgpKey.conf;
+    include snippets/theme.conf;
+    include snippets/feeds.conf;
+}
+
+# --------------------------------------------------------------------- OpenGET
+#
+# Same upstream as sites-available/grandexchange.dreamstation.systems.
+server {
+    include snippets/clacks.conf;
+    proxy_hide_header X-Clacks-Overhead;
+    listen 127.0.0.1:8081;
+    server_name grandexchange.dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion;
+
+    access_log off;
+    error_log  /var/log/nginx/openget-error.log;
+
+    client_max_body_size 1m;
+
+    gzip on;
+    gzip_types text/plain text/css application/json application/atom+xml image/svg+xml;
+    gzip_min_length 1024;
+
+    location / {
+        proxy_pass http://127.0.0.1:4151;
+        proxy_set_header Host              $host;
+        # Every onion visitor is 127.0.0.1 to us, so OpenGET's per-IP limit on
+        # minting tokens is one shared bucket for all of Tor. Accepted: it is
+        # the honest value, and the limit only gates token creation.
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 60s;
+        proxy_buffering on;
+
+        # OpenGET builds its absolute links (the one-click restore link, the
+        # alerts feed URL) from its configured base_url, which is the clearnet
+        # origin. Rewrite them so a Tor visitor is not handed a clearnet URL
+        # with their token in it. Accept-Encoding is cleared so the upstream
+        # can never answer compressed, which sub_filter could not read; nginx
+        # still compresses toward the client.
+        proxy_set_header Accept-Encoding "";
+        sub_filter 'https://grandexchange.dreamstation.systems' 'http://grandexchange.dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion';
+        sub_filter_once off;
+    }
+}
