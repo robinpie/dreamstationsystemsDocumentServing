@@ -124,8 +124,8 @@ sub build {
     my @b;
 
     my $gen = num($d->{generated_at});
-    push @b, [ p => 'lawa is my web crawler. it wanders from link to link, starting at this site, asks each server '
-        . 'for a page, and writes down the HTTP headers that come back: never the page itself. everything below is '
+    push @b, [ p => '**lawa** is my web crawler. It crawls the web '
+        . 'and writes down the HTTP headers that come back from each site. Everything below is '
         . 'regenerated every few minutes from what it has seen so far.' ];
     if ($now - $gen > 5400) {
         push @b, [ p => 'NOTE: these numbers are stale. the last report from the machine lawa runs on is from '
@@ -140,27 +140,27 @@ sub build {
               : $mode eq 'slow'   ? 'crawling slowly (over its monthly bandwidth budget)'
               : $mode eq 'paused' ? 'paused until next month (bandwidth budget spent)' : $mode;
     $doing = 'not running' if $gen - num($L->{t}) > 900;
-    push @b, [ h => 'right now' ];
+    push @b, [ h => 'Status' ];
     push @b, [ kv => [
         [ 'lawa is',                $doing ],
         [ 'pace',                   commas(num $L->{fetches_last_min}) . ' requests in the last minute' ],
         [ 'servers visited',        commas(num $L->{hosts_done}) . ' finished, ' . commas(num $L->{active_hosts}) . ' in progress' ],
         [ 'servers waiting in line', commas(num($L->{backlog_new_domains}) + num($L->{backlog_other})) ],
         [ 'responses studied below', commas(num $N->{responses}) . ' from ' . commas(num $H->{answered}) . ' servers' ],
-        [ 'bandwidth this month',   bytes(num $L->{month_bytes}) . ' of a ' . bytes(num $L->{budget_soft}) . ' budget' ],
+#       [ 'bandwidth this month',   bytes(num $L->{month_bytes}) . ' of a ' . bytes(num $L->{budget_soft}) . ' budget' ],
         [ 'numbers as of',          stamp($gen) ],
     ] ];
-    push @b, [ note => 'every share below is a share of SERVERS (hostnames), not of responses: lawa takes at most 25 '
+    push @b, [ note => 'The shares below are measured by hostname. Additionally, lawa takes at most 25 '
         . 'pages from any one server, and each server is counted once, when lawa has finished with it.' ];
 
     # ---- software
     my $ans = num $H->{answered};
-    push @b, [ h => 'what the web says it runs on' ];
+    push @b, [ h => 'web servers seen' ];
     push @b, [ table => { head => [ 'Server header', 'servers', 'share' ],
         rows => [ map { [ txt($_->[0], 30), $_->[1], $ans ? $_->[1] / $ans : undef ] } top($H->{server}, 10) ] } ];
     my $named = $ans - num(tbl($H->{server})->{'(none)'});
-    push @b, [ p => pct(num $H->{server_version}, $named) . ' of the servers that name themselves also announce their exact '
-        . 'version number, which mostly helps people looking for unpatched ones.' ];
+    push @b, [ p => pct(num $H->{server_version}, $named) . ' of the servers that name themselves also announce their '
+        . 'version number.' ];
     my @pw = top($H->{powered}, 8);
     if (@pw) {
         my $pw_total = 0; $pw_total += num($_) for values %{ tbl($H->{powered}) };
@@ -172,28 +172,25 @@ sub build {
     my $K = tbl($H->{clock});
     my $meas = num $K->{measured};
     if ($meas) {
-        push @b, [ h => 'does anybody really know what time it is?' ];
-        push @b, [ p => 'every response carries a Date header, and the machine lawa runs on keeps time over '
-            . 'authenticated NTP from the time server on this site. so lawa can check the web\'s clocks. '
-            . 'a Date only has one-second resolution and the network adds delay, so "on time" here means '
-            . '"within about ' . (num($d->{slack}) || 2) . ' seconds, as far as lawa can tell".' ];
+        push @b, [ h => 'Bad time' ];
+        push @b, [ p => 'A Date only has one-second resolution and the network adds delay, so "on time" means '
+            . '"within about ' . (num($d->{slack}) || 2) . ' seconds".' ];
         my @rows = ([ 'on time', num $K->{ontime} ], [ 'up to 10 seconds off', num $K->{b10s} ],
                     [ '10 seconds to a minute', num $K->{b1m} ], [ 'a minute to an hour', num $K->{b1h} ],
                     [ 'an hour to a day', num $K->{b1d} ], [ 'more than a day', num $K->{bmore} ]);
         push @b, [ table => { head => [ 'server clock', 'servers', 'share' ], rows => [ map { [ @$_, $_->[1] / $meas ] } @rows ] } ];
         my $wrong = $meas - num $K->{ontime};
-        push @b, [ p => 'of the ' . commas($wrong) . ' wrong clocks, ' . commas(num $K->{slow}) . ' run slow and '
+        push @b, [ p => 'Of the ' . commas($wrong) . ' wrong clocks, ' . commas(num $K->{slow}) . ' run slow and '
             . commas(num $K->{fast}) . ' run fast. ' . commas(num $K->{tz_hours}) . ' are wrong by a whole number of hours, '
-            . 'which is not drift: that is somebody setting local time on a machine that thinks it is UTC. '
+            . 'which is likely timezone problems rather than drift. '
             . commas(num $K->{no_date}) . ' servers sent no Date at all, and ' . commas(num $K->{bad_date})
-            . ' sent one that cannot be parsed.' ];
-        push @b, [ note => 'responses served from a cache (an Age header) are left out, since a cache replays the '
-            . 'origin\'s old Date on purpose; ' . commas(num $K->{cached_only}) . ' servers only ever answered that way. '
-            . 'some of the smaller errors will still be caches that replay a Date without admitting it.' ];
+            . ' sent malformed Dates.' ];
+        push @b, [ note => 'Responses served from a cache (indicated by an Age header) are left out. '
+            . commas(num $K->{cached_only}) . ' servers only ever answered that way. ' ];
     }
 
     # ---- security headers
-    push @b, [ h => 'security headers' ];
+    push @b, [ h => 'Security headers' ];
     my $F = tbl($H->{flag});
     my $https = num $H->{https};
     push @b, [ table => { head => [ 'header', 'servers', 'share' ], rows => [
@@ -203,8 +200,8 @@ sub build {
             [ 'Referrer-Policy', 'refpol' ], [ 'Permissions-Policy', 'permpol' ],
             [ 'X-XSS-Protection (deprecated)', 'xxss' ],
     ] } ];
-    push @b, [ p => 'lawa never sends a cookie, so every cookie it is handed is unprompted: '
-        . pct(num $F->{cookie}, $ans) . ' of servers set one anyway within their first few pages.' ];
+#    push @b, [ p => 'lawa never sends a cookie, so every cookie it is handed is unprompted: '
+#        . pct(num $F->{cookie}, $ans) . ' of servers set one anyway within their first few pages.' ];
 
     # ---- TLS
     my $T = tbl($H->{tls});
@@ -212,7 +209,7 @@ sub build {
     if ($tls) {
         push @b, [ h => 'TLS' ];
         push @b, [ p => pct($https, $ans) . ' of servers answered over HTTPS at least once. lawa connects even when the '
-            . 'certificate is bad (it has no secrets to protect) and writes down what was wrong: '
+            . 'certificate is bad, so here\'s what was wrong. '
             . pct(num $T->{broken}, $tls) . ' of HTTPS servers would have failed in a browser.' ];
         my $V = tbl($T->{verify});
         push @b, [ table => { head => [ 'certificate problem', 'servers', 'share of HTTPS' ], rows => [
@@ -227,9 +224,8 @@ sub build {
     }
 
     # ---- wire quirks
-    push @b, [ h => 'things only the raw bytes can tell you' ];
-    push @b, [ p => 'lawa speaks HTTP/1.1 and keeps each header block exactly as it arrived: order, capitalisation, '
-        . 'line endings and all. most HTTP libraries tidy that away before anyone can look.' ];
+    push @b, [ h => 'Other quirks' ];
+    push @b, [ p => 'lawa speaks my handrolled HTTP/1.1 implementation and logs each header block as the raw bytes, so we can see some stuff that HTTP libraries usually clean up.' ];
     my $resp = num $N->{responses};
     push @b, [ table => { head => [ 'quirk', 'servers', 'share' ], rows => [
         map { [ $_->[0], $_->[1], $ans ? $_->[1] / $ans : undef ] }
@@ -239,14 +235,14 @@ sub build {
             [ 'bare LF line endings (no CR)',        num $F->{bare_lf} ],
             [ 'folded (multi-line) header values',   num $F->{obs_fold} ],
     ] } ];
-    push @b, [ p => 'the average response carried ' . sprintf('%.1f', $resp ? num($N->{hdr_lines}) / $resp : 0)
-        . ' header lines in ' . commas($resp ? num($N->{hdr_bytes}) / $resp : 0) . ' bytes. in total lawa has read '
-        . bytes(num $N->{hdr_bytes}) . ' of nothing but headers.' ] if $resp;
+    push @b, [ p => 'The average response carried ' . sprintf('%.1f', $resp ? num($N->{hdr_lines}) / $resp : 0)
+        . ' header lines in ' . commas($resp ? num($N->{hdr_bytes}) / $resp : 0) . ' bytes. In total, lawa has read '
+        . bytes(num $N->{hdr_bytes}) . ' of headers.' ] if $resp;
 
     # ---- status codes and manners
     my $S = tbl($A->{status});
     my $pages = 0; $pages += num($_) for values %$S;
-    push @b, [ h => 'status codes, and being told no' ];
+    push @b, [ h => 'Status codes' ];
     push @b, [ table => { head => [ 'status', 'responses', 'share' ],
         rows => [ map { [ txt($_->[0], 3), $_->[1], $pages ? $_->[1] / $pages : undef ] } top($S, 8) ] } ];
     my $RS = tbl($A->{robots_status});
@@ -255,20 +251,20 @@ sub build {
     push @b, [ p => commas(num $S->{418}) . ' responses were 418 I\'m a teapot, and ' . commas(num $S->{451})
         . ' were 451 Unavailable For Legal Reasons. lawa asked for ' . commas(num $N->{robots}) . ' robots.txt files and, '
         . 'because of what they said, left ' . commas(num $SK->{robots}) . ' pages alone. it walked away from '
-        . commas(num $FN->{pushback}) . ' servers entirely after they pushed back (429, 503, or repeated 403s), and '
+        . commas(num $FN->{pushback}) . ' servers entirely because of 429, 503, or repeated 403s, and '
         . commas(num $FN->{dns}) . ' linked-to servers turned out not to exist any more.' ];
 
     # ---- geography
     if (num $d->{geo}) {
         my $geo_total = 0; $geo_total += num($_) for values %{ tbl($H->{asn}) };
-        push @b, [ h => 'where the web lives' ];
+        push @b, [ h => 'Where the W3 is from' ];
         push @b, [ table => { head => [ 'network', 'servers', 'share' ],
             rows => [ map { [ txt($_->[0], 34), $_->[1], $geo_total ? $_->[1] / $geo_total : undef ] } top($H->{asn}, 10) ] } ];
         my $cc_total = 0; $cc_total += num($_) for values %{ tbl($H->{country}) };
         push @b, [ table => { head => [ 'country', 'servers', 'share' ],
             rows => [ map { [ txt($_->[0], 30), $_->[1], $cc_total ? $_->[1] / $cc_total : undef ] } top($H->{country}, 10) ] } ];
-        push @b, [ note => 'countries leave out the ' . commas(num $H->{country_anycast}) . ' servers behind Cloudflare and '
-            . 'Fastly: an anycast address is in every country at once. IP geolocation by DB-IP (db-ip.com).' ];
+        push @b, [ note => 'Countries leaves out the ' . commas(num $H->{country_anycast}) . ' servers behind Cloudflare and '
+            . 'Fastly, because an anycast address is in every country at once. IP geolocation by DB-IP.' ];
     }
     my $tld_total = 0; $tld_total += num($_) for values %{ tbl($H->{tld}) };
     push @b, [ table => { head => [ 'top-level domain', 'servers', 'share' ],
@@ -285,14 +281,13 @@ sub build {
         cross-origin-opener-policy cross-origin-embedder-policy cross-origin-resource-policy origin-agent-cluster
         timing-allow-origin accept-ch critical-ch content-location p3p x-powered-by x-ua-compatible x-robots-tag
         reporting-endpoints priority);
-    push @b, [ h => 'headers nobody standardised' ];
+    push @b, [ h => 'Non-standard headers' ];
     push @b, [ table => { head => [ 'header', 'servers', 'share' ],
         rows => [ map { [ txt($_->[0], 34), $_->[1], $ans ? $_->[1] / $ans : undef ] } top($H->{hdr_names}, 12, \%standard) ] } ];
     my $C = tbl($H->{clacks});
     my $clacks = 0; $clacks += num($_) for values %$C;
     if ($clacks) {
-        push @b, [ p => 'and then there is X-Clacks-Overhead, which does nothing at all except keep a name moving through '
-            . 'the wires (this site sends it too). ' . commas($clacks) . ' servers send it:' ];
+        push @b, [ p => 'And of course, X-Clacks-Overhead. ' . commas($clacks) . ' servers send it:' ];
         push @b, [ table => { head => [ 'X-Clacks-Overhead', 'servers', 'share' ],
             rows => [ map { [ txt($_->[0], 40), $_->[1], $_->[1] / $clacks ] } top($C, 5) ] } ];
     }
@@ -311,18 +306,18 @@ sub build {
     if (@rec) {
         push @b, [ h => 'record holders' ];
         push @b, [ rec => \@rec ];
-        push @b, [ note => commas(num $N->{lm_before_web}) . ' pages claimed a Last-Modified from before the web existed '
-            . '(mostly 1970, the Unix epoch) and ' . commas(num $N->{lm_in_future}) . ' claimed one from the future; neither counts.' ];
+        push @b, [ note => commas(num $N->{lm_before_web}) . ' pages claimed implausibly old Last-Modified (before the W3 existed, mostly 1970 (epoch fail!))  '
+            . 'and ' . commas(num $N->{lm_in_future}) . ' claimed one from the future; neither counts.' ];
     }
 
     # ---- small print
-    push @b, [ h => 'the small print' ];
+    push @b, [ h => 'Details' ];
     push @b, [ p => 'lawa obeys robots.txt (its name there is "lawa"), waits at least ten seconds between requests to the '
-        . 'same server, takes at most 25 pages from any one, and keeps no page content. if it is bothering you, '
-        . 'a robots.txt rule is honoured within a day, and an email to robin@dreamstation.systems is honoured as soon as i read it.' ];
+        . 'same server, and takes at most 25 pages from any one. If it is bothering you, '
+        . 'a robots.txt rule is honored within a day, and I read my email robin@dreamstation.systems regularly.' ];
     my ($t0, $t1) = (num $A->{t_first}, num $A->{t_last});
-    push @b, [ note => 'figures cover ' . stamp($t0) . ' to ' . stamp($t1) . ' (' . commas(num $d->{segments})
-        . ' data segments); the crawl is still running, and the newest ~45 minutes are not in yet.' ] if $t0 && $t1;
+    push @b, [ note => 'Figures cover ' . stamp($t0) . ' to ' . stamp($t1) . ' (' . commas(num $d->{segments})
+        . ' data segments); the crawl is constantly running, and the newest ~45 minutes are not in yet.' ] if $t0 && $t1;
     return \@b;
 }
 
