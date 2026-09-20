@@ -2,7 +2,18 @@
 id: lawa
 kind: page
 title: lawa
-description: lawa is a web crawler that is currently surveying HTTP headers.
+description: lawa is a web crawler surveying the HTTP headers of the open web. Live numbers on what servers say about themselves.
+// HTML only: this file is just the themed shell. The Gemini and Gopher copies
+// (gemini/lawa.gmi, gopher/lawa.txt) are written whole by lawaPage.timer,
+// like ntpstats, and are gitignored.
+targets: html
 ---
 
-currently surveying HTTP headers. i intend to share fun findings here later — check back later!
+// Everything a visitor reads is GENERATED: lawaPage.timer rewrites
+// /personal/lawa-data.html every 5 minutes (documentServing/lawaPage/, and
+// ~/configNotes/lawa.txt "The public page"), and nginx splices it in here.
+// The block is what shows if that file is missing.
+::: raw html
+    <!--# block name="lawa_nodata" --><p>lawa is my web crawler, and this page usually shows what it has learned about the web&rsquo;s HTTP headers. the numbers are missing right now &mdash; check back in a few minutes.</p><!--# endblock -->
+    <!--# include virtual="/personal/lawa-data.html" stub="lawa_nodata" -->
+:::

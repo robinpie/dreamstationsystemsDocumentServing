@@ -1,0 +1,36 @@
+[Unit]
+Description=Pull lawa's analysis from starport and render the live part of /personal/lawa.html
+Documentation=file:/home/robin/configNotes/lawa.txt
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=lawapull
+Group=lawapull
+ExecStart=/usr/local/bin/lawaPage.pl
+# "+" = this one command runs as root, outside the sandbox below: /srv/http is
+# root-owned. It only copies three files, and checks them first - see the
+# comments at the top of lawaPublish.pl.
+ExecStartPost=+/usr/local/bin/lawaPublish.pl
+
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=120
+
+# Same posture as statusPull.service: it needs the network, so it gets no root.
+# The key lives in /var/lib/lawapull, so ProtectHome costs nothing.
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/lawapull/cache /var/lib/lawapull/out
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+MemoryDenyWriteExecute=true
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM

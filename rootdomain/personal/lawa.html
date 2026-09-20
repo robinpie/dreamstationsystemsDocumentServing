@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>lawa</title>
-  <meta name="description" content="lawa is a web crawler that is currently surveying HTTP headers.">
+  <meta name="description" content="lawa is a web crawler surveying the HTTP headers of the open web. Live numbers on what servers say about themselves.">
   <meta name="author" content="robin">
   <link rel="canonical" href="https://dreamstation.systems/personal/lawa.html">
 
@@ -24,7 +24,7 @@
 
   <meta property="og:type" content="article">
   <meta property="og:title" content="lawa">
-  <meta property="og:description" content="lawa is a web crawler that is currently surveying HTTP headers.">
+  <meta property="og:description" content="lawa is a web crawler surveying the HTTP headers of the open web. Live numbers on what servers say about themselves.">
   <meta property="og:url" content="https://dreamstation.systems/personal/lawa.html">
   <meta property="og:site_name" content="robin’s page">
   <meta property="og:locale" content="en_US">
@@ -83,7 +83,8 @@
   <main id="content">
     <h1>lawa</h1>
 
-    <p>currently surveying HTTP headers. i intend to share fun findings here later — check back later!</p>
+    <!--# block name="lawa_nodata" --><p>lawa is my web crawler, and this page usually shows what it has learned about the web&rsquo;s HTTP headers. the numbers are missing right now &mdash; check back in a few minutes.</p><!--# endblock -->
+    <!--# include virtual="/personal/lawa-data.html" stub="lawa_nodata" -->
   </main>
   <footer>
     <ul class="badges">

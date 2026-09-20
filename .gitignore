@@ -23,6 +23,13 @@ README.local.md
 /gopher/ntpstats.txt
 /gemini/ntpstats.gmi
 
+# lawa's live page: the fragment lawa.html SSI-includes, and the whole Gemini
+# and Gopher copies. Written every 5 min by lawaPage.timer (lawaPage/), straight
+# into the doc roots; excluded from promoteSite.sh's rsyncs. See lawa.txt.
+/rootdomain/personal/lawa-data.html
+/gopher/lawa.txt
+/gemini/lawa.gmi
+
 # TLS material never belongs in this repo — it is public on GitHub. molly-brown's
 # cert and key live in /etc/molly-brown/certs. Carried up from the capsule's own
 # .gitignore when it was merged in. See gemini.txt.

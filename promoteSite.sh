@@ -118,6 +118,16 @@ for f in "$ROOT"/statusSample/*.sh "$ROOT"/statusSample/starport/*.sh; do
 	fi
 done
 
+# lawaPage/: the two Perl scripts behind /personal/lawa.html's live numbers.
+for f in "$ROOT"/lawaPage/*.pl; do
+	[ -f "$f" ] || continue
+	if ! perl -c "$f" >/dev/null 2>&1; then
+		echo "ABORT: ${f#"$ROOT"/} fails syntax check — nothing promoted." >&2
+		perl -c "$f" || true
+		exit 1
+	fi
+done
+
 # etc/ gates. Unlike nginx there is no one `-t` for these, so each file gets
 # the best offline check its own tool offers, BEFORE anything is installed.
 # molly-brown is the one that really needs it: it has no config-test flag and
@@ -198,6 +208,7 @@ fi
 sudo rsync -a --delete \
 	--exclude '.well-known/acme-challenge/' \
 	--exclude 'ntpstats.txt' \
+	--exclude '/personal/lawa-data.html' \
 	--exclude '/fortunes/' \
 	"$STAGING/" /srv/http/
 
@@ -224,24 +235,27 @@ fi
 # ------------------------------------------------------------- gopher, gemini
 #
 # The two retro doc roots. Promote-only, no restart (both servers read from
-# disk per request). Two carve-outs from --delete — ge/ (OpenGET's generated,
-# gitignored frontend) and ntpstats.* (written by ntpstatsgen.timer) — and
-# robin:robin ownership so the content stays sudo-free to edit. Full rationale
-# in githooks.txt, "promote: the rest of the tree"; see also gophernicus.txt
-# and gemini.txt.
-promote_retro() { # <repo subdir> <doc root> <generated file to protect>
-	local sub="$1" dest="$2" generated="$3"
+# disk per request). Three carve-outs from --delete — ge/ (OpenGET's generated,
+# gitignored frontend), ntpstats.* (written by ntpstatsgen.timer) and lawa.*
+# (written by lawaPage.timer, see lawa.txt) — and robin:robin ownership so the
+# content stays sudo-free to edit. Full rationale in githooks.txt, "promote:
+# the rest of the tree"; see also gophernicus.txt and gemini.txt.
+promote_retro() { # <repo subdir> <doc root> <generated file to protect>...
+	local sub="$1" dest="$2"
+	shift 2
 	[ -d "$ROOT/$sub" ] || return 0
+	local excludes=(--exclude 'ge/')
+	local g
+	for g in "$@"; do excludes+=(--exclude "/$g"); done
 	sudo rsync -a --delete \
 		--chmod=D755,F644 \
-		--exclude 'ge/' \
-		--exclude "$generated" \
+		"${excludes[@]}" \
 		"$ROOT/$sub/" "$dest/"
 	echo "Promoted $sub/ → $dest"
 }
 
-promote_retro gopher /srv/gopher ntpstats.txt
-promote_retro gemini /srv/gemini ntpstats.gmi
+promote_retro gopher /srv/gopher ntpstats.txt lawa.txt
+promote_retro gemini /srv/gemini ntpstats.gmi lawa.gmi
 
 # --------------------------------------------------------------- statusSample
 #
@@ -319,6 +333,40 @@ if [ -d "$ROOT/statusSample" ]; then
 				 sudo bash ~/.statusSample.deploy/install.sh'; then
 			echo "WARNING: could not deploy statusSample/starport to starport — skipped." >&2
 		fi
+	fi
+fi
+
+# ------------------------------------------------------------------- lawaPage
+#
+# The live numbers on /personal/lawa.html (and gemini/gopher lawa.*): a timer
+# that pulls lawa's finished analysis from starport and renders it. The
+# `lawapull` user, its key and its pinned known_hosts are one-time setup and
+# deliberately NOT created here (secrets/identity; this repo is public) — see
+# ~/configNotes/lawa.txt, "The public page". Without that user the timer is
+# installed but every run fails harmlessly and the page shows its stub.
+if [ -d "$ROOT/lawaPage" ]; then
+	lp_changed=0
+	for s in lawaPage.pl lawaPublish.pl; do
+		if ! sudo cmp -s "$ROOT/lawaPage/$s" "/usr/local/bin/$s"; then
+			sudo install -m755 -o root -g root "$ROOT/lawaPage/$s" "/usr/local/bin/$s"
+			lp_changed=1
+		fi
+	done
+	lp_units=0
+	for u in lawaPage.service lawaPage.timer; do
+		if ! sudo cmp -s "$ROOT/lawaPage/$u" "/etc/systemd/system/$u"; then
+			sudo install -m644 -o root -g root "$ROOT/lawaPage/$u" "/etc/systemd/system/$u"
+			lp_units=1
+		fi
+	done
+	[ "$lp_units" = 1 ] && sudo systemctl daemon-reload
+	if [ "$lp_changed" = 1 ] || [ "$lp_units" = 1 ]; then
+		sudo systemctl enable --quiet lawaPage.timer
+		sudo systemctl restart lawaPage.timer
+		# Render now rather than in five minutes. A failure here (starport
+		# down) must not stop a promote: the page says its numbers are old.
+		sudo systemctl start lawaPage.service || echo "WARNING: first lawaPage run failed — see journalctl -u lawaPage" >&2
+		echo "Promoted lawaPage/ → /usr/local/bin + systemd (timer restarted)"
 	fi
 fi
 

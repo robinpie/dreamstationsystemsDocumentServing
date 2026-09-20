@@ -31,11 +31,26 @@ for f in "$ROOT"/statusSample/*.sh "$ROOT"/statusSample/starport/*.sh; do
 	fi
 done
 
+# lawaPage/: the two Perl scripts behind /personal/lawa.html's live numbers.
+for f in "$ROOT"/lawaPage/*.pl; do
+	[ -f "$f" ] || continue
+	if ! perl -c "$f" >/dev/null 2>&1; then
+		echo "ABORT: ${f#"$ROOT"/} fails syntax check — nothing staged." >&2
+		perl -c "$f" || true
+		exit 1
+	fi
+done
+
 # -------------------------------------------------------------------- content
 #
 # No acme-challenge/ntpstats carve-out here (unlike promote): neither exists
-# in this tree, so staging owns every byte under it and a plain --delete is fine.
-sudo rsync -a --delete "$ROOT/rootdomain/" "$STAGING/"
+# in this tree, so staging owns every byte under it — with ONE exception:
+# /personal/lawa-data.html, the generated fragment that lawa.html SSI-includes.
+# lawaPublish.pl writes it into this tree as well as the live one, so that
+# staging previews the real page instead of its "no numbers" stub. See lawa.txt.
+sudo rsync -a --delete \
+	--exclude '/personal/lawa-data.html' \
+	"$ROOT/rootdomain/" "$STAGING/"
 
 sudo chown -R root:root "$STAGING/"
 sudo chmod -R u=rwX,go=rX "$STAGING/"

@@ -1,5 +1,0 @@
-# lawa
-
-currently surveying HTTP headers. i intend to share fun findings here later — check back later!
-
-=> /   back to home

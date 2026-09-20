@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh the live part of /personal/lawa.html every 5 minutes
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=5min
+RandomizedDelaySec=20
+AccuracySec=10s
+
+[Install]
+WantedBy=timers.target
