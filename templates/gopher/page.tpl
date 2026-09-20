@@ -1,1 +1,4 @@
 {{body}}
+{{?langswitch}}
+{{langswitch}}
+{{/langswitch}}

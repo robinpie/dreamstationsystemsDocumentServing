@@ -1319,12 +1319,35 @@ sub lang_vars {
 	# Every version of this page, itself included, in a fixed order.
 	my @ver = ($of, map { $TR{ $of->{fm}{id} }{$_} // () } @XLANGS);
 	$v->{alternates} = $v->{langswitch} = '';
-	return if @ver < 2 || $t ne 'html';
+	return if @ver < 2;
+	my $me = $doc->{lang} // $SRCLANG;    # NOT a ref compare: render_page copies $doc
+
+	# The retro targets have no forms, so there the switcher is a link per
+	# other version, in each protocol's idiom. No SSI either, hence no staging
+	# gate: a draft (which renders to html only) is simply never pointed at.
+	if ($t ne 'html') {
+		my @rows;
+		for my $d (grep { ($_->{lang} // $SRCLANG) ne $me } @ver) {
+			next if $d->{fm}{draft} || !grep { $_ eq $t } targets_of($d);
+			my $name = $LANGS{ $d->{lang} // $SRCLANG }{name};
+			my @sp   = spellings($t, $d);
+			if ($t eq 'gemini') {
+				push @rows, "=> $sp[0]   $name";
+			} elsif ($doc->{fm}{'gopher.map'}) {
+				my $sel = $sp[-1];
+				push @rows, sprintf "%s%s\t%s\t%s\t%s", ($sel =~ /\.txt$/ ? '0' : '1'),
+					$name, $sel, $CONF{gopher}{host}, $CONF{gopher}{port};
+			} else {
+				push @rows, "$name: $sp[0]";
+			}
+		}
+		$v->{langswitch} = join "\n", @rows;
+		return;
+	}
 
 	# hreflang. Reciprocal, self-inclusive, x-default on the source page. A
 	# draft is announced to nobody: its line is wrapped in the staging gate,
 	# and if drafts are all there is, so is the whole group.
-	my $me  = $doc->{lang} // $SRCLANG;    # NOT a ref compare: render_page copies $doc
 	my $pub = grep { ($_->{lang} // $SRCLANG) ne $me && !$_->{fm}{draft} } @ver;
 	my @alt;
 	for my $d (@ver) {
@@ -1337,17 +1360,33 @@ sub lang_vars {
 	@alt = ($GATE . join('', @alt) . '<!--# endif -->') if !$pub && !$doc->{fm}{draft};
 	$v->{alternates} = join "\n", @alt;
 
-	# The switcher: one nav link per other version, each named in its own
-	# language and marked up as such.
-	my @sw;
-	for my $d (grep { ($_->{lang} // $SRCLANG) ne $me } @ver) {
+	# The switcher: a third GET form beside the protocol and theme ones, and
+	# the same trick — no JavaScript, nginx answers with a redirect (the
+	# /personal/lang/ location in nginx/snippets/theme.conf, which swaps the
+	# language suffix on the page named in the action). One <option> per
+	# version that exists, each named in its own language. A draft's option is
+	# wrapped in the staging gate; if drafts are all there is, the whole form is.
+	my @opt;
+	for my $d (@ver) {
 		my $l = $d->{lang} // $SRCLANG;
-		my $a = sprintf '<a href="%s" hreflang="%s" lang="%s">🌐 %s</a>',
-			(spellings('html', $d))[0], $l, $l, esc_html($LANGS{$l}{name} // $l);
-		$a = "$GATE$a<!--# endif -->" unless linkable($doc, $d);
-		push @sw, $a;
+		my $o = sprintf '  <option value="%s" lang="%s"%s>%s</option>', $l, $l,
+			($l eq $me ? ' selected' : ''), esc_html($LANGS{$l}{name} // $l);
+		$o =~ s{^(\s*)(.*)$}{$1$GATE$2<!--# endif -->} if $pub && $l ne $me && !linkable($doc, $d);
+		push @opt, $o;
 	}
-	$v->{langswitch} = join ' ', @sw;
+	my @form = (
+		sprintf('<form method="get" action="/personal/lang/personal/%s">', (spellings('html', $doc))[0]),
+		sprintf('  <select name="lang" aria-label="%s">', esc_html(str($doc, 'language'))),
+		(map { "  $_" } @opt),
+		'  </select>',
+		sprintf('  <button type="submit">%s</button>', esc_html(str($doc, 'go'))),
+		'</form>',
+	);
+	if (!$pub && !$doc->{fm}{draft}) {
+		$form[0]  = $GATE . $form[0];
+		$form[-1] .= '<!--# endif -->';
+	}
+	$v->{langswitch} = join "\n", @form;
 }
 
 sub render_page {

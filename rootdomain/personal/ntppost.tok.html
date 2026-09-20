@@ -107,10 +107,19 @@
       <a href="blog.tok.html">📓 lipu toki</a>
       <a href="/professional">💼 lipu pali mi</a>
       <a href="https://grandexchange.dreamstation.systems">📈 OpenGET</a>
-      <a href="ntppost.html" hreflang="en" lang="en">🌐 English</a>
 
     </nav>
     <div id="theme-switcher" class="theme-switcher">
+      <!-- Language switcher. Only on a page that exists in more than one
+           language, and only listing the languages it exists in. A plain GET
+           form like the two after it; see lang_vars in triptych.pl. -->
+      <form method="get" action="/personal/lang/personal/ntppost.tok.html">
+        <select name="lang" aria-label="toki">
+          <option value="en" lang="en">English</option>
+          <option value="tok" lang="tok" selected>toki pona</option>
+        </select>
+        <button type="submit">o tawa</button>
+      </form>
       <!-- Protocol switcher: the same page over HTTP, HTTPS or the onion
            service. Also a plain GET form with no JavaScript; nginx answers it
            with a redirect (the /personal/proto/ location in

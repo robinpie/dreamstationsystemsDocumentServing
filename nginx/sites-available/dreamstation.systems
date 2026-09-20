@@ -107,6 +107,18 @@ map $server_name $drafts {
     staging.dreamstation.systems   1;
 }
 
+# -------------------------------------------------------- language switcher
+#
+# ?lang=<id> on /personal/lang/... becomes the file-name suffix of that
+# language's version of a page: none for English, .tok for toki pona. A
+# whitelist like the theme maps — an unknown value is English. The location is
+# in snippets/theme.conf. A new language is a row here, plus the regexes there.
+map $arg_lang $lang_suffix {
+    default "";
+    en      "";
+    tok     ".tok";
+}
+
 # --------------------------------------------------------- protocol switcher
 #
 # The /personal/ pages carry a second dropdown beside the theme one: the same

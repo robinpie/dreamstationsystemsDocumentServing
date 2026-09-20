@@ -270,7 +270,7 @@ Languages are the rows of `[langs]` in `triptych.conf`; the id is the BCP 47 tag
 
 **Links are written once, as ever.** A translation links `[…](@blog)` or `[…](@post:gzipt)` exactly as the source does. If the page it names has a translation in the same language the link goes there; if not, it goes to the source‐language page. So translating the site one page at a time never leaves a dead link and never needs a link revisited. The templates’ own nav (`{{nav_home}}`, `{{nav_blog}}`) and `@postlist` follow the same rule — a translated blog index lists the posts that exist in its language.
 
-**Every version announces the others.** Pages with more than one version get reciprocal `hreflang` lines (self‐inclusive, `x-default` on the source) and a `🌐` link in the nav per other version, named in its own language. A page with no translation gets neither, and is byte‐identical to what it was before any of this existed.
+**Every version announces the others.** Pages with more than one version get reciprocal `hreflang` lines (self‐inclusive, `x-default` on the source) and a **language switcher**: a third GET form in the `#theme-switcher` corner, before the protocol and theme ones, with one `<option>` per version that exists, each named in its own language. Like its neighbours it needs no JavaScript — it submits `?lang=<id>` to `/personal/lang/personal/<this page>`, and nginx (`snippets/theme.conf`, with the `$lang_suffix` map beside the theme maps) redirects to the same page with its suffix swapped, falling back to English if that version does not exist. On Gemini and Gopher the switcher is a link line (or gophermap row) per other version. A page with no translation gets none of this, and is byte‐identical to what it was before any of it existed.
 
 **`draft: 1`** is how a translation is worked on. A draft
 
@@ -288,11 +288,10 @@ A promote does carry the draft *file* to the live docroot, where it is reachable
 
 - JSON-LD for translated `index`/`blog` (posts have it; `inLanguage` follows the page). Needs a decision about `@id`s, and `makeMeta.py` only knows `blog.html`.
 - The sitemap and the feeds are English‐only.
-- The retro index pages have no language link yet: `services`, the gophermap and the capsule root would each want a row once there is something non‐draft to point at.
 - `chrome/*.html` (the ubuntu804 desktop’s menus) is English, and so is the generated fragment `lawa.tok.html` includes (`lawa-data.html`).
 - `ntpuserinfo`’s hand‐written JSON-LD head block is left off its translation, for the same `@id` reason.
 - Label text in the site‐wide `[links]` table is English; `content/tok/index.tri` restates the three rows it needs. A `[links.<lang>]` section would be the tidy version.
-- `/professional/` is hand‐written, so its translation is too: `index.tok.html` beside `index.html`, same suffix convention, the same `$drafts` gate written by hand. The stub’s leading comment says how to fill it in.
+- `/professional/` is hand‐written, so its translation is too: `index.tok.html` beside `index.html`, same suffix convention, the same `$drafts` gate written by hand, and a two‐link language `<nav>` under the protocol one. The stub’s leading comment says how to fill it in.
 
 ## 10. Notes for later
 

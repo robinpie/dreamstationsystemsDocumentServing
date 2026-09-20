@@ -76,11 +76,14 @@
       <a href="{{nav_blog}}">{{s_blog}}</a>
       <a href="/professional">{{s_professional}}</a>
       <a href="https://grandexchange.dreamstation.systems">{{s_openget}}</a>
-{{?langswitch}}      {{langswitch}}
-{{/langswitch}}
+
     </nav>
     <div id="theme-switcher" class="theme-switcher">
-      <!-- Protocol switcher: the same page over HTTP, HTTPS or the onion
+{{?langswitch}}      <!-- Language switcher. Only on a page that exists in more than one
+           language, and only listing the languages it exists in. A plain GET
+           form like the two after it; see lang_vars in triptych.pl. -->
+      {{indent:langswitch}}
+{{/langswitch}}      <!-- Protocol switcher: the same page over HTTP, HTTPS or the onion
            service. Also a plain GET form with no JavaScript; nginx answers it
            with a redirect (the /personal/proto/ location in
            nginx/snippets/theme.conf). The hidden field carries the current

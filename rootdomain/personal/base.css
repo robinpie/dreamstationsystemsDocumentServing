@@ -6,7 +6,8 @@
   top: 0.5rem;
   right: 0.5rem;
   z-index: 1000;
-  /* Two forms side by side: protocol switcher, then theme switcher. */
+  /* Forms side by side: language switcher (only on a page that has a
+     translation), protocol switcher, then theme switcher. */
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;

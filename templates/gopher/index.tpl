@@ -1,3 +1,6 @@
 i{{title}}	fake	(NULL)	0
 i	fake	(NULL)	0
 {{body}}
+{{?langswitch}}i	fake	(NULL)	0
+{{langswitch}}
+{{/langswitch}}

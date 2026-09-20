@@ -40,7 +40,7 @@
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <style>html{color-scheme:light dark}body{padding:1rem;font:100%/1.5 system-ui,sans-serif}.skip:not(:focus){position:absolute;left:-100vw}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(20rem,100%),1fr));gap:1rem}section{margin-block:2rem}article,th,td,.statbox{border:1px solid#888}article{border-radius:.5rem;padding:1rem}article>:first-child{margin-top:0}article>:last-child{margin-bottom:0}table{border-collapse:collapse;width:100%}caption,th,td{padding:.5em}caption{text-align:left}header{display:flow-root}header ul{display:flex;flex-wrap:wrap;gap:.25rem 1rem;list-style:none;padding:0}header li+li:before{content:"⁂"/"";margin-inline-end:1rem}header a{display:inline-block;padding:.25rem 0}ul{padding-left:1.2em}a{overflow-wrap:anywhere}pre,.scroll{overflow-x:auto}.proto{font-size:.85rem}.statbox{float:right;width:min(15rem,100%);border-radius:.5rem;padding:.5rem .75rem;margin:0 0 1rem 1.5rem;font-size:.85rem}.sbrow{display:grid;grid-template-columns:2.2rem 1fr 2.4rem;gap:.5rem;align-items:center;margin-block:.35rem}.bar{display:flex;height:.7rem;border:1px solid;border-radius:.25rem;overflow:hidden}.bar>*{height:100%;background:currentColor}.bar u{opacity:.3}.sbval{font-variant:tabular-nums;text-align:right}.sbmore{margin:.5rem 0 0;text-align:center}@media(max-width:40rem){.statbox{float:none;width:auto;margin-left:0}}:focus-visible{outline:2px solid;outline-offset:2px}</style>
+  <style>html{color-scheme:light dark}body{padding:1rem;font:100%/1.5 system-ui,sans-serif}.skip:not(:focus){position:absolute;left:-100vw}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(20rem,100%),1fr));gap:1rem}section{margin-block:2rem}article,th,td,.statbox{border:1px solid#888}article{border-radius:.5rem;padding:1rem}article>:first-child{margin-top:0}article>:last-child{margin-bottom:0}table{border-collapse:collapse;width:100%}caption,th,td{padding:.5em}caption{text-align:left}header{display:flow-root}header ul{display:flex;flex-wrap:wrap;gap:.25rem 1rem;list-style:none;padding:0}header li+li:before{content:"⁂"/"";margin-inline-end:1rem}header a{display:inline-block;padding:.25rem 0}ul{padding-left:1.2em}a{overflow-wrap:anywhere}pre,.scroll{overflow-x:auto}.proto{font-size:.85rem}.proto [aria-current]{font-weight:700}.statbox{float:right;width:min(15rem,100%);border-radius:.5rem;padding:.5rem .75rem;margin:0 0 1rem 1.5rem;font-size:.85rem}.sbrow{display:grid;grid-template-columns:2.2rem 1fr 2.4rem;gap:.5rem;align-items:center;margin-block:.35rem}.bar{display:flex;height:.7rem;border:1px solid;border-radius:.25rem;overflow:hidden}.bar>*{height:100%;background:currentColor}.bar u{opacity:.3}.sbval{font-variant:tabular-nums;text-align:right}.sbmore{margin:.5rem 0 0;text-align:center}@media(max-width:40rem){.statbox{float:none;width:auto;margin-left:0}}:focus-visible{outline:2px solid;outline-offset:2px}</style>
 </head>
 
 <body>
@@ -66,7 +66,10 @@
   </nav>
   <!-- Language switcher. Relative, unlike the links above: it should keep you
        on whichever of the three origins you arrived over. -->
-  <nav class="proto" aria-label="toki"><a href="./" hreflang="en" lang="en">English</a></nav>
+  <nav class="proto" aria-label="toki">
+    <a href="./" hreflang="en" lang="en">English</a> |
+    <a href="index.tok.html" hreflang="tok" lang="tok" aria-current="page">toki pona</a>
+  </nav>
 
   <h1>jan Apen (Robin Reel)</h1>
   <p>mi jan pali pi ilo sona. mi pali lon ilo pana, lon linluwi, lon ijo ante mute. nasin awen li suli tawa mi lon pali ale.</p>
