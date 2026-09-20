@@ -6,6 +6,11 @@
   top: 0.5rem;
   right: 0.5rem;
   z-index: 1000;
+  /* Two forms side by side: protocol switcher, then theme switcher. */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px 8px;
 }
 
 #theme-switcher form {

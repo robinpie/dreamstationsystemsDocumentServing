@@ -48,6 +48,12 @@ Each theme styles both `#theme-switcher select` and `#theme-switcher button`
 as a matching widget pair of its era. `plain.css` styles neither on purpose —
 it gets the browser's native controls, which is the whole idea.
 
+`#theme-switcher` holds **two** forms: a protocol switcher (HTTP / HTTPS /
+.onion) and then the theme one. Both are a `<select>` plus a `<button>`, so
+the theme rules above dress both without knowing there are two. The protocol
+form submits to `/personal/proto/…`, which nginx answers with a redirect — see
+`nginx.txt`, "The protocol switcher".
+
 ### A theme that needs markup
 
 `ubuntu804` draws a whole desktop around the page, and none of that markup is

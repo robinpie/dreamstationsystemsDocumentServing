@@ -450,6 +450,7 @@ body {
  * widget, which is what it is. base.css says a theme may override this. */
 #theme-switcher {
   position: static;
+  flex-wrap: nowrap;   /* two forms now; the toolbar is one row high */
   margin-left: auto;
   padding-left: 8px;
   flex: 0 0 auto;

@@ -89,6 +89,31 @@ map $theme $theme_color_dark {
     plain     "#121212";
 }
 
+# --------------------------------------------------------- protocol switcher
+#
+# The /personal/ pages carry a second dropdown beside the theme one: the same
+# page over HTTP, HTTPS or the onion service. The location that answers it is
+# in snippets/theme.conf; the maps are here for the same reason as above.
+#
+# $proto_now is which of the three THIS request arrived over, so SSI can mark
+# the right <option> selected. Regexes are tried in order, so the onion test
+# wins over the scheme one (the onion vhost is plain HTTP on 127.0.0.1:8081,
+# and $host never includes the port).
+map "$https:$host" $proto_now {
+    default       http;
+    "~\.onion$"   onion;
+    "~^on:"       https;
+}
+
+# Where ?to=<id> sends you. A whitelist like the theme maps: an unknown value
+# lands on HTTPS, so nothing a visitor types can become a redirect target.
+map $arg_to $proto_base {
+    default https://dreamstation.systems;
+    http    http://dreamstation.systems;
+    https   https://dreamstation.systems;
+    onion   http://dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion;
+}
+
 server {
     include snippets/clacks.conf;
     include snippets/accessLog.conf;

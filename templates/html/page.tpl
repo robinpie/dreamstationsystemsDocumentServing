@@ -63,6 +63,20 @@
 
     </nav>
     <div id="theme-switcher" class="theme-switcher">
+      <!-- Protocol switcher: the same page over HTTP, HTTPS or the onion
+           service. Also a plain GET form with no JavaScript; nginx answers it
+           with a redirect (the /personal/proto/ location in
+           nginx/snippets/theme.conf). The hidden field carries the current
+           theme across, since the cookie does not follow to another origin. -->
+      <form method="get" action="/personal/proto<!--# echo var="document_uri" -->">
+        <input type="hidden" name="theme" value="<!--# echo var="theme" -->">
+        <select name="to" aria-label="Protocol">
+          <option value="http"<!--# if expr="$proto_now = http" --> selected<!--# endif -->>HTTP</option>
+          <option value="https"<!--# if expr="$proto_now = https" --> selected<!--# endif -->>HTTPS</option>
+          <option value="onion"<!--# if expr="$proto_now = onion" --> selected<!--# endif -->>.onion (Tor)</option>
+        </select>
+        <button type="submit">Go</button>
+      </form>
       <!-- A GET form, so switching themes is a plain form submission to
            ?theme=<id> and needs no JavaScript. nginx reads the parameter and
            SSI stamps the choice back in below - see nginx/snippets/theme.conf. -->

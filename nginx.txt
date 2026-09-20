@@ -505,6 +505,21 @@ A THEME THAT NEEDS MARKUP (ubuntu804)
 
   See ubuntu804theme.txt for the whole design.
 
+THE PROTOCOL SWITCHER (HTTP / HTTPS / .onion)
+  A second GET form inside #theme-switcher, left of the theme one: a <select name="to"> and a Go button. Same no-JavaScript rule. A form cannot change its own action from a <select>, so it submits to nginx and nginx redirects:
+
+    action  = /personal/proto + $document_uri     (stamped in by SSI)
+    request = /personal/proto/personal/gzipt.html?theme=motif&to=onion
+    answer  = 302 http://<onion>/personal/gzipt.html?theme=motif
+
+  The location is in theme.conf; two more maps sit beside the theme ones. $proto_base turns ?to= into an origin, and is a whitelist with HTTPS as the default. $proto_now says which of the three the CURRENT request came over, and SSI uses it to mark the right <option> selected. The path half is whitelisted by the location's regex, so neither half of the redirect target is visitor-controlled: it is not an open redirect.
+
+  ?theme= is carried across on purpose. Cookies do not follow to the onion origin, so without it a visitor on motif would land on ubuntu804. It comes from a hidden field rather than from the cookie, so it also works for a cookieless visitor who arrived on a ?theme= URL.
+
+  The location lives under /personal/ and its regex repeats theme.conf's page list. A new themed page must be added to BOTH; forgetting this one is the quiet failure — the page renders fine and its protocol dropdown 404s.
+
+  Choosing HTTP from an HTTPS page will appear to do nothing in a current Firefox or Chrome: they upgrade the navigation themselves and only fall back if :443 fails. `curl -sI 'localhost/personal/proto/personal/index.html?to=http'` shows the server doing the right thing. Same story as the plain links on /professional/.
+
 THINGS THAT WILL BITE
   - The file list in theme.conf's regex is explicit. A new themed page that is not added there is served WITHOUT SSI, so its stylesheet href comes out as themes/.css and the page renders unstyled. This is the loud failure mode; it is loud on purpose.
   - /personal/ with no filename works only because the server-level `index` makes it an internal redirect to /personal/index.html and location matching runs AGAIN on the rewritten URI. Verified, not assumed. If `index` is ever moved into a location that the regex does not follow, the bare directory URL starts serving raw SSI comments.
@@ -527,6 +542,9 @@ VERIFYING
     curl -sI localhost/personal/index.html | grep -i 'vary\|clacks'
     curl -s 'localhost/personal/index.html?theme=plain' | grep theme-color
     curl -s 'localhost/personal/index.html?theme=motif' | grep theme-color
+    curl -sI 'localhost/personal/proto/personal/gzipt.html?to=onion&theme=motif' | grep -i location
+    curl -sI 'localhost/personal/proto/personal/gzipt.html?to=//evil.example' | grep -i location   # https://dreamstation.systems/...
+    curl -sI 'localhost/personal/proto/etc/passwd?to=http' | head -1                              # 404
 
   The theme-color pair must track the stylesheet on the line above it: plain is the only theme whose two values differ (#ffffff / #121212).
 
