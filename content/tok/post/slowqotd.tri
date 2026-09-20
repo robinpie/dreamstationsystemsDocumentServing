@@ -2,7 +2,6 @@
 id: slowqotd
 // toki pona version of content/post/slowqotd.tri. kind, date, html.style and
 // the rest are inherited; only what is language is restated here.
-draft: 1
 title: toki QOTD nasa li kute kin e lawa; anu, ilo pana QOTD pi tawa lili mute
 title_markup: toki QOTD nasa li kute kin e lawa; anu, ilo pana QOTD pi *tawa lili mute*
 description: sina ken lawa e pana taso la sina ken nasa pi suli seme lon insa pi lipu RFC 865?

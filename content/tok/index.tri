@@ -1,8 +1,7 @@
 ---
 id: index
-// toki pona. `draft` keeps it html-only, noindex and unlinked outside staging;
-// delete the line to publish. triptych.md §9.
-draft: 1
+// toki pona. Published 2026-09-20. To work on a translation out of sight, give
+// it `draft: 1` (html-only, noindex, linked on staging only). triptych.md §9.
 title: lipu pi jan Apen 🌠🏰🚀
 gopher.title: lipu pi jan Apen
 html.page_title: lipu pi jan Apen

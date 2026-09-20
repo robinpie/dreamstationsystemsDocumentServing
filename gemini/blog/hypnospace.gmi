@@ -112,3 +112,5 @@ tools/hsmrender.py converts all of the music data into looping audio files. It d
 
 => /blog/   back to blog
 => /        back to home
+
+=> /tok/blog/hypnospace.gmi   toki pona

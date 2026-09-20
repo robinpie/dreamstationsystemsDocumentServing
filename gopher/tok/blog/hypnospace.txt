@@ -1,0 +1,111 @@
+lipu pi musi Hypnospace Outlaw li kama tawa linluwi lon
+=======================================================
+
+o lukin kin e lipu README. nimi tawa pi kama jo ilo li lon ona. nasin pi kepeken ilo kin li lon ona.
+
+lipu README (nasin HTTP taso — ona kin li kama tan lipu Hypnospace): <https://dreamstation.systems/hsptohtml/README/pages/README.html>
+robinpie/.hsp-to-web: <https://github.com/robinpie/.hsp-to-web>
+
+*Hypnospace Outlaw* li musi pi ilo sona. tenpo mute la musi ni li lon “hypnospace”. ni li linluwi pi lon ala. ona li sama linluwi lon pi tenpo sike 1999 anu tenpo poka. sina lape la sina ken tawa ona. jan pali li pali e musi Hypnospace Outlaw kepeken ilo Construct 2. ilo ni li ilo pi pali musi. ona li pana e musi lon nasin HTML5 + JavaScript. mi olin e lukin pi lipu Hypnospace. (lipu ni li kepeken nasin lipu .hsp. nasin ni li lon musi ni taso. musi li pana kin e ilo pi pali lipu.) musi ni li kepeken nasin pi linluwi lon kin. tan ni la mi wile pana e nasin lipu ni tawa linluwi lon.
+
+Hypnospace Outlaw: <https://www.hypnospace.net/>
+Construct 2: <https://www.construct.net/en>
+
+mi open e insa musi
+-------------------
+
+lipu "data/read this.txt" li toki e ni: “we decided not to hide anything from players via encryption or whatever”. toki pona la “mi wile ala len e ijo tan jan musi kepeken nasin len anu ijo sama”. jan pali li toki musi ala a. lipu package.nw li poki ZIP taso. musi li lon insa ona, lon nasin HTML5 tan ilo Construct 2. jan li len ala e toki ilo ona. taso ilo Construct 2 li lili e toki ilo lon tenpo ale. len li ni taso.
+
+poki package.nw li jo e lipu ni e lipu ante mute:
+
+  - lipu c2runtime.js li ilo Construct 2.
+  - lipu data.js li sona ale pi musi Hypnospace Outlaw lon nasin JSON. kulupu ijo (“object types”) li lon ona. ma musi (“layouts”) li lon ona. lipu pali (“event sheets”) kin li lon ona, lon nasin ilo. musi li lukin e lipu .hsp lon nasin seme? lipu data.js li pana e sona ni tawa mi.
+
+ilo Construct 2 li lili e nimi pi kulupu ijo. taso pona la ona li awen e linja sitelen ale, e nanpa awen ale, e nimi ACE ale. lon lipu data.js la project[5] li jo e ma musi 9 (BootScreen, Menu, HypnOS, Highway, Dummy, RSOD, BIOS, Y2K, ModIO). project[6] li jo kin e lipu pali 16. nimi pi kulupu ijo li lili. tan ni la mi kama sona e kulupu ijo kepeken linja sitelen ona, kepeken nanpa awen ona. lon pini pi lipu c2runtime.js la cr.getObjectRefTable() li lon. lipu data.js li kepeken nanpa li kepeken ala nimi. cr.getObjectRefTable() li toki e ni: nanpa seme li ilo lili seme. ilo lili ni li tan ilo namako (“plugins”), tan nasin pali (“behaviours”). mi pali e ilo tools/c2decomp.py lon poki pali mi. ona li wan e lipu tu ni li sitelen e ijo sama toki ilo:
+
+    $ python3 tools/c2decomp.py work/pkg all | head -9
+
+    ######## SHEET: BootScreen ########
+    INCLUDE sheet#INILoader
+    INCLUDE sheet#Debug
+    INCLUDE sheet#GlobalFuncs
+    VAR AppData = "" (type 1, static=False)
+    VAR AppRoot = "" (type 1, static=False)
+    VAR FilePrefix = "file:\\\\" (type 1, static=False)
+    VAR UserData = "" (type 1, static=False)
+    VAR OldUserData = "" (type 1, static=False)
+
+ilo lili mute li lawa e nasin lipu .hsp. ilo lili ni la mute li lon lipu pali HypnOS:
+
+    $ python3 tools/c2decomp.py work/pkg HypnOS | grep LoadElement -A 10
+
+                      DO t2<Function>.Function.prototype.acts.CallFunction("LoadElement", ((($SlowLoadX + $loadOffset) % t149<Arr>.Arr.prototype.exps.Width()) + 1))
+                      DO t2<Function>.Function.prototype.acts.CallFunction("UpdateZOrder", )
+                      DO System.sys.acts.AddVar(var:SlowLoadX, 1)
+                    IF System.sys.cnds.Compare($SlowLoadX, combo:5, t149<Arr>.Arr.prototype.exps.Width())
+                      DO System.sys.acts.SetGroupActive("Slow-load Webpage", combo:0)
+                      DO t2<Function>.Function.prototype.acts.CallFunction("SyncGifs", )
+                      DO t2<Function>.Function.prototype.acts.CallFunction("UpdateZOrder", )
+                      DO t188<Sprite>.Sprite.prototype.acts.SetWidth(427)
+                      DO t188<Sprite>.Fade.Fade.prototype.acts.SetFadeOutTime(0.5)
+                      DO t188<Sprite>.Fade.Fade.prototype.acts.StartFade()
+                      DO t192<Sprite>.Sprite.prototype.acts.SetAnim("Default", combo:0)
+
+mi kama lukin e ilo lili suli ni:
+
+    ilo lili / kulupu                 pali ona
+    -----------------                 --------
+    LoadWebpage                       ona li alasa e nasin tawa lipu
+    URLtoCurrent                      nimi tawa li open tan poki lipu sewi pi
+                                      lon sona taso
+    BuildWebpage, UpdatePage          poki sona pi Webpage (x=0): title,
+                                      author, height×32, music, background,
+                                      cursor
+    LoadElement, UpdateElement        poki sona ale pi Gif en Text
+    Element Animations and Effects    nasin nanpa pi tawa sitelen
+    Load Gif / LoadGifs               kulupu pi sitelen ale: gifs/, static/,
+                                      shapes/, wordart/, lipu .speed kin
+    UpdateZOrder                      nasin pi monsi en sinpin (“z-order”) li
+                                      nasin jasima pi linja ijo
+    ElementEventWeb                   ona li lukin e lon musi li pana e pilin
+                                      tawa ijo
+    ColorToRGB                        kule li lon nanpa wan lon nasin BGR
+    Scripts                           toki ilo lili cmd:param|cmd:param. nimi
+                                      tawa en open lipu li kepeken ona
+
+ilo lili ReplaceText li ante e sitelen nasa /n, /t, /p, #VAR#. ona li lon ala lipu pali. ona li toki ilo JavaScript taso (HypnoSpecial_ReplaceText lon lipu c2runtime.js). kin la suli pi sitelen nimi li lon lipu data.js, lon sona pi ma musi. lon ni la ijo Spritefontanim li jo e ona lon poki sona tan ilo pali (“editor properties”).
+
+mi ante e lipu
+--------------
+
+pini la mi pali e ilo pi ante lipu. ilo tools/hspconv.py li lukin e lipu .hsp pi musi ni, e poki lipu data/. ona li pali e kulupu lipu awen:
+
+    $ python3 tools/hspconv.py --data "Hypnospace Outlaw/data" --out site
+
+lipu hsp.js li sitelen e lipu sama ilo HypnOS, taso ona li kepeken nasin pona tawa ilo pi lukin lipu. nasin Spritefont pi ilo Construct 2 li weka. nasin mi li lon ma ona. ona li sitelen e nimi lon canvas. sitelen GIF li tawa kepeken ilo pi sitelen sike. lipu hsp.js li pali kin e tawa namako ni: tawa poka (“sway”), tawa sike (“spin”), tawa linja (“marquee”), sitelen pi kama wan wan (“typewriter”), kule sike (“color-cycle”). tan ni la lipu li pali sama lipu lon musi. jan li pali ala e ijo lon lipu la ilo sin pi lukin lipu li open ala e kalama. lipu li open la jan kepeken o luka e lipu, anu o pali e ijo ante lon ona. ni la kalama li ken kama.
+
+lipu .hsp li sona ijo pi ilo Construct 2 lon nasin lipu. ona li jo e lipu pi suli poka 300px, e sona pi lipu ni, e ijo Gif mute, e ijo Text mute. ijo wan li ken jo e kama/pali 20 anu lili (toki ilo lili pi musi ni li open e ona). tan ni la ijo tu li ken sama ale tawa lukin, taso ona li ken pali ante li ken ante e musi. ijo ale la ilo mi li kepeken nasin sama nasin ElementEventWeb. ona li alasa e sitelen anu nimi pi ijo ni lon poki lipu sama: musi li open la LoadGifs li alasa lon poki ni (gifs/, static/, shapes/, wordart/). nimi tawa la ona li kepeken nasin sama URLtoCurrent (jan li open e lipu la ilo lili ni li alasa e URL tan ma pi lipu ni). ilo mi li ante e nimi tawa ale. ni la nimi tawa li tawa lipu sin lon kulupu lipu sin. lipu wan la ilo mi li sitelen e lipu HTML wan. ijo ale li div. ma ijo li sama musi. nasin pi monsi en sinpin kin li sama (ijo seme li lon sinpin pi ijo seme).
+
+sina ante ala e ijo la site/assets li nimi tawa (“symlink”) tawa poki lipu data/ pi musi ni. tan ni la kulupu lipu sin li lili mute. taso musi Hypnospace Outlaw li lon ala ilo pana la ijo wile li weka. ni la sina ken ala pana e kulupu lipu tan ilo pana ni (mi wile e ni: o pana ala e musi nasa pi ilo sona lon ilo pana). sina wile e ni: ijo wile ale li lon insa pi kulupu lipu sin. ni la o kepeken --copy-assets.
+
+ilo tools/hspaudit.py li lukin sin e kulupu lipu sin. ijo li weka la ilo ni li toki e ona. mi kepeken ona lon musi ale. o lukin:
+
+    $ python3 tools/hspaudit.py --site site --data "Hypnospace Outlaw/data"
+
+    pages: 1292   elements: {'text': 11979, 'gif': 14668}
+    unresolved images: 0 distinct, 0 references
+    unresolved fonts:  0 distinct, 0 references
+    links that resolve to no exported page: 13 distinct, 48 references
+
+nimi tawa moli 48 li moli lon musi kin. mi pilin e ni: jan pali li weka e lipu ni tan musi, taso nimi tawa ona li awen lon lipu ante (ma "the comic shop" li lon ala. nimi template2.hsp pi mute lili li awen e ma taso tawa lipu pi kama ala. ~truetranquilityno.hsp li wan).
+
+kalama musi
+~~~~~~~~~~~
+
+kalama musi li lon lipu lon nasin tu. lipu 450 li kepeken lipu .ogg. lipu .ogg ale li jo e lipu .txt poka. "name|author" li lon ona. ilo kalama pi tenpo ni li ken kalama e lipu .ogg. ante li wile ala. ilo pi ante lipu li awen e sona tu ni. ilo pi lukin lipu li kalama e kalama musi kepeken ijo audio. kalama li sike.
+
+lipu ante 527 li kepeken lipu .hsm. ni kin li lipu sona pi ilo Construct 2. taso kalama musi lili li lon ona. kalama musi ni li tan kalama mute pi tenpo lili, sama kalama musi pi ilo “tracker”. nasin pi kalama musi li lon lipu pali HypnOS, lon poka pi nasin lipu ante. tan ni la nasin sama pi open insa li pona kin: kulupu "Play Music Sounds" li pana e sona pi kalama musi tawa linja ijo pi nasin 3: (step, pattern×track, parameter). kulupu "BPM Timer" li nanpa e ni: secPerStep = 1 / (BPM/60) / 4 — “step” wan li kalama pi tenpo 1/16. ijo FREQOUT pi nanpa ID 60 li ante e nanpa pi sewi kalama tawa nanpa Hz (kalama pi tenpo suli la ona li kepeken nasin ante).
+
+ilo tools/hsmrender.py li ante e sona ale pi kalama musi tawa lipu kalama sike. ona li pali e ni lon tenpo pi ante lipu, lon ala tenpo pi lukin lipu. ona li kama jo e kalama lili ale kepeken ilo ffmpeg. ni li pini la ona li wan e kalama ni kepeken ilo NumPy. linja kalama wan li kama. kalama lili ale li lon ona. kalama li wile awen lon pini musi la ilo li pana e ona lon open musi. tan ni la lipu kalama li sike pona.
+
+English: /0/blog/hypnospace.txt

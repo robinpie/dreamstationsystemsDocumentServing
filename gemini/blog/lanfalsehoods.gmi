@@ -70,3 +70,5 @@ Each entry is phrased as the falsehood. Some of these may sometimes be true and 
 
 => /blog/   back to blog
 => /        back to home
+
+=> /tok/blog/lanfalsehoods.gmi   toki pona

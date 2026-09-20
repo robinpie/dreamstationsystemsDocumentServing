@@ -183,3 +183,5 @@ Conclusion
 ..........
 
 Are traditional compressors good language models? No, but the fact that lzma from 1998 can beat GPT-2-124M at HellaSwag is really cool, and it’s a neat demonstration of the compression‐prediction equivalence.
+
+toki pona: /0/tok/blog/gzipt.txt

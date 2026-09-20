@@ -105,3 +105,5 @@ I asked the NTP Pool server operator community board if anyone else who happens 
           2 54.202.10.40
 
 but nobody else has said anything. I am wondering if they are re‐resolving pool-ntp.tesla.com every single time and hitting everything the geolocation magic will let them reach, or if they just collected a few pool IPs and are only hammering those.
+
+toki pona: /0/tok/blog/tesla.txt

@@ -1,0 +1,78 @@
+linluwi lili la jan pi toki ilo li pilin e ijo pi lon ala
+=========================================================
+
+lipu ni la toki ale li pilin pi lon ala. taso tenpo wan la toki li ken lon. tenpo ante la toki sama li lon ala.
+
+ilo NAT
+-------
+
+- linluwi lili mi li lon monsi pi ilo NAT.
+- mi lon monsi pi ilo NAT wan taso.
+- linluwi lili mi li lon ala monsi pi ilo NAT.
+- nasin IPv6 la ilo sona mi li lon ala monsi pi ilo NAT.
+- mi jo e nanpa IP pi lipu RFC 1918 la mi lon monsi pi ilo NAT.
+- mi jo ala e nanpa IP pi lipu RFC 1918 la mi lon ala monsi pi ilo NAT.
+- ilo NAT li ante e nanpa IP taso.
+- ilo NAT li ante e nanpa IP e nanpa lupa taso.
+- ilo NAT li ante e nimi sewi pi poki lili taso.
+- ilo NAT li lon linluwi lili taso.
+
+nasin toki
+----------
+
+- nasin IPv4 taso li lon linluwi lili mi.
+- nasin IP taso li lon linluwi lili mi.
+- pona. nasin IP anu IPX/SPX anu Phase IV anu AppleTalk anu VINES anu NetBEUI anu SNA taso li lon linluwi lili mi.
+- lon anu seme?
+- mi ken weka e poki lili pi nasin wan tan linluwi lili mi.
+- mi sona e ijo ale lon linluwi lili mi.
+
+nanpa MAC
+---------
+
+- ma ale la nanpa MAC tu li sama ala. (ni li *wile* lon. taso ni li lon ala.)
+- linluwi lili la nanpa MAC tu li sama ala.
+- nanpa MAC ante li ilo ante.
+- pona. nanpa MAC ante li lupa linluwi ante.
+- jan li ken ala ante e nanpa MAC.
+- jan li ken ante e nanpa MAC.
+- nanpa MAC ale li suli 48 bit.
+- kipisi open 3 li nimi pi kulupu pali wan taso.
+- kulupu nanpa MA-L la kipisi open 3 li nimi pi kulupu pali wan taso.
+- nanpa MAC ale li kepeken nasin Unicast: ona li tawa ilo wan taso.
+- wile ARP li alasa e nanpa IP wan la ilo sona wan taso li pana.
+- sona ARP ale li lon.
+
+ken tawa en wawa
+----------------
+
+- linluwi lili li wawa.
+- linluwi lili li wawa mute. linluwi suli li wawa lili.
+- ilo sona tu li lon kipisi linluwi sama la toki ona li weka ala tan linluwi lili.
+- ilo sona tu li lon kipisi linluwi sama la ona li ken toki.
+- linluwi lili la ilo Wi-Fi en ilo Ethernet li sama.
+- linluwi lili la ilo Wi-Fi en ilo Ethernet li sama ala.
+- linluwi lili mi la ilo ale li jo e nanpa MTU sama.
+- linluwi lili la nimi ilo tu li sama ala.
+- nasin mDNS li pali.
+
+nasin DHCP
+----------
+
+- ilo pana DHCP li lon.
+- ilo pana DHCP wan taso li lon.
+- mi kepeken nanpa IP mi la ona li kama ante ala.
+- ilo pana DHCP en ilo nasin li ilo wan.
+- nasin DHCP li pana e ilo nasin tawa mi.
+- nasin DHCP li pana e ilo pana DNS tawa mi.
+- nanpa 169.254.0.0/16 li toki e ni: nasin DHCP li pakala.
+
+nanpa IP
+--------
+
+- ilo sona ale li jo e nanpa IP wan.
+- linluwi lili mi li kepeken nanpa IP pi lipu RFC 1918.
+- linluwi lili mi li kepeken nanpa IP len.
+- linluwi lili mi li kepeken nanpa IP.
+
+English: /0/blog/lanfalsehoods.txt

@@ -37,3 +37,5 @@ We also retain some data. We log IPs answered, and we publish aggregate informat
 Will reboot with no warning at any time, but downtime will be less than one minute.
 
 Again, no formal guarantees, but I’ll try to give at least one week’s notice on this page for downtime longer than that.
+
+toki pona: /0/tok/ntpuserinfo.txt

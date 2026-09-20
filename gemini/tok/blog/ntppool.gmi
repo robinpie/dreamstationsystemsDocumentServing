@@ -1,0 +1,41 @@
+# o toki insa e ni: sina ken pana e ilo pana tenpo tawa kulupu NTP Pool
+
+sina jo ala jo e ilo sona namako, anu e ilo sona VPS pi wawa linluwi namako? ilo ante lon linluwi li ken ala ken open e toki tawa ilo sina? ni li lon la mi wile e ni: sina toki insa e kama lon kulupu NTP Pool.
+
+=> /tok/blog/ntppost.gmi    open e toki tawa ilo sina
+=> https://www.ntppool.org/   kulupu NTP Pool
+
+## wile li lon
+
+tenpo ale la kulupu NTP Pool li wile e ilo pana sin. ken suli la sina kepeken ona. taso sina sona ala e ni — jan li ante ala e ijo la ilo Linux mute li kama jo e tenpo tan pool.ntp.org. ilo FreeBSD en ilo OpenBSD li sama. ilo mute pi tomo jan li sama kin: ilo pi linluwi tomo, ilo pi sitelen lipu, ilo pi seli tomo, ilo lili ante…
+
+tenpo ale la ma ale li wile mute a e ilo pana tenpo. wile wan pi nasin NTP li poki lili wan taso. tenpo mute la suli ona li lili tawa 100 B. taso ma ale la ilo lon linluwi li pana e wile ni. ilo pi pana ala li lili a. tenpo suno wan la ilo wan li pana e wile lon tenpo mute. tan ni la lili mute li kama suli.
+
+ken la sina pilin e ni: ilo pana li mute. ona li mute ala: mi sitelen e lipu ni la kulupu li jo e ilo pana pali pi nasin IPv4. nanpa ona li lon poka 3,800. ilo pana pali pi nasin IPv6 la nanpa li lon poka 2,300. ilo pana ni ale li pana e tenpo tawa ilo mute a: nanpa ona li lon poka 1,000,000,000.
+
+## pali li lili
+
+sina wile kama lon kulupu NTP Pool la sina wile ala e ilo sona pi wawa mute. sina wile ala e linja linluwi pi wawa mute.
+
+mi sitelen e lipu ni la ilo pana tenpo pi dreamstation.systems li pana tawa wile mute a lon tenpo suno wan pini: nanpa li lon poka 743,000,000. ilo pana ni li lon ilo sona VPS. ilo VPS ni li jo e kipisi vcore wan taso pi ilo Xeon. ilo Xeon ni li tan tenpo sike 2016. jan ante kin li kepeken kipisi ni. (ilo sona li toki e ni: ilo chronyd en pali linluwi pi ilo kernel li kepeken wawa CPU lili. nanpa li lon poka 25% taso.) tenpo suno wan la ilo pana ni li kepeken wawa linluwi lili: nanpa li lili tawa 60 GB. kin la sina ken kute e wile pi mute lili — pilin mi la ni li pona: open la o ante e “net speed” sina tawa “512 Kbit”. nanpa ni li lili ale. tenpo kama la o suli lili e ona lon tenpo mute. o lukin e ni: ilo sina li ken kute e wile pi mute seme. (kulupu NTP Pool li jo e lipu lawa tawa ilo pana sina. lipu ni la “net speed” li nanpa taso. ona li suli tawa nanpa pi ilo pana ante la kulupu li pana e wile mute pi ma sina tawa sina — ona li toki ala e wawa lon pi linja linluwi sina. ona li toki ala e ni: wile pi mute seme li kama tawa sina. “net speed” mi li 3 Gbit. taso wile NTP li kama tawa mi la ona ale li lili tawa 6 Mbps.) ilo VPS pi ike ale kin li pona tawa ni.
+
+=> /ntpstats.gmi   tenpo suno wan pini la nanpa wile li lon poka 743,000,000
+
+sina wile ala e ilo tenpo epiku. sina wile ala lon stratum 1. tenpo poka pini la ilo sona lon insa pi ilo sona ante li kama sona pona mute e tenpo. kin la tenpo pi ilo tenpo sina li ken ante lili tan tenpo lon. ante ni li lili tawa 100 ms la sina pona tawa kulupu (lawa ni li suwi nasa a).
+
+=> https://github.com/ntppool/monitor/blob/main/scorer/statusscore/statusscore.go   tenpo pi ilo tenpo sina li ken ante lili tan tenpo lon. ante ni li lili tawa 100 ms la sina pona tawa kulupu
+
+sina wile kama lon kulupu NTP Pool la sona pi nasin ni li lon lipu ona.
+
+=> https://www.ntppool.org/en/join.html   sona pi nasin ni li lon lipu ona
+
+## taso o sona e ni
+
+ni li pali pi tenpo suli. tenpo ale la sina ken weka tan kulupu. taso sina weka la wile li ken awen kama lon tenpo mun mute, anu lon tenpo sike mute, anu lon tenpo ale. ni li tan ilo kute NTP pi pali ike. ni li tan jan pi sona lili kin: ona li alasa e nanpa IP wan pi kulupu lon tenpo wan taso, li sitelen awen e nanpa ni lon insa pi ilo mute mute. (tenpo poka pini la mi pana e lipu linluwi tawa jan Dave Plonka. mi toki e pakala pi kulupu Netgear en tomo sona Wisconsin lon tenpo sike 2003. ona li toki e ni: tomo sona li *awen* kute e wile lili tan ilo Netgear ni.) sina weka tan kulupu NTP Pool la wile mute li awen utala e lupa UDP 123 sina lon tenpo suli. ni li awen lon tenpo sike mute.
+
+=> https://pages.cs.wisc.edu/~plonka/netgear-sntp/   pakala pi kulupu Netgear en tomo sona Wisconsin lon tenpo sike 2003
+
+=> /tok/blog/   o tawa lipu toki
+=> /tok/        o tawa lipu open
+
+=> /blog/ntppool.gmi   English

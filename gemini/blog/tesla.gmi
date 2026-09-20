@@ -117,3 +117,5 @@ but nobody else has said anything. I am wondering if they are re‐resolving poo
 
 => /blog/   back to blog
 => /        back to home
+
+=> /tok/blog/tesla.gmi   toki pona

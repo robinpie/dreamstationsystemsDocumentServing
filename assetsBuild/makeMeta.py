@@ -128,6 +128,21 @@ def sitemap(posts):
     out = ['<?xml version="1.0" encoding="UTF-8"?>', "",
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', ""]
     entries = list(STATIC) + [(p["url"], p["updated"]) for p in posts]
+    # Published translations of the pages above: <name>.<lang>.html beside the
+    # original (triptych.md section 9). A draft carries noindex and is left
+    # out, and so is a translation of any page this sitemap does not list
+    # (lawa, on purpose). No lastmod: same reason as STATIC.
+    for loc, _ in list(entries):
+        rel = loc[len(SITE):].lstrip("/")
+        if rel == "" or rel.endswith("/"):
+            rel += "index.html"
+        src = ROOT / "rootdomain" / rel
+        if src.suffix != ".html" or not src.exists():
+            continue
+        for tr in sorted(src.parent.glob(f"{src.stem}.*.html")):
+            if 'content="noindex' in tr.read_text(encoding="utf-8", errors="replace"):
+                continue
+            entries.append((f"{SITE}/{tr.relative_to(ROOT / 'rootdomain').as_posix()}", None))
     for loc, extra in entries:
         out += ["  <url>", f"    <loc>{loc}</loc>"]
         if extra == "always":

@@ -1,0 +1,13 @@
+# lipu toki
+
+=> tesla.gmi         kulupu Tesla li utala e mi lon linluwi | 2026-09-13
+=> ntppool.gmi       o toki insa e ni: sina ken pana e ilo pana tenpo tawa kulupu NTP Pool | 2026-09-08
+=> lanfalsehoods.gmi linluwi lili la jan pi toki ilo li pilin e ijo pi lon ala | 2026-09-05
+=> ntppost.gmi       kulupu lili li lawa e linluwi: ike open pi nasin NAT | 2026-08-30
+=> hypnospace.gmi    lipu pi musi Hypnospace Outlaw li kama tawa linluwi lon | 2026-08-27
+=> slowqotd.gmi      toki QOTD nasa li kute kin e lawa; anu, ilo pana QOTD pi tawa lili mute | 2026-06-22
+=> gzipt.gmi         mi musi kepeken ken toki pi ilo gzip | 2026-06-17
+
+=> /tok/            o tawa lipu open
+
+=> /blog/   English

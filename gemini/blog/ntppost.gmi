@@ -104,3 +104,5 @@ NAT certainly isn’t the only reason why the modern internet is full of central
 
 => /blog/   back to blog
 => /        back to home
+
+=> /tok/blog/ntppost.gmi   toki pona

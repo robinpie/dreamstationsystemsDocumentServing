@@ -1,0 +1,91 @@
+# lipu pi jan Apen 🌠🏰🚀
+
+mi jan Apen! mi olin e ilo ThinkPad. mi jan pi toki pona. mi musi kepeken ilo pana.
+
+=> /tok/blog/   o lukin e lipu toki mi a!
+
+## ilo pana lon ilo sona ni
+
+=> /services.gmi   sona pi nasin toki ante (Gopher, DICT, QOTD, FTP...)
+=> https://dreamstation.systems/professional/status   lipu pi pilin ilo (nasin HTTP taso)
+
+* ilo pana tenpo NTP/NTS-KE lon kulupu NTP Pool
+* poki Gemini ni (ilo OpenGET li lon insa)
+* nasin Gopher
+* nasin Gemini
+* nasin Spartan
+* nasin Finger (o kepeken: finger @dreamstation.systems)
+* nasin DICT
+* poki lipu FTP
+* nasin QOTD
+* nasin Daytime
+* nasin Echo
+* nasin Discard
+* nasin Chargen
+
+=> /tok/ntpuserinfo.gmi            nasin kepeken pi ilo pana NTP lon dreamstation.systems
+=> /ntpstats.gmi                   nanpa pi ilo pana NTP (ilo li sin e ona lon tenpo ale)
+=> /ge/                            ilo OpenGET
+=> gopher://dreamstation.systems   ma sama, kepeken nasin Gopher
+=> spartan://dreamstation.systems  ma sama, kepeken nasin Spartan
+=> ftp://dreamstation.systems      poki lipu FTP
+
+## pali mi
+
+=> ftp://dreamstation.systems/robinsSoftware/ath             !~ATH | toki ilo nasa mi tan lipu Homestuck
+=> ftp://dreamstation.systems/robinsSoftware/viewpoint       viewpoint | ilo pi toki tawa ilo sona, kepeken nasin WIMP
+=> ftp://dreamstation.systems/robinsSoftware/fontliberator   fontliberator | ilo li pali sin e nasin sitelen, li lanpan ala. jan li pali ala
+=> ftp://dreamstation.systems/robinsSoftware/xcaca           xcaca | ilo pana X lon sitelen ASCII
+=> https://dreamstation.systems/hsptohtml/README/pages/README.html   ilo ni la lipu pi musi Hypnospace Outlaw li kama lipu W3 lon
+=> https://github.com/OboeLang/oboe                          toki ilo Oboe. ona li tawa pali ale. mi en jan Jade K. li pali e ona
+=> https://sushii64.com/                                     jan Jade K.
+
+## o toki tawa mi
+
+o pana e lipu linluwi tawa mi a! sina wile toki e “toki!” taso la, ni kin li pona. jan lukin pi lipu mi li toki tawa mi la, mi pilin pona mute
+
+lipu linluwi: robin@dreamstation.systems
+ilo Signal:   g9ij.47
+ilo Discord:  g9ij
+
+## jan pona
+
+=> https://nnycap.neocities.org/   https://nnycap.neocities.org/
+=> https://sushii64.com/           https://sushii64.com
+
+## lipu ante ni li epiku tawa mi
+
+=> https://fervor.diy/             https://fervor.diy
+
+```
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::                                                    ::
+::    --                        --                    ::
+::          ::####::                                  ::
+::          ########                            --    ::
+::          ########                                  ::
+::          ::####::                    ::            ::
+::                                    ::--::          ::
+::                --                ::--##--::        ::
+::                                    ::::::          ::
+::                                  ==@@======        ::
+::--                                  ::::            ::
+::                                --  ====::    ::    ::
+::                              ::@@  ====::::  @@::  ::
+::                              ::==::@@==::::::==::  ::
+::      ==                  --    ==::::::    ::==    ::
+::    ======        ::    ::::    ::==@@@@==::::::    ==
+::  ::::::::::    ::::      ==::::            ::::::::==
+::::::::::::::::    ==::::  ::==::::        ::::==::::==
+::::::::::::::::::  ::::----::  ::==@@@@======::  ::  ==
+::::::::::::::--------------::  ::  @@    ==  ::  ::  ==
+::--------------------------::::::  ==    ==  ::::----**
+**------------------------------::::@@    @@::::------@@
+@@**--**--**--------------------------::::------------@@
+@@**********----**------------**----::::::--**------**@@
+@@****************--**----****--==::::::::==--********@@
+@@**************************--::::::::::::::==--******@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+```
+
+=> /   English

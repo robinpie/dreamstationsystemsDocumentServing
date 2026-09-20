@@ -9,3 +9,5 @@
 => gzipt.gmi         Playing with the language modeling abilities of gzip | 2026-06-17
 
 => /            back to home
+
+=> /tok/blog/   toki pona

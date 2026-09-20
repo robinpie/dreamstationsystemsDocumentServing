@@ -204,3 +204,5 @@ Are traditional compressors good language models? No, but the fact that lzma fro
 
 => /blog/   back to blog
 => /        back to home
+
+=> /tok/blog/gzipt.gmi   toki pona

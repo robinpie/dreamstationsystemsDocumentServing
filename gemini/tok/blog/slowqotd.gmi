@@ -1,0 +1,100 @@
+# toki QOTD nasa li kute kin e lawa; anu, ilo pana QOTD pi *tawa lili mute*
+
+nasin QOTD (lipu RFC 865) li nasin toki pi ilo sona. ona li tan tenpo open pi linluwi li lili a li pona a tawa sona. linja TCP li open la ilo pana li pana e “short message” taso — e toki lili. poki lili UDP li kama la ona li pali sama. (ilo kute li pana e sona la ilo pana li pali e ala kepeken ona.)
+
+=> gemini://gemini.quux.org/0/Computers/Standards%20and%20Specs/RFC/docs/rfc865.txt   lipu RFC 865 — Quote of the Day Protocol
+
+nasin sitelen pi toki ni la lipu li toki e ni taso:
+
+> There is no specific syntax for the quote.  It is recommended that it be limited to the ASCII printing characters, space, carriage return, and line feed.  The quote may be just one or up to several lines, but it should be less than 512 characters.
+
+(toki pona la: toki li wile ala e nasin sitelen. sitelen ASCII taso li pona tawa ona. ona li ken jo e linja wan anu linja mute. taso nanpa sitelen ona o lili tawa 512.)
+
+(o sona: jan li sitelen e lipu ni lon tenpo pini weka. tenpo pini ni la nimi lawa “SHOULD/RECOMMENDED” pi lipu RFC li lon ala. taso mi kute e nimi pi lipu ni sama nimi lawa ni. kin la mi alasa kute e lawa pi 512 B. taso mi kute ala e lawa ASCII. nasin ni li musi nanpa wan.)
+
+lipu nasin li sama ni la jan pali mute pi ilo pana QOTD li pana e sitelen nimi taso. ni li nasa ala. taso mi wile pali e namako. toki QOTD o kute e lawa. ni la ijo seme li ken lon ona li musi nanpa wan tawa lukin?
+
+## ilo kute la mi ken pilin e seme?
+
+ala a. taso lon la (lon pi pilin pona la) mi pilin e ni: jan ale li lukin e toki QOTD kepeken ilo pi toki lawa (toki Inli la “terminal emulator”). ilo ni li pali pona. ni la mi tawa seme?
+
+### sitelen Sixel
+
+nanpa wan la mi alasa e sitelen Sixel. ni li nasa ala. nasin Sixel li nasin pi pana sitelen. ona li suli ike a: sitelen lili li wile e sona mute. taso sitelen pi lili ala li ken lon toki QOTD. ni la mi o kepeken kule pi mute lili. mi o kepeken sitelen ni: kule sama li awen lon linja suli. nasin Sixel li ken lili pona e sitelen ni.
+
+=> ftp://dreamstation.systems/qotdArchive/20260620   toki QOTD Sixel (sona ona pi ante ala)
+
+[sona sitelen: nimi "DELTARUNE" li lon open. sitelen lili pi jan Kris tan musi Deltarune li lon monsi ona.]
+
+ona li epiku ala. taso ona li ijo.
+
+### sitelen lawa ANSI
+
+pona. ken la mi o alasa e ni lon tenpo nanpa wan. taso mi pana e sitelen lawa mute lon tenpo wan la mi ken ala pali e mute. mi ken namako e sitelen nimi. mi ken pali e ni: nimi li weka li kama sin li weka sin. taso mi ken ala pali e *sitelen tawa*: ale li kama lon tenpo wan. mi ken sitelen sin lon sinpin. mi ken tawa e ijo lon ona. taso lon la jan kepeken li lukin e pini taso. tenpo open la mi weka mute e nasin ni.
+
+## mi ken lawa e seme?
+
+lili taso. mi ken ala open e ilo mi lon ilo kute. mi pana e sona lili taso tawa ona — 100 B mute taso. ona li kepeken sona ni lon nasin pi wile ona.
+
+mi ken lawa e ijo wan taso: pana a. lipu nasin li toki e ni taso: o pana e sona, sona o lili tawa 512 B. ale li ni. taso ken la linja mi li tawa lili mute a, li tawa nasa, li pana e poki lili lili mute. lawa ala li weka e ken ni:
+
+=> ftp://dreamstation.systems/miscSupplementaryFiles/Screencast_20260621_194924.webm   o lukin e toki QOTD pi tawa lili (sitelen tawa sinpin)
+
+[sona pi sitelen tawa: linja open pi kalama musi *Still Alive* tan jan Jonathan Coulton li kama lon sinpin. sitelen wan taso li kama lon tenpo wan. sitelen tawa li poka pini la sitelen kulupu Aperture Science li kama lon insa pi linja tu. ona li tan sitelen ASCII. pini la ilo wc -c li pana e nanpa 473]
+
+epiku a! nasin ni li pali lon! mi pali jaki e ilo lili kepeken toki ilo Perl. ona li kepeken TCP_NODELAY li pana e toki mi lon kipisi pi lili wile. ni la musi sama ni li ken. (ken ni la musi ni li pona nanpa wan ala. taso tenpo ni la mi ken lili e tawa pana. ni la sitelen li ken tawa lon a!)
+
+sina ante ala e ijo la nasin TCP pi ilo Linux li kepeken nasin Nagle. nasin ni li lon insa lawa pi ilo Linux. ilo li pana e sona lili mute la nasin Nagle li wan e ona lon poki wan. ni li lili e pali linluwi. ilo mute la ni li pona. taso mi wile ala e ona lon ni. mi wile lawa pona e ni: poki seme li tawa lon tenpo seme. tan ni la pali nanpa wan li ni: mi kepeken setsockopt(IPPROTO_TCP, TCP_NODELAY, 1). ona li toki e ni: “o pini e nasin Nagle; o pana e poki lili lili mi lon tenpo ni a”.
+
+### toki ilo lili .sqotd
+
+mi wile e ni: mi ken sitelen e lipu pi sitelen tawa kepeken wawa lili. tan ni la mi pali e toki ilo lili sin. ona li toki ilo pi nasin linja. lipu .sqotd la mute li sitelen nimi taso. nimi lawa pi mute lili li lon insa linja:
+
+* [type N] (sitelen ale la ilo li awen lon N s, ni li lawa e sitelen wan ale li awen. sina ante e ona la ona li pini)
+* [wait N] (ilo li awen lon N s)
+* [art NAME]...[end] (ni li pali e leko pi nimi NAME. leko li lon ma wan pi lipu la ilo li ken pana e ona lon ma ante)
+* [spawn NAME] (ilo li pana e leko NAME lon tenpo wan)
+* [save] / [restore] (ilo li awen sona e ma sitelen li tawa sin tawa ona. ni li lon tenpo wan li kepeken sitelen lawa)
+* [up N] / [down N] (ilo li tawa e ma sitelen. ni li lon tenpo wan li kepeken sitelen lawa)
+* [[ (sitelen [ taso)
+
+mi wile pali e ijo sin kepeken toki ilo ni la ken la mi pana e nimi lawa sin tawa ona. tenpo ni la ona li jo taso e wile pi kalama musi *Still Alive*:
+
+```
+[type 0.15]This was a triumph.[wait 1]
+I'm making a note here:
+HUGE SUCCESS.[wait 1]
+It's hard to overstate
+my satisfaction.[wait 1][type 0]
+
+
+
+[spawn aperture][up 17][type 0.15]Aperture Science[type 0][down 17]
+[art aperture]
+          #######
+     ####  ####### ###
+   #########  ####  ####
+  #######        ## #####
+     ##             ####
+#######              ## ###
+#####                # ####
+#### #                #####
+### ###             #######
+   ####             ##
+  #####  #        #######
+   ##### ####  #########
+     ### #######  ####
+          ########
+[end]
+```
+
+(lipu ni li awen kin lon ftp://dreamstation.systems/qotdArchive/20260623.sqotd.)
+
+=> ftp://dreamstation.systems/qotdArchive/20260623.sqotd   lipu .sqotd pi kalama musi Still Alive
+
+ilo kute la toki Still Alive li 473 B taso. o awen sona: tenpo awen li lon ala insa pi sona pana. linluwi li tawa lili taso.
+
+=> /tok/blog/   o tawa lipu toki
+=> /tok/        o tawa lipu open
+
+=> /blog/slowqotd.gmi   English

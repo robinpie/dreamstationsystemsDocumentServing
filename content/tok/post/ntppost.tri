@@ -2,7 +2,6 @@
 id: ntppost
 // toki pona version of content/post/ntppost.tri. kind, date, html.style and
 // the @links table are inherited; only what is language is restated here.
-draft: 1
 title: kulupu lili li lawa e linluwi: ike open pi nasin NAT
 description: nasin NAT li pakala e sona pi linja linluwi. ni li kama kepeken nasin seme?
 ---

@@ -94,3 +94,5 @@ The client sees the Still Alive output as 473 bytes total; remember, the delays
 
 => /blog/   back to blog
 => /        back to home
+
+=> /tok/blog/slowqotd.gmi   toki pona

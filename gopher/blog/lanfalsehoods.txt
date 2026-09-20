@@ -74,3 +74,5 @@ IP addresses
 - My LAN uses RFC 1918 IP addresses.
 - My LAN uses private IP addresses.
 - My LAN uses IP addresses.
+
+toki pona: /0/tok/blog/lanfalsehoods.txt

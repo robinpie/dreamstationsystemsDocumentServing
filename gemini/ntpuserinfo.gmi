@@ -37,3 +37,5 @@ Will reboot with no warning at any time, but downtime will be less than one minu
 Again, no formal guarantees, but I’ll try to give at least one week’s notice on this page for downtime longer than that.
 
 => /   back to home
+
+=> /tok/ntpuserinfo.gmi   toki pona

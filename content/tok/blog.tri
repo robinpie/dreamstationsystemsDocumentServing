@@ -1,7 +1,6 @@
 ---
 id: blog
 // Lists the posts that exist under content/tok/post/, and no others.
-draft: 1
 title: lipu toki
 description: lipu toki pi nasin ala nanpa wan lon linluwi ale.
 ---
