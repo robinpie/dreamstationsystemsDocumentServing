@@ -1,0 +1,52 @@
+# nanpa kipisi li kama la tenpo sike 10 li tawa
+
+*ni li toki pi lon ala. sona pi jan sitelen kin li lon ala.*
+
+2036-10-25
+
+tenpo sike 10 pini la jan li pana e nanpa kipisi pi nanpa RSA-2048 lon linja. tenpo suno ni li tenpo suno sama. jan ale li sitelen e lipu pi lukin monsi. lipu mute li open lon tenpo pi pana ni. mi wile open lon tenpo pini lili pi pana ni. tan li ni.
+
+pali mi li ni: jan ike li pakala e ilo la mi kama, li alasa e tan, li pona e ilo. nanpa kipisi li kama ala la tenpo sike 10 li tawa. tenpo ona la mi lukin e pakala 4. ona ale li sama. mani nanpa mute li weka tan poki mani. sitelen nimi pi weka ni li pona ale, li lon. taso jan pi poki mani li toki wawa e ni: “mi pali ala e ni.” jan ala li lanpan e sona ona kepeken toki pi lon ala. lipu ilo ike li lon ala. jan insa pi pilin ike li lon ala. lupa monsi len li lon ala. lipu awen pi ilo li toki e ni: jan pi ilo open lon li pali e ni. ona li toki e ni taso.
+
+mi sitelen e nimi mi lon lipu 4. lipu ale li pana e tan. tenpo ona la tan ni li pona tawa mi. poki mani wan li tan ilo toki. jan li sona e ni: ilo insa ona pi pali nanpa nasa li pakala. ilo wan pi sitelen nimi li pali e nanpa pi tenpo wan. nasa ona li lili ike. kulupu esun wan pi ilo kiwen la nasin ona pi kama ijo li jaki. poki mani wan pi linja ala li tan jan moli. mi sitelen e ni (sewi o weka e ike mi): “ken la jan li awen len e ilo open sama”. ni li nasin suwi pi toki “PEBCAK”. ale ni li ken lon. pakala Coldcard li pini la tenpo mun lili taso li tawa la lipu mi nanpa wan li kama.
+
+=> https://www.trmlabs.com/resources/blog/the-largest-hardware-wallet-exploit-of-2026-inside-the-usd-116-million-coldcard-hack   pakala Coldcard
+
+tenpo kama la weka mani li kama suli ike, li kama nasa ike. jan ala li ken toki e tan ante tawa pakala wan ale. jan ale li lukin e ni: ijo suli li lon. open la jan pi lipu sin li toki e ilo sona Kuwantun. ken la sina awen sona e nimi lawa pi lipu sin: “suno Q li lon a! ona li kama wawa!” ken la sina awen sona e kulupu esun sin pi ilo sona Kuwantun. jan lawa ona li toki tawa kulupu lawa pi ma Mewika, li toki e ni: ilo ona li ken ala kipisi e nanpa ale pi sitelen nanpa tu taso. jan ala li pilin e ni: ona li toki lon. taso ona li toki lon. taso ni li weka ala e ken ni: ma lawa, anu jan ike ante pi mani mute, li pali e ijo.
+
+tan ni la mi ale li tawa nasin len sin. nasin ni li ken awen tan ilo sona Kuwantun. a, mi tawa wawa! kulupu pali li pilin e ni: pali ni li wile e tenpo sike 10. taso tenpo mun 9 la ilo suli mute pi ma ale li kepeken nasin len pi linja leko.
+
+pini ni la jan li utala e poki mani pi nasin linja leko. tenpo ona la mi pilin ala e ni: “ni li Ijo Suli.” pakala pi nasin linja leko li nasa, taso ona li nasa moli ala. jan sona pi tenpo suli li toki lon tenpo ale e ni: nasin pi linja leko li sin mute, jan li sitelen e lipu lawa ona kepeken tenpo lili ike. kin la nasin len wan li kama lon kulupu pini pi alasa NIST, taso utala pi ilo sona nasa ala li pakala e ona. utala ni li wile e pali lili taso. tan ni la mi tawa monsi, tawa nasin len suli pi tawa ike: ko nanpa.
+
+=> https://eprint.iacr.org/2022/975.pdf   utala pi ilo sona nasa ala li pakala e ona
+
+jan pi kama sona li jan pi sona len ala. ona li lawa e linja lon kulupu lili pi pana linja. ona li sitelen e ni tawa kulupu lipu NANOG: ona li lukin e ijo sama wan taso lon jan ale pi kama pakala. awen ona li tan pilin ni: pali nanpa wan li ken ala pini kepeken tenpo lili. kin la ona li pana lukin e ijo pi kama ala. tomo mani lili wan li awen pana e lipu len pi tenpo wan tawa jan ona kepeken jan tawa. ilo nasa pi mute lili li kepeken ilo open ni: jan li pana e ona kepeken luka. tenpo sike mute la jan ike li wile mute kama lon insa ona. taso jan ala li pilin e ona. ken la jan li kama sona e ni: P = NP, li jo e nasin pali pi ken kepeken? ni kin li Ijo Suli ala. jan ala li kute e toki pi ken taso lon kulupu lipu.
+
+tenpo suno 9 li pini la jan li pali e ilo open sama pi kulupu esun wan pi lipu lawa ilo. ilo open ni li pali e sitelen nimi kepeken ko nanpa. tenpo suno 4 sin li pini la pali sama nanpa tu li kama. ona li pakala e nasin ante. nasin ni li kepeken ilo ante ale pi ko nanpa. jan li alasa, li lukin sin e lipu NANOG. jan mute mute li kama pilin e ni: ona li lon.
+
+tenpo suno 2 li pini la lipu pi sitelen taso li kama lon lipu linja Pastebin. musi la ona li kama tan lupa pini pi ilo Tor. musi mute la jan ala li kama sona e jan pana. jan pi ilo Tor li awen ala e lipu mute pi pali jan. lipu li jo e nanpa suli tu pi kipisi ala. sina mute e nanpa wan kepeken nanpa ante la sina kama jo e nanpa RSA-2048.
+
+mi sona ala e jan pana. mi lukin sin e sona pi alasa pakala la mi pilin e ni: tenpo ona la kulupu 3 anu mute li sona. kulupu nanpa wan li pali kepeken lukin mute. tawa pi nasin sin li pini la lanpan ona li pini. lanpan ale li pini lon tenpo ona la mi ale li toki e ni: “mi anpa e ona!” li lukin sin ala. kulupu nanpa tu li lukin ala, li awen lanpan, li pakala e nasin pi kulupu nanpa wan. mi ken ala pana e sona lon pi kulupu nanpa tu wan. ona li kulupu mani. ona li kama jo e mani kepeken nasin nasa. kulupu mani ni li pini kepeken kalama ala. tenpo mun 8 li tawa la lipu Pastebin li kama. jan lawa ona li lanpan e ala. ona li lukin taso. kin la poki mani pi alasa li lon. jan li weka e ilo open ona, li ken pana e sona lon pi weka ni. tenpo sike mute pini la jan li pana e poki ni. jan ni li sona e ni: kala seme li tawa lon telo. kulupu pi lukin ala li lanpan e ona. mi wile sona e ni: tenpo ona la jan seme li lukin? jan pana li jan ala pi kulupu ni. mi pilin e ni: jan wan li kama sona e nasin kepeken lawa ona. ona li sona e ni: jan li ken ala pona e pakala la pana sona pona tawa kulupu wan taso li lon ala. ona li lukin e kulupu ken: kulupu lawa (sina wile ala wile pana e ni tawa kulupu lawa?), kulupu esun (sina wile ala wile pana e ni tawa kulupu esun?), tomo sona suli (sona li weka tan ona tawa jan ale). pini la ona li pilin e ni: pana tawa jan ale li nasin pi pona nanpa wan.
+
+## utala pi utala ala
+
+tenpo mun 14 la jan ale li sona e ni: ilo awen li pakala. taso jan lili taso li sona e nasin pi pakala ona. ni li tenpo pi nasa nanpa wan lon pali mi. jan lili taso li ken pakala e ilo awen la mi awen kepeken e ona. pilin mi li ike.
+
+jan pali wan pi kulupu DigiCert li kute ala e nasin sin pi jan ale. ona li lukin e lipu lawa pi tenpo pini. lipu li toki e ni: jan li pana lukin e nasin pi kama jo e ilo open len la o weka e lipu pi toki lon. ona li weka e lipu 1,000,000 mute lon tenpo suno wan taso. tenpo sike mute la ilo lukin pi lipu linja li lukin ala e weka lipu. tan ni la linja mute li pilin ala e ni. ijo ni li pilin: tomo pi awen tomo tawa lon ma tomo 3, ilo pi kalama jan lon tomo misikeke wan, lipu linja pi ma wan tawa jan pi kama ma. jan pali ni li toki e ni taso: lipu pi toki lon li toki e ni: “ijo ni li lon.” tenpo ni la ona li ken ala toki e ni. mi pilin ala e ni: ona li pakala.
+
+jan ante li kama sona sin e nasin. tan ni la mi ale li kama sona e mani pi pakala wan (lon open la mani Mewika 2,000,000). mi pali sama tenpo pi pakala open pi nasin WEP: mi ante e ilo open lon tenpo ale, tan ni: utala li wile e tenpo lili. tenpo lon pi lipu li kama tenpo suno wan, li kama tenpo ilo 4, li kama tenpo ilo lili 30. mi pana e nimi ni tawa nasin: “noka kasi suli, lipu kasi wawa”. ilo open noka li suli nasa a. mi ale li lukin e ijo tu: mani pi pakala wan, en tenpo lon lili pi lipu. mi lukin e ni: ona tu li kama lon sama. pini ona li sama pini pi nasin WEP.
+
+mani li kama lili lon kipisi tenpo mute. tan ni la pakala kin li kama lon kipisi tenpo mute. nanpa wan la ma lawa li ken. nanpa tu la kulupu pi jan lanpan li ken. pini la jan ale li ken. pipi ilo pi ike nanpa wan lon tenpo sike mute li kama tan kulupu esun wan pi ilo linja. kulupu ni li pini ala pona e nasin ona pi pana lipu sin. ilo 40,000,000 li kama jo e lipu sin. sitelen nimi ona li pona ale, li lon. lipu lawa ilo li kama sin lon ijo kiwen tan tomo esun. suli pi mani nanpa li kama ala. tenpo suno 7 la tomo mani ale li pini. ona li open sin la ona li tawa lili, li wile e mani mute, li lon ala linja. ona li awen tan ni: ona li jo e lipu nanpa, e lawa, e ken pi weka pali.
+
+pini la utala ale pi nasin “o lanpan lon tenpo ni, o open lon tenpo kama” li kama. lipu len ale pi tenpo ale li kama ken lukin. toki len pi kulupu lawa ma, jan pi pana sona len, olin len, jan pi utala lawa: ale li lon.
+
+tenpo ni la ilo toki mi li jo e lipu len pi tenpo wan tawa kulupu pi ilo toki mi, tawa tomo mani mi, tawa jan pona mi. sina wile pana e lipu len la o luka e ilo toki sina tawa ilo toki ante lon tenpo suli. sona len mi ale li lon poki kiwen lon tomo anpa mi, tan ni: jan ala li ken len e sona awen. kulupu mi pi pana linja li ken lukin e pali ale mi lon linja. lawa li toki e ni: ona li ken ala kepeken ike e sona ni. jan mute li pilin e ni: lawa ni li musi taso.
+
+mi wile toki lon e poka ante pi ijo ni. sona nanpa sama li pali e misikeke mi. tenpo sike 6 la mi moku e ona. nasin pali ilo li pali e ona kepeken tenpo ilo wan taso. tenpo ni la ma ale li pona mani, li pona sijelo. tenpo sike 5 pini la ona li pona lili. jan mute li pilin e ni: esun ni li pona. tenpo suno mute la mi kin li pilin sama.
+
+tenpo sike 50 la mi ale li pilin wawa e ni: nanpa li awen e mi. pilin ni li pakala. taso tan pilin ni la mi pilin e ni: mi ken toki len. lon tenpo pini ona, lon tenpo kama ona la ijo ala li pali pona sama.
+
+=> /tok/blog/   o tawa lipu toki
+=> /tok/        o tawa lipu open
+
+=> /blog/factors.gmi   English

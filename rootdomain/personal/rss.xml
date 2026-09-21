@@ -5,8 +5,15 @@
     <link>https://dreamstation.systems/personal/blog.html</link>
     <description>the least consistent blog on the W3</description>
     <language>en</language>
-    <lastBuildDate>Sun, 13 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 21 Sep 2026 00:00:00 +0000</lastBuildDate>
     <atom:link rel="self" type="application/rss+xml" href="https://dreamstation.systems/personal/rss.xml"/>
+    <item>
+      <title>Ten years since the factors</title>
+      <link>https://dreamstation.systems/personal/factors.html</link>
+      <pubDate>Mon, 21 Sep 2026 00:00:00 +0000</pubDate>
+      <guid isPermaLink="true">https://dreamstation.systems/personal/factors.html</guid>
+      <description>Fiction: an incident responder in 2036 looks back on the day the RSA-2048 factors were posted.</description>
+    </item>
     <item>
       <title>I’m being cyberattacked by Tesla, Inc.</title>
       <link>https://dreamstation.systems/personal/tesla.html</link>

@@ -3,13 +3,21 @@
   <title>robin’s blog</title>
   <subtitle>the least consistent blog on the W3</subtitle>
   <id>https://dreamstation.systems/personal/blog.html</id>
-  <updated>2026-09-13T00:00:00Z</updated>
+  <updated>2026-09-21T00:00:00Z</updated>
   <link rel="alternate" type="text/html" href="https://dreamstation.systems/personal/blog.html"/>
   <link rel="self" type="application/atom+xml" href="https://dreamstation.systems/personal/feed.xml"/>
   <author>
     <name>robin</name>
     <email>robin@dreamstation.systems</email>
   </author>
+  <entry>
+    <title>Ten years since the factors</title>
+    <id>https://dreamstation.systems/personal/factors.html</id>
+    <link rel="alternate" type="text/html" href="https://dreamstation.systems/personal/factors.html"/>
+    <published>2026-09-21T00:00:00Z</published>
+    <updated>2026-09-21T00:00:00Z</updated>
+    <summary type="text">Fiction: an incident responder in 2036 looks back on the day the RSA-2048 factors were posted.</summary>
+  </entry>
   <entry>
     <title>I’m being cyberattacked by Tesla, Inc.</title>
     <id>https://dreamstation.systems/personal/tesla.html</id>

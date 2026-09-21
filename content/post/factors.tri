@@ -1,0 +1,58 @@
+---
+id: factors
+kind: post
+title: Ten years since the factors
+date: 2026-09-21
+updated: 2026-09-21
+description: Fiction: an incident responder in 2036 looks back on the day the RSA-2048 factors were posted.
+pangram: https://www.pangram.com/history/75aef018-5e95-4e04-b19a-9450ec16cf46?ucc=tp64Jv2K7C4
+---
+
+@links
+coldcard  url=https://www.trmlabs.com/resources/blog/the-largest-hardware-wallet-exploit-of-2026-inside-the-usd-116-million-coldcard-hack
+sidh      url=https://eprint.iacr.org/2022/975.pdf
+@end
+
+*This is fiction, including biographical details.*
+
+*Please forgive the stilted language — this post was originally written in toki pona.*
+
+2036-10-25
+
+Today marks ten years since the RSA-2048 factors were posted. Everyone is writing retrospectives. Most of them start at the moment of that post. I want to start a little earlier, and here’s why.
+
+I worked in incident response. In the ten years before the factors were posted, I saw four cases that looked alike. A lot of cryptocurrency vanished from a wallet. The signatures authorizing the withdrawal were perfectly valid. But the wallet’s owner insisted that they didn’t do this. Nobody had phished them. There was no malware. There was no disgruntled insider. There was no backdoor. The device logs said that the holder of the real key did it. That’s all they said.
+
+I signed my name to four reports. Every report gave a cause. At the time, those causes looked fine to me. One wallet came from a phone whose random number generator was known to be broken. One signing tool produced nonces with too little randomness. One hardware vendor had a sloppy supply chain. For a dead man’s cold wallet I wrote (God forgive me): “possible undisclosed key backup”, which is a euphemism for “PEBCAK”. All of this was believable. The first report came only a few months after the [Coldcard incident](@coldcard).
+
+Later, the losses got too big and too strange. Nobody could articulate a separate cause for each one. Obviously, something big was out there. First, the journalists talked about quantum computers. Maybe you remember the headlines: “Q‐Day is here early!” Maybe you remember the new quantum computing startup. Its CEO testified before the US Congress, saying that their machine couldn’t even factor every two‐digit number. Nobody believed him. He was telling the truth. But that didn’t rule out the possibility that a nation‐state or other well‐resourced attacker was up to something.
+
+So we all migrated to new post‐quantum cryptography. Amazingly, we moved quickly — the working groups had figured the job would take ten years. But within nine months, most of the important infrastructure was on lattice cryptography.
+
+Then came an attack on a lattice‐based crypto wallet. At the time, I didn’t think “this is the Big One.” A lattice break was strange, but not *terminally* strange. The old guard had always said lattices were very new and their standards had been written far too quickly. Besides, [a NIST post‐quantum finalist had already been broken by a quite efficient classical attack before](@sidh). So we retreated to the big, clunky cryptography: hashes.
+
+The person who figured it out was not a cryptographer. They ran the network at a small ISP. They posted on the NANOG mailing list that they noticed that all the victims had exactly one thing in common: their security rested on the belief that some math problem couldn’t be solved quickly. And they pointed at what *wasn’t* happening. A small bank still delivered one‐time pads to its customers by courier. A handful of odd systems used keys distributed by hand. Bad actors have wanted into those badly for years. But nobody had touched them. Maybe someone had learned that P = NP with a practical algorithm? Obviously, that wasn’t the Big One either. Nobody listens to mere speculation on a mailing list.
+
+Nine days later, someone forged a firmware vendor’s hash‐based signing key. Four days after that came a second forgery. It broke a different scheme, with a completely different hash function. People went looking and re‐read the NANOG post. A great many of them came to believe it was true.
+
+Two days later, a plain‐text file appeared on Pastebin. Amusingly, it came from a Tor exit node. More amusingly, they were never deanonymized — the Tor people aren’t in the habit of keeping extensive logs. The file contained two large primes. Multiply them and you get RSA-2048.
+
+I don’t know who posted it. Going back over the forensic data, I think that by then three or more parties knew. The first worked carefully. Their thefts stopped when the migration to the new schemes was finished. If all the thefts had stopped then, we would have said “we beat it” and never looked again. The second was not careful, kept stealing, and ruined the first one’s approach. The third I can’t prove. It was a fund with strange returns. The fund closed quietly eight months before the Pastebin post. Its manager stole nothing. They only watched. Also, there were the bounty wallets. Their keys had been thrown away, provably. People had put them out many years ago, people who knew what kind of fish swim in the water. The careless one took them. What I want to know is: who was watching at that moment? The poster was none of these people. I think someone worked the thing out. They knew that when a break can’t be fixed, there is no such thing as responsible disclosure to a single party. They looked at the list of candidates: governments (do you want to hand this to a *government*?), companies (do you want to hand this to a *company*?), universities (they leak to everyone anyway). In the end they decided that giving it to everyone was the best way.
+
+## The phony wars
+
+For 14 months everyone knew that the lock was broken, but only a few people knew how to break it. It was the strangest time of my career. Since only a few people could break the lock, we begrudgingly kept using it.
+
+One employee at DigiCert broke with the emerging norms. They read the old industry rules. The rules said: if someone demonstrates a method by which they can obtain the private key, revoke the certificate. They revoked millions of certificates in a single day. Browsers had been ignoring certificate revocations for years, most of the internet never felt it. What did feel it: parking garages in three cities, the paging system at one hospital, one country’s immigration website. The engineer’s only statement was this: a certificate is an assertion of truth, and they could no longer make that assertion. I don’t think they were wrong.
+
+Other people rediscovered the method. That’s how we learned the cost per break (at first, 2 million dollars). We did what we did back when WEP was first broken — rotated keys constantly, because the attack needed a bit of time. Certificate lifetimes went to one day, then four hours, then thirty minutes. We called the approach “fat roots, fast leaves.” Root keys were absurdly large. We all watched the cost of a break against the short lifetime of certificates. We watched them converge. It ended the way that WEP did.
+
+The cost fell in stages, so the breakage arrived in stages. First nation‐states could do it. Second, organized crime. Finally, everyone. The worst worm in many years came through a router vendor that had never finished fixing its update path. 40,000,000 devices received an update with a perfectly valid signature. Firmware went back to physical media from the store. Cryptocurrency went to zero. There were seven consecutive bank holidays, and when they reopened, they were slow, expensive, and offline. They survived because they had ledgers, laws, and reversibility.
+
+Finally, all the “harvest now, decrypt later” attacks went off. Every ciphertext ever recorded became readable. Diplomatic cables, informants, secret affairs, parties to lawsuits: all in there.
+
+Today my phone holds one‐time pads for my carrier, my bank, and my friends. You exchange pads with a lengthy tap of your phone. All my secrets sit in a safe in my basement, because nobody can encrypt data at rest. My ISP can read everything I do online. The law says they must not misuse it. Most people think that’s a joke.
+
+I want to be honest about the other side of this. The same math made the medicine I’ve been taking for six years, designed by an algorithm with an hour of compute. The whole world is richer and healthier than it was 5 years ago. Most people think this was a good trade. Most days, I think so too.
+
+For 50 years we truly trusted numbers. That trust is broken. But because of it, we believed we could speak in secret. Nothing before or since has worked as well.
