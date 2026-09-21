@@ -1,6 +1,6 @@
 # blog
 
-=> factors.gmi       Ten years since the factors | 2026-09-21
+=> factors.gmi       [fiction] Ten years since the factors | 2026-09-21
 => tesla.gmi         I’m being cyberattacked by Tesla, Inc. | 2026-09-13
 => ntppool.gmi       Please consider running a NTP server in the NTP Pool | 2026-09-08
 => lanfalsehoods.gmi Falsehoods Programmers Believe About LANs | 2026-09-05
