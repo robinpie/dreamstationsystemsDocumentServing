@@ -27,6 +27,7 @@ NGINX_SITES=(
 	dreamstation.systems
 	fortunes.dreamstation.systems
 	grandexchange.dreamstation.systems
+	hansendiscountelectronics.com
 	onion.dreamstation.systems
 	pool-ntp.tesla.com
 	pool.ntp.org
@@ -36,6 +37,7 @@ NGINX_CONFD=(
 	compression.conf
 	logFormat.conf
 	onionLocation.conf
+	robotsTag.conf
 	serverNamesHash.conf
 )
 NGINX_SNIPPETS=(
@@ -45,6 +47,7 @@ NGINX_SNIPPETS=(
 	fortuneCookie.conf
 	onionLocation.conf
 	pgpKey.conf
+	robotsTag.conf
 	statusCgi.conf
 	teslaNotice.conf
 	theme.conf
