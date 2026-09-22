@@ -49,3 +49,31 @@ server {
     include snippets/theme.conf;
     include snippets/feeds.conf;
 }
+
+# HTTPS. Same docroot and same snippet list as the block above, deliberately —
+# a name that answered over one scheme and not the other would be the silly bug
+# statusCgi.conf's shared include exists to prevent.
+#
+# No onionLocation.conf: the onion service mirrors dreamstation.systems, not
+# this name, and advertising it from here would point at a third name for the
+# same bytes.
+server {
+    include snippets/clacks.conf;
+    include snippets/robotsTag.conf;
+    include snippets/accessLog.conf;
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name hansendiscountelectronics.com;
+
+    ssl_certificate     /etc/letsencrypt/live/hansendiscountelectronics.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/hansendiscountelectronics.com/privkey.pem;
+
+    root /srv/http;
+    index index.html;
+
+    include snippets/statusCgi.conf;
+    include snippets/pgpKey.conf;
+    include snippets/theme.conf;
+    include snippets/feeds.conf;
+}

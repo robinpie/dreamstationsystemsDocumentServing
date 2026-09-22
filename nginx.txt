@@ -289,6 +289,38 @@ Same certificate, same content, same blast radius (deliberately NOT merged with 
                                                        which promote carves
                                                        out. Full details in
                                                        ~/configNotes/fortunes.txt.
+  /etc/nginx/sites-available/hansendiscountelectronics.com
+                                                     — A SECOND NAME FOR THE
+                                                       MAIN SITE (added
+                                                       2026-09-21). Not a
+                                                       subdomain and not a
+                                                       redirect: root /srv/http
+                                                       and the apex's snippet
+                                                       list, so the whole site
+                                                       answers under it, :80 and
+                                                       :443 alike. Own cert
+                                                       (expires 2026-12-21), for
+                                                       the fortunes/grandexchange
+                                                       reason — the apex cert
+                                                       also covers mta-sts, and
+                                                       inbound mail's TLS does
+                                                       not belong in a web
+                                                       deploy's blast radius.
+                                                       EVERY RESPONSE IS
+                                                       noindex, nofollow: see
+                                                       ALIAS VHOSTS below. No
+                                                       www — the name has no A
+                                                       record, so it is in
+                                                       neither the cert nor the
+                                                       server_name lines. NOTE
+                                                       this name is outside
+                                                       dreamstation.systems, so
+                                                       there is NO wildcard A
+                                                       record standing behind
+                                                       it: DNS is a record of
+                                                       its own at the registrar,
+                                                       and without this file the
+                                                       catchall 444s it.
   /etc/nginx/sites-available/bare-ip                 — server_name
                                                        67.215.249.229; serves
                                                        the site to anyone who
@@ -357,12 +389,14 @@ THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every hand
     nginx/conf.d/compression.conf
     nginx/conf.d/logFormat.conf
     nginx/conf.d/onionLocation.conf
+    nginx/conf.d/robotsTag.conf
     nginx/conf.d/serverNamesHash.conf
     nginx/sites-available/000-default-catchall
     nginx/sites-available/bare-ip
     nginx/sites-available/dreamstation.systems
     nginx/sites-available/fortunes.dreamstation.systems
     nginx/sites-available/grandexchange.dreamstation.systems
+    nginx/sites-available/hansendiscountelectronics.com
     nginx/sites-available/onion.dreamstation.systems
     nginx/sites-available/pool-ntp.tesla.com
     nginx/sites-available/pool.ntp.org
@@ -371,6 +405,7 @@ THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every hand
     nginx/snippets/feeds.conf
     nginx/snippets/onionLocation.conf
     nginx/snippets/pgpKey.conf
+    nginx/snippets/robotsTag.conf
     nginx/snippets/accessLog.conf
     nginx/snippets/statusCgi.conf
     nginx/snippets/teslaNotice.conf
@@ -457,6 +492,51 @@ Two traps, both already handled:
 Check with: curl -sI https://dreamstation.systems/ | grep -i clacks
 
 security.txt (RFC 9116) lives at rootdomain/.well-known/security.txt and its Expires: field must be refreshed before 2027-08-26 or the file is formally invalid.
+
+ALIAS VHOSTS AND X-Robots-Tag
+-----------------------------
+hansendiscountelectronics.com serves the same docroot as the apex under a
+second name, which is duplicate content by construction. The apex is the name
+that should be found, so the alias sends `X-Robots-Tag: noindex, nofollow` on
+every response.
+
+A HEADER, NOT robots.txt, and that is forced rather than chosen: /srv/http is
+one directory serving both names, so /robots.txt is the same file either way —
+and it deliberately says Allow: / ("robots.txt is a suicide note", which is
+about archiving, and the apex means it). A response header is the only part of
+the answer that can differ per vhost.
+
+Two files, the usual split, because map is http context:
+  conf.d/robotsTag.conf     — map $server_name $robots_tag. Keyed on the vhost's
+                              CONFIGURED name, not $host, exactly like the
+                              $drafts map: no request header can move a name in
+                              or out of the list. Every other vhost gets "",
+                              and nginx omits an add_header whose value is
+                              empty, so nothing else on the box sends the header
+                              at all. THAT is what makes the snippet safe to
+                              include from files the apex shares.
+  snippets/robotsTag.conf   — the add_header itself.
+
+SAME TRAP AS clacks.conf: a location with an add_header of its own drops the
+server-level one. So theme.conf and wkd.conf re-include robotsTag.conf in the
+same two places they already re-include clacks. A themed /personal/ page is the
+single page you would least like indexed twice, so forgetting that repeat would
+defeat most of the point.
+
+  Check:  curl -sI https://hansendiscountelectronics.com/personal/index.html | grep -i robots
+          curl -sI https://dreamstation.systems/personal/index.html | grep -ci robots   # must be 0
+
+To add another alias: a row in the map, plus the vhost. To retire one: remove
+the vhost, the row, the sites-enabled symlink and the NGINX_SITES line, and
+`sudo certbot delete --cert-name <name>` so renewals stop chasing a name that
+may no longer resolve.
+
+Adding a whole new DOMAIN (not a subdomain) differs from the list below in two
+places: step 1 is a real DNS record rather than the wildcard, and the cert in
+step 2 is a NEW one (`certbot certonly --webroot -w /srv/http -d <name>
+--key-type ecdsa`) rather than an expansion of the apex's. The webroot is the
+live docroot, and promote carves .well-known/acme-challenge/ out of its
+--delete, so renewals keep working.
 
 Adding a new subdomain later:
   1. Point DNS for the subdomain at this VPS. (Often already done — there is a wildcard A record, which is why an unconfigured subdomain still resolves and connects instead of failing fast. See the NOTE above.)
