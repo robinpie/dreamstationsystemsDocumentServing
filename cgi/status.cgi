@@ -113,7 +113,7 @@ use constant HOST => '127.0.0.1';
 # port is only one of the ways in. Pick whichever port gives the cheapest honest
 # answer for the service as a whole.
 my @SERVICES = (
-	[ 'time',    'Time (NTP / NTS)', 4460, 'tls',   'chrony.service',                 'NTP on 123/udp, NTS-KE on 4460/tcp' ],
+	[ 'time',    'Time: dreamstation', 4460, 'tls',   'chrony.service',                 'NTP on 123/udp, NTS-KE on 4460/tcp' ],
 	[ 'web',     'Web',              80,   'http',  'nginx.service',                  'HTTP and HTTPS'                     ],
 	[ 'gopher',  'Gopher',           70,   'line',  'gophernicus.socket',             'socket‐activated'                   ],
 	[ 'gemini',  'Gemini',           1965, 'tls',   'molly-brown@dreamstation.service', ''                                 ],
@@ -372,6 +372,15 @@ sub read_chrony {
 		}
 	}
 
+	# The selected source's CONFIGURED name (-N), for "synced to" beside the
+	# stratum. tracking only has the IP, and resolving it would put a DNS
+	# lookup on the sweep; -N is ~10ms and no network. '*' marks the source
+	# chronyd is actually synchronised to. Must be in the cache whitelist.
+	for (qx{chronyc -c -N sources 2>/dev/null}) {
+		my @f = split /,/;
+		if (@f > 2 && $f[1] eq '*' && $f[2] =~ /^([\w.:-]+)$/) { $out{ref} = $1; last }
+	}
+
 	# NTS-KE comes from the root-only `chronyc serverstats`, captured for us
 	# by statusSample.service. Reading a file here keeps www-data out of
 	# sudoers entirely.
@@ -490,7 +499,6 @@ sub read_remote_ntp {
 	}
 	$v{stratum} = $1 if $j =~ /"stratum":\s*"(\d+)"/;
 	$v{ref}     = $1 if $j =~ /"ref":\s*"([^"\\]*)"/;
-	$v{nts}     = $1 if $j =~ /"nts":\s*(true|false)/;
 	unless (($v{schema} // '') eq REMOTE_NTP_SCHEMA) {
 		$r{why} = 'schema';
 		return \%r;
@@ -501,6 +509,28 @@ sub read_remote_ntp {
 	$r{uptime} = $v{collected_at} - $v{started} + $age
 		if $v{started} && $v{collected_at} && $v{collected_at} > $v{started};
 	return \%r;
+}
+
+# starport's Services row: the NTP query statusPull.sh makes of starport:123
+# over the internet once a minute (the CGI itself never touches the network).
+# `at` is OUR clock, so the age is a plain subtraction. Older than
+# REMOTE_STALE means the probe itself stopped running: "unknown", never the
+# last verdict carried forward.
+sub read_remote_probe {
+	open my $fh, '<', REMOTE_DIR . '/ntpprobe'
+		or return { state => 'unknown', detail => 'no probe result yet' };
+	my %p;
+	while (<$fh>) { $p{$1} = $2 if /^(\w+) (.+)$/ }
+	close $fh;
+	return { state => 'unknown', detail => 'no probe result yet' } unless ($p{at} // '') =~ /^\d+$/;
+	my $age = time - $p{at};
+	$age = 0 if $age < 0;
+	return { state => 'unknown', detail => 'last probed ' . dur($age) . ' ago' } if $age > REMOTE_STALE;
+	my $state = ($p{state} // '') =~ /^(up|down|unknown)$/ ? $1 : 'unknown';
+	my @d = grep { defined } $p{detail};
+	push @d, "$p{rtt_ms}ms" if $state eq 'up' && ($p{rtt_ms} // '') =~ /^\d+$/;
+	push @d, dur($age) . ' ago';
+	return { state => $state, detail => join ' · ', @d };
 }
 
 sub read_seen {
@@ -575,7 +605,7 @@ sub cache_write {
 	# is written by the sweep, renders correctly once, and then silently
 	# disappears for the next CACHE_TTL seconds — i.e. on almost every real
 	# request. That is a genuinely confusing bug to chase; it has happened once.
-	for my $k (qw(stratum offset leap nts_ke_accepted nts_ke_dropped uptime)) {
+	for my $k (qw(stratum ref offset leap nts_ke_accepted nts_ke_dropped uptime)) {
 		printf $fh "chrony %s %s\n", $k, $d->{chrony}{$k} if defined $d->{chrony}{$k};
 	}
 	close $fh;
@@ -1048,8 +1078,16 @@ CSS
 	$out .= qq{</section>\n};
 
 	# ----- services
-	my ($n_up, $n_tot) = (0, scalar @SERVICES);
-	$n_up += ($d->{svc}{ $_->[0] }{state} // '') eq 'up' ? 1 : 0 for @SERVICES;
+	# starport's row is not in @SERVICES: it is not swept (no network from
+	# here) but read from statusPull's probe, fresh on every request, and it
+	# goes second so the two time servers lead the table. It has no unit
+	# column because we cannot see starport's systemd from here.
+	my @rows = map { [ @{$_}[0, 1, 5], $d->{svc}{ $_->[0] } ] } @SERVICES;
+	splice @rows, 1, 0, [ 'time-starport', 'Time: starport',
+	                      'NTP on 123/udp · queried from dreamstation',
+	                      $d->{starport_probe} ];
+	my ($n_up, $n_tot) = (0, scalar @rows);
+	$n_up += (($_->[3] || {})->{state} // '') eq 'up' ? 1 : 0 for @rows;
 
 	$out .= qq{<section aria-labelledby="svc"><h2 id="svc">Services</h2>\n};
 	$out .= qq{<p>$n_up of $n_tot responding.</p>\n};
@@ -1073,14 +1111,15 @@ CSS
 	# 4151 but is only reachable through nginx. A port column would read as "this
 	# is where the service lives", which for those rows is simply false. Where the
 	# ports matter they are stated in the note, in prose that can be accurate.
-	for my $s (@SERVICES) {
-		my ($id, $label, $note) = @{$s}[0, 1, 5];
-		my $r     = $d->{svc}{$id} || { state => 'unknown', detail => 'no data' };
+	for my $row (@rows) {
+		my ($id, $label, $note, $r) = @$row;
+		$r ||= { state => 'unknown', detail => 'no data' };
 		my $state = $r->{state} // 'unknown';
 		my $word  = $state eq 'up' ? 'up' : $state eq 'down' ? 'DOWN' : 'unknown';
 
 		my @notes = grep { length } ($note, $r->{detail});
-		push @notes, "unit $r->{unit}" if ($r->{unit} // '') ne 'active' && ($r->{unit} // '') ne 'unknown';
+		# length(): starport's row has no unit (we cannot see its systemd).
+		push @notes, "unit $r->{unit}" if length($r->{unit} // '') && $r->{unit} ne 'active' && $r->{unit} ne 'unknown';
 
 		$out .= qq{<tr><th scope="row">} . esc($label) . qq{</th>};
 		$out .= qq{<td class="st $state"><span aria-hidden="true">$MARK{$state}</span> }
@@ -1093,7 +1132,8 @@ CSS
 	my $c = $d->{chrony} || {};
 	$out .= qq{<section aria-labelledby="ntp"><h2 id="ntp">Time service: dreamstation</h2>\n<dl>\n};
 	if (defined $c->{stratum}) {
-		$out .= qq{<dt>Stratum</dt><dd>} . esc($c->{stratum}) . qq{</dd>\n};
+		$out .= qq{<dt>Stratum</dt><dd>} . esc($c->{stratum})
+		      . ($c->{ref} ? qq{, synced to } . esc($c->{ref}) : '') . qq{</dd>\n};
 		$out .= qq{<dt>Leap status</dt><dd>} . esc($c->{leap} // '—') . qq{</dd>\n} if $c->{leap};
 		$out .= sprintf qq{<dt>Offset from reference</dt><dd>%+.0f µs</dd>\n}, $c->{offset} * 1_000_000
 			if defined $c->{offset};
@@ -1153,9 +1193,6 @@ CSS
 			      . sprintf(qq{ — about one in every %.1f routable IPv4 addresses}, 3_700_000_000 / $sn->{seen})
 			      . qq{</dd>\n};
 		}
-		$out .= qq{<dt>Protocol</dt><dd>}
-		      . (($sn->{nts} // '') eq 'true' ? 'NTP on 123/udp, NTS' : 'NTP on 123/udp (no NTS)')
-		      . qq{</dd>\n};
 		$out .= qq{<dt>chronyd running for</dt><dd>} . esc(dur($sn->{uptime})) . qq{</dd>\n}
 			if $sn->{uptime};
 		$out .= qq{</dl>\n};
@@ -1171,7 +1208,8 @@ CSS
 	$out .= qq{</section>\n};
 
 	$out .= qq{</main>\n<footer>\n};
-	$out .= qq{<p>Probes run from the server against loopback.</p>\n};
+	$out .= qq{<p>Probes run from the server against loopback, except starport’s time service, }
+	      . qq{which dreamstation queries over the internet once a minute.</p>\n};
 	$out .= qq{<p>starport’s figures are collected over SSH once a minute}
 	      . ($sp->{fresh} ? qq{ (these are } . esc(dur($sp->{age})) . qq{ old)} : '')
 	      . qq{; its time-service figures are gathered on starport every 5 minutes}
@@ -1280,6 +1318,7 @@ eval {
 	# its freshness verdict must be made NOW, not up to CACHE_TTL ago.
 	$data->{starport} = read_remote();
 	$data->{starport_ntp} = read_remote_ntp();
+	$data->{starport_probe} = read_remote_probe();
 	$body = render($data, $stale, $err);
 	1;
 } or do {
