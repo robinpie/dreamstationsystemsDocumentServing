@@ -45,7 +45,7 @@ A page’s `kind` picks its templates — `templates/<target>/<kind>.tpl`, f
 | `bloglist` | the blog index | `@postlist` expands to the posts |
 | `index` | the site root | gophermap on gopher |
 
-Adding a post is one file: drop it in `content/post/`, and all three blog indexes, the feeds, the sitemap and the JSON-LD follow.
+Adding a post is one file: drop it in `content/post/`, and all three blog indexes, the feeds, the sitemap and the JSON-LD follow — and so does nginx’s themed‐page list (§8).
 
 ## 2. Front matter
 
@@ -249,6 +249,8 @@ The order is load‐bearing: triptych renders, the later steps fill the regions 
 
 `datestampHook.pl` asks `--source-of` before stamping. For a generated page it rewrites `updated:` in the front matter and re‐renders, instead of writing a date the next render would discard; a page with no `updated:` field is left alone with a message. `promoteSite.sh` is untouched.
 
+**The themed‐page list.** `nginx/snippets/theme.conf` names the themed `/personal/` pages three times, as a regex alternation — the SSI location, the protocol switcher, the language switcher. triptych rewrites the text inside each `/personal/(…)` group on every run: every source‐language page with an `html` target, sorted, drafts included (staging previews them themed). It is computed from all of `content/`, so a restricted run cannot shrink it; it must find exactly three lists or it dies; `--check` diffs it and `--list` shows it. The rest of that file is hand‐written. `preCommit.sh` stages it — unless it already had unstaged edits, in which case the list is written but left unstaged, like the badge wall.
+
 `makeMeta.py`’s “the dateline contradicts the JSON-LD” abort is structurally unreachable for these pages: both come from one `date:`.
 
 ## 9. Translations
@@ -260,7 +262,7 @@ content/post/gzipt.tri      ->  rootdomain/personal/gzipt.html       gemini/blog
 content/tok/post/gzipt.tri  ->  rootdomain/personal/gzipt.tok.html   gemini/tok/blog/gzipt.gmi  gopher/tok/blog/gzipt.txt
 ```
 
-Languages are the rows of `[langs]` in `triptych.conf`; the id is the BCP 47 tag (`tok`, toki pona’s ISO 639‐3 code) and is what lands in `<html lang>`, `hreflang` and the paths. Adding a language is a row there, a directory here, and one more alternative in the two regexes in `nginx/snippets/theme.conf`.
+Languages are the rows of `[langs]` in `triptych.conf`; the id is the BCP 47 tag (`tok`, toki pona’s ISO 639‐3 code) and is what lands in `<html lang>`, `hreflang` and the paths. Adding a language is a row there, a directory here, and one more alternative in the `(?:\.tok)?` suffix of the three regexes in `nginx/snippets/theme.conf` (the page lists in front of it are generated, §8; the suffix is not).
 
 **Distinct URLs, not negotiation.** A language is content, not presentation, so it is not a cookie the way the theme is: each version has its own address, can be linked, cached and indexed, and works identically over the onion service. Nothing reads `Accept-Language`.
 

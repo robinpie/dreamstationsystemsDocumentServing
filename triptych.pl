@@ -6,6 +6,7 @@
 #     rootdomain/personal/*.html   HTML (SSI, themes, JSON-LD, badge markers)
 #     gemini/**.gmi                gemtext (Spartan reads the same tree)
 #     gopher/**                    gophermaps and text/plain
+#     nginx/snippets/theme.conf    the themed-page list only (the rest is hand-written)
 #
 # content/<lang>/ holds translations, matched to their source page by id and
 # rendered beside it: <id>.<lang>.html, gemini/<lang>/…, gopher/<lang>/…
@@ -1570,6 +1571,61 @@ for my $doc (@docs) {
 		print $fh $out;
 		close $fh;
 		$written++;
+	}
+}
+
+# ---- nginx: the themed-page list.
+#
+# nginx/snippets/theme.conf names the themed /personal/ pages three times — the
+# SSI location, the protocol switcher, the language switcher — as a regex
+# alternation, `(index|blog|…)`. Every one of those pages is a web page this
+# renders, so the list is derived here instead of being retyped: a new post is
+# themed (and its two switchers work) the moment its .tri exists. The list is
+# every source-language page with an html target, drafts included (staging
+# needs to preview them themed); a translation is covered by the regexes'
+# own (?:\.tok)? suffix. Always computed from the WHOLE content/ tree, so a
+# restricted run (`./triptych.pl gzipt`) cannot shrink it. See triptych.md §8
+# and nginx.txt, THEME SELECTION.
+#
+# Only the text inside each `/personal/(…)` group is touched, and exactly
+# three must be found, so an edit to the file's shape fails loudly here rather
+# than leaving one copy stale.
+my $THEMECONF = 'nginx/snippets/theme.conf';
+my @themed = sort map { basename(out_path('html', $_), '.html') }
+	grep { !$_->{lang} && grep { $_ eq 'html' } targets_of($_) } @docs;
+for (@themed) {
+	die "triptych: page `$_` cannot go in a regex alternation in $THEMECONF\n"
+		unless /^[A-Za-z0-9_-]+$/;
+}
+if ($LIST) {
+	printf "%-46s <- the themed-page list (%d pages)\n", $THEMECONF, scalar @themed;
+} else {
+	my $path = "$ROOT/$THEMECONF";
+	open my $in, '<:encoding(UTF-8)', $path or die "triptych: $path: $!\n";
+	my $cur = do { local $/; <$in> };
+	close $in;
+	my $alt = join '|', @themed;
+	(my $new = $cur) =~ s{(/personal/\((?:\?<\w+>|\?:)?)[\w|-]+(\)\(\?:)}{$1$alt$2}g;
+	my $n = () = $cur =~ m{/personal/\((?:\?<\w+>|\?:)?[\w|-]+\)\(\?:}g;
+	die "triptych: expected 3 page lists in $THEMECONF, found $n — fix the "
+		. "file or the pattern above\n" unless $n == 3;
+	if ($new eq $cur) {
+		$same++ if $CHECK;
+	} elsif ($CHECK) {
+		$differ++;
+		print "DIFFERS: $THEMECONF\n";
+		my $tmp = "/tmp/triptych.$$";
+		open my $fh, '>:encoding(UTF-8)', $tmp or die $!;
+		print $fh $new;
+		close $fh;
+		system('diff', '-u', $path, $tmp);
+		unlink $tmp;
+	} else {
+		open my $fh, '>:encoding(UTF-8)', $path or die "triptych: $path: $!\n";
+		print $fh $new;
+		close $fh;
+		$written++;
+		print "triptych: $THEMECONF now themes: @themed\n";
 	}
 }
 

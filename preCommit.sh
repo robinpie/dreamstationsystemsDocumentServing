@@ -37,11 +37,27 @@ if [ -n "$tri_dirty" ]; then
 	echo "pre-commit: the three trees were NOT re-rendered." >&2
 	echo "$tri_dirty" | sed 's/^/pre-commit:   /' >&2
 else
+	# triptych also rewrites the themed-page list in theme.conf (the three
+	# `/personal/(…)` alternations, from content/). That file is otherwise
+	# hand-written, so it gets the badge wall's PER-FILE GUARD: already dirty
+	# before the render -> written but NOT staged, so an in-progress edit to
+	# it is not swept into this commit.
+	themeconf=nginx/snippets/theme.conf
+	themeconf_dirty=$(git diff --name-only -- "$themeconf" || true)
 	./triptych.pl
 	for f in $(git diff --name-only -- rootdomain/personal gemini gopher || true); do
 		git add "$f"
 		echo "pre-commit: re-staged $f (triptych)"
 	done
+	if ! git diff --quiet -- "$themeconf"; then
+		if [ -n "$themeconf_dirty" ]; then
+			echo "pre-commit: $themeconf had unstaged edits — page list" >&2
+			echo "pre-commit:   written but NOT staged." >&2
+		else
+			git add "$themeconf"
+			echo "pre-commit: re-staged $themeconf (triptych: themed pages)"
+		fi
+	fi
 fi
 
 # ------------------------------------------------------- schema.org datestamp
