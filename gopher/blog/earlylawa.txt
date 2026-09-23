@@ -140,3 +140,5 @@ Reason phrases
 962 distinct spellings. 301 Force SSL (492), 302 Object moved (618, classic ASP), 418 I'M A TEAPOT, and 418 “Blocked access”. Also 403 Bad Behavior, 307 Human BD Forbidden, 503 No healthy IP available for the backend. Undefined codes seen: 247, 289, 297, 419, 425, 428, 433, 437, 442, 443, 453, 455, 458, 464, 468 (“unknow”), 470, 472, 475, 477, 480, 482, 490, 492 (“unknown”), 498, 507, 509, 555, 567, 571, 599. LinkedIn answers robots.txt with 999. Also seen on robots.txt: 666, 702, 903, 603.
 
 5,378 pages returned 202 Accepted for a GET, which is meaningless for fetching a page.
+
+toki pona: /0/tok/blog/earlylawa.txt

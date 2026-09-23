@@ -144,3 +144,5 @@ Seriously? Not even a system_reminder? No Pliny copy and paste?
 
 => /blog/   back to blog
 => /        back to home
+
+=> /tok/blog/earlylawa.gmi   toki pona

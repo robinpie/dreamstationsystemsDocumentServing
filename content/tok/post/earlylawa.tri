@@ -2,13 +2,16 @@
 id: earlylawa
 title: sona open tan ilo lawa, ilo alasa mi
 description: nimi sewi nasa
-draft: 1
 ---
 
 // Verbatim lowercase: server names in the latency table, header names with
 // RFC 1918 addresses, the reason phrases as the servers spell them, and the unit
 // "s" after a decimal (0.44 s), which the checker reads as a domain name.
 // nimiCheck: allow s cloudflare apache github gse litespeed vercel squarespace netlify microsoft-iis amazons3 cloudfront caddy akamaighost varnish neocities openbsd httpd x-loopia-node x-upstream x-backend-ip x-sc-lb x-cache-backendip authory moved healthy available for the backend
+
+@links
+lawa url=https://dreamstation.systems/personal/lawa.tok.html label="lawa"
+@end
 
 tenpo suno lili la mi pali kepeken ilo alasa mi, [ilo lawa](@lawa). mi toki e ijo mute lon lipu pi nimi tawa ni. taso mi kama sona e ijo musi sin. ona li ni:
 

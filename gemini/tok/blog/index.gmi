@@ -1,5 +1,6 @@
 # lipu toki
 
+=> earlylawa.gmi     sona open tan ilo lawa, ilo alasa mi | 2026-09-22
 => factors.gmi       nanpa kipisi li kama la tenpo sike 10 li tawa | 2026-09-21
 => tesla.gmi         kulupu Tesla li utala e mi lon linluwi | 2026-09-13
 => ntppool.gmi       o toki insa e ni: sina ken pana e ilo pana tenpo tawa kulupu NTP Pool | 2026-09-08
