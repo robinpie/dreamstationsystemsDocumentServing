@@ -123,7 +123,7 @@ func (g *Generator) buildPages(ctx context.Context) ([]page, error) {
 		{Text: "High volume", Href: "/volume", Desc: "what is actually trading"},
 		{Text: "Biggest risers", Href: "/risers", Desc: "24 hour movers"},
 		{Text: "Biggest fallers", Href: "/fallers", Desc: "24 hour movers"},
-		{Text: "High alchemy", Href: "/alch", Desc: "alch profit, untaxed"},
+		{Text: "High alchemy", Href: "/alch", Desc: "alch profit"},
 		{Text: "Low alchemy", Href: "/alch-low", Desc: "the level 21 spell"},
 	}})
 	index.Add(render.Links{Title: "Reference", Items: []render.Link{

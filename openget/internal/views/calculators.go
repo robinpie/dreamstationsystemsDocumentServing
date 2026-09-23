@@ -116,10 +116,8 @@ func (b *Builder) CalcIndex(ctx context.Context) (*render.Doc, error) {
 // f2pMethodNote is the recipe-page counterpart of f2pNote: the toggle is worded in terms of items, so a page that has quietly dropped whole methods owes the reader the rule it used.
 func (b *Builder) f2pMethodNote(d *render.Doc) {
 	if b.F2POnly {
-		d.Note("Methods needing a members' item at any step are hidden. " +
-			"That is an item test and not a skill or location one: a method whose items are all " +
-			"free-to-play may still need members access to actually perform, the blast furnace being the " +
-			"obvious case. Untick \"Free-to-play only\" in the header to show everything.")
+		d.Note("Methods using any members' item are hidden. Some that remain, such as the blast furnace, " +
+			"still need membership. Untick \"Free-to-play only\" in the header to show everything.")
 	}
 }
 
@@ -198,7 +196,7 @@ func (b *Builder) CalcKind(ctx context.Context, kind string) (*render.Doc, error
 		d.Note("gp/hour uses a typical action rate for the method and assumes you never wait on a buy offer. " +
 			"Treat it as an upper bound.")
 	}
-	d.Note("Rows marked \"no price\" reference an item nobody has traded recently, so no profit can be computed for them honestly.")
+	d.Note("\"No price\" means an item in the method hasn't traded recently.")
 	b.f2pMethodNote(d)
 	b.addFreshness(ctx, d)
 	return d, nil
@@ -523,7 +521,7 @@ func (b *Builder) AlchList(ctx context.Context, o AlchOptions) (*render.Doc, err
 		d.Note("Fire runes are not charged for: %s burns %d of them and any fire staff or tome of fire "+
 			"supplies them free.", spell.Name, spell.FireRunes)
 	}
-	d.Note("The item is costed at its instant-buy price, on the assumption you want it now rather than after a wait.")
+	d.Note("Items are costed at the instant-buy price.")
 	b.f2pNote(d)
 	b.addFreshness(ctx, d)
 	return d, nil
@@ -655,8 +653,7 @@ func (b *Builder) StoreProfit(ctx context.Context, limit int) (*render.Doc, erro
 		}
 	}
 	d.Add(t)
-	d.Note("Shop prices rise as you buy the shelf down and fall back as it restocks, so the price shown is what the " +
-		"first one costs, not the hundredth. Stock is what the shop holds when full.")
+	d.Note("The price shown is for the first unit; shop prices rise as the stock runs down. Stock is the shop's full stock.")
 	d.Note("Items trading under %s a day are left out.", render.GPShort(StoreMinVolume))
 	b.f2pNote(d)
 	b.addFreshness(ctx, d)

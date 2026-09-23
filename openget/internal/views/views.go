@@ -106,7 +106,7 @@ func (b *Builder) Home(ctx context.Context) (*render.Doc, error) {
 		{Text: "Potential profit", Href: "/flips/potential", Desc: "margin times buy limit"},
 		{Text: "High volume", Href: "/flips/volume", Desc: "what is actually trading"},
 		{Text: "New items", Href: "/flips/new", Desc: "recently added to the game"},
-		{Text: "High alchemy", Href: "/alch", Desc: "alch profit, correctly untaxed"},
+		{Text: "High alchemy", Href: "/alch", Desc: "alch profit"},
 		{Text: "Money makers", Href: "/calc", Desc: "decanting, planks, herblore and more"},
 		{Text: "GE tax calculator", Href: "/ge-tax-calculator", Desc: "what you actually receive"},
 		{Text: "Market indices", Href: "/indices", Desc: "with published constituents"},
@@ -151,22 +151,19 @@ const FreshWindow = 6 * 3600
 
 // Finders are the flip-finding tools. ge-tracker puts every one of these behind Premium; here they are simply pages.
 func Finders() []Finder {
-	staleNote := "Items whose last buy or sell was more than six hours ago are excluded. " +
-		"Without that filter the top of this list is simply the items with the oldest prices — " +
-		"a single ancient print against a current one manufactures an enormous margin that " +
-		"nobody can actually trade."
+	staleNote := "Items with no buy or sell in the last six hours are left out, because old prices produce false margins."
 	return []Finder{
 		{
 			Slug:    "margin",
 			Title:   "Highest margins",
 			Blurb:   "Raw profit per item after the 2% Grand Exchange tax, buying at the instant-sell price and selling at the instant-buy price.",
 			Options: store.ListOptions{Sort: "margin", Desc: true, Tradeable: true, MinVolume: 50, MaxAge: FreshWindow},
-			Note:    "A large margin on an item nobody trades is not money. Check the volume column before committing capital. " + staleNote,
+			Note:    "Check the volume column: a big margin on an item nobody trades won't fill. " + staleNote,
 		},
 		{
 			Slug:    "roi",
 			Title:   "Highest ROI",
-			Blurb:   "Profit as a percentage of the capital tied up, rather than in coins per item.",
+			Blurb:   "Profit as a percentage of the buy price.",
 			Options: store.ListOptions{Sort: "roi", Desc: true, Tradeable: true, MinVolume: 500, MaxAge: FreshWindow},
 			Note:    staleNote,
 		},
@@ -429,14 +426,12 @@ func (b *Builder) ItemPage(ctx context.Context, id int, window string) (*render.
 			{Key: "Upstream /volumes figure", Value: render.GP(vol),
 				Hint: "From the wiki's undocumented /volumes endpoint, as at " + at.UTC().Format(time.RFC3339)},
 		}})
-		d.Note("The upstream /volumes endpoint is undocumented and does not agree with the 24-hour bucket totals, " +
-			"so the two volume figures are shown separately rather than blended into one number.")
+		d.Note("The wiki's /volumes figure doesn't match our 24-hour totals, so both are shown.")
 	}
 
 	if it.BuyLimit != nil {
-		d.Note("Some items share a connected buy limit with their other dose or charge variants — " +
-			"prayer potions, for instance, draw on one pool across all four doses. The API does not publish those " +
-			"connections, so the limit shown here is the per-item figure and may overstate what you can actually buy.")
+		d.Note("Some items share one buy limit across doses or charges (prayer potions, for example). " +
+			"The API doesn't say which, so this figure may be too high.")
 	}
 	b.addFreshness(ctx, d)
 	return d, nil

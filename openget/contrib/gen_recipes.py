@@ -214,8 +214,7 @@ def build():
           [ing("Emerald ring"), ing("Cosmic rune"), ing("Air rune", 3)],
           [ing("Ring of dueling(8)")],
           skill="Magic 27 (Lvl-2 Enchant)",
-          notes="Rings of dueling are exempt from the Grand Exchange tax, so "
-                "the entire sale price is yours.",
+          notes="Rings of dueling are exempt from the Grand Exchange tax.",
           per_hour=1200, xp=37)
     if have("Sapphire necklace", "Games necklace(8)", "Cosmic rune", "Water rune"):
         R("ench-games", "enchanting", "Enchant Sapphire necklace into Games necklace(8)",

@@ -477,8 +477,8 @@ func (s *Server) tracker(ctx context.Context, r *http.Request) (*render.Doc, ren
 		}})
 	}
 
-	d.Note("Realised profit is simply money received minus money spent, not an inventory model.")
-	d.Note("Your ledger is private and has no public view.")
+	d.Note("Realised profit is money received minus money spent.")
+	d.Note("Your ledger is private.")
 	return d, render.HTMLOptions{}, nil
 }
 
@@ -700,8 +700,7 @@ func (s *Server) alertsPage(ctx context.Context, r *http.Request) (*render.Doc, 
 	d.Add(render.Facts{Title: "Your private feed", Pairs: []render.KV{
 		{Key: "Atom URL", Value: feed},
 	}})
-	d.Note("An alert fires once when its condition starts holding, and re-arms only after the condition stops. " +
-		"A price parked below your threshold produces one entry, not one every minute.")
+	d.Note("An alert fires once when its condition becomes true, and re-arms after it stops being true.")
 	return d, render.HTMLOptions{}, nil
 }
 

@@ -1136,7 +1136,7 @@ id = "ench-dueling"
 kind = "enchanting"
 name = "Enchant Emerald ring into Ring of dueling(8)"
 skill_reqs = "Magic 27 (Lvl-2 Enchant)"
-notes = "Rings of dueling are exempt from the Grand Exchange tax, so the entire sale price is yours."
+notes = "Rings of dueling are exempt from the Grand Exchange tax."
 sort_key = 68
 [recipe.extra]
 per_hour = 1200
