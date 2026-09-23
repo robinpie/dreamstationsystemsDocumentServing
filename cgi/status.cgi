@@ -61,6 +61,11 @@ use constant {
 	# same formats as our own files, once a minute. See read_remote().
 	REMOTE_DIR   => '/run/status/starport',
 	REMOTE_STALE => 200,   # seconds; ~3 missed pulls. Older than this is "unknown"
+	# starport's NTP figures ride the same pull but are written on starport
+	# every 5 minutes (ntpstatscollect.timer), so they get ntpstatsgen's
+	# threshold rather than REMOTE_STALE. See read_remote_ntp().
+	REMOTE_NTP_STALE  => 900,
+	REMOTE_NTP_SCHEMA => 1,     # must match SCHEMA in /usr/local/bin/ntpstatsgen
 
 	CACHE_TTL      => 20,    # seconds a rendered sweep stays authoritative
 	SWEEP_DEADLINE => 8,     # give up starting new probes after this
@@ -446,6 +451,55 @@ sub read_remote {
 	# The snapshot's uptime, carried forward by the snapshot's age.
 	my $up = read_uptime(REMOTE_DIR . '/uptime');
 	$r{uptime} = $up + $age if defined $up;
+	return \%r;
+}
+
+# starport's time-service figures: ntp.json, written on starport by
+# `ntpstatsgen --collect` and carried here by the same pull (ntpstatsgen.txt).
+# Same honesty rule as read_remote(): stale, missing, or a different schema
+# returns NO figures, and the section says "unknown".
+#
+# NOT JSON::PP: loading it costs ~70ms, more than everything else this page
+# reads put together. The file is json.dumps() output of a flat dict from our
+# own generator, and only top-level scalars are wanted here, so a regex per
+# key is enough. The schema check is what keeps that honest: if the shape
+# changes, SCHEMA is bumped there, and this shows "unknown" until updated.
+#
+# Age = (now - pulled_at) + ntp_age, each term one clock, as in read_remote().
+# chronyd's uptime is collected_at - started, both starport's clock.
+sub read_remote_ntp {
+	my %r = (fresh => 0);
+	open my $fh, '<', REMOTE_DIR . '/meta' or return \%r;
+	my %m;
+	while (<$fh>) { $m{$1} = $2 if /^(\w+) (\d+)/ }
+	close $fh;
+	return \%r unless $m{pulled_at} && defined $m{ntp_age};
+
+	my $age = (time - $m{pulled_at}) + $m{ntp_age};
+	$age = 0 if $age < 0;
+	$r{age} = $age;
+	return \%r if $age > REMOTE_NTP_STALE;
+
+	open $fh, '<', REMOTE_DIR . '/ntp.json' or return \%r;
+	my $j = do { local $/; <$fh> };
+	close $fh;
+	my %v;
+	my $num = qr/-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?/;
+	for my $k (qw(schema qps_now qps_24h history_s seen rms started collected_at)) {
+		$v{$k} = $1 if $j =~ /"$k":\s*($num)[,}]/;
+	}
+	$v{stratum} = $1 if $j =~ /"stratum":\s*"(\d+)"/;
+	$v{ref}     = $1 if $j =~ /"ref":\s*"([^"\\]*)"/;
+	$v{nts}     = $1 if $j =~ /"nts":\s*(true|false)/;
+	unless (($v{schema} // '') eq REMOTE_NTP_SCHEMA) {
+		$r{why} = 'schema';
+		return \%r;
+	}
+
+	$r{fresh} = 1;
+	$r{$_} = $v{$_} for keys %v;
+	$r{uptime} = $v{collected_at} - $v{started} + $age
+		if $v{started} && $v{collected_at} && $v{collected_at} > $v{started};
 	return \%r;
 }
 
@@ -1037,7 +1091,7 @@ CSS
 
 	# ----- time service detail
 	my $c = $d->{chrony} || {};
-	$out .= qq{<section aria-labelledby="ntp"><h2 id="ntp">Time service</h2>\n<dl>\n};
+	$out .= qq{<section aria-labelledby="ntp"><h2 id="ntp">Time service: dreamstation</h2>\n<dl>\n};
 	if (defined $c->{stratum}) {
 		$out .= qq{<dt>Stratum</dt><dd>} . esc($c->{stratum}) . qq{</dd>\n};
 		$out .= qq{<dt>Leap status</dt><dd>} . esc($c->{leap} // '—') . qq{</dd>\n} if $c->{leap};
@@ -1069,10 +1123,59 @@ CSS
 	$out .= qq{<dt>External pool monitoring</dt><dd><a href="} . POOL_URL . qq{">ntppool.org</a></dd>\n};
 	$out .= qq{</dl>\n</section>\n};
 
+	# ----- starport's time service
+	#
+	# Its own section rather than a second column: the two servers are not
+	# peers. starport is stratum 3, syncs only to dreamstation, serves plain NTP
+	# (no NTS) and is not in the pool, and the figures come from a different
+	# collector (ntpstatsgen via the pull, not a local sweep). Only figures that
+	# collector actually measures are shown; no pool link, because there is no
+	# pool score to link to.
+	my $sn = $d->{starport_ntp} || { fresh => 0 };
+	$out .= qq{<section aria-labelledby="ntp-starport"><h2 id="ntp-starport">Time service: starport</h2>\n};
+	if ($sn->{fresh}) {
+		$out .= qq{<dl>\n};
+		if (defined $sn->{stratum}) {
+			$out .= qq{<dt>Stratum</dt><dd>} . esc($sn->{stratum})
+			      . ($sn->{ref} ? qq{, synced to } . esc($sn->{ref}) : '') . qq{</dd>\n};
+		}
+		$out .= sprintf qq{<dt>RMS offset from reference</dt><dd>%.0f µs</dd>\n}, $sn->{rms} * 1_000_000
+			if defined $sn->{rms};
+		if ($sn->{qps_now}) {
+			$out .= qq{<dt>Queries per second</dt><dd>} . commify(sprintf '%.0f', $sn->{qps_now}) . qq{ now};
+			# Only claim a 24h average once there is a day of history behind it.
+			$out .= sprintf qq{, %s average over 24h}, commify(sprintf '%.0f', $sn->{qps_24h})
+				if $sn->{qps_24h} && ($sn->{history_s} // 0) >= 86400;
+			$out .= qq{</dd>\n};
+		}
+		if ($sn->{seen}) {
+			$out .= qq{<dt>Distinct clients seen</dt><dd>} . commify($sn->{seen})
+			      . sprintf(qq{ — about one in every %.1f routable IPv4 addresses}, 3_700_000_000 / $sn->{seen})
+			      . qq{</dd>\n};
+		}
+		$out .= qq{<dt>Protocol</dt><dd>}
+		      . (($sn->{nts} // '') eq 'true' ? 'NTP on 123/udp, NTS' : 'NTP on 123/udp (no NTS)')
+		      . qq{</dd>\n};
+		$out .= qq{<dt>chronyd running for</dt><dd>} . esc(dur($sn->{uptime})) . qq{</dd>\n}
+			if $sn->{uptime};
+		$out .= qq{</dl>\n};
+	} else {
+		$out .= qq{<p class="unknown"><span aria-hidden="true">$MARK{unknown}</span> unknown — }
+		      . (($sn->{why} // '') eq 'schema'
+		         ? qq{the figures from this host are in a format this page does not recognise.}
+		         : defined $sn->{age} && $sn->{age} > REMOTE_NTP_STALE
+		         ? qq{the latest figures are } . esc(dur($sn->{age})) . qq{ old.}
+		         : qq{no time-service figures have been received from this host.})
+		      . qq{</p>\n};
+	}
+	$out .= qq{</section>\n};
+
 	$out .= qq{</main>\n<footer>\n};
 	$out .= qq{<p>Probes run from the server against loopback.</p>\n};
 	$out .= qq{<p>starport’s figures are collected over SSH once a minute}
-	      . ($sp->{fresh} ? qq{; these are } . esc(dur($sp->{age})) . qq{ old} : '')
+	      . ($sp->{fresh} ? qq{ (these are } . esc(dur($sp->{age})) . qq{ old)} : '')
+	      . qq{; its time-service figures are gathered on starport every 5 minutes}
+	      . ($sn->{fresh} ? qq{ (} . esc(dur($sn->{age})) . qq{ old)} : '')
 	      . qq{.</p>\n};
 	$out .= qq{<p>Generated by <code>status.cgi</code>, at most once every } . CACHE_TTL . qq{ seconds.</p>\n};
 	$out .= qq{<p class="stamp">Measured <strong>} . esc(dur($age)) . qq{</strong> ago};
@@ -1176,6 +1279,7 @@ eval {
 	# So does the second host, for the same reason: five small tmpfs reads, and
 	# its freshness verdict must be made NOW, not up to CACHE_TTL ago.
 	$data->{starport} = read_remote();
+	$data->{starport_ntp} = read_remote_ntp();
 	$body = render($data, $stale, $err);
 	1;
 } or do {
