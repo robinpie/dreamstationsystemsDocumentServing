@@ -5,8 +5,15 @@
     <link>https://dreamstation.systems/personal/blog.html</link>
     <description>the least consistent blog on the W3</description>
     <language>en</language>
-    <lastBuildDate>Mon, 21 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 22 Sep 2026 00:00:00 +0000</lastBuildDate>
     <atom:link rel="self" type="application/rss+xml" href="https://dreamstation.systems/personal/rss.xml"/>
+    <item>
+      <title>Early insights from lawa, my web crawler</title>
+      <link>https://dreamstation.systems/personal/earlylawa.html</link>
+      <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
+      <guid isPermaLink="true">https://dreamstation.systems/personal/earlylawa.html</guid>
+      <description>Weird headers</description>
+    </item>
     <item>
       <title>[fiction] Ten years since the factors</title>
       <link>https://dreamstation.systems/personal/factors.html</link>

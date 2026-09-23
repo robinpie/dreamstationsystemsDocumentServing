@@ -1,5 +1,6 @@
 # blog
 
+=> earlylawa.gmi     Early insights from lawa, my web crawler | 2026-09-22
 => factors.gmi       [fiction] Ten years since the factors | 2026-09-21
 => tesla.gmi         I’m being cyberattacked by Tesla, Inc. | 2026-09-13
 => ntppool.gmi       Please consider running a NTP server in the NTP Pool | 2026-09-08
