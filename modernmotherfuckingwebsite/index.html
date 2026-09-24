@@ -141,7 +141,7 @@
 <pre><code>&lt;script type="speculationrules"&gt;
 { "prerender": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }
 &lt;/script&gt;</code></pre>
-  <p>Browsers that support it prerender the next page on hover. Browsers that don’t ignore it. Nobody gets a broken back button. Add <code>@view-transition { navigation: auto; }</code> to your CSS and your plain old multi‐page site cross-fades between pages like the SPA you spent nine months building.</p>
+  <p>Browsers that support it prerender the next page on hover. Browsers that don’t support it ignore it. Nobody gets a broken back button. Add <code>@view-transition { navigation: auto; }</code> to your CSS and your plain old multi‐page site cross-fades between pages like the SPA you spent nine months building.</p>
   <p>A word of warning, because you <em>will</em> overdo it: if you preload everything, you’ve prioritized nothing. Hint your actual fucking content and not a fucking PDF behind two user clicks.</p>
 </section>
 
