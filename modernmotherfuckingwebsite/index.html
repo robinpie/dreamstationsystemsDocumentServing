@@ -6,7 +6,7 @@
 <title>Modern Motherfucking Website</title>
 <meta name="description" content="All your shitty modern features in one HTML file.">
 
-<!-- OpenGraph: four required tags, a few nice ones. That's the whole "integration". -->
+<!-- Open Graph: four required tags, a few nice ones. That's the whole "integration". -->
 <meta property="og:type" content="article">
 <meta property="og:title" content="This is a modern motherfucking website.">
 <meta property="og:description" content="Zero of the bullshit.">
@@ -23,7 +23,7 @@
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "This is a modern motherfucking website.",
-  "description": "Semantic HTML, JSON-LD, OpenGraph, resource hints and modern image formats without a framework or a build system.",
+  "description": "Semantic HTML, JSON-LD, Open Graph, resource hints and modern image formats without a framework or a build system.",
   "inLanguage": "en",
   "datePublished": "2026-09-24",
   "author": { "@type": "Person", "name": "Robin Reel" }
@@ -62,7 +62,7 @@
 <section>
   <h2>Seriously, what the fuck happened?</h2>
   <p>The <a href="https://motherfuckingwebsite.com/">original motherfucking website</a> told you in 2013 that your site was an over‐engineered piece of shit. You nodded, laughed, shared it, and then went right back to work and made it <strong>so much fucking worse</strong>.</p>
-  <p>Now you need Node, a package manager, 1,100 dependencies, a bundler, a transpiler, a meta‐framework, a hydration strategy and a CI pipeline to put a paragraph on a screen. Your “Hello World” has a lockfile longer than this page. Your blog has a loading spinner. <em>A blog.</em> It’s text, you maniac.</p>
+  <p>Now you need Node, a package manager, 1,100 dependencies, a bundler, a transpiler, a meta‐framework, a hydration strategy, and a CI pipeline to put a paragraph on a screen. Your “Hello World” has a lockfile longer than this page. Your blog has a loading spinner. <em>A blog.</em> It’s text, you maniac.</p>
   <p>And your excuse is always the same: “But we need <em>modern features</em>. SEO. Social cards. Performance. Responsive images.”</p>
   <p>Cool. Here’s the thing, shithead: <strong>all of that is just HTML.</strong> It’s tags. You type them. With your fingers. Into a file.</p>
 </section>
@@ -82,7 +82,7 @@
 &lt;/main&gt;
 &lt;footer&gt;…&lt;/footer&gt;</code></pre>
   <p>That’s landmarks, a document outline, keyboard navigation, and it makes reader mode work. Screen readers understand it. Search engines understand it. No ugly motherfucking JavaScript in sight.</p>
-  <p>You also don't need a component library for an accordion. Behold, <code>&lt;details&gt;</code>:</p>
+  <p>You also don’t need a component library for an accordion. Behold, <code>&lt;details&gt;</code>:</p>
   <details>
     <summary>A normal fucking disclosure widget</summary>
     <p>No npm install, no <code>useEffect</code>. It works with a keyboard, it works with a screen reader, it’s searchable with find‐in‐page, and it’ll still work in twenty years without having to reconstruct an entire build environment.</p>
@@ -107,16 +107,16 @@
 </section>
 
 <section>
-  <h2>OpenGraph: it’s seven meta tags</h2>
+  <h2>Open Graph: it’s seven meta tags</h2>
   <p>You know that nice card that shows up when someone pastes your link in a chat? You do not need a “social sharing integration” for that. You need this:</p>
 <pre><code>&lt;meta property="og:type"  content="article"&gt;
 &lt;meta property="og:title" content="This is a modern motherfucking website."&gt;
 &lt;meta property="og:description" content="Zero of the bullshit."&gt;
 &lt;meta property="og:url"   content="https://modernmotherfuckingwebsite.dreamstation.systems/"&gt;
 &lt;meta property="og:image" content="https://modernmotherfuckingwebsite.dreamstation.systems/www.webp"&gt;
-&lt;meta property="og:image:alt" content="Robert Cailliau's W3 logo"&gt;
+&lt;meta property="og:image:alt" content="Robert Cailliau’s W3 logo"&gt;
 &lt;meta name="twitter:card" content="summary_large_image"&gt;</code></pre>
-  <p>Done. Slack, iMessage, Discord, LinkedIn, Mastodon, Bluesky and X will all unfurl it beautifully.</p>
+  <p>Done. Slack, iMessage, Discord, LinkedIn, Mastodon, Bluesky, and X will all unfurl it beautifully.</p>
   <p>And here’s the part that should really sting: because these tags are <strong>in the actual HTML</strong>, crawlers see them instantly. Your client‐rendered SPA injects them with JavaScript after the crawler has already fucked off, which is why you then had to bolt on server‐side rendering to get back what <strong>just fucking writing HTML</strong> already gave you.</p>
 </section>
 
@@ -141,14 +141,14 @@
 <pre><code>&lt;script type="speculationrules"&gt;
 { "prerender": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }
 &lt;/script&gt;</code></pre>
-  <p>Browsers that support it prerender the next page on hover. Browsers that don’t support it ignore it. Nobody gets a broken back button. Add <code>@view-transition { navigation: auto; }</code> to your CSS and your plain old multi‐page site cross-fades between pages like the SPA you spent nine months building.</p>
+  <p>Browsers that support it prerender the next page on hover. Browsers that don’t support it ignore it. Nobody gets a broken back button. Add <code>@view-transition { navigation: auto; }</code> to your CSS and your plain old multi‐page site cross‐fades between pages like the SPA you spent nine months building.</p>
   <p>A word of warning, because you <em>will</em> overdo it: if you preload everything, you’ve prioritized nothing. Hint your actual fucking content and not a fucking PDF behind two user clicks.</p>
 </section>
 
 <section>
   <h2>Modern image formats: the browser picks, you chill</h2>
   <p>Your hero image is a 4 MB PNG. I know it is. Don’t lie to me.</p>
-  <p>AVIF and WebP are routinely half the size of a JPEG at the same quality. “But users’ browsers might not support them!” Bullshit, AVIF shipped in Chrome six years ago and WebP did OVER A DECADE AGO. And you don’t need WordPress’s “image optimization service” or a magic framework <code>&lt;Image&gt;</code> component to serve them, because HTML has had content negotiation built into a tag for years (don’t sniff the fucking user agent):</p>
+  <p>AVIF and WebP are routinely half the size of a JPEG at the same quality. “But users’ browsers might not support them!” Bullshit, AVIF shipped in Chrome six years ago and WebP did OVER A DECADE AGO. And you don’t need WordPress’s “image optimization service” or a magic framework <code>&lt;Image&gt;</code> component to serve them, because HTML has had format selection built into a tag for years:</p>
 <pre><code>&lt;picture&gt;
   &lt;source type="image/avif"
           srcset="hero-800.avif 800w, hero-1600.avif 1600w"
@@ -159,7 +159,7 @@
   &lt;img src="hero-800.jpg" width="1600" height="800"
        alt="Something worth the bytes"&gt;
 &lt;/picture&gt;</code></pre>
-  <p>The browser takes the first format it understands, at the size that fits the screen. The <code>width</code> and <code>height</code> attributes reserve the space so your layout doesn’t jump around like a caffeinated toddler, which is your Cumulative Layout Shift score fixed with two attributes.</p>
+  <p>You don’t need to sniff the user agent for that. The browser takes the first format it understands, at the size that fits the screen. The <code>width</code> and <code>height</code> attributes reserve the space so your layout doesn’t jump around like a caffeinated toddler, which is your Cumulative Layout Shift score fixed with two attributes.</p>
   <p>“But I need a build step to make the AVIFs!” No, you need to run one command, one time, when you add the image:</p>
 <pre><code>avifenc hero.png hero.avif
 cwebp -q 80 hero.png -o hero.webp</code></pre>
@@ -179,7 +179,7 @@ cwebp -q 80 hero.png -o hero.webp</code></pre>
     <li><strong>Responsive layout:</strong> <code>max-width</code>. One property. Your phone is already fine.</li>
   </ul>
   <p>Every one of these is a <em>platform feature</em>. It’s in the browser. It was already downloaded, by the user, before they ever heard of you. The framework doesn’t give you these things. At best it gives you a slower way to type them, and at worst it hides them behind a plugin ecosystem so you forget they were free.</p>
-  <p>Other than the OpenGraph image, this page is a single HTML file of about 22 KB. It has no dependencies, no cookie banner, no hydration errors and no security problems. The deploy process is “copy the file to the served directory”.</p>
+  <p>Other than the Open Graph image, this page is a single HTML file of about 22 KB. It has no dependencies, no cookie banner, no hydration errors and no security problems. The deploy process is “copy the file to the served directory”.</p>
 </section>
 
 <section>
@@ -190,7 +190,7 @@ cwebp -q 80 hero.png -o hero.webp</code></pre>
   </details>
   <details>
     <summary>“But I’m building an actual application.”</summary>
-    <p>Then use an actual application framework, you beautiful bastard. If you’re building a spreadsheet, a video editor, or a design tool, go nuts. But be honest: you’re building a marketing site, a blog, a docs page or a restaurant menu. It’s a document. The web was <em>invented</em> for documents. It’s extremely fucking good at them.</p>
+    <p>Then use an actual application framework, you beautiful bastard. If you’re building a spreadsheet, a video editor, or a design tool, go nuts. But be honest: you’re building a marketing site, a blog, a docs page, or a restaurant menu. It’s a document. The web was <em>invented</em> for documents. It’s extremely fucking good at them.</p>
   </details>
   <details>
     <summary>“But developer experience!”</summary>
@@ -198,7 +198,7 @@ cwebp -q 80 hero.png -o hero.webp</code></pre>
   </details>
   <details>
     <summary>“But it looks plain.”</summary>
-    <p>So write some CSS. Modern CSS has nesting, variables, grid, container queries, <code>:has()</code>, <code>clamp()</code> and color functions built in. You don’t need a preprocessor for those anymore either. You don’t need JavaScript for them either. The point isn’t “never style anything”. The point is that every byte should be there because <em>you chose it</em>, not because it fell out of <code>node_modules</code>.</p>
+    <p>So write some CSS. Modern CSS has nesting, variables, grid, container queries, <code>:has()</code>, <code>clamp()</code>, and color functions built in. You don’t need a preprocessor for those anymore either. You don’t need JavaScript for them either. The point isn’t “never style anything”. The point is that every byte should be there because <em>you chose it</em>, not because it fell out of <code>node_modules</code>.</p>
   </details>
 </section>
 
