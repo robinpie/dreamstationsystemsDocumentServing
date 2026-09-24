@@ -42,6 +42,7 @@
   h2 { margin-top: 3rem; }
   a { color: var(--link); }
   pre { background: var(--code); padding: 1rem; overflow-x: auto; font: .85rem/1.5 ui-monospace, Menlo, Consolas, monospace; }
+  pre.license { white-space: pre-wrap; }
   code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9em; }
   :not(pre) > code { background: var(--code); padding: .1em .3em; }
   summary { cursor: pointer; font-weight: bold; }
@@ -76,7 +77,7 @@
 <section>
   <h2>Semantic elements: accessibility is important, dumbass</h2>
   <p>You wrote <code>&lt;div class="nav-wrapper-container-inner"&gt;</code> and then installed an accessibility library to explain to screen readers that it’s a nav. There is an element for that. It’s called <code>&lt;nav&gt;</code>. It shipped <em>in Internet Explorer 9</em>.</p>
-<pre><code>&lt;header&gt;…&lt;/header&gt;
+<pre tabindex="0" aria-label="Example: semantic landmarks"><code>&lt;header&gt;…&lt;/header&gt;
 &lt;nav&gt;…&lt;/nav&gt;
 &lt;main&gt;
   &lt;article&gt;
@@ -99,7 +100,7 @@
 <section>
   <h2>JSON-LD: it’s fucking JSON</h2>
   <p>You installed an “SEO plugin” with its own settings page and a premium tier to generate this:</p>
-<pre><code>&lt;script type="application/ld+json"&gt;
+<pre tabindex="0" aria-label="Example: JSON-LD structured data"><code>&lt;script type="application/ld+json"&gt;
 {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -115,7 +116,7 @@
 <section>
   <h2>Open Graph: it’s seven meta tags</h2>
   <p>You know that nice card that shows up when someone pastes your link in a chat? You do not need a “social sharing integration” for that. You need this:</p>
-<pre><code>&lt;meta property="og:type"  content="article"&gt;
+<pre tabindex="0" aria-label="Example: Open Graph meta tags"><code>&lt;meta property="og:type"  content="article"&gt;
 &lt;meta property="og:title" content="This is a modern motherfucking website."&gt;
 &lt;meta property="og:description" content="Zero of the bullshit."&gt;
 &lt;meta property="og:url"   content="https://modernmotherfuckingwebsite.dreamstation.systems/"&gt;
@@ -129,7 +130,7 @@
 <section>
   <h2>Resource hints: performance tuning in one line</h2>
   <p>You hired a consultant and adopted a “performance framework”. Meanwhile the browser has been begging you to just <em>tell it</em> what’s coming:</p>
-<pre><code>&lt;!-- Open the connection early: DNS + TCP + TLS, done before you need it --&gt;
+<pre tabindex="0" aria-label="Example: resource hints"><code>&lt;!-- Open the connection early: DNS + TCP + TLS, done before you need it --&gt;
 &lt;link rel="preconnect" href="https://cdn.example.com" crossorigin&gt;
 
 &lt;!-- Cheap fallback for the "maybe" origins --&gt;
@@ -144,7 +145,7 @@
 &lt;!-- And which ones don't --&gt;
 &lt;img src="footer-junk.avif" loading="lazy" decoding="async" width="400" height="300" alt="…"&gt;</code></pre>
   <p>Want instant page navigations like a “real app”? You don’t need a client‐side router. You need <a href="https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API">speculation rules</a>, which is (say it with me) <em>a script tag with some JSON in it</em>:</p>
-<pre><code>&lt;script type="speculationrules"&gt;
+<pre tabindex="0" aria-label="Example: speculation rules"><code>&lt;script type="speculationrules"&gt;
 { "prerender": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }
 &lt;/script&gt;</code></pre>
   <p>Browsers that support it prerender the next page on hover. Browsers that don’t support it ignore it. Nobody gets a broken back button. Add <code>@view-transition { navigation: auto; }</code> to your CSS and your plain old multi‐page site cross‐fades between pages like the SPA you spent nine months building.</p>
@@ -155,7 +156,7 @@
   <h2>Modern image formats: the browser picks, you chill</h2>
   <p>Your hero image is a 4 MB PNG. I know it is. Don’t lie to me.</p>
   <p>AVIF and WebP are routinely half the size of a JPEG at the same quality. “But users’ browsers might not support them!” Bullshit, AVIF shipped in Chrome six years ago and WebP did OVER A DECADE AGO. And you don’t need WordPress’s “image optimization service” or a magic framework <code>&lt;Image&gt;</code> component to serve them, because HTML has had format selection built into a tag for years:</p>
-<pre><code>&lt;picture&gt;
+<pre tabindex="0" aria-label="Example: responsive picture element"><code>&lt;picture&gt;
   &lt;source type="image/avif"
           srcset="hero-800.avif 800w, hero-1600.avif 1600w"
           sizes="(max-width: 40rem) 100vw, 40rem"&gt;
@@ -167,7 +168,7 @@
 &lt;/picture&gt;</code></pre>
   <p>You don’t need to sniff the user agent for that. The browser takes the first format it understands, at the size that fits the screen. The <code>width</code> and <code>height</code> attributes reserve the space so your layout doesn’t jump around like a caffeinated toddler, which is your Cumulative Layout Shift score fixed with two attributes.</p>
   <p>“But I need a build step to make the AVIFs!” No, you need to run one command, one time, when you add the image:</p>
-<pre><code>avifenc hero.png hero.avif
+<pre tabindex="0" aria-label="Example: image conversion commands"><code>avifenc hero.png hero.avif
 cwebp -q 80 hero.png -o hero.webp</code></pre>
   <p>That’s not a build system. That’s writing a fucking file that you then serve.</p>
 </section>
@@ -185,7 +186,7 @@ cwebp -q 80 hero.png -o hero.webp</code></pre>
     <li><strong>Responsive layout:</strong> <code>max-width</code>. One property. Your phone is already fine.</li>
   </ul>
   <p>Every one of these is a <em>platform feature</em>. It’s in the browser. It was already downloaded, by the user, before they ever heard of you. The framework doesn’t give you these things. At best it gives you a slower way to type them, and at worst it hides them behind a plugin ecosystem so you forget they were free.</p>
-  <p>Other than the Open Graph image, this page is a single HTML file of about 22 KB. It has no dependencies, no cookie banner, no hydration errors and no security problems. The deploy process is “copy the file to the served directory”.</p>
+  <p>Other than the Open Graph image, this page is a single HTML file of about 23 KB. It has no dependencies, no cookie banner, no hydration errors and no security problems. The deploy process is “copy the file to the served directory”.</p>
 </section>
 
 <section>
@@ -219,7 +220,14 @@ cwebp -q 80 hero.png -o hero.webp</code></pre>
 
 <footer>
   <p>A loving sequel to <a href="https://motherfuckingwebsite.com/">motherfuckingwebsite.com</a></p>
-  <pre>CC0 1.0 Universal
+  <a href="https://www.w3.org/WAI/WCAG2AA-Conformance"
+   title="Explanation of WCAG 2 Level AA conformance">
+  <img height="31" width="88"
+       src="https://www.w3.org/WAI/WCAG22/wcag2.2AA"
+       alt="Level AA conformance,
+            W3C Web Content Accessibility Guidelines 2.2">
+  </a>
+  <pre class="license">CC0 1.0 Universal
 
     CREATIVE COMMONS CORPORATION IS NOT A LAW FIRM AND DOES NOT PROVIDE
     LEGAL SERVICES. DISTRIBUTION OF THIS DOCUMENT DOES NOT CREATE AN
