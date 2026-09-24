@@ -26,3 +26,4 @@ Some scripting and layout is AI-assisted, and there’s some AI‐slop documenta
 | `lawaPage/`      | builds the lawa stats page                                 | mixed / messy |
 | `content/`       | source for `triptych.pl`, not served directly              | mixed / messy |
 | `templates/`     | page chrome for `triptych.pl`, not served directly         | mixed / messy |
+| `modernmotherfuckingwebsite/` | https://modernmotherfuckingwebsite.dreamstation.systems | CC0-1.0 |

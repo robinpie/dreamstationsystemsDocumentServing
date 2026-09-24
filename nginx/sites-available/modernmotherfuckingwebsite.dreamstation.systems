@@ -1,0 +1,48 @@
+# modernmotherfuckingwebsite.dreamstation.systems — one static HTML page and
+# its OpenGraph image. Source is modernmotherfuckingwebsite/ in this repo,
+# rsynced to /srv/modernmotherfuckingwebsite by promoteSite.sh (not staged:
+# like gopher/ and gemini/, it goes straight from the repo to live).
+#
+# An EXACT server_name, so it beats the *.dreamstation.systems wildcard in
+# dreamstation.systems. Without this file the name still resolves (wildcard A
+# record) and the apex answers it with the main site.
+#
+# Its own certificate, for the reason fortunes, grandexchange and staging each
+# have one: the dreamstation.systems cert also covers mta-sts, and re-issuing
+# it for this host would put inbound mail's TLS in the blast radius of a web
+# deploy.
+#
+# One server block listening on both ports rather than the usual :80/:443
+# pair: the content is identical on both, and one block cannot drift. Port 80
+# is not redirected, following the apex — and a page whose whole argument is
+# "it's just a file" should be fetchable by anything.
+#
+# Enable only AFTER the certificate exists — nginx -t fails on a missing
+# ssl_certificate. See nginx.txt.
+
+server {
+    include snippets/clacks.conf;
+    include snippets/accessLog.conf;
+    listen 80;
+    listen [::]:80;
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name modernmotherfuckingwebsite.dreamstation.systems;
+
+    ssl_certificate     /etc/letsencrypt/live/modernmotherfuckingwebsite.dreamstation.systems/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/modernmotherfuckingwebsite.dreamstation.systems/privkey.pem;
+
+    # certbot's webroot is the apex's live docroot, where this cert was issued
+    # from and where renewals will look; promote protects acme-challenge/.
+    location /.well-known/acme-challenge/ {
+        root /srv/http;
+    }
+
+    root /srv/modernmotherfuckingwebsite;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}

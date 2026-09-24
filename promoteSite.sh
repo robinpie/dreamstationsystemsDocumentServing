@@ -6,6 +6,7 @@
 #   cgi/             -> /srv/cgi            CGI scripts run by fcgiwrap
 #   gopher/          -> /srv/gopher         gophernicus doc root
 #   gemini/          -> /srv/gemini         molly-brown doc root (Spartan too)
+#   modernmotherfuckingwebsite/ -> /srv/modernmotherfuckingwebsite  its own vhost
 #   statusSample/    -> /usr/local/bin + units  the status page's other half
 #   statusSample/starport/ -> starport, over SSH  the second host's sampler
 #   nginx/           -> /etc/nginx          vhosts and snippets
@@ -27,6 +28,7 @@ NGINX_SITES=(
 	dreamstation.systems
 	fortunes.dreamstation.systems
 	grandexchange.dreamstation.systems
+	modernmotherfuckingwebsite.dreamstation.systems
 	hansendiscountelectronics.com
 	onion.dreamstation.systems
 	pool-ntp.tesla.com
@@ -264,6 +266,19 @@ promote_retro() { # <repo subdir> <doc root> <generated file to protect>...
 
 promote_retro gopher /srv/gopher ntpstats.txt lawa.txt tok/lawa.txt
 promote_retro gemini /srv/gemini ntpstats.gmi lawa.gmi tok/lawa.gmi
+
+# ------------------------------------------------- modernmotherfuckingwebsite
+#
+# One static page and its OpenGraph image, served by its own vhost
+# (nginx/sites-available/modernmotherfuckingwebsite.dreamstation.systems).
+# Straight from the repo like the retro roots — it has no staging copy — but
+# root-owned like /srv/http, since nothing writes there at runtime.
+if [ -d "$ROOT/modernmotherfuckingwebsite" ]; then
+	sudo rsync -a --delete \
+		--chown=root:root --chmod=D755,F644 \
+		"$ROOT/modernmotherfuckingwebsite/" /srv/modernmotherfuckingwebsite/
+	echo "Promoted modernmotherfuckingwebsite/ → /srv/modernmotherfuckingwebsite"
+fi
 
 # --------------------------------------------------------------- statusSample
 #

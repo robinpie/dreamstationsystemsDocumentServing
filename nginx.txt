@@ -290,6 +290,20 @@ Same certificate, same content, same blast radius (deliberately NOT merged with 
                                                        which promote carves
                                                        out. Full details in
                                                        ~/configNotes/fortunes.txt.
+  /etc/nginx/sites-available/modernmotherfuckingwebsite.dreamstation.systems
+                                                     — one static page (added
+                                                       2026-09-24), root
+                                                       /srv/modernmotherfuckingwebsite,
+                                                       rsynced there by promote
+                                                       from the repo dir of the
+                                                       same name (no staging).
+                                                       ONE server block on both
+                                                       :80 and :443, since the
+                                                       content is identical; :80
+                                                       not redirected. Own cert,
+                                                       same reasoning as
+                                                       grandexchange; certbot
+                                                       webroot /srv/http.
   /etc/nginx/sites-available/hansendiscountelectronics.com
                                                      — A SECOND NAME FOR THE
                                                        MAIN SITE (added
@@ -398,6 +412,7 @@ THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every hand
     nginx/sites-available/fortunes.dreamstation.systems
     nginx/sites-available/grandexchange.dreamstation.systems
     nginx/sites-available/hansendiscountelectronics.com
+    nginx/sites-available/modernmotherfuckingwebsite.dreamstation.systems
     nginx/sites-available/onion.dreamstation.systems
     nginx/sites-available/pool-ntp.tesla.com
     nginx/sites-available/pool.ntp.org
