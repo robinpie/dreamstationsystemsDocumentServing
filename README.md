@@ -27,3 +27,4 @@ Some scripting and layout is AI-assisted, and there’s some AI‐slop documenta
 | `content/`       | source for `triptych.pl`, not served directly              | mixed / messy |
 | `templates/`     | page chrome for `triptych.pl`, not served directly         | mixed / messy |
 | `modernmotherfuckingwebsite/` | https://modernmotherfuckingwebsite.dreamstation.systems | CC0-1.0 |
+| `hansendiscountelectronics.com/` | https://hansendiscountelectronics.com      | mixed / messy |
