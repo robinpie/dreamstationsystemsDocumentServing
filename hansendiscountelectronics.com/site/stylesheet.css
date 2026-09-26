@@ -134,7 +134,7 @@ select[size] {
   line-height: 1.45;
 }
 
-.catnav a {
+.catnav a, .catnav span {
   color: var(--nav-grey);
   font-size: 13px;
   font-weight: bold;
@@ -309,7 +309,7 @@ h1.pagetitle {
   color: #000;
   background: #fff;
 }
-.pill:hover { text-decoration: none; background: #f2f2f2; }
+a.pill:hover { text-decoration: none; background: #f2f2f2; }
 
 /* The original page floats the image block and lets the copy wrap around it,
    so text beside the photo is pushed right while text below it returns to the
