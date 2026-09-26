@@ -52,7 +52,7 @@ func (b *Builder) f2pRecipes(ctx context.Context, rs []calc.Recipe) ([]calc.Reci
 	return out, nil
 }
 
-// recipeCounts is how many methods each family offers, after the free-to-play filter. The cheap grouped count only answers the unfiltered question, so under the toggle the recipes are loaded and counted in Go instead — 138 rows with their ingredient lists, once, on a page that already reads the whole catalogue elsewhere.
+// recipeCounts is how many methods each family offers, after the free-to-play filter. The cheap grouped count only answers the unfiltered question, so under the toggle the recipes are loaded and counted in Go instead — every recipe with its ingredient list, once, on a page that already reads the whole catalogue elsewhere.
 func (b *Builder) recipeCounts(ctx context.Context) (map[string]int, error) {
 	if !b.F2POnly {
 		return b.DB.RecipeKinds(ctx)

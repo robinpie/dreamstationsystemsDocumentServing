@@ -8,7 +8,7 @@ content/post/gzipt.tri  ->  rootdomain/personal/gzipt.html   HTML, SSI, themes, 
                             gopher/blog/gzipt.txt            text/plain
 ```
 
-It owns the main site as `rootdomain/personal/CLAUDE.md` defines it — index, blog index, the blog posts, ntpuserinfo — plus the gopher/gemini `services` page. Everything else under `rootdomain/` is still hand‐written HTML.
+It owns the main site as `rootdomain/personal/CLAUDE.md` defines it — index, blog index, the blog posts, ntpuserinfo — plus the gopher/gemini `services` page. Everything else under `rootdomain/` is hand‐written HTML.
 
 ```
 ./triptych.pl                     render everything
@@ -247,7 +247,7 @@ assetsBuild/badgeBuild.pl      the 88x31 wall
 
 The order is load‐bearing: triptych renders, the later steps fill the regions they own, and everything is staged together. It carries the feeds’ unstaged guard — a half‐finished `.tri` means no re‐render and a warning, rather than a page in the commit that no committed source describes.
 
-`datestampHook.pl` asks `--source-of` before stamping. For a generated page it rewrites `updated:` in the front matter and re‐renders, instead of writing a date the next render would discard; a page with no `updated:` field is left alone with a message. `promoteSite.sh` is untouched.
+`datestampHook.pl` asks `--source-of` before stamping. For a generated page it rewrites `updated:` in the front matter and re‐renders, instead of writing a date the next render would discard; a page with no `updated:` field is left alone with a message.
 
 **The themed‐page list.** `nginx/snippets/theme.conf` names the themed `/personal/` pages three times, as a regex alternation — the SSI location, the protocol switcher, the language switcher. triptych rewrites the text inside each `/personal/(…)` group on every run: every source‐language page with an `html` target, sorted, drafts included (staging previews them themed). It is computed from all of `content/`, so a restricted run cannot shrink it; it must find exactly three lists or it dies; `--check` diffs it and `--list` shows it. The rest of that file is hand‐written. `preCommit.sh` stages it — unless it already had unstaged edits, in which case the list is written but left unstaged, like the badge wall.
 
@@ -272,7 +272,7 @@ Languages are the rows of `[langs]` in `triptych.conf`; the id is the BCP 47 tag
 
 **Links are written once, as ever.** A translation links `[…](@blog)` or `[…](@post:gzipt)` exactly as the source does. If the page it names has a translation in the same language the link goes there; if not, it goes to the source‐language page. So translating the site one page at a time never leaves a dead link and never needs a link revisited. The templates’ own nav (`{{nav_home}}`, `{{nav_blog}}`) and `@postlist` follow the same rule — a translated blog index lists the posts that exist in its language.
 
-**Every version announces the others.** Pages with more than one version get reciprocal `hreflang` lines (self‐inclusive, `x-default` on the source) and a **language switcher**: a third GET form in the `#theme-switcher` corner, before the protocol and theme ones, with one `<option>` per version that exists, each named in its own language. Like its neighbours it needs no JavaScript — it submits `?lang=<id>` to `/personal/lang/personal/<this page>`, and nginx (`snippets/theme.conf`, with the `$lang_suffix` map beside the theme maps) redirects to the same page with its suffix swapped, falling back to English if that version does not exist. On Gemini and Gopher the switcher is a link line (or gophermap row) per other version. A page with no translation gets none of this, and is byte‐identical to what it was before any of it existed.
+**Every version announces the others.** Pages with more than one version get reciprocal `hreflang` lines (self‐inclusive, `x-default` on the source) and a **language switcher**: a third GET form in the `#theme-switcher` corner, before the protocol and theme ones, with one `<option>` per version that exists, each named in its own language. Like its neighbours it needs no JavaScript — it submits `?lang=<id>` to `/personal/lang/personal/<this page>`, and nginx (`snippets/theme.conf`, with the `$lang_suffix` map beside the theme maps) redirects to the same page with its suffix swapped, falling back to English if that version does not exist. On Gemini and Gopher the switcher is a link line (or gophermap row) per other version. A page with no translation gets none of this.
 
 **`draft: 1`** is how a translation is worked on. A draft
 

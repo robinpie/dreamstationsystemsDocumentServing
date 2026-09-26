@@ -1,0 +1,373 @@
+/* ------------------------------------------------------------------
+   Hansen Discount Electronics
+   "What You Want, When You Want It"
+   ------------------------------------------------------------------ */
+
+:root {
+  --teal:        #4fa8b8;
+  --rule:        #9ba0a2;
+  --link:        #2222aa;
+  --cat-link:    #1c5b26;
+  --nav-grey:    #929192;
+  --title-grey:  #918f90;
+
+  /* the watery teal bar used by the top strip */
+  --bar: linear-gradient(to bottom,
+      #f4fcff 0%,  #d1e6eb 13%, #9ad0dc 25%, #63b4c5 38%,
+      #53aec0 48%, #63b6c6 59%, #b8dae4 75%, #e8f3f7 88%, #f4f9fc 100%);
+
+  /* the slightly darker, bottom-weighted bar used by box headings */
+  --bar-heading: linear-gradient(to bottom,
+      #f4f9fc 0%,  #d7eef6 12%, #aedeea 23%, #8ac9d8 35%,
+      #67b5c2 46%, #4fa8b8 58%, #62b8c7 69%, #8ec8d3 81%, #c9dee1 100%);
+}
+
+* { box-sizing: border-box; }
+
+html { background: #ffffff; }
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  color: #000000;
+  font-family: Verdana, "DejaVu Sans", Geneva, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.23;
+}
+
+img { border: 0; vertical-align: bottom; }
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+
+/* ---------------------------------------------------------- top strip */
+
+.topbar {
+  position: relative;
+  height: 32px;
+  background: var(--bar);
+  border-bottom: 1px solid #c9d2d2;
+}
+
+.topbar .home {
+  position: absolute;
+  left: 8px;
+  top: 0;
+  line-height: 32px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 1px 1px rgba(0, 60, 75, .45);
+}
+.topbar .home a { color: #ffffff; }
+.topbar .home .sep { color: #17505c; padding-left: 4px; }
+
+.topbar form {
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  transform: translateX(-50%);
+  margin: 0;
+  white-space: nowrap;
+}
+
+
+/* ------------------------------------------------------- classic widgets */
+
+input[type="text"] {
+  /* form controls were the OS widgets on the original, so keep the system face */
+  font-family: Tahoma, "DejaVu Sans", Geneva, sans-serif;
+  font-size: 12px;
+  height: 20px;
+  padding: 1px 3px;
+  color: #000;
+  background: #fff;
+  border: 1px solid #7f9db9;
+}
+
+.btn {
+  font-family: Tahoma, "DejaVu Sans", Geneva, sans-serif;
+  font-size: 12px;
+  height: 21px;
+  padding: 0 7px;
+  color: #000;
+  background: linear-gradient(to bottom, #fdfdfd 0%, #f2f2f0 45%, #e3e3df 55%, #f4f4f2 100%);
+  border: 1px solid #6b6b6b;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.btn:active { background: #e6e6e2; }
+
+select[size] {
+  /* the original used the OS list-box widget, so keep the system UI face */
+  font-family: Tahoma, "DejaVu Sans", Geneva, sans-serif;
+  font-size: 12px;
+  width: 100%;
+  border: 1px solid #7f9db9;
+  background: #fff;
+}
+
+
+/* -------------------------------------------------------------- masthead */
+
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1px 0 0 0;
+}
+
+.masthead .logo { display: block; width: 280px; height: 44px; }
+
+.masthead .tagline {
+  font-size: 16px;
+  font-weight: bold;
+  font-style: italic;
+  color: #000;
+  padding-right: 68px;
+  white-space: nowrap;
+}
+
+
+/* ---------------------------------------------------------- category nav */
+
+
+.catnav {
+  padding: 9px 30px 6px;
+  text-align: center;
+  line-height: 1.45;
+}
+
+.catnav a {
+  color: var(--nav-grey);
+  font-size: 13px;
+  font-weight: bold;
+  white-space: nowrap;
+  margin: 0 7px;
+}
+.catnav a:hover { color: #6f6e6f; text-decoration: none; }
+
+
+/* ----------------------------------------------------------- page layout */
+
+.page {
+  display: flex;
+  align-items: flex-start;
+  padding: 3px 7px 24px 4px;
+}
+
+.col-side  { flex: 0 0 150px; width: 150px; }
+.col-main  { flex: 1 1 auto; min-width: 0; padding: 0 12px; }
+
+
+/* ------------------------------------------------------------- info boxes */
+
+.box {
+  border: 1px solid var(--rule);
+  background: #ffffff;
+  margin-bottom: 15px;
+}
+
+.box > h2 {
+  margin: 0;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 0 0 10px;
+  background: var(--bar-heading);
+  border-bottom: 1px solid var(--rule);
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: bold;
+  letter-spacing: .02em;
+  text-shadow: 0 1px 1px rgba(0, 60, 75, .5);
+}
+
+.box .body { padding: 3px 6px 4px 5px; font-size: 12px; line-height: 1.13; }
+
+.box .foot {
+  height: 6px;
+  border-top: 1px solid var(--rule);
+  background: linear-gradient(to bottom, #fbfeff, #cfe0e2);
+}
+
+/* centre-column boxes get a centred heading */
+.col-main .box { margin-left: 3px; margin-right: 4px; }
+.col-main .box > h2 { text-align: center; padding: 0; }
+.col-main .box .body { padding: 10px 6px 14px; }
+
+
+/* --------------------------------------------------------- categories box */
+
+.catlist { margin: 0; padding: 0; list-style: none; line-height: 1.13; }
+.catlist a { color: var(--cat-link); }
+.catlist .here > a { font-weight: bold; }
+
+.box .rule {
+  border: 0;
+  border-top: 1px solid #c8c8c8;
+  margin: 8px 2px 9px;
+}
+
+.morelinks { margin: 0; padding: 0; list-style: none; line-height: 1.13; }
+
+
+/* ------------------------------------------------------- manufacturer box */
+
+.mfr-logo {
+  display: flex;
+  width: 135px;
+  height: 135px;
+  align-items: center;
+  justify-content: center;
+  margin: 4px auto 3px;
+  border: 1px solid #000;
+  background: #fff;
+}
+.mfr-logo img { max-width: 100%; }
+
+
+/* --------------------------------------------------------- bestseller box */
+
+.bestsellers {
+  margin: 0;
+  padding-left: 40px;
+  list-style: decimal;
+  line-height: 1.13;
+}
+.bestsellers li { padding: 0 0 1px 2px; }
+
+
+/* ------------------------------------------------------- notification box */
+
+.notify { text-align: center; }
+.notify img { margin-bottom: 4px; }
+.notify a { display: block; }
+.notify strong { font-weight: bold; }
+
+
+/* ---------------------------------------------------------- tell a friend */
+
+.tellafriend { display: flex; align-items: center; gap: 6px; }
+.tellafriend input[type="text"] { flex: 1 1 auto; min-width: 0; }
+.tellafriend p { margin: 6px 0 0; }
+
+
+/* --------------------------------------------------------------- headings */
+
+.crumb {
+  margin: 0 0 22px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000;
+}
+.crumb .sep { color: #000; padding: 0 5px 0 4px; }
+
+h1.pagetitle {
+  margin: 30px 0 1px;
+  padding-left: 9px;
+  font-size: 14.5px;
+  font-weight: bold;
+}
+
+
+/* ----------------------------------------------------------- new products */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 22px;
+}
+
+.grid .cell { text-align: center; padding: 0 1px; font-size: 11.2px; line-height: 1.18; }
+.grid .shot {
+  height: 78px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.grid .name { display: block; }
+.grid .price { display: block; }
+
+
+/* ------------------------------------------------------------ product page */
+
+.cat-flag { margin-bottom: -1px; line-height: 1.13; }
+.cat-flag img { display: block; margin-bottom: 1px; }
+
+.paging { text-align: center; margin: 0 0 18px; }
+.paging .count { margin-bottom: 4px; }
+
+.pill {
+  display: inline-block;
+  border: 1px solid #6f6f6f;
+  border-radius: 9px;
+  padding: 0 8px;
+  margin: 0 1px;
+  font-size: 11px;
+  line-height: 15px;
+  color: #000;
+  background: #fff;
+}
+.pill:hover { text-decoration: none; background: #f2f2f2; }
+
+/* The original page floats the image block and lets the copy wrap around it,
+   so text beside the photo is pushed right while text below it returns to the
+   full measure.  The nested description lists are rendered marker-inside with
+   the browser's classic 40px indent per level. */
+
+.product { overflow: hidden; }
+
+.product .shot {
+  float: left;
+  width: 123px;
+  margin: 0 6px 12px 4px;
+  text-align: center;
+}
+.product .shot img { display: block; margin: 0 auto 5px; }
+
+.product .detail { padding: 0 4px 0 12px; }
+
+.product h1 {
+  margin: 12px 0 5px;
+  font-size: 15.5px;
+  font-weight: bold;
+  color: var(--title-grey);
+}
+
+.product .price {
+  margin: 0 0 15px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.product .desc p { margin: 0 0 18px; }
+
+.product .desc ul {
+  margin: 0;
+  padding-left: 40px;
+  list-style: disc outside;
+}
+.product .desc ul ul { margin: 0; list-style: circle outside; }
+.product .desc li { margin-bottom: 0; }
+
+
+/* ------------------------------------------------------------------ small */
+
+@media (max-width: 700px) {
+  .page { flex-wrap: wrap; }
+  .col-side { flex: 1 1 100%; width: auto; }
+  .col-main { flex: 1 1 100%; padding: 0; order: -1; }
+  .masthead { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .masthead .tagline { padding: 0 0 4px 4px; font-size: 13px; white-space: normal; }
+  .catnav { padding: 9px 8px 6px; }
+  .product .shot { float: none; margin: 0 auto 12px; }
+  .product .detail { padding-left: 0; }
+  .product .desc ul { padding-left: 18px; }
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}

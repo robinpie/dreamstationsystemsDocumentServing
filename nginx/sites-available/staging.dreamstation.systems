@@ -92,7 +92,7 @@ server {
     include snippets/feeds.conf;
 
     # statusCgi.conf is what turns SSI on for /professional/ on the live site,
-    # and it is left out above. The page now also carries a $drafts gate (the
+    # and it is left out above. The page also carries a $drafts gate (the
     # link to a draft translation — see the map in dreamstation.systems), and
     # a gate nothing parses is just two HTML comments around visible markup.
     # So parse it here too. The status-box include has no location to reach on

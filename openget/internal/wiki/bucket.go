@@ -28,7 +28,7 @@ const BucketBase = "https://oldschool.runescape.wiki/api.php"
 // bucketPageSize is how many rows one query asks for. The server truncates at 5000 rather than erroring, so a full read pages with .offset() until a short page arrives.
 const bucketPageSize = 5000
 
-// maxBucketRows caps a paged read. Nothing we query is anywhere near this — storeline was 6326 rows when this was written — so hitting it means the offset paging is not advancing and the loop must stop rather than hammer a volunteer-run wiki forever.
+// maxBucketRows caps a paged read. Nothing we query is anywhere near this, so hitting it means the offset paging is not advancing and the loop must stop rather than hammer a volunteer-run wiki forever.
 const maxBucketRows = 100000
 
 // StoreLine is one row of the wiki's storeline bucket: one item on one shop's shelf.

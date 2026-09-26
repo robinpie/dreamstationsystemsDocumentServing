@@ -209,9 +209,9 @@ func (g *Generator) buildPages(ctx context.Context) ([]page, error) {
 			}
 		}
 	}
-	// The home page links a status page, so the capsules need one. Cheap now
-	// that the archive numbers on it are measured on a timer rather than read
-	// when the page is built (see store.ArchiveStats).
+	// The home page links a status page, so the capsules need one. Cheap,
+	// because the archive numbers on it are measured on a timer rather than
+	// read when the page is built (see store.ArchiveStats).
 	if g.st != nil {
 		why, paused := g.st.Paused()
 		if d, err := g.vb.Status(ctx, g.version, g.st.FreeDiskMB(), why, paused); err == nil {

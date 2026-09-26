@@ -237,7 +237,7 @@ func navItems(path string) []navEntry {
 
 // pageTitle builds the <title> and og:title text.
 //
-// The front page's own title is already "OpenGET", so the usual "<page> — OpenGET" suffix turned it into "OpenGET — OpenGET" in the browser tab and in every link unfurl. Computed here rather than in the template because two places need it and they must not drift.
+// The front page's own title is already "OpenGET", so the usual "<page> — OpenGET" suffix would turn it into "OpenGET — OpenGET" in the browser tab and in every link unfurl. Computed here rather than in the template because two places need it and they must not drift.
 func pageTitle(docTitle string) string {
 	const brand = "OpenGET"
 	if docTitle == "" || docTitle == brand {

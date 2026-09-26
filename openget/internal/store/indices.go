@@ -49,7 +49,7 @@ func (d *DB) LoadIndicesFile(ctx context.Context, path string) (int, []string, e
 		return 0, nil, fmt.Errorf("store: parse %s: %w", path, err)
 	}
 
-	// One pass over items, since resolving ~93 names one query at a time would be 93 round trips for no reason.
+	// One pass over items, since resolving the names one query at a time would be a round trip each for no reason.
 	byName := map[string]int{}
 	rows, err := d.r.QueryContext(ctx, `SELECT id, name FROM items ORDER BY id`)
 	if err != nil {

@@ -160,7 +160,7 @@ func (c *Client) once(ctx context.Context, url, key string, cond bool, v any) er
 	}
 	req.Header.Set("User-Agent", c.ua)
 	req.Header.Set("Accept", "application/json")
-	// Ask for gzip explicitly rather than letting the transport do it, so we can log real wire bytes. /mapping is 861 KB raw and compresses well.
+	// Ask for gzip explicitly rather than letting the transport do it, so we can log real wire bytes. /mapping compresses well.
 	req.Header.Set("Accept-Encoding", "gzip")
 	if cond {
 		c.mu.Lock()
@@ -209,7 +209,7 @@ func (c *Client) once(ctx context.Context, url, key string, cond bool, v any) er
 // Payload types
 // ---------------------------------------------------------------------------
 
-// Item is one entry of /mapping: static-ish metadata that only changes on game updates. Limit and Value are pointers because they are genuinely absent for some items (507 of 4650 carry no buy limit), and "absent" must not collapse to "zero" — a zero buy limit would mean untradeable, which is a different claim entirely.
+// Item is one entry of /mapping: static-ish metadata that only changes on game updates. Limit and Value are pointers because they are genuinely absent for some items (hundreds carry no buy limit), and "absent" must not collapse to "zero" — a zero buy limit would mean untradeable, which is a different claim entirely.
 type Item struct {
 	ID       int    `json:"id"`
 	Name     string `json:"name"`

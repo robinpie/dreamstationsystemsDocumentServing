@@ -194,7 +194,7 @@ func gopherRowType(href string) byte {
 
 // isAbsoluteURL reports whether href already carries a scheme.
 //
-// Testing for "://" is not enough: mailto: and news: have no authority component, and mailto is exactly the case that prompted this.
+// Testing for "://" is not enough: mailto: and news: have no authority component.
 func isAbsoluteURL(href string) bool {
 	if strings.HasPrefix(href, "//") { // protocol-relative
 		return true

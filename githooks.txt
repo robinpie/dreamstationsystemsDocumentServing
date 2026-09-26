@@ -15,11 +15,11 @@ Installed hooks:
 
 NO HOOK PUBLISHES ANYTHING. See "stage and promote" below.
 
-FIRST IN THE CHAIN IS triptych.pl, and it has to be: it renders the main site's pages to all three protocols from content/*.tri, and three of the steps below rewrite regions of what it produced (badgeBuild.pl the badge wall, makeMeta.py blog.html's JSON-LD, datestampHook.pl the dateModified). Those regions are carried through from the file on disk rather than regenerated, so the order is stable in both directions. Do not hand-edit the 29 generated files -- `./triptych.pl --source-of <file>` says whether a file is one of them. Full account in triptych.md.
+FIRST IN THE CHAIN IS triptych.pl, and it has to be: it renders the main site's pages to all three protocols from content/*.tri, and three of the steps below rewrite regions of what it produced (badgeBuild.pl the badge wall, makeMeta.py blog.html's JSON-LD, datestampHook.pl the dateModified). Those regions are carried through from the file on disk rather than regenerated, so the order is stable in both directions. Do not hand-edit the generated files -- `./triptych.pl --source-of <file>` says whether a file is one of them. Full account in triptych.md.
 
 datestampHook.pl asks --source-of before it stamps. For a generated page it rewrites `updated:` in the .tri's front matter and re-renders, rather than writing a date into HTML that the next render would throw away.
 
-pre-commit was a symlink straight to datestampHook.pl until there was a second step to run. git runs exactly ONE pre-commit hook, so it now points at preCommit.sh, which calls each step in turn:
+git runs exactly ONE pre-commit hook, so it points at preCommit.sh, which calls each step in turn:
 
     triptych.pl                    content/*.tri -> all three protocols
                                                             (triptych.md)
@@ -47,7 +47,7 @@ THE FOUR STEPS GUARD DIFFERENTLY, and none of it is accidental.
            working tree and a sitemap or a blogPost array built from a
            half-finished one tells the same kind of lie. If the feeds were
            skipped, this is skipped. It is also the ONLY STEP THAT CAN ABORT
-           THE COMMIT: besides generating, it checks the six post pages'
+           THE COMMIT: besides generating, it checks the post pages'
            datelines and BlogPosting dates against blog.html's list, that
            every JSON-LD block parses, and that no @id is referenced without
            being defined. Those are not artifacts it can regenerate — they
@@ -62,7 +62,7 @@ THE FOUR STEPS GUARD DIFFERENTLY, and none of it is accidental.
 
   badges   PER-FILE GUARD, because this is the only step that rewrites
            HAND-AUTHORED FILES — it generates the <ul class="badges"> block
-           inside eight .html pages you also edit by hand. `git add` on one of
+           inside the .html pages you also edit by hand. `git add` on one of
            those would sweep an unrelated in-progress edit into the commit,
            which no generator should ever do. So pages that were already dirty
            before it ran are written on disk but NOT staged, and pages that

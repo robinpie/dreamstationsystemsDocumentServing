@@ -43,7 +43,7 @@ type shopFile struct {
 
 // LoadShopExclusions reads the list of shops to ignore.
 //
-// A missing file is not an error: the exclusions are a correction to upstream data, not a dependency, and an empty set still produces a far better page than ranking on item value did.
+// A missing file is not an error: the exclusions are a correction to upstream data, not a dependency, and an empty set still produces a usable page.
 func LoadShopExclusions(path string) (ShopExclusions, error) {
 	b, err := os.ReadFile(path)
 	if errors.Is(err, os.ErrNotExist) {

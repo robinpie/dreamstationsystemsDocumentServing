@@ -1,7 +1,7 @@
 siteAssets — favicon, icons, OpenGraph card, sitemap, the JSON-LD graph and the 88x31 badge wall for dreamstation.systems
 ================================================================================
 
-Source of truth is ~/configNotes/documentServing/rootdomain/, which mirrors the live docroot /srv/http. Edit in configNotes, then install to /srv/http as root.
+Source of truth is ~/configNotes/documentServing/rootdomain/, which mirrors the live docroot /srv/http. Edit it there and deploy with ./promoteSite.sh (see README.local.md); never hand-edit /srv/http.
 
 FILES
   /srv/http/favicon.svg                theme-aware asterism, modern browsers
@@ -20,7 +20,7 @@ BUILD SCRIPTS  (~/configNotes/documentServing/assetsBuild/, in the repo but a SI
                       pre-commit hook, not by hand; see feeds.txt
   makeMeta.py         renders sitemap.xml and the JSON-LD block in
                       personal/blog.html from that SAME post list, and checks
-                      the six post pages agree with it — pre-commit hook; see
+                      the post pages agree with it — pre-commit hook; see
                       SITEMAP and STRUCTURED DATA below
   makeFontSubset.py   cuts the ubuntu804 theme's two DejaVu faces down to the
                       characters the themed pages use — pre-commit hook; see
@@ -54,7 +54,7 @@ OPENGRAPH
 
   The stats on the card (pool score, CVE status) are point-in-time and scrapers cache images hard. After re-running makeOg.sh, bust the caches via Facebook's Sharing Debugger and LinkedIn's Post Inspector, or the old card will keep appearing for weeks.
 
-  Filename gotcha: the file is ogimage.png, NOT og.png. makeOg.sh defaulted to og.png until 2026-08-27, which would have silently written an orphan and left the real card stale. The default now matches. Do not "tidy" the name — scrapers cache og:image URLs hard and a rename costs a re-scrape everywhere.
+  Filename gotcha: the file is ogimage.png, NOT og.png. Writing og.png would silently leave an orphan and the real card stale. Do not "tidy" the name — scrapers cache og:image URLs hard and a rename costs a re-scrape everywhere.
 
 HEAD TAGS  (professional/index.html)
   Deliberately present: author, robots (max-image-preview:large so Google may use the full og card in results), theme-color as a light/dark PAIR with media attributes, og:locale (en_US — underscore, not the hyphen used by lang=""), profile:first_name/last_name/username (og:type is "profile", which defines them), twitter:image:alt.
@@ -80,7 +80,7 @@ SITEMAP
   The exclusions are enforced by the fixed list being a list: nothing is globbed, so an orphan cannot wander in.
 
 STRUCTURED DATA (JSON-LD)
-  ONE GRAPH ACROSS THE WHOLE SITE, split across documents and joined by @id. professional/index.html is its root: it defines #website, #robin, and the project nodes. The nine themed pages under /personal/ join it rather than restating it.
+  ONE GRAPH ACROSS THE WHOLE SITE, split across documents and joined by @id. professional/index.html is its root: it defines #website, #robin, and the project nodes. The themed pages under /personal/ join it rather than restating it.
 
   THE RULE, and the whole reason the split works: descriptive properties live in EXACTLY ONE document per node. A node defined in full elsewhere appears again with IDENTITY ONLY — @type, @id, name, url. That is enough for a consumer that only ever sees the one page, and it leaves no second copy of a description to drift out of step. So personal/index.html names !~ATH and links to it; professional/index.html is where !~ATH is described.
 
@@ -129,7 +129,7 @@ VERIFY
 
 
 THE 88x31 WALL
-  The button shelf at the foot of /personal/. Ten badges, on eight pages.
+  The button shelf at the foot of /personal/.
 
   SOURCE OF TRUTH IS webBadges.csv IN THE REPO ROOT — row order is display order, and the columns are the source filename, the alt text, and the link (empty link = a bare <img>, for the two badges that point nowhere).
 
@@ -148,7 +148,7 @@ THE 88x31 WALL
 
   and the <ul> itself sits outside the fence, so a page can still carry its own classes on it.
 
-  WHY THE MARKUP IS GENERATED and not just the images: each badge is re-encoded to lossless WebP and kept ONLY IF SMALLER, so the served extension is not knowable until the encoder has run. The wall serves 88x31.webp and nginx.png side by side. Hand-written src= attributes would have to be re-audited across eight pages every time a source image changed; they would rot into 404s instead. 15643 -> 9144 bytes, 42% off, nine badges of ten winning.
+  WHY THE MARKUP IS GENERATED and not just the images: each badge is re-encoded to lossless WebP and kept ONLY IF SMALLER, so the served extension is not knowable until the encoder has run. The wall serves 88x31.webp and nginx.png side by side. Hand-written src= attributes would have to be re-audited across every page every time a source image changed; they would rot into 404s instead.
 
   nginx.png LOSES BY 4 BYTES and is served as PNG. That is the system working, not a bug — do not "fix" it by forcing WebP everywhere. zero-javascript.png wins by the same tiny margin the other way. At 88x31 the answer is per-image and cannot be guessed, which is the entire reason the script compares.
 
@@ -159,4 +159,4 @@ THE 88x31 WALL
     - webBadges.csv is RFC 4180: CRLF line endings, no comment syntax (which is why all of this is documented here and in the script instead of in it). .gitattributes carries `text eol=crlf` so a checkout re-establishes the line endings whatever the editor did.
     - badgeBuild.pl reads and writes EVERYTHING AS BYTES, deliberately. The alt text contains an emoji; decoding it would make the page a character string, and Perl would then re-encode the page's existing UTF-8 as Latin-1 — turning every curly quote in the file into mojibake, far from anything the script meant to touch. It announces itself only as "Wide character in print". There is a guard in the page writer that refuses to write a page that has gone wide.
 
-  THE PANGRAM BADGE IS NOT PART OF THIS. personal/pangramHumanBadge.webp sits in five post <h1>s with a different link per page, so it is hand-written markup and outside the CSV. It was re-encoded by hand (2723 -> 1482 B, lossless); if it ever needs re-encoding again, do that by hand too.
+  THE PANGRAM BADGE IS NOT PART OF THIS. personal/pangramHumanBadge.webp sits in post <h1>s with a different link per page, so it is hand-written markup and outside the CSV. It is re-encoded by hand (lossless); if it ever needs re-encoding again, do that by hand too.

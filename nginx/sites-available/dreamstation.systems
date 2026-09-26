@@ -162,13 +162,13 @@ server {
 
 # HTTPS for the apex.
 #
-# This block is NOT new behaviour — https://dreamstation.systems/ already
-# worked before it existed, but only by accident: the mta-sts block below was
-# the sole :443 server for this domain, so it acted as the default server for
-# any unmatched :443 request, and its certificate happens to carry
-# dreamstation.systems as a SAN. That is a coincidence, not a configuration.
-# Adding any :443 block that sorted earlier would have silently broken the
-# apex, along with professional/index.html's declared https canonical.
+# Without this block https://dreamstation.systems/ would still work, but only
+# by accident: the mta-sts block below would be the sole :443 server for this
+# domain, so it would act as the default server for any unmatched :443
+# request, and its certificate happens to carry dreamstation.systems as a SAN.
+# That is a coincidence, not a configuration. Adding any :443 block that
+# sorted earlier would silently break the apex, along with
+# professional/index.html's declared https canonical.
 #
 # Same certificate, same content, same blast radius — just stated explicitly
 # rather than inherited from block ordering.
@@ -202,14 +202,11 @@ server {
 # openpgpkey.dreamstation.systems — OpenPGP Web Key Directory, advanced method.
 #
 # GnuPG tries the advanced method FIRST and only falls back to the direct
-# method (the apex's /.well-known/openpgpkey/hu/) if it fails. This name has
-# always resolved, via the *.dreamstation.systems wildcard A record, and the
-# apex :443 block above answered it by being the first :443 block in config
-# order. But the certificate carried no SAN for it, so every advanced lookup
-# died in the TLS handshake and fell back silently.
-#
-# The cert now covers this name, so both methods work and the fallback is a
-# real backstop rather than the only path that ever succeeded.
+# method (the apex's /.well-known/openpgpkey/hu/) if it fails. This name
+# resolves via the *.dreamstation.systems wildcard A record, so the certificate
+# MUST carry a SAN for it: without one every advanced lookup dies in the TLS
+# handshake and falls back silently, and the fallback becomes the only path
+# that ever succeeds.
 server {
     include snippets/clacks.conf;
     include snippets/accessLog.conf;

@@ -7,8 +7,8 @@
 # and then lists that hostname as an asset in their bug-bounty tooling. Their
 # scanner (Assetnote ExposureScan, from 54.165.75.96 and 35.168.63.24) resolves
 # it, gets whichever pool member DNS handed back that minute, and scans that
-# machine as if it were Tesla's. Since 2026-08-25 it has picked us ~30,000
-# times: WordPress, Confluence, log4shell, webshell uploads, the lot. Nothing
+# machine as if it were Tesla's. It picks us over and over: WordPress,
+# Confluence, log4shell, webshell uploads, the lot. Nothing
 # has landed — this box serves static files and has no application to exploit —
 # and the scans cost us nothing measurable. But they are being thrown at a
 # stranger's IP, so the polite thing is to say so where the operator will see it.
@@ -23,15 +23,12 @@
 # but it is odd enough to stand out in a report full of 200s and 404s — which
 # is the entire point, since the audience is whoever reads the scan output.
 #
-# BOTH :80 AND :443, and the HTTPS half is the one that took a second pass.
-#
-# This started as a :80 block only, on the reasoning that HTTPS would need a
-# certificate for a name in tesla.com and we cannot get one. That was true and
-# beside the point: the scanner does not validate certificates. With no :443
-# block for this name, its HTTPS requests fell through to the first :443 server
-# in config order — the apex — and got the real site and a 404 per path, which
-# is exactly what the notice exists to prevent. Roughly half its traffic is
-# HTTPS, so half the point was being missed.
+# BOTH :80 AND :443. HTTPS would need a certificate for a name in tesla.com,
+# which we cannot get, but that is beside the point: the scanner does not
+# validate certificates. With no :443 block for this name, its HTTPS requests
+# fall through to the first :443 server in config order — the apex — and get
+# the real site and a 404 per path, which is exactly what the notice exists to
+# prevent. Roughly half its traffic is HTTPS.
 #
 # So :443 reuses the dreamstation.systems certificate. It does not match this
 # name and is not meant to: nginx needs *a* keypair to finish a handshake, the

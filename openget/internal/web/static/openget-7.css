@@ -257,10 +257,10 @@ main { background: var(--og-surface); }
 h1, h2, h3 { font-weight: 400; color: #0b3c68; }
 /* Segoe UI Light at a large size is the Windows 7 heading, and the reason the Light weight of Selawik is shipped at all. */
 h1 { font-weight: 300; }
-/* :not([class]) keeps the section rule off the panel title bars, which are h2 as well now. */
+/* :not([class]) keeps the section rule off the panel title bars, which are h2 as well. */
 h2:not([class]) { border-bottom: 1px solid #c8d4dd; }
 h3:not([class]) { font-size: 16px; font-weight: 600; }
-/* What the bare h3 above gave the link-list labels before they were levelled to h2. */
+/* The bare h3 above, for the link-list labels. */
 .linkhead { font-size: 16px; font-weight: 600; }
 
 /* The blue "instruction" line a Windows 7 wizard opens with (7.css's

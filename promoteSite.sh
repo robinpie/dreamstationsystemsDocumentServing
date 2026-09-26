@@ -7,6 +7,7 @@
 #   gopher/          -> /srv/gopher         gophernicus doc root
 #   gemini/          -> /srv/gemini         molly-brown doc root (Spartan too)
 #   modernmotherfuckingwebsite/ -> /srv/modernmotherfuckingwebsite  its own vhost
+#   hansendiscountelectronics.com/site/ -> /srv/hansendiscountelectronics.com  its own vhost
 #   statusSample/    -> /usr/local/bin + units  the status page's other half
 #   statusSample/starport/ -> starport, over SSH  the second host's sampler
 #   nginx/           -> /etc/nginx          vhosts and snippets
@@ -278,6 +279,19 @@ if [ -d "$ROOT/modernmotherfuckingwebsite" ]; then
 		--chown=root:root --chmod=D755,F644 \
 		"$ROOT/modernmotherfuckingwebsite/" /srv/modernmotherfuckingwebsite/
 	echo "Promoted modernmotherfuckingwebsite/ → /srv/modernmotherfuckingwebsite"
+fi
+
+# ------------------------------------------------- hansendiscountelectronics.com
+#
+# A small static storefront, served by its own vhost
+# (nginx/sites-available/hansendiscountelectronics.com). Same deal as
+# modernmotherfuckingwebsite above. Only site/ is deployed — the JPEGs beside
+# it are reference screenshots, not part of the site.
+if [ -d "$ROOT/hansendiscountelectronics.com/site" ]; then
+	sudo rsync -a --delete \
+		--chown=root:root --chmod=D755,F644 \
+		"$ROOT/hansendiscountelectronics.com/site/" /srv/hansendiscountelectronics.com/
+	echo "Promoted hansendiscountelectronics.com/site/ → /srv/hansendiscountelectronics.com"
 fi
 
 # --------------------------------------------------------------- statusSample

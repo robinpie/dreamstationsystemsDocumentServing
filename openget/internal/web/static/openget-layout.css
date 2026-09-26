@@ -134,13 +134,13 @@ main {
 h1 { margin: 0 0 4px; font-size: 34px; line-height: 1.15; }
 .subtitle { margin: 0 0 20px; max-width: 74ch; }
 /* :not([class]) is the line between a section heading and a panel's own
- * title bar — both are h2 now, but only the bare one wants the 24px and
+ * title bar — both are h2, but only the bare one wants the 24px and
  * the skins' rule under it. A Heading block never carries a class; a panel
  * title always does (.title-bar / .linkhead). */
 h2:not([class]) { margin: 30px 0 10px; font-size: 24px; padding-bottom: 5px; }
 h3:not([class]) { margin: 20px 0 8px; font-size: 18px; }
 
-/* A label on a list of links, not a section of the page: the size and spacing the bare h3 above had, since that is what these were before they were levelled. */
+/* A label on a list of links, not a section of the page: the size and spacing of the bare h3 above. */
 .linkhead { margin: 20px 0 8px; font-size: 18px; }
 
 .muted { font-size: 13.5px; }

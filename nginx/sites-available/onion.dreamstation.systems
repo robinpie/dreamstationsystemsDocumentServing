@@ -38,7 +38,7 @@ server {
 
     # nginx's own redirects — above all the automatic /personal -> /personal/
     # one — are built as absolute URLs from the port nginx is LISTENING on, so
-    # they came out as http://<addr>.onion:8081/personal/, a port the onion
+    # they come out as http://<addr>.onion:8081/personal/, a port the onion
     # does not expose: "connection refused" in Tor Browser on the first click.
     # tor maps onion :80 to our :8081 and nginx cannot know that. Relative
     # Location headers sidestep the question (and any future port change);

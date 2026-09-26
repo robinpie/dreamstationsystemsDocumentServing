@@ -166,7 +166,7 @@ func scanRecipes(rows *sql.Rows) ([]calc.Recipe, error) {
 // Price book
 // ---------------------------------------------------------------------------
 
-// PriceBook is an in-memory snapshot of prices for a set of items, satisfying calc.Prices. Recipes reference a handful of items each, so loading the whole set once and evaluating in memory beats a query per ingredient by a wide margin when the calculator index page costs 138 recipes at once.
+// PriceBook is an in-memory snapshot of prices for a set of items, satisfying calc.Prices. Recipes reference a handful of items each, so loading the whole set once and evaluating in memory beats a query per ingredient by a wide margin when the calculator index page costs every recipe at once.
 type PriceBook struct {
 	buy   map[int]int64
 	sell  map[int]int64

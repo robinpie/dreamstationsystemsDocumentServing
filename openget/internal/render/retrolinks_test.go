@@ -56,7 +56,8 @@ func TestRetroLinksGopherNoExt(t *testing.T) {
 }
 
 // TestRetroLinksGopherFragment pins the fragment strip. Gopher has no notion of
-// a fragment, so gophernicus looked for a file literally called "indices#bars".
+// a fragment, so gophernicus would look for a file literally called
+// "indices#bars".
 func TestRetroLinksGopherFragment(t *testing.T) {
 	in := "0Gold\t/ge/indices/gold\tdreamstation.systems\t70"
 	want := "0Gold\t/ge/indices\tdreamstation.systems\t70"

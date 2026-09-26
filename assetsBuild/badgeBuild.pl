@@ -304,7 +304,7 @@ for my $b (@badges) {
 
 # Anything else in badges/ is a leftover: a badge dropped from the CSV, or the
 # losing format from a comparison that flipped. The directory is wholly
-# generated now, so nothing in it is authored and nothing is worth keeping.
+# generated, so nothing in it is authored and nothing is worth keeping.
 opendir my $dh, $OUT_DIR or die "badgeBuild: $OUT_DIR: $!\n";
 for my $f (sort grep { !/^\.\.?$/ } readdir $dh) {
     next if $produced{$f};

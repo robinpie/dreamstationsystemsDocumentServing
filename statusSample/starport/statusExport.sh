@@ -16,9 +16,8 @@
 # `now` is THIS box's clock at export time. The puller subtracts `stamp` from
 # it to get the sample's age with both readings from the same clock, so clock
 # skew between the two boxes cannot make fresh data look stale or vice versa.
-# Not hypothetical: starport shipped with no time sync at all and was a second
-# out when this was written. It runs chrony against dreamstation now, but a
-# status page must not depend on the thing it might be reporting as broken.
+# starport runs chrony against dreamstation, but a status page must not depend
+# on the thing it might be reporting as broken.
 echo "@@ now"
 date +%s
 for f in stamp cpu.hist meminfo uptime disk.txt ntp.json; do

@@ -16,13 +16,13 @@
 #      (molly-brown@dreamstation.service). Unit state is reported alongside
 #      the probe, never instead of it.
 #
-#   2. TWO PROBES HAVE NON-OBVIOUS REQUIREMENTS, both found by measurement:
+#   2. TWO PROBES HAVE NON-OBVIOUS REQUIREMENTS:
 #      - HTTP must send a Host header. Without one, nginx's 000-default
 #        catchall matches and returns 444 (drops the connection), so our own
 #        web server reads as DOWN on its own status page.
 #      - TLS ports (1965, 4460) must complete a handshake. A read-a-byte
 #        probe blocks until timeout because the server is waiting for a
-#        ClientHello — :4460 cost 2000ms and still reported DOWN.
+#        ClientHello, and then reports DOWN anyway.
 #
 #   3. THE CACHE IS THE COST BOUND. A full sweep is ~640ms of a single vCPU,
 #      and chronyd needs that core. The cache means at most one sweep per
@@ -280,12 +280,11 @@ sub read_mem {
 	return undef unless $m{MemTotal};
 
 	# htop's decomposition, not free(1)'s — for SWAP AS WELL AS MEMORY. Both
-	# halves of this function follow the same convention; they did not always,
-	# which is how the page came to disagree with htop about swap.
+	# halves of this function follow the same convention, or the page
+	# disagrees with htop about swap.
 	#
 	# Memory: excluding reclaimable cache is both more accurate and more
-	# flattering here — it reports ~676MB genuinely used where free(1) claims
-	# ~783MB.
+	# flattering here than free(1)'s used figure.
 	my $cache = ($m{Buffers} // 0) + ($m{Cached} // 0) + ($m{SReclaimable} // 0) - ($m{Shmem} // 0);
 	my $used  = $m{MemTotal} - $m{MemFree} - $cache;
 
@@ -604,7 +603,7 @@ sub cache_write {
 	# THIS LIST IS A WHITELIST. A key added to read_chrony() but not added here
 	# is written by the sweep, renders correctly once, and then silently
 	# disappears for the next CACHE_TTL seconds — i.e. on almost every real
-	# request. That is a genuinely confusing bug to chase; it has happened once.
+	# request. That is a genuinely confusing bug to chase.
 	for my $k (qw(stratum ref offset leap nts_ke_accepted nts_ke_dropped uptime)) {
 		printf $fh "chrony %s %s\n", $k, $d->{chrony}{$k} if defined $d->{chrony}{$k};
 	}
@@ -709,7 +708,7 @@ sub bar {
 	#
 	# The newlines around the bar are load-bearing, not formatting. Every caller
 	# emits label-bar-value with no whitespace between them, and the bar renders
-	# as nothing in a text browser, so lynx ran the two together as "CPU51%".
+	# as nothing in a text browser, so lynx runs the two together as "CPU51%".
 	# Both row layouts are grid (.sbrow directly, .metric via display:contents
 	# on .metrics), and a grid or flex container drops whitespace-only text
 	# between its items, so these cost exactly nothing in a graphical browser
@@ -725,8 +724,8 @@ sub bar {
 # see status.txt). Returns '' when there is not enough history to draw an
 # honest line, so the caller can simply omit the figure.
 sub disk_graph {
-	# $gid suffixes the title/desc ids, which must be unique per document now
-	# that the page draws one graph per host. $where names the host in the text
+	# $gid suffixes the title/desc ids, which must be unique per document, since
+	# the page draws one graph per host. $where names the host in the text
 	# alternative, for the same reason: two identical descriptions are useless.
 	my ($d, $gid, $where) = @_;
 	$gid   //= '';
