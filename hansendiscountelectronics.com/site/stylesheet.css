@@ -162,6 +162,8 @@ select[size] {
 }
 
 .col-side  { flex: 0 0 150px; width: 150px; }
+/* left column is a bit wider so '"Professional" "Journalism"' fits on one line */
+.col-side:first-child { flex-basis: 190px; width: 190px; }
 .col-main  { flex: 1 1 auto; min-width: 0; padding: 0 12px; }
 
 
@@ -361,7 +363,7 @@ h1.pagetitle {
 
 @media (max-width: 700px) {
   .page { flex-wrap: wrap; }
-  .col-side { flex: 1 1 100%; width: auto; }
+  .col-side, .col-side:first-child { flex: 1 1 100%; width: auto; }
   .col-main { flex: 1 1 100%; padding: 0; order: -1; }
   .masthead { flex-direction: column; align-items: flex-start; gap: 6px; }
   .masthead .tagline { padding: 0 0 4px 4px; font-size: 13px; white-space: normal; }
