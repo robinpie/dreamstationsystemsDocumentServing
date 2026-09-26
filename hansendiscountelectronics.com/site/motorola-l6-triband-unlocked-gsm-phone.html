@@ -162,12 +162,12 @@
     <div class="box">
       <h2>Tell A Friend</h2>
       <div class="body">
-        <form class="tellafriend" action="#" onsubmit="return false;">
-          <input type="text" name="email">
-          <button type="submit" style="border:0;background:none;padding:0;cursor:pointer">
-            <img src="images/envelope.png" width="17" height="13" alt="Tell a friend">
+        <div class="tellafriend">
+          <button type="button" onclick="var b=this,s=b.nextElementSibling,u=location.href;function ok(){s.textContent='Link copied!';}function no(){s.textContent=u;}if(navigator.clipboard){navigator.clipboard.writeText(u).then(ok,no);}else{no();}">
+            <img src="images/envelope.png" width="17" height="13" alt=""> Copy link
           </button>
-        </form>
+          <span class="status" role="status"></span>
+        </div>
         <p>Tell someone you know about this product.</p>
       </div>
       <div class="foot"></div>

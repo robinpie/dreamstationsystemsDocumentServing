@@ -246,7 +246,8 @@ select[size] {
 /* ---------------------------------------------------------- tell a friend */
 
 .tellafriend { display: flex; align-items: center; gap: 6px; }
-.tellafriend input[type="text"] { flex: 1 1 auto; min-width: 0; }
+.tellafriend button { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+.tellafriend .status { font-size: 12px; overflow-wrap: anywhere; }
 .tellafriend p { margin: 6px 0 0; }
 
 
