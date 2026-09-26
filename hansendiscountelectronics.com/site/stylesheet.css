@@ -67,15 +67,6 @@ a:hover { text-decoration: underline; }
 .topbar .home a { color: #ffffff; }
 .topbar .home .sep { color: #17505c; padding-left: 4px; }
 
-.topbar form {
-  position: absolute;
-  left: 50%;
-  top: 6px;
-  transform: translateX(-50%);
-  margin: 0;
-  white-space: nowrap;
-}
-
 
 /* ------------------------------------------------------- classic widgets */
 
