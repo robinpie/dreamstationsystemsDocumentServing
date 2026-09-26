@@ -248,6 +248,7 @@ select[size] {
 .tellafriend { display: flex; align-items: center; gap: 6px; }
 .tellafriend button { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
 .tellafriend .status { font-size: 12px; overflow-wrap: anywhere; }
+.notify .status { font-size: 12px; margin: 4px 0 0; }
 .tellafriend p { margin: 6px 0 0; }
 
 
