@@ -6,6 +6,7 @@ assetsBuild/__pycache__/
 
 # Local documentation
 README.local.md
+/content/tok/README.md
 
 # Editor artifacts
 *.kate-swp
