@@ -10,7 +10,8 @@
   Deliberately absent: the JSON-LD (those nodes are the site graph's
   definitions and are defined once, on the English page), and the
   ntpStatHook.pl-maintained "unique client IP addresses" figure, which is
-  stated here without exact numbers so that nothing goes stale.
+  stated here without exact numbers so that nothing goes stale. The Open
+  Graph / Twitter tags ARE present (translated), as on the other .tok pages.
 
   The comment after this one vouches for the lowercase proper names on the
   page (project, package and program names that are right as written), so
@@ -39,6 +40,25 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Open Graph / Twitter, mirroring index.html's. The card image is the
+       same English one; the alt text describes it in toki pona and quotes
+       the English on it verbatim. -->
+  <meta property="og:type" content="profile">
+  <meta property="profile:first_name" content="Robin">
+  <meta property="profile:last_name" content="Reel">
+  <meta property="profile:username" content="robinpie">
+  <meta property="og:title" content="jan Apen (Robin Reel) ⁂ ilo sona, ilo pana, linluwi, nasin awen">
+  <meta property="og:description" content="mi jan pali pi ilo sona. mi pali lon ilo pana, lon linluwi, lon ijo ante mute. nasin awen li suli tawa mi lon pali ale.">
+  <meta property="og:url" content="https://dreamstation.systems/professional/index.tok.html">
+  <meta property="og:site_name" content="dreamstation.systems">
+  <meta property="og:locale" content="tok">
+  <meta property="og:image" content="https://dreamstation.systems/professional/ogimage.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="sitelen pi ilo Terminal. sitelen ni li lon ona: “robin@dreamstation:~$ finger robin@localhost”. anpa ona la toki Inli li toki e jan Apen (Robin Reel): ona li jan pali pi ilo sona. nasin awen li suli tawa ona. ilo pana tenpo ona li lon kulupu NTP Pool, li jo e nanpa 20/20. ona li kama lukin e lupa ike: nanpa CVE li kama, kulupu li pana e mani tawa ona (Bug Bounty). ona li pali e ilo pi toki ilo open. anpa la “dreamstation.systems/professional” li lon.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image:alt" content="sitelen pi ilo Terminal. sitelen ni li lon ona: “robin@dreamstation:~$ finger robin@localhost”. anpa ona la toki Inli li toki e jan Apen (Robin Reel): ona li jan pali pi ilo sona. nasin awen li suli tawa ona. ilo pana tenpo ona li lon kulupu NTP Pool, li jo e nanpa 20/20. ona li kama lukin e lupa ike: nanpa CVE li kama, kulupu li pana e mani tawa ona (Bug Bounty). ona li pali e ilo pi toki ilo open. anpa la “dreamstation.systems/professional” li lon.">
 
   <style>html{color-scheme:light dark}body{padding:1rem;font:100%/1.5 system-ui,sans-serif}.skip:not(:focus){position:absolute;left:-100vw}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(20rem,100%),1fr));gap:1rem}section{margin-block:2rem}article,th,td,.statbox{border:1px solid#888}article{border-radius:.5rem;padding:1rem}article>:first-child{margin-top:0}article>:last-child{margin-bottom:0}table{border-collapse:collapse;width:100%}caption,th,td{padding:.5em}caption{text-align:left}header{display:flow-root}header ul{display:flex;flex-wrap:wrap;gap:.25rem 1rem;list-style:none;padding:0}header li+li:before{content:"⁂"/"";margin-inline-end:1rem}header a{display:inline-block;padding:.25rem 0}ul{padding-left:1.2em}a{overflow-wrap:anywhere}pre,.scroll{overflow-x:auto}.proto{font-size:.85rem}.proto [aria-current]{font-weight:700}.statbox{float:right;width:min(15rem,100%);border-radius:.5rem;padding:.5rem .75rem;margin:0 0 1rem 1.5rem;font-size:.85rem}.sbrow{display:grid;grid-template-columns:2.2rem 1fr 2.4rem;gap:.5rem;align-items:center;margin-block:.35rem}.bar{display:flex;height:.7rem;border:1px solid;border-radius:.25rem;overflow:hidden}.bar>*{height:100%;background:currentColor}.bar u{opacity:.3}.sbval{font-variant:tabular-nums;text-align:right}.sbmore{margin:.5rem 0 0;text-align:center}@media(max-width:40rem){.statbox{float:none;width:auto;margin-left:0}}:focus-visible{outline:2px solid;outline-offset:2px}</style>
 </head>
@@ -211,6 +231,7 @@
     <h3><a href="../personal/lawa.tok.html">ilo lawa</a> (ilo alasa lon linluwi)</h3>
     <ul>
       <li>tenpo ni la ona li kama jo e nimi sewi HTTP tan ilo pana mute lon linluwi. tenpo kama la mi lukin pona e sona ni. sona open lili li lon lipu ona: o lukin e nimi tawa lon sewi.</li>
+      <li><a href="../personal/earlylawa.tok.html">toki lon lipu toki mi: sona open tan ilo lawa</a></li>
     </ul>
   </article>
 
@@ -367,8 +388,8 @@
       </tr>
       <tr>
         <th scope="row">toki ilo</th>
-        <td>C, Bash</td>
-        <td>Perl, SQL, Python, JavaScript en TypeScript, Go</td>
+        <td>Go, Bash</td>
+        <td>C, Perl, SQL, Python, JavaScript en TypeScript</td>
       </tr>
     </tbody>
   </table>
