@@ -49,7 +49,7 @@
 # the access log for the Host before assuming they are still earning their place.
 
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;
@@ -63,7 +63,7 @@ server {
 # reaching the apex site, which is how someone with only the address gets to a
 # human. This block answers for one name and nothing else.
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;

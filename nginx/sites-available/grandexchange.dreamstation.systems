@@ -11,7 +11,7 @@
 # mail's TLS in the blast radius of a web deploy.
 
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     # This block redirects rather than proxying, so its traffic belongs in the
     # main log with everything else. Only the :443 block below is OpenGET's own
     # and keeps its own access_log — see the note there.
@@ -31,7 +31,7 @@ server {
 }
 
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     # openget sets this header itself (internal/web/server.go), so without this
     # hide the proxied responses would carry it twice. Hidden from the upstream
     # and re-added by the snippet above, so nginx is the single authority for

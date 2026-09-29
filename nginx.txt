@@ -396,8 +396,15 @@ Same certificate, same content, same blast radius (deliberately NOT merged with 
                                                        grandexchange only).
   /etc/nginx/snippets/onionLocation.conf             — the add_header itself.
                                                        Same inheritance trap as
-                                                       clacks.conf, so
+                                                       commonHeaders.conf, so
                                                        theme.conf re-includes it.
+  /etc/nginx/conf.d/csp.conf                         — the $csp map behind the
+                                                       Content-Security-Policy
+                                                       header (strict on the
+                                                       apex /index.html,
+                                                       baseline elsewhere). Also
+                                                       map_hash_bucket_size 128.
+                                                       See COMMON HEADERS.
   /etc/nginx/conf.d/serverNamesHash.conf             — server_names_hash_bucket_size
                                                        128. Onion names are 62-76
                                                        chars; with the default 64
@@ -410,6 +417,7 @@ Content is SERVED from /srv/http/ but its SOURCE OF TRUTH is the monorepo at ~/c
 THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every hand-authored file above lives in ~/configNotes/documentServing/nginx/ and is installed by promoteSite.sh:
 
     nginx/conf.d/compression.conf
+    nginx/conf.d/csp.conf
     nginx/conf.d/logFormat.conf
     nginx/conf.d/onionLocation.conf
     nginx/conf.d/robotsTag.conf
@@ -425,7 +433,7 @@ THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every hand
     nginx/sites-available/pool-ntp.tesla.com
     nginx/sites-available/pool.ntp.org
     nginx/sites-available/staging.dreamstation.systems
-    nginx/snippets/clacks.conf
+    nginx/snippets/commonHeaders.conf
     nginx/snippets/feeds.conf
     nginx/snippets/onionLocation.conf
     nginx/snippets/pgpKey.conf
@@ -497,21 +505,57 @@ renewal-hooks/deploy/fix-perms-restart-mail.sh fixes privkey perms (root:ssl-cer
 
 NOTE: adding a :443 block for a name NOT in the cert is worse than useless — the wildcard DNS means it will resolve and connect, then fail verification. Expand the cert first.
 
-X-CLACKS-OVERHEAD
------------------
+COMMON HEADERS (X-Clacks-Overhead and the security headers)
+-----------------------------------------------------------
 Every server block for this domain sends:
 
     X-Clacks-Overhead: GNU Terry Pratchett
+    X-Content-Type-Options: nosniff
+    Referrer-Policy: strict-origin-when-cross-origin
+    Content-Security-Policy: <from the $csp map in conf.d/csp.conf>
 
-It lives in snippets/clacks.conf and is INCLUDED FROM every server block (both dreamstation.systems blocks, openpgpkey, mta-sts, and both grandexchange blocks) rather than being set once in nginx.conf's http block. Same anti-drift reasoning as statusCgi.conf and wkd.conf, plus it keeps pool.ntp.org's redirect — a name we do not own — out of it.
+They live in snippets/commonHeaders.conf (clacks.conf until 2026-09-29, when
+the security headers joined it after a Mozilla HTTP Observatory review — one
+include already sat at every correct spot, so folding them in could not
+create a new place to forget). The snippet is INCLUDED FROM every server block (both dreamstation.systems blocks, openpgpkey, mta-sts, and both grandexchange blocks) rather than being set once in nginx.conf's http block. Same anti-drift reasoning as statusCgi.conf and wkd.conf, plus it keeps pool.ntp.org's redirect — a name we do not own — out of it.
 
 Two traps, both already handled:
-  - add_header is inherited into a nested block ONLY IF that block sets no add_header of its own. wkd.conf's location sets the CORS header, so it would have silently dropped the clacks header; it includes clacks.conf again for that reason. theme.conf's location is the second such place (it sets Set-Cookie and Vary) and does the same. Any FUTURE location that adds a header must too.
+  - add_header is inherited into a nested block ONLY IF that block sets no add_header of its own. wkd.conf's location sets the CORS header, so it would have silently dropped the clacks header; it includes commonHeaders.conf again for that reason. theme.conf's location is the second such place (it sets Set-Cookie and Vary) and does the same. Any FUTURE location that adds a header must too.
   - openget sets this header itself (openget/internal/web/server.go), so grandexchange's :443 block has a `proxy_hide_header X-Clacks-Overhead;` to avoid sending it twice. nginx is the single authority for every host, which also means a 502 from a stopped openget daemon still carries the header.
 
 `always` is set so it survives error responses too. Not served over Gopher, Gemini, Spartan or finger — none of them have response headers to put it in.
 
-Check with: curl -sI https://dreamstation.systems/ | grep -i clacks
+Check with: curl -sI https://dreamstation.systems/ | grep -iE 'clacks|nosniff|referrer|content-security'
+
+CSP. Two policies, chosen by "$server_name:$uri" in conf.d/csp.conf:
+  - STRICT on the apex landing page (/index.html, on :80, :443, staging and
+    the onion): default-src 'none'; img-src 'self'; base-uri 'none';
+    form-action 'none'. That page is three links. Honestly score-shaped: it is
+    the page the Observatory grades and the one with nothing to protect. If it
+    ever gains a stylesheet, script or image, widen the row.
+  - BASELINE everywhere else: object-src 'none'; base-uri 'self'. No script
+    or style limits — 24 pages have inline <script>, many use style=, a few
+    load React/Babel from unpkg. No form-action — the /personal/ protocol
+    switcher 302s to http:// and .onion origins and browsers check
+    form-action against the redirect target. A real policy would start as a
+    Content-Security-Policy-Report-Only survey.
+
+THEME COOKIE. Set-Cookie in theme.conf carries $theme_cookie_flags (map in
+sites-available/dreamstation.systems): "; Secure; HttpOnly" when $https is
+on, nothing otherwise. Not Secure everywhere, because :80 is deliberately
+not redirected and a browser drops a Secure cookie set over HTTP. (The
+Observatory may still dock the cookie test for the :80 copy. Accepted.)
+
+DELIBERATELY NOT SENT (decided 2026-09-29, Observatory walkthrough):
+  - HSTS, and no :80 -> :443 redirect: the plain-HTTP character of the box,
+    and the /personal/ switcher's "http" option, which HSTS would silently
+    turn back into HTTPS. Costs 40 Observatory points; accepted.
+  - X-Frame-Options / frame-ancestors: no logged-in actions to clickjack, and
+    embedding is not something to forbid. Costs 20; accepted.
+  - COOP, CORP, COEP, SRI: not scored against us. CORP would break
+    hotlinking; COEP require-corp would break the unpkg pages; SRI on the
+    floating unpkg URLs (@18, unversioned Babel) would break at the next
+    upstream release unless the versions were pinned first.
 
 security.txt (RFC 9116) lives at rootdomain/.well-known/security.txt and its Expires: field must be refreshed before 2027-08-26 or the file is formally invalid.
 
@@ -540,9 +584,9 @@ Two files, the usual split, because map is http context:
                               include from files the apex shares.
   snippets/robotsTag.conf   — the add_header itself.
 
-SAME TRAP AS clacks.conf: a location with an add_header of its own drops the
+SAME TRAP AS commonHeaders.conf: a location with an add_header of its own drops the
 server-level one. So theme.conf and wkd.conf re-include robotsTag.conf in the
-same two places they already re-include clacks. A themed /personal/ page is the
+same two places they already re-include commonHeaders.conf. A themed /personal/ page is the
 single page you would least like indexed twice, so forgetting that repeat would
 defeat most of the point.
 

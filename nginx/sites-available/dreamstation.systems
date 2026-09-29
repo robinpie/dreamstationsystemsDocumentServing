@@ -42,6 +42,18 @@ map $arg_theme $theme {
     plain     plain;
 }
 
+# Extra attributes for the theme cookie, set in snippets/theme.conf. Secure on
+# HTTPS only: port 80 is deliberately not redirected, and a browser drops a
+# Secure cookie set over plain HTTP, which would silently break the theme for
+# every HTTP visitor. HttpOnly because nothing reads the cookie from script
+# (the theme is chosen server-side) — kept with Secure for simplicity. The
+# onion vhost is plain HTTP to nginx, so $https is empty there and it gets
+# neither; its themes still work.
+map $https $theme_cookie_flags {
+    default "";
+    on      "; Secure; HttpOnly";
+}
+
 # ------------------------------------------------------------- theme-colour
 #
 # <meta name="theme-color"> for the themed pages, so the browser's own UI
@@ -145,7 +157,7 @@ map $arg_to $proto_base {
 }
 
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;
@@ -178,7 +190,7 @@ server {
 # the one that predates them would be out of keeping, and nothing served here
 # is sensitive.
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
@@ -208,7 +220,7 @@ server {
 # handshake and falls back silently, and the fallback becomes the only path
 # that ever succeeds.
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
@@ -237,7 +249,7 @@ server {
 # https://mta-sts.dreamstation.systems/.well-known/mta-sts.txt to learn this
 # domain requires TLS for inbound mail.
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;

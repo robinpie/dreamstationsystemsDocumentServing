@@ -35,7 +35,7 @@
 # and one block cannot drift. Port 80 is not redirected, following the apex.
 
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;

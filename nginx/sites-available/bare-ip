@@ -26,7 +26,7 @@
 # Kept as its own file rather than another server_name on the apex, so that
 # "what does the bare address do" has one obvious place to be answered.
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;

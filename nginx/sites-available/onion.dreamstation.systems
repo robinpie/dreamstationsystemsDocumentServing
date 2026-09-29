@@ -29,7 +29,7 @@
 # <sub>.<addr>.onion gets the main site, mirroring what *.dreamstation.systems
 # does on the clearnet.
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     listen 127.0.0.1:8081;
     server_name dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion
                 www.dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion;
@@ -76,7 +76,7 @@ server {
 #
 # Same upstream as sites-available/grandexchange.dreamstation.systems.
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     proxy_hide_header X-Clacks-Overhead;
     listen 127.0.0.1:8081;
     server_name grandexchange.dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion;

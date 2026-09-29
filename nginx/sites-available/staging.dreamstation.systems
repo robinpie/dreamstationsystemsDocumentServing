@@ -18,7 +18,7 @@
 # same reason, as grandexchange.
 
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;
@@ -44,7 +44,7 @@ server {
 }
 
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
@@ -72,7 +72,7 @@ server {
     # not INHERIT into a location that sets any add_header of its own, so the
     # themed /personal/*.html pages in theme.conf — which set Set-Cookie and
     # Vary — silently drop this header. That is the same nginx rule that forces
-    # theme.conf to re-include clacks.conf inside its own location block.
+    # theme.conf to re-include commonHeaders.conf inside its own location block.
     # auth_basic, which DOES inherit, is the actual protection here.
     add_header X-Robots-Tag "noindex, nofollow" always;
 

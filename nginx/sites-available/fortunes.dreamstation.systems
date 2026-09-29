@@ -14,7 +14,7 @@
 # See ~/configNotes/fortunes.txt.
 
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;
@@ -39,7 +39,7 @@ server {
 }
 
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;

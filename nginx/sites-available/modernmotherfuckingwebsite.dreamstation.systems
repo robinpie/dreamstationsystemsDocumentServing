@@ -21,7 +21,7 @@
 # ssl_certificate. See nginx.txt.
 
 server {
-    include snippets/clacks.conf;
+    include snippets/commonHeaders.conf;
     include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;

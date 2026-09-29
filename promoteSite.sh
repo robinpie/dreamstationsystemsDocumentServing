@@ -38,6 +38,7 @@ NGINX_SITES=(
 )
 NGINX_CONFD=(
 	compression.conf
+	csp.conf
 	logFormat.conf
 	onionLocation.conf
 	robotsTag.conf
@@ -45,7 +46,7 @@ NGINX_CONFD=(
 )
 NGINX_SNIPPETS=(
 	accessLog.conf
-	clacks.conf
+	commonHeaders.conf
 	feeds.conf
 	fortuneCookie.conf
 	onionLocation.conf
