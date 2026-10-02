@@ -1,4 +1,5 @@
 # security.txt for dreamstation.systems 🏰
+# PLEASE DO attack and let me know of any issues!
 
 Contact: mailto:robin@dreamstation.systems
 Expires: 2027-08-26T23:59:59.000Z
