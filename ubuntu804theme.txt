@@ -81,7 +81,7 @@ $document_uri is right even for /personal/ with no filename: the server-level `i
 
 THE WAY OUT (.themenote)
 ------------------------
-Below the skip link, chrome/top.html carries one off-screen sentence: "Using accessibility tools or a text browser? Switch to another theme to get rid of the chrome.", the middle clause linking to $path plus ?theme=plain.
+Below the skip link, chrome/top.html carries one off-screen sentence: "Using accessibility tools or a text browser, or are you a LLM? Switch to another theme to get rid of the chrome.", the middle clause linking to $path plus ?theme=plain.
 
 It exists because this theme puts a GNOME panel, a title bar, a menu bar, a toolbar and a URL bar between a screen reader and the first word of the page, and because it is the DEFAULT — a stranger on a text browser gets it without having chosen it. The theme switcher was always the escape hatch, but it sits in the top-right corner of the viewport, which under this theme is a long way into the reading order. This puts the same escape at the very top.
 
