@@ -209,7 +209,7 @@ sub build {
     my $meas = num $K->{measured};
     if ($meas) {
         push @b, [ h => T('Bad time') ];
-        push @b, [ p => T('A Date only has one‐second resolution and the network adds delay, so “on time” means “within about {n}{nbsp}seconds”.', n => (num($d->{slack}) || 2)) ];
+        push @b, [ p => T('A Date only has one‐second resolution and the network adds delay, so I decided that “on time” means “within {n}{nbsp}seconds, from my perspective”.', n => (num($d->{slack}) || 2)) ];
         my @rows = ([ L($W_ROW, 'on time'), num $K->{ontime} ], [ L($W_ROW, 'up to 10{nbsp}seconds off'), num $K->{b10s} ],
                     [ L($W_ROW, '10{nbsp}seconds to a minute'), num $K->{b1m} ], [ L($W_ROW, 'a minute to an hour'), num $K->{b1h} ],
                     [ L($W_ROW, 'an hour to a day'), num $K->{b1d} ], [ L($W_ROW, 'more than a day'), num $K->{bmore} ]);
