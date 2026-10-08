@@ -317,7 +317,8 @@ sub build {
     # the top ~60 names), so lawa-stats counts it as its own flag. Hidden until a
     # summary carries the flag at all, so an old summary does not show a false 0.
     push @b, [ p => T('{n} servers ({pct}) send an Onion-Location header, which invites Tor Browser users to a .onion mirror of the site.',
-        n => commas(num $F->{onion}), pct => pct(num $F->{onion}, $ans)) ] if exists $F->{onion};
+        # two decimals, not pct()'s one: at ~0.05% the page would say "0.0%"
+        n => commas(num $F->{onion}), pct => $ans ? sprintf('%.2f%%', 100 * num($F->{onion}) / $ans) : '—') ] if exists $F->{onion};
     my $C = tbl($H->{clacks});
     my $clacks = 0; $clacks += num($_) for values %$C;
     if ($clacks) {
