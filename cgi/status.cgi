@@ -56,6 +56,7 @@ use constant {
 	QPS_SNAP    => '/run/status/qps.txt',
 	DISK_SNAP   => '/run/status/disk.txt',
 	SEEN_SET    => '/var/lib/dashboard/ntp_clients_seen.bin',
+	SEEN6_SET   => '/var/lib/dashboard/ntp_clients_seen6.bin',   # IPv6 twin, 16 bytes/entry (ntpset.txt)
 
 	# The second host. statusPull.service leaves starport's vitals here, in the
 	# same formats as our own files, once a minute. See read_remote().
@@ -65,7 +66,7 @@ use constant {
 	# every 5 minutes (ntpstatscollect.timer), so they get ntpstatsgen's
 	# threshold rather than REMOTE_STALE. See read_remote_ntp().
 	REMOTE_NTP_STALE  => 900,
-	REMOTE_NTP_SCHEMA => 1,     # must match SCHEMA in /usr/local/bin/ntpstatsgen
+	REMOTE_NTP_SCHEMA => 1,     # must match SCHEMA in /usr/local/bin/ntpstatsgen (seen6 is optional: no bump)
 
 	CACHE_TTL      => 20,    # seconds a rendered sweep stays authoritative
 	SWEEP_DEADLINE => 8,     # give up starting new probes after this
@@ -493,7 +494,7 @@ sub read_remote_ntp {
 	close $fh;
 	my %v;
 	my $num = qr/-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?/;
-	for my $k (qw(schema qps_now qps_24h history_s seen rms started collected_at)) {
+	for my $k (qw(schema qps_now qps_24h history_s seen seen6 rms started collected_at)) {
 		$v{$k} = $1 if $j =~ /"$k":\s*($num)[,}]/;
 	}
 	$v{stratum} = $1 if $j =~ /"stratum":\s*"(\d+)"/;
@@ -540,6 +541,13 @@ sub read_seen {
 	return $size ? int($size / 4) : undef;
 }
 
+sub read_seen6 {
+	# The IPv6 set (since 2026-10-07): same idea, 16-byte addresses, so
+	# size / 16. Empty or absent (this box has no IPv6) -> undef, not shown.
+	my $size = -s SEEN6_SET;
+	return $size ? int($size / 16) : undef;
+}
+
 # -------------------------------------------------------------------- sweep
 
 sub sweep {
@@ -572,6 +580,7 @@ sub sweep {
 	$d{chrony} = read_chrony();
 	$d{qps}    = read_qps();
 	$d{seen}   = read_seen();
+	$d{seen6}  = read_seen6();
 	$d{took}   = hnow() - $started;
 	return \%d;
 }
@@ -599,6 +608,7 @@ sub cache_write {
 	printf $fh "mem %s %s %s %s %s %s %s\n", @{ $d->{mem} }{qw(total used cache free swap_total swap_used swap_cache)} if $d->{mem};
 	printf $fh "uptime %s\n", $d->{uptime} if defined $d->{uptime};
 	printf $fh "seen %s\n",   $d->{seen}   if defined $d->{seen};
+	printf $fh "seen6 %s\n",  $d->{seen6}  if defined $d->{seen6};   # read back by cache_read's generic branch
 	printf $fh "qps %s %s %s\n", ($d->{qps}{now} // ''), ($d->{qps}{avg} // ''), ($d->{qps}{avg_span} // '') if $d->{qps};
 	# THIS LIST IS A WHITELIST. A key added to read_chrony() but not added here
 	# is written by the sweep, renders correctly once, and then silently
@@ -1146,9 +1156,11 @@ CSS
 	}
 	if ($d->{seen}) {
 		my $share = $d->{seen} ? sprintf('%.1f', 3_700_000_000 / $d->{seen}) : '';
-		$out .= qq{<dt>Distinct clients seen</dt><dd>} . commify($d->{seen})
+		$out .= qq{<dt>Distinct IPv4 clients seen</dt><dd>} . commify($d->{seen})
 		      . qq{ — about one in every $share routable IPv4 addresses</dd>\n};
 	}
+	$out .= qq{<dt>Distinct IPv6 clients seen</dt><dd>} . commify($d->{seen6}) . qq{ addresses</dd>\n}
+		if $d->{seen6};
 	if (defined $c->{nts_ke_accepted}) {
 		# The window matters as much as the count — see chronyd_uptime(). If we
 		# could not determine it, say the vaguer thing rather than a number that
@@ -1188,10 +1200,12 @@ CSS
 			$out .= qq{</dd>\n};
 		}
 		if ($sn->{seen}) {
-			$out .= qq{<dt>Distinct clients seen</dt><dd>} . commify($sn->{seen})
+			$out .= qq{<dt>Distinct IPv4 clients seen</dt><dd>} . commify($sn->{seen})
 			      . sprintf(qq{ — about one in every %.1f routable IPv4 addresses}, 3_700_000_000 / $sn->{seen})
 			      . qq{</dd>\n};
 		}
+		$out .= qq{<dt>Distinct IPv6 clients seen</dt><dd>} . commify($sn->{seen6}) . qq{ addresses</dd>\n}
+			if $sn->{seen6};
 		$out .= qq{<dt>chronyd running for</dt><dd>} . esc(dur($sn->{uptime})) . qq{</dd>\n}
 			if $sn->{uptime};
 		$out .= qq{</dl>\n};
