@@ -21,7 +21,8 @@
 #     GitHub), and anything with a digit
 #   - names the file itself vouches for: a source comment
 #         // nimiCheck: allow viewpoint xcaca
-#     (in .html: <!-- nimiCheck: allow ... -->) admits lowercase proper names,
+#     (in .html: <!-- nimiCheck: allow ... -->; in a .pl's __DATA__:
+#     # nimiCheck: allow ...) admits lowercase proper names,
 #     so nobody has to backtick a project name just to get past this script
 #   - quoted foreign text: `>` blockquotes, and whatever sits inside “…”, since a quotation is not
 #     retypeset or translated (unicodePedanticism.txt)
@@ -79,6 +80,8 @@ for my $path (@ARGV) {
 			if ($_ eq '__DATA__') { $data = 1; next }
 			next unless $data;
 			if (/^\[(\w+)\]\s*$/) { $lang = $1; next }
+			# "# nimiCheck: allow onion" — the .pl spelling of the vouching comment
+			if (/^#\s*nimiCheck:\s*allow\s+(.*)$/) { $allow{$_} = 1 for split ' ', $1; next }
 			next unless $lang eq 'tok' && s/^msgstr ?//;
 			# a placeholder stands for a number: make it one, so that a unit
 			# symbol bound to it ({n}{nbsp}s) passes exactly as "4 s" does

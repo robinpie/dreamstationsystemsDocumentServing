@@ -313,6 +313,11 @@ sub build {
     push @b, [ h => T('Non‐standard headers') ];
     push @b, [ table => { head => [ L($W_ROW, 'header'), L($W_COUNT, 'servers'), T('share') ],
         rows => [ map { [ txt($_->[0], 34), $_->[1], $ans ? $_->[1] / $ans : undef ] } top($H->{hdr_names}, 12, \%standard) ] } ];
+    # Onion-Location is too rare to reach the table above (hdr_names keeps only
+    # the top ~60 names), so lawa-stats counts it as its own flag. Hidden until a
+    # summary carries the flag at all, so an old summary does not show a false 0.
+    push @b, [ p => T('{n} servers ({pct}) send an Onion-Location header, which invites Tor Browser users to a .onion mirror of the site.',
+        n => commas(num $F->{onion}), pct => pct(num $F->{onion}, $ans)) ] if exists $F->{onion};
     my $C = tbl($H->{clacks});
     my $clacks = 0; $clacks += num($_) for values %$C;
     if ($clacks) {
@@ -632,8 +637,8 @@ msgstr kipisi lon ilo pana pi toki ni
 msgid Bad time
 msgstr tenpo ike
 
-msgid A Date only has one‐second resolution and the network adds delay, so “on time” means “within about {n}{nbsp}seconds”.
-msgstr nimi sewi Date li toki ala e kipisi lili pi 1{nbsp}s. linluwi kin li pana e tenpo awen. tan ni la “tenpo pona” li ni: ante li ~{n}{nbsp}s anu lili.
+msgid A Date only has one‐second resolution and the network adds delay, so I decided that “on time” means “within {n}{nbsp}seconds, from my perspective”.
+msgstr nimi sewi Date li toki ala e kipisi lili pi 1{nbsp}s. linluwi kin li pana e tenpo awen. tan ni la mi pini e ni: “tenpo pona” li ni: lukin mi la ante li {n}{nbsp}s anu lili.
 
 msgid on time
 msgstr tenpo pona
@@ -757,6 +762,11 @@ msgstr pini pi nimi ilo (TLD)
 
 msgid Non‐standard headers
 msgstr nimi sewi pi lipu nasin ala
+
+# .onion is an address suffix, kept verbatim:
+# nimiCheck: allow onion
+msgid {n} servers ({pct}) send an Onion-Location header, which invites Tor Browser users to a .onion mirror of the site.
+msgstr ilo pana {n} ({pct}) li pana e nimi sewi Onion-Location. ona li toki e ni tawa jan pi ilo Tor Browser: kulupu lipu sama li lon nimi .onion. o kama.
 
 msgid And of course, X-Clacks-Overhead. {n} servers send it:
 msgstr nimi sewi X-Clacks-Overhead kin li lon. ni li nasa ala a. ilo pana {n} li pana e ona:
