@@ -622,6 +622,36 @@ msgstr lape tawa tenpo mun kama (mute ken pi pali linluwi li pini)
 msgid not running
 msgstr pali ala
 
+msgid no recent word from lawa
+msgstr tenpo poka la ilo lawa li toki ala
+
+msgid lawa is not running
+msgstr ilo lawa li pali ala
+
+msgid lawa is paused
+msgstr ilo lawa li lape
+
+msgid lawa is crawling
+msgstr ilo lawa li alasa
+
+msgid lawa is crawling slowly
+msgstr ilo lawa li alasa lili
+
+msgid lawa is {mode}
+msgstr ilo lawa li {mode}
+
+msgid {n} requests per minute
+msgstr wile {n} lon 1{nbsp}min
+
+msgid {n} visited
+msgstr ilo pana {n} li pini
+
+msgid lawa, my web crawler
+msgstr ilo lawa, ilo alasa mi
+
+msgid → live stats
+msgstr → nanpa pi tenpo ni
+
 msgid Status
 msgstr pilin ilo
 

@@ -74,8 +74,9 @@
        CGI, so if the include fails this expands to nothing and the page is
        unchanged rather than left with an empty bordered box. That takes the
        stub: ssi_silent_errors does not stop nginx embedding the subrequest's
-       own 404/502 error page. -->
-  <!--# block name="nobox" --><!--# endblock --><!--#include virtual="/professional/status-box" stub="nobox" -->
+       own 404/502 error page. status-box.tok is the same box with its two strings in
+       toki pona (STATUS_LANG=tok; see snippets/statusCgi.conf). -->
+  <!--# block name="nobox" --><!--# endblock --><!--#include virtual="/professional/status-box.tok" stub="nobox" -->
 
   <!-- lawa, the web crawler on starport: a status fragment lawaPage.timer
        rewrites every 5 minutes (lawaPage/lawaPage.pl, box(); ~/configNotes/

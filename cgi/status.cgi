@@ -1254,12 +1254,24 @@ CSS
 # the include in index.html, so that when this fails nginx's ssi_silent_errors
 # leaves nothing at all behind. An empty bordered box on the resume page would
 # look worse than no box.
+#
+# The box is the one part of this page that appears inside a translated page
+# (the two .tok home pages), so it is the one part with a second language.
+# STATUS_LANG=tok, set by nginx on /professional/status-box.tok, picks the
+# toki pona strings; anything else is English. CPU and RAM are names and stay
+# (content/tok/README.md); the bar tooltips are formulas and stay too. The
+# full page remains English-only: its lang="en" is correct.
+my %BOX_STR = (
+	en  => { vitals => 'Server vitals',     more => '→ full status page' },
+	tok => { vitals => 'wawa pi ilo pana',  more => '→ lipu pi pilin ilo' },
+);
 sub render_box {
 	my $cpu = read_cpu();
 	my $mem = read_mem();
 	return '' unless $cpu || $mem;
+	my $s = $BOX_STR{ $ENV{STATUS_LANG} // '' } || $BOX_STR{en};
 
-	my $out = qq{<aside class="statbox" aria-label="Server vitals">\n};
+	my $out = qq{<aside class="statbox" aria-label="} . esc($s->{vitals}) . qq{">\n};
 	if ($cpu) {
 		$out .= qq{<div class="sbrow"><span>CPU</span>}
 		      . bar($cpu->{pct}, undef, 0, [ T_CPU, undef ])
@@ -1280,7 +1292,7 @@ sub render_box {
 		            [ T_MEM_USED, T_MEM_CACHE ])
 		      . sprintf(qq{<span class="sbval">%.0f%%</span></div>\n}, $pct);
 	}
-	$out .= qq{<p class="sbmore"><a href="/professional/status">→ full status page</a></p>\n};
+	$out .= qq{<p class="sbmore"><a href="/professional/status">} . esc($s->{more}) . qq{</a></p>\n};
 	$out .= qq{</aside>\n};
 	return $out;
 }

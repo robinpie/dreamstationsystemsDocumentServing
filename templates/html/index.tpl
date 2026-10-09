@@ -214,7 +214,7 @@
          stub="nobox": when the include fails (fcgiwrap down, or staging, which
          has no such location) this expands to nothing. ssi_silent_errors alone
          would NOT do that: nginx would embed its whole 404/502 error page. -->
-    <!--# block name="nobox" --><!--# endblock --><!--# include virtual="/professional/status-box" stub="nobox" -->
+    <!--# block name="nobox" --><!--# endblock --><!--# include virtual="/professional/status-box{{lang_sfx}}" stub="nobox" -->
     <!-- lawa, the web crawler on starport: a fragment lawaPage.timer rewrites
          every 5 minutes (lawaPage/lawaPage.pl, box()). Stacks under the box
          above (clear:right in base.css). Absent file -> stub -> nothing. -->
