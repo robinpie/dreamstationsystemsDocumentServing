@@ -31,7 +31,8 @@ their own styling and are not themed.
 
 - `base.css` — always loaded. Only structural things that hold for *every*
   theme (e.g. where the switcher sits). No aesthetics.
-- `themes/plain.css` — deliberately (almost) empty: browser defaults.
+- `themes/plain.css` — deliberately (almost) empty: browser defaults. The
+  exception is the server vitals box (below), which has no default look.
 - `themes/gtk2.css` — makes the page look like a GTK2 app.
 - `themes/motif.css` — makes the page look like an OSF/Motif (Xm) X11 app:
   battleship-grey face, chunky 2px highlight/shadow bevels, square corners,
@@ -43,6 +44,13 @@ their own styling and are not themed.
   window frame, a menu bar whose menus really open, location bar, status bar,
   and the badge shelf on the exposed wallpaper. **Default.** The only theme
   that is more than a stylesheet — see **A theme that needs markup**, below.
+
+The index pages (`index.html`, `index.tok.html`) also carry a server vitals
+box — CPU and RAM bars — at the top right of `<main>`, pulled in by SSI from
+the same CGI fragment as the corner of `/professional/`. Its structure is in
+`base.css`; **every theme, plain included, has to paint it**, so a new theme
+needs a `.statbox` block. It does not appear on staging or over `file://`.
+See `~/configNotes/status.txt`, "The same box on /personal/".
 
 Each theme styles both `#theme-switcher select` and `#theme-switcher button`
 as a matching widget pair of its era. `plain.css` styles neither on purpose —

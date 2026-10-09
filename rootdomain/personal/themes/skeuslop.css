@@ -412,3 +412,41 @@ ul:not(.projects):not(.contact):not(.posts):not(.samples) {
   background: var(--v-sel);
   color: #13325c;
 }
+
+/* ---- vitals box: a Vista info pane with two Aero progress bars --------- */
+
+.statbox {
+  padding: 8px 12px 10px;
+  font-size: 12px;
+  background: linear-gradient(to bottom, #f5f9fe, #eaf2fc);
+  border: 1px solid var(--v-info-bd);
+  border-radius: 6px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 2px 6px rgba(70, 110, 160, 0.12);
+}
+
+.statbox .sbrow > span:first-child { color: var(--v-head); }
+
+/* trough: the pale glassy channel */
+.statbox .bar {
+  height: 13px;
+  background: linear-gradient(to bottom, #f3f3f3 0%, #e3e3e3 50%, #d6d6d6 51%, #ececec 100%);
+  border: 1px solid #b2b2b2;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+
+/* fill: THE Vista green, with its gloss break halfway down */
+.statbox .bar i {
+  background: linear-gradient(to bottom, #c2f2bb 0%, #6fd862 45%, #39b62c 51%, #5fd452 100%);
+  box-shadow: inset -1px 0 0 rgba(20, 100, 15, 0.35);
+}
+
+/* cache: the same glass with the colour drained out of it */
+.statbox .bar u {
+  background: linear-gradient(to bottom, #eefbec 0%, #cdeec8 45%, #b3e2ac 51%, #c9edc3 100%);
+}
+
+.statbox .sbmore {
+  border-top: 1px solid #d6dbe4;
+  padding-top: 5px;
+}

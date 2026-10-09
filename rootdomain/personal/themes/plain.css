@@ -1,1 +1,20 @@
-/* deliberately left blank */
+/* deliberately (almost) blank: browser defaults.
+
+   The one exception is the vitals box on the index pages, which has no
+   browser default to fall back on — an unpainted bar is invisible. It gets
+   the look of the same box on /professional/, which is the plain one. */
+
+.statbox {
+  border: 1px solid #888;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.statbox .bar {
+  border: 1px solid;
+  border-radius: 0.25rem;
+}
+
+.statbox .bar > * { background: currentColor; }
+.statbox .bar u   { opacity: 0.3; }

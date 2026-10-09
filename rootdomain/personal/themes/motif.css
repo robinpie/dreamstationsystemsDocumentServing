@@ -393,3 +393,46 @@ ul:not(.projects):not(.contact):not(.posts):not(.samples) {
 }
 
 ::-webkit-scrollbar-corner { background: var(--mtf-arm); }
+
+/* ---- vitals box: an etched-in XmFrame with two XmScale-style meters ---- */
+
+.statbox {
+  padding: 6px 10px 8px;
+  font-size: 13px;
+  background: var(--mtf-bg);
+  /* XmFrame shadowType XmSHADOW_ETCHED_IN: two 1px bevels, sunken outside
+     raised. Drawn explicitly — border-style:groove derives its own shades. */
+  border: 1px solid;
+  border-color: var(--mtf-dark) var(--mtf-light) var(--mtf-light) var(--mtf-dark);
+  box-shadow: inset 1px 1px 0 var(--mtf-light), inset -1px -1px 0 var(--mtf-dark);
+  border-radius: 0;
+}
+
+.statbox .sbrow > span:first-child { font-weight: bold; }
+
+/* trough: sunken 2px, light inside */
+.statbox .bar {
+  height: 14px;
+  background: var(--mtf-arm);
+  border: 2px solid;
+  border-color: var(--mtf-dark) var(--mtf-light) var(--mtf-light) var(--mtf-dark);
+  border-radius: 0;
+}
+
+/* fill: a raised, flat-coloured slab — no gradients in Motif */
+.statbox .bar i {
+  background: var(--mtf-select);
+  box-shadow: inset 1px 1px 0 #7d9ad0, inset -1px -1px 0 #1a3770;
+}
+
+.statbox .bar u {
+  background: #c8c8c8;
+  box-shadow: inset 1px 1px 0 var(--mtf-light), inset -1px -1px 0 var(--mtf-dark);
+}
+
+/* etched XmSeparator above the link */
+.statbox .sbmore {
+  padding-top: 5px;
+  border-top: 2px solid;
+  border-image: linear-gradient(to bottom, var(--mtf-dark) 50%, var(--mtf-light) 50%) 1;
+}

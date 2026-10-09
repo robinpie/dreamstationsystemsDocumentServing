@@ -66,3 +66,71 @@ ubuntu804.css overrides both states to place and paint it against the desktop. *
   position: absolute;
   left: -100vw;
 }
+
+/* Server vitals box, index pages only (templates/html/index.tpl). The markup
+   comes from status.cgi in box mode, the same fragment as /professional/:
+
+     aside.statbox > div.sbrow > span(label) span.bar>(i[,u]) span.sbval
+                   > p.sbmore > a
+
+   Structure only here: where it sits and how a bar is built. Every theme
+   paints it (plain.css included, which otherwise styles nothing). These class
+   names are status.cgi's: rename one there and it must change here and in
+   every theme. See ~/configNotes/status.txt. */
+.statbox {
+  float: right;
+  width: min(14rem, 100%);
+  margin: 0 0 1rem 1.5rem;
+  box-sizing: border-box;
+}
+
+/* A heading beside the float gets its own block formatting context, so it
+   narrows to fit instead of running its underline beneath the box. */
+.statbox ~ h1,
+.statbox ~ h2 {
+  display: flow-root;
+}
+
+.sbrow {
+  display: grid;
+  grid-template-columns: 2.4rem 1fr 2.6rem;
+  gap: 0.5rem;
+  align-items: center;
+  margin-block: 0.35rem;
+}
+
+/* The bar: solid <i> is in use, faded <u> is reclaimable cache. Both are
+   flex items, so they are blockified and sit side by side. */
+.statbox .bar {
+  display: flex;
+  height: 0.7rem;
+  overflow: hidden;
+}
+
+.statbox .bar > * {
+  height: 100%;
+  text-decoration: none;
+}
+
+.sbval {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.sbmore {
+  margin: 0.5rem 0 0;
+  text-align: center;
+}
+
+/* Live numbers on paper are a snapshot nobody asked for. */
+@media print {
+  .statbox { display: none; }
+}
+
+@media (max-width: 40rem) {
+  .statbox {
+    float: none;
+    width: auto;
+    margin: 0 0 1rem;
+  }
+}

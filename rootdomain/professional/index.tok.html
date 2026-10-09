@@ -72,8 +72,10 @@
   <!-- Server vitals box, injected by nginx SSI from status.cgi in box mode.
        See ~/configNotes/status.txt. The <aside> element itself comes from the
        CGI, so if the include fails this expands to nothing and the page is
-       unchanged rather than left with an empty bordered box. -->
-  <!--#include virtual="/professional/status-box" -->
+       unchanged rather than left with an empty bordered box. That takes the
+       stub: ssi_silent_errors does not stop nginx embedding the subrequest's
+       own 404/502 error page. -->
+  <!--# block name="nobox" --><!--# endblock --><!--#include virtual="/professional/status-box" stub="nobox" -->
 
   <!-- Protocol switcher. After the status box in source so the float sits to
        its right; absolute URLs so each link means the same thing whichever of

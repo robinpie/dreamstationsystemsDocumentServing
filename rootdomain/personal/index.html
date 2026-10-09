@@ -215,6 +215,14 @@
 <!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/mid.html" --><!--# endif -->
 
   <main id="content">
+    <!-- Server vitals box: the same status.cgi fragment as the corner of
+         /professional/, via the same internal /professional/status-box
+         location (nginx/snippets/statusCgi.conf). Floated to the top right of
+         <main> by base.css; each theme dresses it. See ~/configNotes/status.txt.
+         stub="nobox": when the include fails (fcgiwrap down, or staging, which
+         has no such location) this expands to nothing. ssi_silent_errors alone
+         would NOT do that: nginx would embed its whole 404/502 error page. -->
+    <!--# block name="nobox" --><!--# endblock --><!--# include virtual="/professional/status-box" stub="nobox" -->
     <h1>robin’s page 🌠🏰🚀</h1>
     <p>my name is robin! thinkpad enthusiast, tokiponist, computer infra hobbyist.</p>
     <p><a href="/personal/blog.html">check out my blog please!</a></p>

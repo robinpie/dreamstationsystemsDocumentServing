@@ -360,3 +360,39 @@ ul:not(.projects):not(.contact):not(.posts):not(.samples) {
   background: var(--gtk-select);
   color: #ffffff;
 }
+
+/* ---- vitals box: a GtkFrame holding two Clearlooks GtkProgressBars --- */
+
+.statbox {
+  padding: 6px 10px 8px;
+  font-size: 12px;
+  background: #f3f1ed;
+  /* etched-in frame, the same bevel as blockquote */
+  border: 1px solid;
+  border-color: var(--gtk-line-soft) var(--gtk-hi) var(--gtk-hi) var(--gtk-line-soft);
+  box-shadow: 0 0 0 1px #e6e3dd;
+}
+
+/* trough: sunken, like a GtkEntry */
+.statbox .bar {
+  height: 12px;
+  background: #e9e7e2;
+  border: 1px solid;
+  border-color: var(--gtk-lo) #d7d4cd #d7d4cd var(--gtk-lo);
+  border-radius: 2px;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+/* fill: Clearlooks' glossy selection-blue block */
+.statbox .bar i {
+  background: linear-gradient(to bottom, #8cb8e8 0%, #5a9ae0 50%, #4a90d9 51%, #3a7cc4 100%);
+  box-shadow: inset 0 0 0 1px rgba(30, 70, 130, 0.45);
+}
+
+/* cache: the same block, washed out */
+.statbox .bar u {
+  background: linear-gradient(to bottom, #dce9f7, #b9d2ef);
+}
+
+.statbox .sbrow > span:first-child { color: var(--gtk-dim); }
+.statbox .sbmore { border-top: 1px solid var(--gtk-line-soft); padding-top: 4px; }

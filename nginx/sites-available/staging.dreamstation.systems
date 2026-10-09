@@ -96,8 +96,9 @@ server {
     # link to a draft translation — see the map in dreamstation.systems), and
     # a gate nothing parses is just two HTML comments around visible markup.
     # So parse it here too. The status-box include has no location to reach on
-    # this vhost, fails, and ssi_silent_errors expands it to nothing, which is
-    # what it is designed to do.
+    # this vhost, 404s, and the include's empty stub= block expands it to
+    # nothing (ssi_silent_errors alone would embed the 404 page). Same for the
+    # box on the /personal/ index pages.
     location ~ ^/professional/index(?:\.tok)?\.html$ {
         ssi on;
         ssi_silent_errors on;

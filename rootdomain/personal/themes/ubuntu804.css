@@ -828,3 +828,39 @@ footer .badges a:focus { outline: 2px solid #fff; outline-offset: 1px; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* ------------------------------------------------------------ vitals box */
+
+/* Human-theme GtkFrame holding two Human progress bars: tan trough, orange
+ * fill. Colours are this file's own (header tan, url bar orange), not new
+ * measurements. Its own font size: #page's 14.4px would make it too large. */
+main .statbox {
+  padding: 6px 10px 8px;
+  font: 400 12px/1.5 var(--chrome-stack);
+  background: var(--panel-bg);
+  border: 1px solid var(--frame-grey);
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 var(--bevel-dark);
+}
+
+main .statbox .bar {
+  height: 12px;
+  background: #f4f0e4;
+  border: 1px solid var(--btn-border);
+  border-radius: 2px;
+  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.15);
+}
+
+main .statbox .bar i {
+  background: linear-gradient(to bottom, var(--urlbar-lit) 0%, #e8883a 55%, #d0701f 100%);
+  box-shadow: inset 0 0 0 1px rgba(136, 72, 24, 0.55);
+}
+
+main .statbox .bar u {
+  background: linear-gradient(to bottom, #fbe6cf, #f2cfa6);
+}
+
+main .statbox .sbmore {
+  border-top: 1px solid var(--sep);
+  box-shadow: inset 0 1px 0 var(--sep-lit);
+  padding-top: 4px;
+}
