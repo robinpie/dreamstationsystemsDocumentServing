@@ -58,7 +58,7 @@ sub read_stats {
     my $txt = slurp($STATS);
     return () unless defined $txt;
 
-    my ($raw)   = $txt =~ /unique IPs ever seen\s+([\d,]+)/;
+    my ($raw)   = $txt =~ /unique IP(?:s|v4) ever seen\s+([\d,]+)/;
     my ($ratio) = $txt =~ /1 in every\s+(\d+)\s+routable IPv4 addresses/;
     return () unless defined $raw && defined $ratio;
 
