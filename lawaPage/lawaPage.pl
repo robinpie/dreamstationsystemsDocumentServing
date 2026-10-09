@@ -461,8 +461,8 @@ sub gopher {
 # A two-line fragment for the home pages (/personal/ and /professional/), SSI-
 # included under the server vitals box, one per language: lawa-box.html,
 # lawa-box.tok.html. Its classes ride on the vitals box's (statbox) so every
-# theme frames it the same way. NO LINK to lawa.html, on purpose: that page is
-# linked from nothing (lawa.txt).
+# theme frames it the same way. Ends with a link to lawa.html in the box's own
+# language, styled like the vitals box's link to the status page.
 #
 # The pace is only worth showing while lawa is actually fetching; in any other
 # state the box says so and keeps just the visited count, which stays true.
@@ -481,16 +481,15 @@ sub box {
     elsif ($mode eq 'slow')              { $state = T('lawa is crawling slowly'); $moving = 1 }
     else                                 { $state = T('lawa is {mode}', mode => $mode) }
 
-    my $visited = esc(T('{n} visited', n => commas(num $L->{hosts_done})));
-    # The ⁂ is decoration; the spaces around it stay outside the hidden span so
-    # a screen reader (and lynx) still gets a word break.
-    my $nums = $moving
-        ? esc(T('{n} requests per minute', n => commas(num $L->{fetches_last_min})))
-          . qq{ <span aria-hidden="true">\x{2042}</span> } . $visited
-        : $visited;
+    # One figure per line: in a box this narrow they never fit on one anyway.
+    my @nums;
+    push @nums, T('{n} requests per minute', n => commas(num $L->{fetches_last_min})) if $moving;
+    push @nums, T('{n} visited', n => commas(num $L->{hosts_done}));
+    (my $page = $SITE{$LANG}{web}) =~ s{^https://[^/]+}{};    # same-origin path, so it works over http and .onion
     return qq{<aside class="statbox lawabox" aria-label="} . esc(T('lawa, my web crawler')) . qq{">\n}
          . qq{<p class="lbstate">} . esc($state) . qq{</p>\n}
-         . qq{<p class="lbnums">$nums</p>\n}
+         . join('', map { qq{<p class="lbnums">} . esc($_) . qq{</p>\n} } @nums)
+         . qq{<p class="sbmore"><a href="} . esc($page) . qq{">} . esc(T('→ live stats')) . qq{</a></p>\n}
          . qq{</aside>\n};
 }
 

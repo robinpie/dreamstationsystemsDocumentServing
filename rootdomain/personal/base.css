@@ -124,12 +124,14 @@ ubuntu804.css overrides both states to place and paint it against the desktop. *
 
 /* The lawa box (lawaPage.pl's box(), class "statbox lawabox"): the same frame
    as the vitals box, so every theme paints it already; it only has to stack
-   underneath rather than beside it, and its two lines are plain text. */
+   underneath rather than beside it. Its text lines are tight; its link
+   (.sbmore) keeps the vitals box's spacing. */
 .lawabox {
   clear: right;
 }
 
-.lawabox p {
+.lawabox .lbstate,
+.lawabox .lbnums {
   margin: 0;
 }
 
