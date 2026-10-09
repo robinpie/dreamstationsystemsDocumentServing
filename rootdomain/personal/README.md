@@ -51,6 +51,9 @@ the same CGI fragment as the corner of `/professional/`. Its structure is in
 `base.css`; **every theme, plain included, has to paint it**, so a new theme
 needs a `.statbox` block. It does not appear on staging or over `file://`.
 See `~/configNotes/status.txt`, "The same box on /personal/".
+Under it sits a second box for lawa, the web crawler (`statbox lawabox`, a
+fragment from `lawaPage/`; see `~/configNotes/lawa.txt`), which reuses the
+same frame and so needs nothing more from a theme.
 
 Each theme styles both `#theme-switcher select` and `#theme-switcher button`
 as a matching widget pair of its era. `plain.css` styles neither on purpose —

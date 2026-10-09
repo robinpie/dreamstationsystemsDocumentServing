@@ -10,6 +10,7 @@
 #     -> ~/out/lawa-data.html    an HTML FRAGMENT, SSI-included by lawa.html
 #        ~/out/lawa.gmi          (content/lawa.tri is the themed shell)
 #        ~/out/lawa.txt
+#        ~/out/lawa-box.html     two-line box under the vitals box on both home pages
 #
 # EVERYTHING IN THE SUMMARY IS HOSTILE. It is arithmetic over header values
 # sent by arbitrary servers on the internet. starport already squeezes strings
@@ -456,6 +457,43 @@ sub gopher {
     return join("\n", map { $_ eq '.' ? ' .' : $_ } @o) . "\n";
 }
 
+# ------------------------------------------------------------ the home box
+# A two-line fragment for the home pages (/personal/ and /professional/), SSI-
+# included under the server vitals box, one per language: lawa-box.html,
+# lawa-box.tok.html. Its classes ride on the vitals box's (statbox) so every
+# theme frames it the same way. NO LINK to lawa.html, on purpose: that page is
+# linked from nothing (lawa.txt).
+#
+# The pace is only worth showing while lawa is actually fetching; in any other
+# state the box says so and keeps just the visited count, which stays true.
+# Same state rules as the Status table in build().
+sub box {
+    my ($d, $now) = @_;
+    my $L   = tbl($d->{live});
+    my $gen = num $d->{generated_at};
+    my $mode = txt($L->{mode}, 12);
+    my $paused = ref $L->{paused} eq 'ARRAY' && @{ $L->{paused} };
+    my ($state, $moving) = ('', 0);
+    if    ($now - $gen > 5400)           { $state = T('no recent word from lawa') }
+    elsif ($gen - num($L->{t}) > 900)    { $state = T('lawa is not running') }
+    elsif ($paused || $mode eq 'paused') { $state = T('lawa is paused') }
+    elsif ($mode eq 'normal')            { $state = T('lawa is crawling');        $moving = 1 }
+    elsif ($mode eq 'slow')              { $state = T('lawa is crawling slowly'); $moving = 1 }
+    else                                 { $state = T('lawa is {mode}', mode => $mode) }
+
+    my $visited = esc(T('{n} visited', n => commas(num $L->{hosts_done})));
+    # The ⁂ is decoration; the spaces around it stay outside the hidden span so
+    # a screen reader (and lynx) still gets a word break.
+    my $nums = $moving
+        ? esc(T('{n} requests per minute', n => commas(num $L->{fetches_last_min})))
+          . qq{ <span aria-hidden="true">\x{2042}</span> } . $visited
+        : $visited;
+    return qq{<aside class="statbox lawabox" aria-label="} . esc(T('lawa, my web crawler')) . qq{">\n}
+         . qq{<p class="lbstate">} . esc($state) . qq{</p>\n}
+         . qq{<p class="lbnums">$nums</p>\n}
+         . qq{</aside>\n};
+}
+
 # ------------------------------------------------------------------- main
 binmode DATA, ':encoding(UTF-8)';
 {
@@ -525,6 +563,7 @@ for my $lang ('en', grep { $_ ne 'en' } sort keys %TR) {
     $files{"lawa-data$sfx.html"} = html($blocks);
     $files{"lawa$sfx.gmi"}       = gemini($blocks);
     $files{"lawa$sfx.txt"}       = gopher($blocks);
+    $files{"lawa-box$sfx.html"}  = box($d, $now);
 }
 for my $name (sort keys %files) {
     open my $fh, '>:encoding(UTF-8)', "$OUT/$name.tmp" or die "$OUT/$name.tmp: $!\n";

@@ -221,6 +221,8 @@ sudo rsync -a --delete \
 	--exclude 'ntpstats.txt' \
 	--exclude '/personal/lawa-data.html' \
 	--exclude '/personal/lawa-data.tok.html' \
+	--exclude '/personal/lawa-box.html' \
+	--exclude '/personal/lawa-box.tok.html' \
 	--exclude '/fortunes/' \
 	"$STAGING/" /srv/http/
 

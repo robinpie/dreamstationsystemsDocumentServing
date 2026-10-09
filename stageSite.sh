@@ -45,12 +45,15 @@ done
 #
 # No acme-challenge/ntpstats carve-out here (unlike promote): neither exists
 # in this tree, so staging owns every byte under it — with ONE exception:
-# /personal/lawa-data.html, the generated fragment that lawa.html SSI-includes.
+# /personal/lawa-data.html, the generated fragment that lawa.html SSI-includes
+# (and lawa-box.html, the small box both home pages include; .tok twins too).
 # lawaPublish.pl writes it into this tree as well as the live one, so that
 # staging previews the real page instead of its "no numbers" stub. See lawa.txt.
 sudo rsync -a --delete \
 	--exclude '/personal/lawa-data.html' \
 	--exclude '/personal/lawa-data.tok.html' \
+	--exclude '/personal/lawa-box.html' \
+	--exclude '/personal/lawa-box.tok.html' \
 	"$ROOT/rootdomain/" "$STAGING/"
 
 sudo chown -R root:root "$STAGING/"

@@ -10,7 +10,7 @@ User=lawapull
 Group=lawapull
 ExecStart=/usr/local/bin/lawaPage.pl
 # "+" = this one command runs as root, outside the sandbox below: /srv/http is
-# root-owned. It only copies three files, and checks them first - see the
+# root-owned. It only copies a handful of files, and checks them first - see the
 # comments at the top of lawaPublish.pl.
 ExecStartPost=+/usr/local/bin/lawaPublish.pl
 

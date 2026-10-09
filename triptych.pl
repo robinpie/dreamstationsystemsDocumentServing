@@ -1301,6 +1301,9 @@ sub lang_vars {
 	my $of   = $doc->{of} // $doc;
 	$v->{lang}      = $lang;
 	$v->{og_locale} = $LANGS{$lang}{og} // $lang;
+	# '' or '.tok': the suffix of this language's files, for a template that
+	# names one (the index pages' lawa box, lawa-box.tok.html).
+	$v->{lang_sfx}  = $doc->{lang} ? ".$lang" : '';
 	$v->{original}  = $doc->{lang} ? '' : 1;
 	$v->{canonical} = public_url($doc);
 	$v->{robots}    = $doc->{fm}{draft} ? 'noindex, nofollow' : $ROBOTS;
