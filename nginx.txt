@@ -28,7 +28,25 @@ Config layout:
                                                        log format: Debian's
                                                        `combined` with the Host
                                                        header appended as
-                                                       host=<value>. In conf.d
+                                                       host=<value>, then
+                                                       proto=http|TLSv1.2|TLSv1.3
+                                                       (a map on $ssl_protocol,
+                                                       which is empty on plain
+                                                       HTTP), cipher=$ssl_cipher
+                                                       and curve=$ssl_curve (the
+                                                       key-exchange group; TLS
+                                                       1.3 cipher names omit it),
+                                                       both `-` on plain HTTP.
+                                                       nginx 1.26 logs the ML-KEM
+                                                       hybrid groups as hex
+                                                       (0x11ec), so the map names
+                                                       them; an unknown 0x....
+                                                       means add a map line.
+                                                       Tally with
+                                                       grep -o 'proto=[^ ]*' |
+                                                       sort | uniq -c. The onion
+                                                       vhost logs nothing, so
+                                                       never shows. In conf.d
                                                        because log_format is
                                                        http context and conf.d/*
                                                        is included BEFORE
@@ -63,7 +81,9 @@ Config layout:
                                                        exception is
                                                        grandexchange's :443
                                                        block, which logs to
-                                                       openget-access.log —
+                                                       openget-access.log (in
+                                                       combinedHost, named
+                                                       directly) —
                                                        access_log does not
                                                        override at the same
                                                        level, it ADDS, so

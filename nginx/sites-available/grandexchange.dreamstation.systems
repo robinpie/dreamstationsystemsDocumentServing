@@ -49,9 +49,9 @@ server {
     # DELIBERATELY NOT snippets/accessLog.conf. OpenGET's traffic gets its own
     # file, and two access_log directives at the same level do not override —
     # they ADD, so including the snippet here would write every request to both
-    # files. If this log ever needs the Host field, give it `combinedHost` (the
-    # format is defined in conf.d/logFormat.conf) rather than the snippet.
-    access_log /var/log/nginx/openget-access.log;
+    # files. It uses the `combinedHost` format (Host + plain-HTTP/TLS-version
+    # fields; defined in conf.d/logFormat.conf) directly instead.
+    access_log /var/log/nginx/openget-access.log combinedHost;
     error_log  /var/log/nginx/openget-error.log;
 
     # The daemon renders server-side HTML and SVG; nothing here is large.
