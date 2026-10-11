@@ -126,3 +126,5 @@ The current ones (P-256, AES, SHA-256, RSA-2048, ChaCha20 and ML-KEM) haven’t 
 
 => /blog/   back to blog
 => /        back to home
+
+=> /tok/blog/crypto30years.gmi   toki pona

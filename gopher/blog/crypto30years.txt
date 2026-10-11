@@ -143,3 +143,5 @@ Of those old enough to judge, two passed: SIGABA, and, barely, RSA-1024. The oth
 The current ones (P-256, AES, SHA-256, RSA-2048, ChaCha20 and ML-KEM) haven’t been broken yet. The way things are going, it’s looking more likely that P-256 and RSA-2048 will fall to quantum computers rather than new cryptanalysis insights.
 
 [1] If you count 3DES as 1995’s RFC 1851 — ANSI ANS X9.52-1998 was approved in 1998.
+
+toki pona: /0/tok/blog/crypto30years.txt
