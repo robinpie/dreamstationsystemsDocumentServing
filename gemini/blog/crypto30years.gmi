@@ -71,7 +71,7 @@ The same RFC 1423 set 1024 bits as its upper limit in 1993, and 1024 went on to
 
 SHA-1 was published by NIST as FIPS 180-1 in April 1995. It is a one‐rotation fix to the original SHA from 1993 (now called SHA-0), which the NSA withdrew over a flaw it did not describe. The digest is 160 bits, so a collision should cost about 2^80. In 2005, Xiaoyun Wang, Yiqun Lisa Yin and Hongbo Yu showed a theoretical attack at 2^69, and the estimates kept dropping, but an actual collision took until February 2017, when Marc Stevens and a team from CWI and Google published SHAttered, showcasing two different PDFs with the same SHA-1 hash. It was found with about 2^63 SHA-1 computations (6,500 CPU‐years plus 110 GPU‐years). Twenty‐two years, the closest fail on this list.
 
-=> https://shattered.io/   SHAttered
+=> https://shattered.io/static/shattered.pdf   SHAttered
 
 ## 3DES: Fail
 

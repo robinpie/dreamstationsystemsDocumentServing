@@ -6,12 +6,6 @@ date: 2026-10-11
 updated: 2026-10-11
 description: Which widely used ciphers and hashes, from Enigma to ML-KEM, went 30 years without a practical break.
 ---
-
-// Exponents are written 2[[html:<sup>64</sup>]]{!html:^64}: a real
-// superscript on the web, caret notation in text/plain. Unicode superscript
-// digits were not an option because 2^126.1 needs a superscript full stop,
-// which does not exist.
-
 @links
 bombe      url=https://en.wikipedia.org/wiki/Bombe
 typeb      url=https://en.wikipedia.org/wiki/Type_B_Cipher_Machine
@@ -24,7 +18,7 @@ rc4nomore  url=https://www.rc4nomore.com/
 rfc1423    url=https://www.rfc-editor.org/rfc/rfc1423.txt
 rsa896     url=https://postquantum.com/security-pqc/rsa-896-factored-claude-gpus/
 rsaforge   url=https://eprint.iacr.org/2026/2131
-shattered  url=https://shattered.io/
+shattered  url=https://shattered.io/static/shattered.pdf
 sweet32    url=https://sweet32.info/
 googleecc  url=https://arxiv.org/abs/2603.28846
 ionqecc    url=https://ionq.com/blog/the-first-full-stack-blueprint-for-breaking-256-bit-elliptic-curve-signatures
