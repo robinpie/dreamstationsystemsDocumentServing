@@ -4,7 +4,7 @@ kind: index
 title: robin’s page 🌠🏰🚀
 gopher.title: robin’s page
 html.page_title: robin’s page
-description: robin’s personal site: a blog, the services this box runs on the small and old internet protocols, and the programming projects behind them.
+description: robin’s personal site: a blog and the services I run
 html.tight: sections
 gopher.map: 1
 gopher.notitle: 1
@@ -45,7 +45,7 @@ my name is robin! thinkpad enthusiast, tokiponist, computer infra hobbyist.
 @ html.as=p
 => [check out my blog please!](@blogpage)
 
-## services this box runs
+## services i run
 
 @ html.as=p gemini.align=line
 => only=gemini,gopher [other protocols, explained ({gopher:Gemini}{gemini:Gopher}, DICT, QOTD, FTP...)](@services)

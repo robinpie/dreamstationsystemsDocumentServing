@@ -4,7 +4,7 @@ my name is robin! thinkpad enthusiast, tokiponist, computer infra hobbyist.
 
 => /blog/   check out my blog please!
 
-## services this box runs
+## services i run
 
 => /services.gmi   other protocols, explained (Gopher, DICT, QOTD, FTP...)
 => https://dreamstation.systems/professional/status   status page (HTTP only)
