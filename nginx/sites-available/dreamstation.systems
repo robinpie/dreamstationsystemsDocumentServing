@@ -170,6 +170,7 @@ server {
     include snippets/pgpKey.conf;
     include snippets/theme.conf;
     include snippets/feeds.conf;
+    include snippets/miscStuff.conf;
 }
 
 # HTTPS for the apex.
@@ -209,6 +210,7 @@ server {
     include snippets/pgpKey.conf;
     include snippets/theme.conf;
     include snippets/feeds.conf;
+    include snippets/miscStuff.conf;
 }
 
 # openpgpkey.dreamstation.systems — OpenPGP Web Key Directory, advanced method.

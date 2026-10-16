@@ -1,0 +1,55 @@
+Relay-Version: version B 2.10 5/3/83; site utzoo.UUCP
+Path: utzoo!watmath!clyde!caip!topaz!husc6!think!mit-eddie!genrad!decvax!decwrl!amdcad!cae780!leadsv!eps2!msunix!jon
+From: jon@msunix.UUCP
+Newsgroups: net.sources.bugs
+Subject: Re: revised network blackjack game
+Message-ID: <245@msunix.UUCP>
+Date: Fri, 1-Aug-86 02:33:23 EDT
+Article-I.D.: msunix.245
+Posted: Fri Aug  1 02:33:23 1986
+Date-Received: Sat, 2-Aug-86 10:54:09 EDT
+References: <241@msunix.UUCP>
+Organization: Via Visuals Inc.
+Lines: 39
+Keywords: blackjack game sockets network multiuser
+Summary: I screwed up.  Here's the fix...
+
+
+Dammit.  I didn't bother to make sure it ran on the VAX, and sure
+enough, I've received a number of coomplaints that it doesn't run
+on a VAX.  I tried to remove byte order problems so it could work
+between a Sun and a VAX, but instead introduced more problems.
+Not only did I use the wrong conversions for the wrong size arguments,
+but the logic was wrong also.  Here is the sockio.c which works on the
+Sun and VAX.
+
+
+#include <stdio.h>
+/*
+ * Routines to send and receive on sockets.  Four bytes of length are
+ * sent, followed by the null terminated string.
+ *
+ */
+void sockread(s, buf)
+int s;				/* socket to talk on */
+char *buf;			/* string to send */
+{
+	int nbytes;
+
+	(void) read(s, (char *) &nbytes, sizeof(int));
+	nbytes = ntohl(nbytes);
+	(void) read(s, buf, nbytes);
+}
+
+
+void sockwrite(s, buf)
+int s;				/* socket to talk on */
+char *buf;			/* string to read on */
+{
+	int nbytes, netnbytes;
+
+	nbytes = strlen(buf) + 1;
+	netnbytes = htonl(nbytes);
+	(void) write(s, (char *) &netnbytes, sizeof(int));
+	(void) write(s, buf, nbytes);
+}

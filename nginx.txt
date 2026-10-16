@@ -455,6 +455,7 @@ THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every hand
     nginx/sites-available/staging.dreamstation.systems
     nginx/snippets/commonHeaders.conf
     nginx/snippets/feeds.conf
+    nginx/snippets/miscStuff.conf
     nginx/snippets/onionLocation.conf
     nginx/snippets/pgpKey.conf
     nginx/snippets/robotsTag.conf
@@ -578,6 +579,10 @@ DELIBERATELY NOT SENT (decided 2026-09-29, Observatory walkthrough):
     upstream release unless the versions were pinned first.
 
 security.txt (RFC 9116) lives at rootdomain/.well-known/security.txt and its Expires: field must be refreshed before 2027-08-26 or the file is formally invalid.
+
+MISCSTUFF (directory listings)
+
+/miscStuff/ and everything under it gets nginx's autoindex — the only place on the site that lists directories. snippets/miscStuff.conf, a `location ^~ /miscStuff/ { autoindex on; }` included from the apex :80 and :443 blocks, the onion vhost and staging. ^~ so no regex location can take a path inside it; no add_header, so commonHeaders.conf is still inherited. Files with an extension mime.types doesn't know (.c, .h, .shar, .6, extensionless CHANGES...) are served as text/plain; charset=utf-8 so they display instead of downloading; known types keep their own. Content is rootdomain/miscStuff/ in the repo, deployed like any other page. Added 2026-10-16.
 
 ALIAS VHOSTS AND X-Robots-Tag
 -----------------------------

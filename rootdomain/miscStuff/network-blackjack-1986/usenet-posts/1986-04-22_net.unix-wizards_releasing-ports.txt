@@ -1,0 +1,45 @@
+Relay-Version: version B 2.10 5/3/83; site utzoo.UUCP
+Path: utzoo!watmath!clyde!burl!ulysses!allegra!mit-eddie!genrad!decvax!decwrl!pyramid!pesnta!amd!amdcad!cae780!leadsv!msunix!jon
+From: jon@msunix.UUCP
+Newsgroups: net.unix-wizards
+Subject: Releasing internet ports...
+Message-ID: <223@msunix.UUCP>
+Date: Tue, 22-Apr-86 03:40:05 EST
+Article-I.D.: msunix.223
+Posted: Tue Apr 22 03:40:05 1986
+Date-Received: Sat, 26-Apr-86 06:18:14 EST
+Organization: Via Video Inc.
+Lines: 32
+
+Hello,
+
+I just have a simple question, it doesn't really affect my program,
+but I'm curious as to the reasons behind its behavior.
+
+I am writing this multiuser blackjack game in my spare time using
+sockets in the Internet address family (Sun-2/120, Sun 2.0 UNIX).
+The interprocess communication seems to work fine, all I have to do
+is figure out how to arrange six people in a semicircle on a 24x80
+screen and figure out what to do when a person is dealt four eights
+and splits pairs three times, but that's another story...
+
+I'm in this mode where I'm adding little features, relinking, and then
+firing up the server (dealer) and getting a client (player) to connect.
+I fool around with the client for a while, then I exit.  I then send
+the server a signal to kill it.  The server catches the signal and closes
+its open file descriptors, then exits.  If I try to fire up the server
+soon after that, it dies on the bind, with "address already in use".
+If I wait a couple minutes before retrying, it runs fine.  My question
+is, is there like a timeout in the spec for tcp/ip that says a port
+is released x amount of time after the last socket bound to it dies, or
+something like that?  Should I be making another system call before I
+exit or something?  Perhaps someone could point me to a section in
+a tcp/ip spec.  Oh, yes, I don't really have much of a formal CS
+education, so explanations in simple terms would be appreciated.
+
+
+"If we did it like everyone else,		Jonathan Hue
+what would differentiate us from		Via Video Inc.
+every other company in Silicon Valley?"	  sun!sunncal\
+						      >!leadsv!msunix!jon
+"A profit?"				amdcad!cae780/

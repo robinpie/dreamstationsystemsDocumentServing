@@ -49,6 +49,7 @@ NGINX_SNIPPETS=(
 	commonHeaders.conf
 	feeds.conf
 	fortuneCookie.conf
+	miscStuff.conf
 	onionLocation.conf
 	pgpKey.conf
 	robotsTag.conf

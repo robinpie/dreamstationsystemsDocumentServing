@@ -70,6 +70,7 @@ server {
     include snippets/pgpKey.conf;
     include snippets/theme.conf;
     include snippets/feeds.conf;
+    include snippets/miscStuff.conf;
 }
 
 # --------------------------------------------------------------------- OpenGET

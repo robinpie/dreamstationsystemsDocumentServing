@@ -90,6 +90,7 @@ server {
     # here to preview:
     include snippets/theme.conf;
     include snippets/feeds.conf;
+    include snippets/miscStuff.conf;
 
     # statusCgi.conf is what turns SSI on for /professional/ on the live site,
     # and it is left out above. The page also carries a $drafts gate (the

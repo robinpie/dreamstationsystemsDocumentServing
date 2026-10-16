@@ -1,0 +1,53 @@
+Relay-Version: version B 2.10 5/3/83; site utzoo.UUCP
+Path: utzoo!mnetor!seismo!rutgers!ames!ucbcad!ucbvax!decvax!tektronix!cae780!leadsv!eps2!jon
+From: jon@eps2.UUCP (Jonathan Hue)
+Newsgroups: comp.unix.wizards
+Subject: need help with inetd
+Message-ID: <84@eps2.UUCP>
+Date: Tue, 21-Apr-87 01:29:25 EST
+Article-I.D.: eps2.84
+Posted: Tue Apr 21 01:29:25 1987
+Date-Received: Wed, 22-Apr-87 02:20:39 EST
+Organization: Scumtronics Inc.
+Lines: 39
+Keywords: cluelessness
+
+
+I have a network blackjack game which uses sockets with tcp/ip (Sun 3/160,
+SunOS 3.2).  The server is the dealer program, and the clients are the
+player program.  It works fine, but I want it to work under inetd.  I read
+the manual and it seems that I want to set my dealer program up as a
+datagram-oriented service.  Only one dealer should run, and when it has
+no more clients (players) to talk to, it should exit and inetd should
+start listening to the socket again.
+
+I added a line to /etc/servers like this:
+
+pitboss	udp	/usr/local_users/jon/src/games/bj/dealer
+
+I added a line to /etc/services like this:
+
+blackjack	1024/tcp		# this line was always here
+pitboss		1025/udp
+
+Then I modified the client program to attempt to connect the udp socket
+before connecting and talking on the tcp socket.  I used the same code as
+I did for the tcp socket (right out of the IPC Primer) except with mods
+to use a SOCK_DGRAM and lookup pitboss instead of blackjack for the port
+info.
+
+The connect of the udp socket succeeds, but my dealer program never runs,
+and when the client tries to connect the tcp socket, it of course fails
+with a "Connect refused" (which is the same thing I would get with the
+non-inetd version if I didn't fire up a copy of "dealer" before running
+the client).
+
+What do I have to do to get my game to work under inetd?  I found out
+that the connect of the udp socket always succeeds, regardless of any
+entry I make in /etc/servers.  I'm sure my ignorance of datagrams and
+using udp is the problem here.  I have a nice little multi-user network
+game that works fine by itself, but I don't know how to get it to work
+under inetd.  Thanks in advance for any help you wizards can provide.
+
+
+Jonathan Hue	DuPont Design Technologies/Via Visuals		leadsv!eps2!jon
