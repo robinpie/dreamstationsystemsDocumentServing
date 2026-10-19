@@ -45,6 +45,13 @@ img {
   max-width: none;
 }
 
+/* Each badge is a <picture> (smallest format first, see siteAssets.txt). It is
+   inline by default; make it a block like the <img> inside it, so it adds no
+   line box of its own around the badge. */
+.badges picture {
+  display: block;
+}
+
 /* Every blog post's <h1> is a row: the title on the left, the Pangram
    "100% Human" badge pinned to the right. */
 .post-title {

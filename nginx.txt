@@ -425,6 +425,11 @@ Same certificate, same content, same blast radius (deliberately NOT merged with 
                                                        baseline elsewhere). Also
                                                        map_hash_bucket_size 128.
                                                        See COMMON HEADERS.
+  /etc/nginx/conf.d/mimeTypes.conf                   — types mime.types lacks:
+                                                       image/jxl for the badge
+                                                       wall's .jxl files. An
+                                                       http-level types block
+                                                       ADDS to mime.types.
   /etc/nginx/conf.d/serverNamesHash.conf             — server_names_hash_bucket_size
                                                        128. Onion names are 62-76
                                                        chars; with the default 64
@@ -439,6 +444,7 @@ THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every hand
     nginx/conf.d/compression.conf
     nginx/conf.d/csp.conf
     nginx/conf.d/logFormat.conf
+    nginx/conf.d/mimeTypes.conf
     nginx/conf.d/onionLocation.conf
     nginx/conf.d/robotsTag.conf
     nginx/conf.d/serverNamesHash.conf

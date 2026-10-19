@@ -1,21 +1,4 @@
 # robin's page
-
-A small static personal site. No build step.
-
-Most pages open fine straight from disk. The **themed** pages (see below) are
-the exception: they pick their stylesheet server-side via nginx SSI, so over
-`file://` the stylesheet link resolves to `themes/.css` and the page renders
-unstyled. Serve them through nginx to see them properly — the config lives in
-`nginx/snippets/theme.conf` at the repo root.
-
-## Pages
-
-| File          | What it is                          |
-|---------------|-------------------------------------|
-| `index.html`  | home                                |
-| `blog.html`   | blog index                          |
-| `gzipt.html`  | a blog post                         |
-
 ## Theming
 
 The themed pages carry a switcher pinned to the top-right. Themes are plain
@@ -24,10 +7,10 @@ choice in a cookie. There is no JavaScript involved — the switcher is a GET
 form that submits to `?theme=<id>`, and the correct stylesheet is in the first
 byte of the response, so there is no flash of the wrong theme to work around.
 
-Themed pages (the list is also spelled out in `nginx/snippets/theme.conf`, and
-both have to agree): `index`, `blog`, `hypnospace`, `lanfalsehoods`, `ntppool`,
-`ntppost`, `ntpuserinfo`, `slowqotd`, `gzipt`. The other pages under `personal/` are one-off things with
-their own styling and are not themed.
+Themed pages (the list is also spelled out in `nginx/snippets/theme.conf`: 
+`index`, `blog`, `lawa`, `ntpuserinfo`, and blog posts. 
+The other pages under `personal/` are one-off things with their own styling 
+and are not themed.
 
 - `base.css` — always loaded. Only structural things that hold for *every*
   theme (e.g. where the switcher sits). No aesthetics.

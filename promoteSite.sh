@@ -40,6 +40,7 @@ NGINX_CONFD=(
 	compression.conf
 	csp.conf
 	logFormat.conf
+	mimeTypes.conf
 	onionLocation.conf
 	robotsTag.conf
 	serverNamesHash.conf

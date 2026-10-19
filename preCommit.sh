@@ -7,7 +7,7 @@
 #     assetsBuild/makeFeed.py        Atom + RSS for /personal/blog.html
 #     assetsBuild/makeMeta.py        blog.html's JSON-LD + sitemap.xml
 #     assetsBuild/makeFontSubset.py  ubuntu804's DejaVu subsets
-#     assetsBuild/badgeBuild.pl      the 88x31 wall: WebP + generated markup
+#     assetsBuild/badgeBuild.pl      the 88x31 wall: WebP/AVIF/JXL + <picture> markup
 #
 # ADDING A STEP: put it below, and make it re-stage anything it rewrites.
 # git runs exactly one pre-commit hook, so this file exists to chain them.
@@ -136,7 +136,8 @@ done
 
 # ----------------------------------------------------------------- 88x31 wall
 #
-# Re-encodes the badges (WebP where smaller) and GENERATES the <ul
+# Re-encodes the badges (lossless WebP, AVIF, JXL; all shipped, smallest
+# first in a <picture>) and GENERATES the <ul
 # class="badges"> block in every page carrying the badges:start/end markers.
 # PER-FILE GUARD, because this is the only step that rewrites hand-authored
 # files: pages already dirty before it ran get the block on disk but are NOT
