@@ -41,6 +41,15 @@ for f in "$ROOT"/lawaPage/*.pl; do
 	fi
 done
 
+# The comment stripper runs on what is about to be staged, so it is gated
+# like the rest: a stripper that cannot compile must not leave staging (and
+# then live) holding the unstripped tree.
+if ! perl -c "$ROOT/stripComments.pl" >/dev/null 2>&1; then
+	echo "ABORT: stripComments.pl fails syntax check — nothing staged." >&2
+	perl -c "$ROOT/stripComments.pl" || true
+	exit 1
+fi
+
 # -------------------------------------------------------------------- content
 #
 # No acme-challenge/ntpstats carve-out here (unlike promote): neither exists
@@ -55,6 +64,14 @@ sudo rsync -a --delete \
 	--exclude '/personal/lawa-box.html' \
 	--exclude '/personal/lawa-box.tok.html' \
 	"$ROOT/rootdomain/" "$STAGING/"
+
+# HTML comments come out of the served copy here, not in promote, so staging
+# previews exactly the bytes promote will make live. SSI, conditional comments
+# and anything marked doNotRemoveCommentInDeploy are kept; the repo keeps
+# everything. Rewrites files in place with their mtimes preserved, so promote's
+# rsync does not see every stripped page as changed. See githooks.txt,
+# "comment stripping".
+sudo perl "$ROOT/stripComments.pl" "$ROOT/rootdomain" "$STAGING"
 
 sudo chown -R root:root "$STAGING/"
 sudo chmod -R u=rwX,go=rX "$STAGING/"
