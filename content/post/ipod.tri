@@ -1,0 +1,53 @@
+---
+id: ipod
+kind: post
+title: Photos from my 4th generation iPod Touch
+date: 2026-10-19
+updated: 2026-10-19
+description: Old‐digital photographs from a 4th generation iPod Touch and the stock iOS 6 Camera app.
+gopher.gophermap_extra: 1iPod Touch photos (5 JPEGs)	/blog/supportingFiles/ipodPhotos	dreamstation.systems	70
+---
+.
+
+@links
+p0028 gemini=ipodPhotos/img_0028.jpg \
+      gopher=gopher://dreamstation.systems/I/blog/supportingFiles/ipodPhotos/img_0028.jpg
+p0037 gemini=ipodPhotos/img_0037.jpg \
+      gopher=gopher://dreamstation.systems/I/blog/supportingFiles/ipodPhotos/img_0037.jpg
+p0045 gemini=ipodPhotos/img_0045.jpg \
+      gopher=gopher://dreamstation.systems/I/blog/supportingFiles/ipodPhotos/img_0045.jpg
+p0180 gemini=ipodPhotos/img_0180.jpg \
+      gopher=gopher://dreamstation.systems/I/blog/supportingFiles/ipodPhotos/img_0180.jpg
+p0242 gemini=ipodPhotos/img_0242.jpg \
+      gopher=gopher://dreamstation.systems/I/blog/supportingFiles/ipodPhotos/img_0242.jpg
+@end
+
+I recently got a 4th generation iPod Touch just for taking 2010‐esque old‐digital photographs and I think it really goes hard. The crappy single‐focus sensor with the stock iOS 6 Camera app looks a lot different than modern smart‐device cameras.
+
+This camera is clearly best when overwhelmed. Screens, bright lights, dim lights all turn out really unique‐looking, but well‐lit outdoor daytime pictures just look mediocre.
+
+::: raw html
+    <figure>
+      <img src="ipodPhotos/img_0028.jpg" width="720" height="960" alt="The DVD Video logo on a TV screen, glowing blue with light rays behind it, the screen’s scanlines visible">
+    </figure>
+    <figure>
+      <img src="ipodPhotos/img_0037.jpg" width="720" height="960" alt="A pink, white and light blue kandi cuff made of pony beads on a cluttered desk, more beaded bracelets and papers around it">
+    </figure>
+    <figure>
+      <img src="ipodPhotos/img_0045.jpg" width="720" height="960" alt="The living room of my apartment in dim lightning: a cluttered coffee table, a cat tree, a dining table with a cardboard box on it, and two prints on the wall">
+    </figure>
+    <figure>
+      <img src="ipodPhotos/img_0180.jpg" width="720" height="960" alt="A bathroom sink and backlit mirror, the whole room blown out to saturated red">
+    </figure>
+    <figure>
+      <img src="ipodPhotos/img_0242.jpg" width="960" height="720" alt="The sun as a starburst in a near‐black sky above a streetlight and silhouetted trees and rooftops">
+    </figure>
+:::
+
+::: only gemini gopher
+=> [The DVD Video logo on a TV screen](@p0028)
+=> [A pink, white and light blue kandi cuff on a cluttered desk](@p0037)
+=> [A dim living room at night](@p0045)
+=> [A bathroom sink and backlit mirror, blown out to red](@p0180)
+=> [The sun as a starburst in a near‐black sky](@p0242)
+:::

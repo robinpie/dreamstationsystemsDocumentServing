@@ -5,8 +5,15 @@
     <link>https://dreamstation.systems/personal/blog.html</link>
     <description>the least consistent blog on the W3</description>
     <language>en</language>
-    <lastBuildDate>Sun, 11 Oct 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 19 Oct 2026 00:00:00 +0000</lastBuildDate>
     <atom:link rel="self" type="application/rss+xml" href="https://dreamstation.systems/personal/rss.xml"/>
+    <item>
+      <title>Photos from my 4th generation iPod Touch</title>
+      <link>https://dreamstation.systems/personal/ipod.html</link>
+      <pubDate>Mon, 19 Oct 2026 00:00:00 +0000</pubDate>
+      <guid isPermaLink="true">https://dreamstation.systems/personal/ipod.html</guid>
+      <description>Old‐digital photographs from a 4th generation iPod Touch and the stock iOS 6 Camera app.</description>
+    </item>
     <item>
       <title>Has mainstream cryptography provided 30 years of protection? (Mostly not, but we’re getting way better)</title>
       <link>https://dreamstation.systems/personal/crypto30years.html</link>
