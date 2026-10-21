@@ -156,6 +156,7 @@
   <h2>Modern image formats: the browser picks, you chill</h2>
   <p>Your hero image is a 4 MB PNG. I know it is. Don’t lie to me.</p>
   <p>AVIF and WebP are routinely half the size of a JPEG at the same quality. “But users’ browsers might not support them!” Bullshit, AVIF shipped in Chrome six years ago and WebP did OVER A DECADE AGO. And you don’t need WordPress’s “image optimization service” or a magic framework <code>&lt;Image&gt;</code> component to serve them, because HTML has had format selection built into a tag for years:</p>
+  <p><aside><i>Update <time datetime="2026-10">October 2026</time>: Chromium and Firefox just got support for JXL! Try it too! In addition to being a very good general‐purpose lossless and lossy compressor, it can <em>repackage existing legacy JPEGs to reduce their size by 9–20% without further loss!</em></em></i></aside></p>
 <pre tabindex="0" aria-label="Example: responsive picture element"><code>&lt;picture&gt;
   &lt;source type="image/avif"
           srcset="hero-800.avif 800w, hero-1600.avif 1600w"
