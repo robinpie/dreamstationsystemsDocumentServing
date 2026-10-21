@@ -49,6 +49,58 @@
   details { margin: 1rem 0; }
   nav { font-size: .95rem; }
   footer { margin-top: 4rem; color: var(--dim); font-size: .95rem; }
+
+  /* Going crazy. It looks like shit but it's still accessible. It has contrast, it's still actual fucking text for screen readers and bots, there's only motion for the ~5 s after the <details> opens (WCAG 2.2.2) or while hovered, none at all if you're a stuck-up asshole with prefers-reduced-motion, and it has a plain fallback in forced-colors mode. */
+  @property --spin { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+  .crazy {
+    display: inline-block; position: relative; white-space: nowrap;
+    padding: 0 .4em; border: .12em solid transparent; border-radius: .5em;
+    background:
+      radial-gradient(#fff6 .5px, transparent 1px) 0 0 / 7px 7px padding-box,
+      radial-gradient(#ffb3ec55 .5px, transparent 1px) 3px 4px / 11px 9px padding-box,
+      radial-gradient(circle at 30% 20%, #3a1060, #0b0420 70%) padding-box,
+      conic-gradient(from var(--spin), #ff2e88, #ffb800, #3dff8a, #00d4ff, #a35bff, #ff2e88) border-box;
+    box-shadow: 0 .2em 0 #2a0a4a, 0 .35em .8em #0008, 0 0 .8em #ff2e8866, 0 0 1.6em #00d4ff44;
+    transform: perspective(20em) rotateX(10deg) rotateY(-12deg);
+    & > span {
+      position: relative; color: transparent;
+      font: italic 900 1.05em/1.3 "Arial Black", Impact, system-ui, sans-serif;
+      background: linear-gradient(90deg, #ff7ab6, #ffd84a, #7dffb0, #6fe3ff, #c79bff, #ff7ab6) 0 0 / 10em 100% repeat-x;
+      -webkit-background-clip: text; background-clip: text;
+      filter: drop-shadow(1px 1px 0 #ff2e88) drop-shadow(1px 1px 0 #b01cff) drop-shadow(1px 1px 0 #3b0aa8) drop-shadow(0 0 .25em #fff6);
+      &::before, &::after {
+        content: ""; position: absolute; width: .6em; aspect-ratio: 1;
+        background: radial-gradient(#fff, #ffe680 60%, #ffb800);
+        clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+      }
+      &::before { top: -.45em; right: -.55em; }
+      &::after { bottom: -.4em; left: -.5em; width: .45em; }
+    }
+    &::after {
+      content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+      background: linear-gradient(110deg, transparent 40%, #ffffff59 50%, transparent 60%) 0 0 / 300% 100% no-repeat;
+    }
+  }
+  @keyframes crazy-border { to { --spin: 360deg; } }
+  @keyframes crazy-wobble { 50% { transform: perspective(20em) rotateX(-8deg) rotateY(14deg) scale(1.08); } }
+  @keyframes crazy-rainbow { to { background-position: 10em 0; } }
+  @keyframes crazy-shine { 60%, 100% { background-position: 100% 0; } }
+  @keyframes crazy-twinkle { 50% { transform: scale(.2) rotate(90deg); opacity: .4; } }
+  @media (prefers-reduced-motion: no-preference) {
+    details[open] .crazy {
+      animation: crazy-border 2.5s linear 2, crazy-wobble 2.5s ease-in-out 2;
+      &::after { animation: crazy-shine 1.25s ease-in-out 4; }
+      & > span { animation: crazy-rainbow 2.5s linear 2; }
+      & > span::before { animation: crazy-twinkle 1.25s ease-in-out 4; }
+      & > span::after { animation: crazy-twinkle 1.25s ease-in-out .6s 3; }
+      &:hover, &:hover::after, &:hover > span, &:hover > span::before, &:hover > span::after { animation-iteration-count: infinite; }
+    }
+  }
+  @media (forced-colors: active) {
+    .crazy { background: Canvas; border-color: CanvasText; box-shadow: none; transform: none;
+      & > span { background: none; color: CanvasText; filter: none; }
+      &::after, & > span::before, & > span::after { display: none; } }
+  }
 </style>
 </head>
 <body>
@@ -187,7 +239,7 @@ cwebp -q 80 hero.png -o hero.webp</code></pre>
     <li><strong>Responsive layout:</strong> <code>max-width</code>. One property. Your phone is already fine.</li>
   </ul>
   <p>Every one of these is a <em>platform feature</em>. It’s in the browser. It was already downloaded, by the user, before they ever heard of you. The framework doesn’t give you these things. At best it gives you a slower way to type them, and at worst it hides them behind a plugin ecosystem so you forget they were free.</p>
-  <p>Other than the Open Graph image and the WCAG badge, this page is a single HTML file of about 23 KB. It has no dependencies, no cookie banner, no hydration errors and no security problems. The deploy process is “copy the file to the served directory”.</p>
+  <p>Other than the Open Graph image and the WCAG badge, this page is a single HTML file of about 27 KB. It has no dependencies, no cookie banner, no hydration errors and no security problems. The deploy process is “copy the file to the served directory”.</p>
 </section>
 
 <section>
@@ -206,7 +258,7 @@ cwebp -q 80 hero.png -o hero.webp</code></pre>
   </details>
   <details>
     <summary>“But it looks plain.”</summary>
-    <p>So write some CSS. Modern CSS has nesting, variables, grid, container queries, <code>:has()</code>, <code>clamp()</code>, and color functions built in. You don’t need a preprocessor for those anymore either. You don’t need JavaScript for them either. The point isn’t “never style anything”. The point is that every byte should be there because <em>you chose it</em>, not because it fell out of <code>node_modules</code>.</p>
+    <p>So write some CSS. Modern CSS has nesting, variables, grid, container queries, <code>:has()</code>, <code>clamp()</code>, and color functions built in. You don’t need a preprocessor for those anymore. You don’t need JavaScript for them either. This website’s presentation is pretty fucking austere as a nod to the <a href="https://motherfuckingwebsite.com/">original motherfucking website</a>, but feel free to <span class="crazy"><span>go crazy</span></span> as long as it doesn’t impact accessibility. My point is that every byte should be there because <em>you chose it</em>, not because it fell out of the thousand assholes that wrote everything in your <code>node_modules</code>.</p>
   </details>
 </section>
 
