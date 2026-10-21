@@ -58,12 +58,9 @@ i/firefox16.png, i/firefox24.webp
     (c) Mozilla Foundation; MPL 1.1 / GPL 2.0 / LGPL 2.1 tri-license, and the
     logo is additionally a Mozilla trademark. firefox24.webp is default32.png
     resampled to 24x24, then re-encoded to lossless WebP; firefox16.png is
-    unmodified artwork, losslessly recompressed as a PNG and still a PNG.
-
-    IT IS THE ONE FILE HERE WEBP LOSES ON — 898 bytes as an optimised PNG
-    against 894 as WebP, before you count that the conversion would make a
-    trademarked logo one more thing to explain. Left alone deliberately; do
-    not "finish the job" by converting it.
+    unmodified artwork, losslessly recompressed as a PNG. Its WebP, AVIF and
+    JPEG XL siblings (see below) are the same pixels in other containers —
+    no alteration of the logo, any more than the PNG recompression was.
 
 i/throbber.webp
     Firefox 3's idle toolbar throbber (Throbber.png, 20x20), from
@@ -138,7 +135,9 @@ FILES THIS THEME SHIPS
 ----------------------
   /personal/themes/ubuntu804.css
   /personal/chrome/top.html, mid.html, bottom.html
-  i/heron.webp, i/header.webp, i/mark.svg, i/favicon16.webp
-  i/firefox16.png, i/firefox24.webp, i/go-home.webp, i/throbber.webp
-  i/wb-minimize.webp, i/wb-maximize.webp, i/wb-close.webp
+  i/heron.webp, i/mark.svg
+  i/header, i/favicon16, i/firefox16, i/firefox24, i/go-home, i/throbber,
+  i/wb-minimize, i/wb-maximize, i/wb-close — each as .jxl, .webp, .png and
+  .avif, all four lossless and pixel-identical; the browser picks one via
+  <picture> (or image-set() for the header).
   f/dejavu.woff2, f/dejavu-bold.woff2

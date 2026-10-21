@@ -10,7 +10,9 @@ THE CONSTRAINT THAT SHAPES EVERYTHING: the pages are hand-written, predate the t
 WHERE EVERYTHING IS
 -------------------
   rootdomain/personal/themes/ubuntu804.css      the stylesheet
-  rootdomain/personal/themes/ubuntu804/i/       11 images (wallpaper, icons)
+  rootdomain/personal/themes/ubuntu804/i/       wallpaper, logo, and 9 icons
+                                                in four formats each - see
+                                                IMAGE FORMATS below
   rootdomain/personal/themes/ubuntu804/f/       two DejaVu woff2 faces,
                                                 SUBSETS, generated - see below
   assetsBuild/fontsSrc/                         the full DejaVu TTFs they are
@@ -117,9 +119,39 @@ THINGS THAT WILL BITE
 
 WHAT CAME FROM THE TEMPLATE'S CHROME
 ------------------------------------
-The template carried the same menus and the same window furniture in a single chrome.html, and the two were maintained by hand in parallel rather than generated from a common source — a look at what differed says why sharing would have bought little: the menu destinations differ (this one's View and Bookmarks menus mirror /personal/'s nav, its Help menu points at this theme's own CREDITS.txt), the per-page values arrive by a completely different mechanism, and this one is split in three around markup the other did not have. What was genuinely shared is the artwork and the measurements: the images are byte copies, and the stylesheet's chrome rules came over from the template's site.css with their reasoning attached.
+The template carried the same menus and the same window furniture in a single chrome.html, and the two were maintained by hand in parallel rather than generated from a common source — a look at what differed says why sharing would have bought little: the menu destinations differ (this one's View and Bookmarks menus mirror /personal/'s nav, its Help menu points at this theme's own CREDITS.txt), the per-page values arrive by a completely different mechanism, and this one is split in three around markup the other did not have. What was genuinely shared is the artwork and the measurements: the images started as byte copies (the icons have since been re-encoded here; see IMAGE FORMATS), and the stylesheet's chrome rules came over from the template's site.css with their reasoning attached.
 
 The template is gone, so there is no second copy of the menus to keep in step. Nothing outside rootdomain/personal/ needs touching when this theme changes.
+
+IMAGE FORMATS
+-------------
+Every raster image in i/ except heron.webp ships four times: lossless JPEG XL, WebP, PNG and AVIF, all pixel-identical. top.html wraps each icon in a <picture> whose <source>s are sorted smallest first, the same rule as the 88x31 wall (siteAssets.txt): a browser takes the first type it can decode, so the order is what makes it fetch the smallest file it can use. The <img> fallback is the PNG. header is a CSS background, so it does the same thing with image-set(... type()) in ubuntu804.css, after a plain url(header.png) line for browsers without type() support.
+
+heron.webp is excluded because it is lossy (q78) — a lossless re-encode of it would only be bigger. mark.svg is vector and stays as it is.
+
+Measured order (bytes, 2026-10-21), identical for all nine:
+
+  image        jxl   webp   png   avif
+  header        54     70   102    357
+  wb-minimize   42     50    79    496
+  wb-maximize   45     58    89    502
+  wb-close      62     74   109    533
+  throbber      67     82   130    567
+  favicon16    245    258   334   1258
+  go-home      646    732   964   1866
+  firefox16    694    816   845   1544
+  firefox24   1356   1544  1649   2418
+
+AVIF comes last every time, after PNG, which every browser can decode, so no browser ever fetches the .avif files. They ship because they were asked for, and the size-sort rule puts them last on its own. Lossless AV1 is poor on tiny images: the container and the alpha plane cost about 300 bytes before any pixels.
+
+These were encoded ONCE, BY HAND, at efforts too slow to rerun on every commit. Unlike the badges there is no build script and no manifest, deliberately. If you change one of these images, redo all four and re-check the order:
+  cwebp -lossless -m 6 -q 100 -alpha_filter best   (also try -z 9; keep the smaller)
+  cjxl -d 0 -e 11 --allow_expert_options           (beat -e 10 on 5 of 9)
+  avifenc --lossless --speed 0
+  zopflipng -m --iterations=1000 --filters=01234mepb --lossy_transparent
+Then decode each one and compare it pixel for pixel with the source (RGB under fully transparent pixels may differ; zero it on both sides before comparing). Then fix that image's <source> order in top.html.
+
+The <picture> wrappers are display: contents (ubuntu804.css, under the panel rules), so the <img> is still the flex item and every existing img/.throbber/.wicon rule applies unchanged. Remove that rule and the throbber loses its margin-left: auto placement, among other things.
 
 CHANGING THE STRIP HEIGHT
 -------------------------

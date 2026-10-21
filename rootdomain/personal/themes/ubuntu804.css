@@ -142,6 +142,16 @@ body {
 }
 .panel a.winlist img { width: 24px; height: 24px; display: block; }
 
+/* Every chrome icon is an <img> inside a <picture> (lossless AVIF/JXL/WebP/
+ * PNG, smallest first). display: contents takes the <picture> out of layout,
+ * so the <img> stays the flex item and every rule written against it — the
+ * throbber's margin-left: auto, the title-bar icon's flex: 0 0 auto, the
+ * narrow-screen display: none — still applies as if the wrapper weren't
+ * there. */
+.panel picture, .titlebar picture, .menubar picture, .navbar picture {
+  display: contents;
+}
+
 /* "Live session user" in the reference; the site name here. Centred on the
  * panel rather than pinned to the reference's x=544, because a name of any
  * length has to stay put at any window width. */
@@ -516,7 +526,15 @@ body {
   /* Verbatim from ubuntu.css. header.webp is 10x90 and effectively a flat
    * #dbba75 field with a 4px bevel along its bottom edge, so tiling it on x
    * both fills the band and draws the rule under the masthead. */
-  background: url(ubuntu804/i/header.webp) bottom left repeat-x var(--header-tan);
+  background: url(ubuntu804/i/header.png) bottom left repeat-x var(--header-tan);
+  /* A background can't use <picture>; image-set() with type() is its
+   * equivalent — first decodable type wins, so the list is smallest first,
+   * like the chrome icons'. A browser without type() support drops this
+   * whole declaration and keeps the PNG above. */
+  background-image: image-set(url(ubuntu804/i/header.jxl) type("image/jxl"),
+                              url(ubuntu804/i/header.webp) type("image/webp"),
+                              url(ubuntu804/i/header.png) type("image/png"),
+                              url(ubuntu804/i/header.avif) type("image/avif"));
 }
 #masthead {
   position: relative;
