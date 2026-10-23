@@ -26,7 +26,7 @@
   "description": "Semantic HTML, JSON-LD, Open Graph, resource hints and modern image formats without a framework or a build system.",
   "inLanguage": "en",
   "datePublished": "2026-09-24",
-  "dateModified": "2026-10-20",
+  "dateModified": "2026-10-23",
   "author": { "@type": "Person", "name": "Robin Reel" }
 }
 </script>
@@ -50,6 +50,9 @@
   details { margin: 1rem 0; }
   nav { font-size: .95rem; }
   footer { margin-top: 4rem; color: var(--dim); font-size: .95rem; }
+  .gallery { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1.5rem 0; }
+  .gallery figure { flex: 1 1 18rem; margin: 0; }
+  .gallery img { max-width: 100%; height: auto; }
 
   /* Going crazy. It looks like shit but it's still accessible. It has contrast, it's still actual fucking text for screen readers and bots, there's only motion for the ~5 s after the <details> opens (WCAG 2.2.2) or while hovered, none at all if you're a stuck-up asshole with prefers-reduced-motion, and it has a plain fallback in forced-colors mode. */
   @property --spin { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
@@ -209,7 +212,6 @@
   <h2>Modern image formats: the browser picks, you chill</h2>
   <p>Your hero image is a 4 MB PNG. I know it is. Don’t lie to me.</p>
   <p>AVIF and WebP are routinely half the size of a JPEG at the same quality. “But users’ browsers might not support them!” Bullshit, AVIF shipped in Chrome six years ago and WebP did OVER A DECADE AGO. And you don’t need WordPress’s “image optimization service” or a magic framework <code>&lt;Image&gt;</code> component to serve them, because HTML has had format selection built into a tag for years:</p>
-  <aside><i>Update <time datetime="2026-10">October 2026</time>: Chromium and Firefox just got support for JXL! Try it too! In addition to being a very good general‐purpose lossless and lossy compressor, it can <em>repackage existing legacy JPEGs to reduce their size by 9–20% without further loss!</em></i></aside>
 <pre tabindex="0" aria-label="Example: responsive picture element"><code>&lt;picture&gt;
   &lt;source type="image/avif"
           srcset="hero-800.avif 800w, hero-1600.avif 1600w"
@@ -225,6 +227,30 @@
 <pre tabindex="0" aria-label="Example: image conversion commands"><code>avifenc hero.png hero.avif
 cwebp -q 80 hero.png -o hero.webp</code></pre>
   <p>That’s not a build system. That’s writing a fucking file that you then serve.</p>
+   <aside><i>Update <time datetime="2026-10">October 2026</time>: Mainline release Chromium and Firefox just got support for JXL! Try it too! In addition to being a very good general‐purpose lossless and lossy compressor, it can <em>repackage existing legacy JPEGs to reduce their size by 9–20% without further loss!</em></i></aside>
+   <details>
+   <summary>Look how much fucking smaller AVIF is than JPEG</summary>
+   <div class="gallery">
+   <figure>
+     <picture>
+       <source type="image/jxl" srcset="seattle.jxl">
+       <source type="image/webp" srcset="seattle.webp">
+       <img src="seattle.png" width="682" height="544" loading="lazy" alt="Dusk view of the Seattle skyline. The Space Needle stands lit against a deep blue twilight sky, with downtown Seattle’s skyscrapers glowing behind.">
+     </picture>
+     <figcaption>Otherwise‐lossless 682 × 544 8‐bit‐color version of <a href="https://commons.wikimedia.org/wiki/File:Dusk_view_of_the_skyline,_Seattle,_Washington_LCCN2011632092.tif"><cite>Dusk view of the skyline, Seattle, Washington</cite></a>, Carol M. Highsmith. 402 KB JXL, 432 KB WebP.</figcaption>
+   </figure>
+   <figure>
+     <img src="seattleLossy.avif" width="682" height="544" loading="lazy" alt="Lossily compressed: dusk view of the Seattle skyline. The Space Needle stands lit against a deep blue twilight sky, with downtown Seattle’s skyscrapers glowing behind.">
+     <figcaption>Lossy AVIF version of the above, 47 KB, SSIMULACRA2 79.9.</figcaption>
+   </figure>
+  <figure>
+    <img src="seattleLossy.jpg" width="682" height="544" loading="lazy" alt="Lossily compressed: dusk view of the Seattle skyline. The Space Needle stands lit against a deep blue twilight sky, with downtown Seattle’s skyscrapers glowing behind.">
+     <figcaption>Lossy JPEG version of the above, 91 KB, SSIMULACRA2 80.3.</figcaption>
+   </figure>
+   </div>
+   <p>Notice how those lazy‐loaded, so people who don’t want to download three extra shitty images don’t have to until they need to. The main content is a lean as fuck 29 KB that you could load in ten seconds on dial‐up, and if you don’t open this <code>&lt;details&gt;</code>, you’re spared half a megabyte. Hell, I don’t even make you load the WCAG badge at the bottom if you get bored of this crappy page and don’t scroll all the way down to it.</p>
+   </details>
+   
 </section>
 
 <section>
@@ -240,7 +266,7 @@ cwebp -q 80 hero.png -o hero.webp</code></pre>
     <li><strong>Responsive layout:</strong> <code>max-width</code>. One property. Your phone is already fine.</li>
   </ul>
   <p>Every one of these is a <em>platform feature</em>. It’s in the browser. It was already downloaded, by the user, before they ever heard of you. The framework doesn’t give you these things. At best it gives you a slower way to type them, and at worst it hides them behind a plugin ecosystem so you forget they were free.</p>
-  <p>Other than the Open Graph image and the WCAG badge, this page is a single HTML file of about 27 KB. In fact, with gzip or brotli compression, it’s way smaller than that on the wire because I’m not sending you excessive junk stock photos of “satisfied” “customers”.  It has no dependencies, no cookie banner, no hydration errors, and no security problems. The deploy process is “copy the file to the served directory”.</p>
+  <p>This website has no dependencies, no cookie banner, no hydration errors, and no security problems. The deploy process is “copy the file to the served directory”.</p>
 </section>
 
 <section>
@@ -276,7 +302,7 @@ cwebp -q 80 hero.png -o hero.webp</code></pre>
   <p>A loving sequel to <a href="https://motherfuckingwebsite.com/">motherfuckingwebsite.com</a></p>
   <a href="https://www.w3.org/WAI/WCAG2AA-Conformance"
    title="Explanation of WCAG 2 Level AA conformance">
-  <img height="31" width="88"
+  <img height="31" width="88" loading="lazy"
        src="https://www.w3.org/WAI/WCAG22/wcag2.2AA"
        alt="Level AA conformance,
             W3C Web Content Accessibility Guidelines 2.2">
