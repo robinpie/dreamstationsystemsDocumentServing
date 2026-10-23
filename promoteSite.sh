@@ -54,6 +54,7 @@ NGINX_SNIPPETS=(
 	onionLocation.conf
 	pgpKey.conf
 	robotsTag.conf
+	securityTxt.conf
 	statusCgi.conf
 	teslaNotice.conf
 	theme.conf
