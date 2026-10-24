@@ -26,7 +26,7 @@
   "description": "Semantic HTML, JSON-LD, Open Graph, resource hints and modern image formats without a framework or a build system.",
   "inLanguage": "en",
   "datePublished": "2026-09-24",
-  "dateModified": "2026-10-23",
+  "dateModified": "2026-10-24",
   "author": { "@type": "Person", "name": "Robin Reel" }
 }
 </script>
@@ -53,6 +53,10 @@
   .gallery { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1.5rem 0; }
   .gallery figure { flex: 1 1 18rem; margin: 0; }
   .gallery img { max-width: 100%; height: auto; }
+  
+  .emphatic-capitalization {
+  font-style: normal;
+  }
 
   /* Going crazy. It looks like shit but it's still accessible. It has contrast, it's still actual fucking text for screen readers and bots, there's only motion for the ~5 s after the <details> opens (WCAG 2.2.2) or while hovered, none at all if you're a stuck-up asshole with prefers-reduced-motion, and it has a plain fallback in forced-colors mode. */
   @property --spin { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
@@ -205,7 +209,7 @@
 { "prerender": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }
 &lt;/script&gt;</code></pre>
   <p>Browsers that support it prerender the next page on hover. Browsers that don’t support it ignore it. Nobody gets a broken back button. Add <code>@view-transition { navigation: auto; }</code> to your CSS and your plain old multi‐page site cross‐fades between pages like the SPA you spent nine months building.</p>
-  <p>A word of warning, because you <em>will</em> overdo it: if you preload everything, you’ve prioritized nothing. Hint your actual fucking content and not a fucking PDF behind two user clicks.</p>
+  <p>A word of warning, because you <em>will</em> overdo it: if you preload everything, you’ve prioritized nothing. Hint your actual fucking content and not your print view PDF behind three user clicks.</p>
 </section>
 
 <section>
@@ -248,7 +252,7 @@ cwebp -q 80 hero.png -o hero.webp</code></pre>
      <figcaption>Lossy JPEG version of the image, 91 KB, SSIMULACRA2 80.3.</figcaption>
    </figure>
    </div>
-   <p>Notice how those lazy‐loaded, so people who don’t want to download three extra shitty images don’t have to until they need to. When brotli compressed, the main content is a lean as fuck 11 KB that you could load in three seconds on dial‐up, and if you don’t open this <code>&lt;details&gt;</code>, you’re spared half a megabyte. Hell, I don’t even make you load the WCAG badge at the bottom if you get bored of this crappy page and don’t scroll all the way down to it.</p>
+   <p>Notice how those lazy‐loaded, so people who don’t want to download three extra shitty images don’t have to until they need to. When brotli compressed, the main content is a lean as fuck 12 KB that you could load in three seconds on dial‐up, and if you don’t open this <code>&lt;details&gt;</code>, you’re spared half a megabyte. Hell, I don’t even make you load the WCAG badge at the bottom if you get bored of this crappy page and don’t scroll all the way down to it.</p>
    </details>
    
 </section>
@@ -280,6 +284,14 @@ cwebp -q 80 hero.png -o hero.webp</code></pre>
     <p>Then use an actual application framework, you beautiful bastard. If you’re building a spreadsheet, a video editor, or a design tool, go nuts. But be honest: you’re building a marketing site, a blog, a docs page, or a restaurant menu. It’s a document. The web was <em>invented</em> for documents. It’s extremely fucking good at them.</p>
   </details>
   <details>
+    <summary><i>Addendum <time datetime="2026-10">October 2026</time>:</i> “But I’m building a shop or forum.”</summary>
+    <p>Okay, I’m worried the previous section let some of you assholes off the hook a little too easily. “Well, my site has user accounts, so it’s basically Google Sheets.” Wrong!</p>
+    <p>The W3 has a lot of shops, forums, online banking portals, et cetera that aren’t workable as static sites but definitely aren’t fucking <em class="emphatic-capitalization">Applications</em>. And yes, server‐side rendering (a 2020s‐ism for what we’ve always done with CGI, PHP, etc.) is a valid tool in this case, and is in fact <strong>what you should be doing</strong>. I’m still fucking insistent that static sites should be static sites, but one of the points I’m trying to get across here is that you shouldn’t be foisting off bullshit work on the client. Do your logic on the server, send HTML to the client, communicate with forms, cookies, and query strings.</p>
+    <p>Your server knows who’s logged in. It’s sitting next to the database. It has a fast CPU, a warm cache, and is plugged into the wall. Your user’s phone has none of that. When you ship a client‐side app, you’re telling every single visitor to rebuild the same page from scratch on the worst hardware in the whole chain, and paying for it with their battery, their data plan, and their patience. You are being an asshole.</p>
+    <p>Another word of warning, because you <em>will</em> overdo it again: Don’t take this as a license to round‐trip to the server for everything. Your website is for end users, and the point is to put each job where it works best for the user. For things that are purely resentational and ephemeral, and the platform doesn’t already do, (check first: <code>&lt;details&gt;</code>, <code>&lt;dialog&gt;</code>, <code>popover</code>, and <code>:has()</code> cover a stupid amount of this), JavaScript away. Don’t use it to draw fucking text, but this isn’t not a “JavaScript is evil” page.</p>
+    <p>Also: “server‐side rendering” in framework‐land sometimes means rendering on the server, then making the client render the entire thing <em>again</em> and attach event handlers. That’s called hydration, and it’s the worst of both worlds: both your server and the user pay.</p>
+  </details>
+  <details>
     <summary>“But developer experience!”</summary>
     <p>Your developer experience is waiting 40 seconds for a dev server to boot so you can change a word. Mine is pressing save and hitting refresh. Also, nobody visiting your site cares about your developer experience.</p>
   </details>
@@ -287,6 +299,16 @@ cwebp -q 80 hero.png -o hero.webp</code></pre>
     <summary>“But it looks plain.”</summary>
     <p>So write some CSS. Modern CSS has nesting, variables, grid, container queries, <code>:has()</code>, <code>clamp()</code>, and color functions built in. You don’t need a preprocessor for those anymore. You don’t need JavaScript for them either. This website’s presentation is pretty fucking austere as a nod to the <a href="https://motherfuckingwebsite.com/">original motherfucking website</a>, but feel free to <span class="crazy"><span>go crazy</span></span> as long as it doesn’t impact accessibility. My point is that every byte should be there because <em>you chose it</em>, not because it fell out of the thousand assholes that wrote everything in your <code>node_modules</code>.</p>
   </details>
+  <details>
+      <summary>“But Bob only knows React!”</summary>
+      <p>
+        <ul>
+          <li><code>renderToStaticMarkup</code> (and similar things in other frameworks) can turn a component into an editable, templateable, statically‐servable plain HTML string just fine.</li>
+          <li>If you work on computers, you have to learn some new shit every month anyway. Learn the foundational shit too.</li>
+          <li>It’s 2026, your AI pro max 1000x subscription agent can write plain HTML just as well as it can React.</li>
+        </ul>
+      </p>
+    </details>
 </section>
 
 <section>
