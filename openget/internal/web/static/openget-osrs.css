@@ -12,15 +12,18 @@
  GNU General Public License for more details.
 */
 
-/* OpenGET skin: Old School RuneScape. The default skin, and the site's own
- * visual identity rather than a borrowed desktop — three bands (stone
- * chrome, a parchment scroll, stone again underneath), matching how
- * oldschool.runescape.com actually lays a page out. Colours are sampled
- * from their live page, not guessed, and nothing here is a copied Jagex
- * asset — see openget.txt (LOOK AND FEEL) for the full rationale.
+/* OpenGET skin: Old School RuneScape. The default skin, built to sit as
+ * close to oldschool.runescape.com as a site with no Jagex assets can get.
+ * Their page is a black void with ONE centred column of cobbled stone,
+ * framed by vine-wrapped pillars; on that column, a logo, black menu boxes
+ * in a 2px #382418 frame, and a parchment scroll with torn, rolled ends
+ * carrying everything you came to read. So is ours. Colours and box metrics
+ * are taken from their live stylesheet and sampled from their images; the
+ * stone and pillar are our own drawings (osrs-stone.svg, osrs-pillar.svg,
+ * from contrib/gen_osrs_textures.py). See openget.txt (LOOK AND FEEL).
  *
  * Structure lives in openget-layout.css. This file sets faces, colour and
- * ornament only. */
+ * ornament, plus the column widths that ARE the look. */
 
 /* Kingthings Petrock, © Kevin King 2006, a registered trademark of
  * Kingthings. Not ours; served unmodified, obtained from Font Squirrel
@@ -34,42 +37,48 @@
        url("/static/kingthings-petrock.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
-  /* Headings paint immediately in the fallback serif and swap when the font lands, so a slow connection never gets a page of invisible titles. */
+  /* The logo paints immediately in the fallback serif and swaps when the font lands. */
   font-display: swap;
 }
 
 :root {
-  /* Ground. Their stone photographs at #0d0c08 on average; the page under it is flat black. */
   --void:      #000000;
-  --ground:    #0c0a07;
 
-  /* Chrome browns. --wood is #382418, the single most repeated colour in their stylesheet, and measurably the exact 2px frame around every menu box on their front page. */
+  /* Chrome browns. --wood is #382418, their single most repeated colour, and
+   * the exact 2px frame on every menu box, nav tab and pagination cell. */
   --wood:      #382418;
   --wood-mid:  #4a381f;
   --wood-lit:  #6d4211;
   --wood-pale: #8e7246;
 
-  /* --stone-lit is the LIGHTEST point the masthead texture reaches: #141009
-   * under 26% --wood-pale composites to #342919 and no further, so text on
-   * the masthead is checked against --stone-lit rather than --stone. 0.26 is
-   * a ceiling, not a taste — see openget.txt (LOOK AND FEEL) for why. */
-  --stone:     #141009;
-  --stone-lit: #342919;
-  --stone-foot: #14110a;
+  /* The cobbled column. --stone is the mortar-and-cobble average their own
+   * texture samples to (#1d1910); --stone-lit is the brightest a cobble's
+   * lit shoulder gets in osrs-stone.svg, and is what text standing directly
+   * on the stone (logo, footer) is checked against. */
+  --stone:     #1d1910;
+  --stone-lit: #362d1e;
 
-  /* --scroll is the sheet main is drawn on, and the flat, unlit value every
-   * dark-ink pair is measured against. --parch-0, a shade lighter, is what a
-   * TABLE is drawn on, so it reads as a fresh page laid over the roll. */
-  --scroll:    #cdb078;
-  --parch-0:   #d9c27e;
+  /* The scroll. Their sheet is a horizontal vignette: #9c8660 at the torn
+   * edge, #dabd89 down the middle. --scroll is the value at the inner edge
+   * of main's padding — the darkest paper any glyph is ever drawn on —
+   * and --scroll-mid is the lit centre. Everything between only lightens. */
+  --scroll-edge: #9c8660;
+  --scroll:    #c4aa76;
+  --scroll-mid: #dabd89;
+  /* A table is a fresh sheet laid on the roll, one shade above it. */
+  --parch-0:   #dcc58e;
   --parch-1:   #d0b87c;
 
-  /* --scroll-h and --code-ink are their heading brown and rust, each
-   * darkened one step to clear WCAG AA at the sizes we use them. */
-  --ink:       #2b1c0a;
-  --ink-dim:   #4a3a20;
-  --scroll-h:  #5e3a0e;
-  --code-ink:  #6e2b04;
+  /* Body ink is their black. --scroll-h is their exact title brown
+   * (.home-main-title), used only at large-text sizes. --link-ink is their
+   * .secondary-link brown (#7b4f17) darkened until it clears 4.5:1 on the
+   * darkest paper a link is drawn on. */
+  --ink:       #000000;
+  --ink-dim:   #2f2412;
+  --scroll-h:  #6d4211;
+  --link-ink:  #4f3009;
+  --link-ink-hov: #2e1c05;
+  --code-ink:  #5c2103;
 
   --gold:      #ffbb22;
   --gold-dim:  #bbab2e;
@@ -77,75 +86,88 @@
   --text:      #ffffff;
   --text-dim:  #b1a994;
 
-  /* The olive rule their news items are separated by. Purely decorative —
-   * at 2.25 on the scroll it couldn't carry information anyway. */
+  /* The olive rule between their news items. Decorative only. */
   --olive:     #6b7b17;
 
-  /* Profit/loss in the game's own greens and reds — one pair for dark
-   * furniture, one for parchment. The reds are darkened off the game's own
-   * originals to clear WCAG AA (see check_contrast.py). */
+  /* Their active tab / current page cell: flat #646464, white text. */
+  --current:   #646464;
+
+  /* Profit/loss in the game's greens and reds — one pair for black
+   * furniture, one for parchment, where the bright pair is unreadable. */
   --good:      #61ca5c;
   --good-ink:  #1d4f1b;
   --bad:       #e8544e;
   --bad-ink:   #870802;
 
-  /* Green on black, like their menus; brown-green ink on parchment — their
-   * own parchment links (#7b4f17) measure 3.39 there and can't be used. */
+  /* Their link green, on anything black. */
   --link:      #90c040;
   --link-hov:  #b6e065;
   --link-vis:  #7fa83f;
-  --link-ink:  #2e4a0b;
-  --link-ink-hov: #1d4f1b;
 
-  /* Their buttons are a mottled stone slab in a pale metal band with white lettering. Ours are the same three parts. */
-  --btn-hi:    #4a3f2d;
-  --btn-lo:    #322a1f;
-  --btn-hov:   #5b4d38;
+  /* The logo: stone-grey letters in a black outline over a red ribbon with
+   * gold lettering, which is the shape of their banner without its pixels. */
+  --logo:      #d6cfbf;
+  --ribbon-hi: #8a1a10;
+  --ribbon-lo: #5c0f08;
 
-  /* The in-game interface has no rounded corners anywhere. Neither do we. */
+  /* Their buttons are a riveted stone slab in a grey metal frame. --btn-hi
+   * is the lightest pixel under a label, which is what gets checked. */
+  --btn-hi:    #3e3526;
+  --btn-lo:    #241e14;
+  --btn-hov:   #4d4230;
+  --btn-rim:   #8a8070;
+  --rivet:     #b8ae9c;
+
   --mono: ui-monospace, "DejaVu Sans Mono", "Liberation Mono", Menlo, monospace;
   --sans: Arial, Helvetica, sans-serif;
+  /* Their page title is font-family:initial — the browser's default serif — set bold. */
+  --serif: "Times New Roman", Times, "Liberation Serif", serif;
   --title: "Kingthings Petrock", "Palatino Linotype", Palatino, "Book Antiqua",
            "URW Palladio L", Georgia, serif;
 
-  /* The game draws every glyph with a hard one-pixel black shadow. It is the cheapest and most recognisable tell in the whole aesthetic. */
+  /* The game draws every glyph with a hard one-pixel black shadow. */
   --drop: 1px 1px 0 #000;
-  /* Its opposite, for ink on paper: a one-pixel highlight ABOVE the letter, which is what makes their scroll headings look pressed into the sheet. */
-  --emboss: 0 1px 0 rgba(255, 250, 232, 0.45);
 }
 
-/* THE STONE: cracked rock, not a brick wall or noise. Three coprime-period
- * repeating gradients give cracks that never visibly tile, plus radial
- * weathering; no text is ever drawn on it, so the lightening is
- * unconstrained. */
+/* --------------------------------------------------------------- the void */
+
+/* Outside the column there is nothing: their body is plain black. */
 body {
-  background-color: var(--ground);
-  background-image:
-    repeating-linear-gradient(58deg, rgba(0, 0, 0, 0.45) 0 1px, transparent 1px 63px),
-    repeating-linear-gradient(-49deg, rgba(0, 0, 0, 0.40) 0 1px, transparent 1px 87px),
-    repeating-linear-gradient(11deg, rgba(0, 0, 0, 0.30) 0 1px, transparent 1px 119px),
-    radial-gradient(ellipse 220px 150px at 12% 18%, rgba(109, 66, 17, 0.22), transparent 70%),
-    radial-gradient(ellipse 280px 190px at 78% 44%, rgba(142, 114, 70, 0.15), transparent 70%),
-    radial-gradient(ellipse 200px 260px at 41% 79%, rgba(90, 70, 40, 0.17), transparent 70%),
-    radial-gradient(rgba(142, 114, 70, 0.055) 1px, transparent 1px),
-    radial-gradient(rgba(0, 0, 0, 0.55) 1px, transparent 1px);
-  background-size:
-    auto, auto, auto,
-    920px 760px, 920px 760px, 920px 760px,
-    7px 7px, 11px 11px;
-  background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 3px 5px;
+  background: var(--void);
   color: var(--text);
   font-family: var(--sans);
 }
 
-/* Links, first ground: green on anything dark. The scroll overrides this further down. */
+/* THE COLUMN. Their .page-wrap is 815px of content in 50px of pillar either
+ * side; ours keeps the pillars and the proportions but is wider, because a
+ * ten-column price table is not a news feed. Pillars, then a shadow falling
+ * inward off each pillar, then the cobbles. No text sits on the shadow. */
+.page-wrap {
+  max-width: 1240px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0 46px;
+  background-color: var(--stone);
+  background-image:
+    url("/static/osrs-pillar.svg"),
+    url("/static/osrs-pillar.svg"),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0) 40px),
+    linear-gradient(270deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0) 40px),
+    url("/static/osrs-stone.svg");
+  background-repeat: repeat-y, repeat-y, no-repeat, no-repeat, repeat;
+  background-position: left top, right top, 46px 0, calc(100% - 46px) 0, 0 0;
+  background-size: 46px 120px, 46px 120px, 40px 100%, 40px 100%, 360px 360px;
+  overflow-x: clip;
+}
+
+/* Links, first ground: green on anything dark. The scroll overrides this. */
 a { color: var(--link); text-decoration: none; }
 a:hover { color: var(--link-hov); text-decoration: underline; }
 a:visited { color: var(--link-vis); }
 
-/* Gold is invisible on parchment (1.2:1), so main flips the focus ring to
- * ink, and dark furniture standing on the scroll flips it back — each
- * override one specificity step above the rule it beats. */
+/* Gold is invisible on parchment, so main flips the focus ring to ink, and
+ * black furniture on the scroll flips it back — each override one
+ * specificity step above the rule it beats. */
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
 main :focus-visible { outline-color: var(--ink); }
 main .facts :focus-visible,
@@ -159,193 +181,192 @@ main:focus { outline: none; }
 ::selection { background: var(--wood-lit); color: #fff; }
 
 .skip {
-  background: var(--parch-0);
-  color: var(--ink);
+  background: var(--void);
+  color: var(--link);
   font-weight: 700;
-  border: 2px solid var(--wood-lit);
-}
-
-/* The interface bevel: lit on the top-left, shadowed on the bottom-right. Every raised panel in the game does this and it is what makes flat colour read as a carved wooden frame. */
-nav.tabs a, .facts, .chartbox, .ogform, .notes, pre,
-table, button, .sitesearch input, .field input, .field select, footer,
-.status-bar {
-  box-shadow:
-    inset 1px 1px 0 rgba(255, 255, 255, 0.07),
-    inset -1px -1px 0 rgba(0, 0, 0, 0.55);
-}
-
-/* Anything you type into or read out of is sunken instead: the bevel runs the other way, dark at the top-left. */
-.sitesearch input, .field input, .field select, pre {
-  box-shadow:
-    inset 2px 2px 3px rgba(0, 0, 0, 0.75),
-    inset -1px -1px 0 rgba(255, 255, 255, 0.06);
+  border: 2px solid var(--wood);
 }
 
 /* ---------------------------------------------------------------- chrome */
 
-/* The banner band: the same rock one step lighter, grit dropped and
- * weathering kept, plus a gold rail along the bottom. Only one layer here
- * lightens — --stone-lit is its composite (see the note by that token). */
-.masthead {
-  background-color: var(--stone);
-  background-image:
-    repeating-linear-gradient(58deg, rgba(0, 0, 0, 0.55) 0 1px, transparent 1px 63px),
-    repeating-linear-gradient(-49deg, rgba(0, 0, 0, 0.48) 0 1px, transparent 1px 87px),
-    repeating-linear-gradient(7deg, rgba(0, 0, 0, 0.34) 0 1px, transparent 1px 119px),
-    radial-gradient(ellipse 460px 190px at 17% 34%, rgba(142, 114, 70, 0.26), transparent 74%),
-    radial-gradient(ellipse 520px 240px at 63% 78%, rgba(142, 114, 70, 0.22), transparent 74%),
-    radial-gradient(ellipse 300px 160px at 92% 22%, rgba(142, 114, 70, 0.18), transparent 74%);
-  border-bottom: 2px solid var(--wood-lit);
+/* No band of its own: the banner is just more of the column. */
+.masthead { padding: 18px 0 0; }
+.masthead-inner {
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
 }
 
+/* THE LOGO. Their banner is an image — grey stone letters, a sword, a red
+ * ribbon reading OLD SCHOOL. Ours is type doing the same job: the name in
+ * stone grey with a black outline, and the strapline on a ribbon. */
 .brand {
   font-family: var(--title);
   font-weight: 400;
-  letter-spacing: 0.02em;
-  color: var(--gold);
-  text-shadow: 2px 2px 0 #000, 0 0 14px rgba(255, 187, 34, 0.22);
+  font-size: 64px;
+  line-height: 1;
+  text-align: center;
+  color: var(--logo);
+  text-shadow:
+    -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
+    0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000, 2px 0 0 #000,
+    4px 5px 6px rgba(0, 0, 0, 0.9);
 }
 .brand a, .brand a:visited { color: inherit; }
-.brand a:hover { color: #ffd166; text-decoration: none; }
+.brand a:hover { color: #fff; text-decoration: none; }
+/* The ribbon: notched ends cut by clip-path, so it costs no image. */
 .brand small {
-  font-family: var(--sans);
-  letter-spacing: 0.03em;
-  color: var(--text-dim);
+  display: table;
+  margin: 2px auto 0;
+  padding: 5px 30px 4px;
+  font-family: var(--title);
+  font-size: 19px;
+  letter-spacing: 0.02em;
+  color: var(--gold);
+  background: linear-gradient(var(--ribbon-hi), var(--ribbon-lo));
   text-shadow: var(--drop);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 14px) 50%, 100% 100%, 0 100%, 14px 50%);
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.8));
 }
 
-.sitesearch input {
+/* THE CONTROL BAR is their .banner__options / .login-box: a black strip in
+ * the 2px brown frame, sitting under the logo. */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 22px;
+  padding: 6px 15px;
   background: var(--void);
-  /* --wood-pale, not --wood-lit: --wood-lit manages only 1.70:1 on this
-   * black field where 1.4.11 needs 3; --wood-pale gets 3.65/4.65. */
+  border: 2px solid var(--wood);
+}
+.sitesearch { margin-left: 0; }
+.sitesearch input {
+  background: #0d0b07;
+  /* A black field inside a black bar is identified only by its border:
+   * --wood-pale clears 3:1 on black where --wood would not. */
   border: 2px solid var(--wood-pale);
   color: var(--text);
 }
-.sitesearch input::placeholder { color: #7d745f; }
+.sitesearch input::placeholder { color: #8a8170; }
 
 .f2ptoggle, .themepick {
-  color: var(--parch-1);
+  color: var(--text);
   text-shadow: var(--drop);
 }
 .f2ptoggle input[type="checkbox"] { accent-color: var(--gold); }
 .themepick select {
-  background: var(--void);
+  background: #0d0b07;
   border: 2px solid var(--wood-pale);
   color: var(--text);
 }
 
-/* Their menu boxes turned on their side: a black cell, a pale frame, a
- * green label. The frame is --wood-pale rather than #382418 because
- * #382418 measures only 1.13 on this masthead. */
+/* Their .secondary-wrap menu, exactly: centred black cells in the 2px brown
+ * frame, green labels, and the current one flat grey with white text. */
+nav.tabs {
+  justify-content: center;
+  gap: 6px 4px;
+  margin-top: 16px;
+}
 nav.tabs a {
+  padding: 7px 15px;
   background: var(--void);
-  border: 2px solid var(--wood-pale);
+  border: 2px solid var(--wood);
   color: var(--link);
-  text-shadow: var(--drop);
 }
-nav.tabs a:hover {
-  background: #150f07;
-  border-color: var(--gold-dim);
-  color: var(--link-hov);
-  text-decoration: none;
-}
+nav.tabs a:visited { color: var(--link); }
+nav.tabs a:hover { color: var(--link-hov); text-decoration: underline; }
 nav.tabs a[aria-current="page"] {
-  background: var(--parch-0);
-  background-image: linear-gradient(rgba(255, 255, 255, 0.35), rgba(0, 0, 0, 0.06));
-  border-color: var(--parch-0);
-  color: var(--ink);
-  font-weight: 700;
-  text-shadow: none;
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5);
+  background: var(--current);
+  color: var(--text);
 }
 
 /* ----------------------------------------------------------------- scroll */
 
-/* main IS the sheet: a lit middle (lightens only, so ink pairs stay honest
- * against flat --scroll) plus darkened torn edges held to 8px — inside
- * main's 16px padding (10px at the narrow breakpoint) — so no glyph is
- * ever drawn on the darkened band. Widen it and it needs a composite. */
+/* main IS the scroll. Their sheet is a horizontal vignette, dark at the
+ * torn edges and lit down the middle; the darkening is held inside main's
+ * padding, so the paper under any glyph is --scroll or lighter. */
 main {
   position: relative;
+  max-width: 1090px;
+  margin: 44px auto 34px;
+  padding: 34px 40px 34px;
   background-color: var(--scroll);
   background-image:
-    radial-gradient(ellipse 88% 66% at 44% 22%, rgba(255, 244, 214, 0.36), rgba(255, 244, 214, 0) 82%),
-    linear-gradient(90deg, rgba(58, 38, 12, 0.38) 0, rgba(58, 38, 12, 0) 8px),
-    linear-gradient(270deg, rgba(58, 38, 12, 0.38) 0, rgba(58, 38, 12, 0) 8px),
-    repeating-linear-gradient(0deg, rgba(120, 90, 40, 0.07) 0 1px, transparent 1px 5px),
-    repeating-linear-gradient(0deg, rgba(120, 90, 40, 0.05) 0 1px, transparent 1px 23px),
-    radial-gradient(ellipse 240px 150px at 88% 68%, rgba(120, 84, 30, 0.14), transparent 70%),
-    radial-gradient(ellipse 300px 200px at 8% 82%, rgba(120, 84, 30, 0.11), transparent 70%),
-    radial-gradient(ellipse 180px 320px at 61% 41%, rgba(120, 84, 30, 0.09), transparent 70%);
+    linear-gradient(90deg,
+      #8a7550 0, var(--scroll-edge) 10px, var(--scroll) 40px,
+      var(--scroll-mid) 42%, var(--scroll-mid) 58%,
+      var(--scroll) calc(100% - 40px), var(--scroll-edge) calc(100% - 10px), #8a7550 100%),
+    repeating-linear-gradient(0deg, rgba(120, 90, 40, 0.05) 0 1px, transparent 1px 6px);
+  background-blend-mode: normal;
   color: var(--ink);
-  box-shadow: 0 0 22px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.85);
 }
+/* The repeating grain darkens by 5% at most, and only along 1px lines; the
+ * gradient underneath it is what check_contrast.py measures. */
 
-/* The rolled ends: a light crest with a crease and shadow either side,
- * pulled out through main's own padding by negative margins so they land
- * flush on its edges — the reason that padding may not shrink further. */
+/* THE ROLLS. Their top and bottom are a rolled cylinder whose ends are torn
+ * ragged; ours are main::before/::after, cut to that silhouette by
+ * clip-path and pulled out through main's own padding so the roll straddles
+ * the sheet's edge and overhangs it 12px each side, into the column. */
 main::before, main::after {
   content: "";
   display: block;
-  height: 24px;
-  border-radius: 7px / 50%;
+  height: 44px;
+  background:
+    linear-gradient(180deg,
+      #7d6b48 0, #9a8457 14%, #c2a774 38%, #d9be86 50%,
+      #b99f6c 66%, #a08959 84%, #7d6b48 100%);
+  clip-path: polygon(
+    0 18%, 3px 10%, 18px 0, 26px 16%, calc(100% - 26px) 16%, calc(100% - 18px) 0,
+    calc(100% - 3px) 10%, 100% 18%, calc(100% - 12px) 38%, 100% 52%,
+    calc(100% - 6px) 64%, 100% 80%, calc(100% - 18px) 100%, calc(100% - 26px) 86%,
+    26px 86%, 18px 100%, 0 80%, 6px 64%, 0 52%, 12px 38%);
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.6));
 }
-main::before {
-  margin: -20px -16px 22px;
-  background: linear-gradient(180deg,
-    #8b7040 0 1px, #b89a66 1px 14%, #e6d5ac 42%, #f3e7c6 54%,
-    #d8c096 70%, #a98d59 88%, #7b6335 100%);
-  box-shadow: 0 6px 10px -3px rgba(0, 0, 0, 0.5);
-}
-main::after {
-  margin: 26px -16px -40px;
-  background: linear-gradient(0deg,
-    #8b7040 0 1px, #b89a66 1px 14%, #e6d5ac 42%, #f3e7c6 54%,
-    #d8c096 70%, #a98d59 88%, #7b6335 100%);
-  box-shadow: 0 -6px 10px -3px rgba(0, 0, 0, 0.5);
-}
-/* Above 1240px the column is capped at 1180 with slack either side, so the
- * rolls can overhang; below it main is full-width and an overhang would be
- * horizontal page scroll, which 1.4.10 does not forgive. */
-@media (min-width: 1240px) {
-  main::before { margin-left: -30px; margin-right: -30px; }
-  main::after  { margin-left: -30px; margin-right: -30px; }
-}
-/* main's padding drops to 14px/10px/30px at the layout's breakpoint, and a roll pulled out by the wide figures would hang off the sheet by the difference. */
-@media (max-width: 720px) {
-  main::before { margin: -14px -10px 16px; }
-  main::after  { margin: 20px -10px -30px; }
-}
+main::before { margin: -56px -52px 24px; }
+main::after  { margin: 28px -52px -56px; transform: scaleY(-1); }
 
 /* --------------------------------------------------------------- content */
 
-/* Their scroll headings are a warm brown pressed into the paper: a highlight above the letter rather than the black shadow the dark chrome uses. */
-h1, h2, h3 {
-  font-family: var(--title);
-  font-weight: 400;
+/* Their page title: browser-default serif, bold, centred, in #6d4211 with a
+ * soft black shadow. */
+h1 {
+  font-family: var(--serif);
+  font-weight: 700;
+  text-align: center;
   color: var(--scroll-h);
-  text-shadow: var(--emboss);
+  text-shadow: 1px 1px 1px #000;
 }
-/* The olive news-item rule, fading right; solid first so a browser without
- * border-image still gets a rule. :not([class]) keeps it off panel title
- * bars, which are h2 as well and draw their own frame. */
+.subtitle { margin-left: auto; margin-right: auto; text-align: center; }
+
+/* Their section titles: plain bold Arial, black, centred. :not([class])
+ * keeps this off panel title bars, which are h2 as well. */
 h2:not([class]) {
-  border-bottom: 2px solid var(--olive);
-  border-image: linear-gradient(90deg, var(--olive), rgba(107, 123, 23, 0.4) 62%, transparent) 1;
+  font-family: var(--sans);
+  font-weight: 700;
+  text-align: center;
+  color: var(--ink);
+}
+h3:not([class]), .linkhead {
+  font-family: var(--sans);
+  font-weight: 700;
+  color: var(--ink);
 }
 
 .subtitle, .muted, table caption, .paging { color: var(--ink-dim); }
 
-a:where(main *) { color: var(--link-ink); font-weight: 600; }
+/* Their .secondary-link: bold brown. */
+a:where(main *) { color: var(--link-ink); font-weight: 700; }
 a:where(main *):visited { color: var(--link-ink); }
 a:where(main *):hover { color: var(--link-ink-hov); }
 
-/* The only <code> the site renders is the finger address in the footer, on
- * stone — so amber is the default and the sheet is the exception. */
+/* The only <code> outside main is the finger address in the footer, on stone. */
 code { font-family: var(--mono); color: var(--amber); }
 code:where(main *) { color: var(--code-ink); }
 
-/* The little olive lozenge is the game's own list marker, in the same colour as the rule. */
+/* The olive lozenge is the game's own list marker, in the rule's colour. */
 ul.linklist li::before, .notes li::before {
   content: "";
   position: absolute;
@@ -358,38 +379,35 @@ ul.linklist li::before, .notes li::before {
 ul.linklist li::before { top: 11px; }
 .notes li::before { top: 7px; }
 
+/* Their news items are divided by a 1px olive rule; ours divide link lists the same way. */
+ul.linklist li + li { border-top: 1px solid rgba(107, 123, 23, 0.55); }
+
 /* ---------------------------------------------------------------- tables */
 
-/* A table is a fresh sheet laid on the roll: one shade lighter than --scroll, framed, and lifted off it by a shadow. */
+/* A table is a fresh sheet laid on the roll, framed in the chrome brown. */
 table {
   background-color: var(--parch-0);
-  background-image:
-    repeating-linear-gradient(0deg,
-      rgba(120, 90, 40, 0.05) 0 1px, transparent 1px 4px),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 40%, rgba(120, 84, 30, 0.13));
   color: var(--ink);
   border: 2px solid var(--wood);
-  box-shadow:
-    inset 1px 1px 0 rgba(255, 255, 255, 0.20),
-    0 2px 7px rgba(60, 40, 12, 0.35);
+  box-shadow: 0 2px 6px rgba(60, 40, 12, 0.35);
 }
 
-/* The header band is the dark interface bar sitting on top of the sheet. */
+/* The header band is a black menu bar laid across the top of the sheet. */
 thead th {
-  background: linear-gradient(var(--wood-mid), var(--wood));
-  color: var(--gold);
-  letter-spacing: 0.02em;
-  border-bottom: 2px solid var(--wood-lit);
+  background: var(--void);
+  color: var(--text);
+  border-bottom: 2px solid var(--wood);
   text-shadow: var(--drop);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
-thead th a, thead th a:visited { color: inherit; font-weight: inherit; }
-thead th a:hover { color: #ffd166; }
+thead th a, thead th a:visited { color: var(--link); font-weight: inherit; }
+thead th a:hover { color: var(--link-hov); }
 
-/* :is(td, th) throughout: the row-naming column is a <th scope="row">, and
- * every rule here is about being a body cell, not specifically a <td>. */
+/* :is(td, th) throughout: the row-naming column is a <th scope="row">. */
 tbody :is(td, th) { border-bottom: 1px solid rgba(90, 62, 20, 0.22); }
-tbody :is(td, th).r { font-family: var(--mono); }
+/* Their tables set figures in Arial, not a monospace: its digits are
+ * tabular already, and it is a quarter narrower, which a ten-column table
+ * on a scroll this width needs. */
+tbody :is(td, th).r { font-family: var(--sans); font-variant-numeric: tabular-nums; }
 tbody tr:nth-child(even) { background: rgba(120, 84, 30, 0.10); }
 tbody tr:hover { background: rgba(255, 187, 34, 0.20); }
 tbody :is(td, th) a, tbody :is(td, th) a:visited { color: var(--link-ink); font-weight: 700; }
@@ -400,44 +418,53 @@ tbody :is(td, th) a:hover { color: var(--link-ink-hov); }
 
 /* -------------------------------------------------------- dark furniture */
 
-/* Their menu boxes exactly: #000 fill, 2px #382418 frame, white centred
- * caption. Flat black gives every colour inside slightly more contrast
- * than it was checked at, never less. */
+/* Their .home-nav__box: #000 fill, 2px #382418 frame, and a white title
+ * that sits ON the top edge rather than inside it. Ours breaks the frame
+ * with a black label, because half a white glyph over parchment would be
+ * unreadable where theirs only ever sits over stone. */
 .facts, .notes, .chartbox, .ogform, .status-bar {
   background: var(--void);
   border: 2px solid var(--wood);
 }
+.facts { margin-top: 10px; }
 .facts :is(h2, h3), .notes :is(h2, h3), .chartbox figcaption {
-  background: none;
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 8px;
+  background: var(--void);
   border: 0;
   font-family: var(--sans);
-  font-weight: 700;
-  letter-spacing: 0.03em;
+  font-weight: 400;
   text-align: center;
   color: var(--text);
   text-shadow: var(--drop);
 }
-/* Links inside the furniture are back on black, so they are back to green. */
-.facts a, .notes a, .chartbox a, .ogform a, .status-bar a, pre a { color: var(--link); }
+.facts :is(h2, h3) { margin-top: -12px; font-size: 13px; }
+.notes :is(h2, h3) { margin-top: -10px; padding: 0 8px; }
+.notes { margin-top: 34px; }
+/* Not straddled: .chartbox scrolls horizontally, and an overflow box clips
+ * whatever pokes out of it, so its caption sits just inside the frame. */
+.chartbox figcaption { margin-top: -10px; }
+
+.facts a, .notes a, .chartbox a, .ogform a, .status-bar a, pre a { color: var(--link); font-weight: 400; }
 .facts a:visited, .notes a:visited, .chartbox a:visited,
 .ogform a:visited, .status-bar a:visited, pre a:visited { color: var(--link-vis); }
 .facts a:hover, .notes a:hover, .chartbox a:hover,
 .ogform a:hover, .status-bar a:hover, pre a:hover { color: var(--link-hov); }
-/* …and so is anything muted, which on the scroll means dark ink and in here means the opposite. */
 .facts .muted, .notes .muted, .chartbox .muted,
 .ogform .muted, .status-bar .muted { color: var(--text-dim); }
 .facts code, .notes code, .chartbox code,
 .ogform code, .status-bar code { color: var(--amber); }
 
 .facts dt { color: var(--text-dim); }
-.facts dd { font-family: var(--mono); color: var(--parch-0); }
+.facts dd { font-family: var(--mono); color: var(--gold); }
 .facts dd.good { color: var(--good); }
 .facts dd.bad  { color: var(--bad); }
 
 .notes li { color: var(--text-dim); }
 
 .status-bar { color: var(--text-dim); }
-.status-bar-field { border: 1px solid rgba(255, 255, 255, 0.06); }
 
 pre {
   background: var(--void);
@@ -457,102 +484,141 @@ svg.chart .chart-empty { fill: var(--text-dim); }
 
 /* ----------------------------------------------------------------- forms */
 
-.field > label { color: var(--gold-dim); text-shadow: var(--drop); }
+.field > label { color: var(--gold); text-shadow: var(--drop); }
 .field input, .field select {
-  background: var(--void);
-  /* Same as the search box: a black field on a black panel is identified only by its border, and --wood-pale is 4.65:1 against black where --wood was 2.44. */
+  background: #0d0b07;
   border: 2px solid var(--wood-pale);
   color: var(--text);
 }
 .field small { color: var(--text-dim); }
 
-/* A checkbox wants none of the sunken bevel or padding a text field gets — those are drawn around the control and make a 13px box look like a broken one. */
+/* A checkbox wants none of a text field's border and padding. */
 .field.check input {
   border: 0;
-  box-shadow: none;
   accent-color: var(--gold);
 }
 
-/* A stone slab in a pale metal band. Both cross-hatch gradients only
- * darken, so the flat --btn-hi end of the fill is the lightest pixel under
- * the label — the pair check_contrast.py measures. */
+/* Their .home-button: a cobble slab in a grey metal frame with a rivet in
+ * each corner, white bold lettering with the hard shadow. The rivets are
+ * four radial gradients; the slab is a linear one whose lightest stop,
+ * --btn-hi, is what check_contrast.py measures the label against. */
 button {
   background-color: var(--btn-hi);
   background-image:
-    repeating-linear-gradient(53deg, rgba(0, 0, 0, 0.25) 0 1px, transparent 1px 17px),
-    repeating-linear-gradient(-41deg, rgba(0, 0, 0, 0.20) 0 1px, transparent 1px 23px),
+    radial-gradient(circle at 4px 4px, var(--rivet) 0 1.5px, transparent 2px),
+    radial-gradient(circle at calc(100% - 4px) 4px, var(--rivet) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 4px calc(100% - 4px), var(--rivet) 0 1.5px, transparent 2px),
+    radial-gradient(circle at calc(100% - 4px) calc(100% - 4px), var(--rivet) 0 1.5px, transparent 2px),
     linear-gradient(var(--btn-hi), var(--btn-lo));
-  border: 2px solid var(--wood-pale);
+  border: 2px solid var(--btn-rim);
   color: var(--text);
   font-weight: 700;
   text-shadow: var(--drop);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.12),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.6),
+    0 0 0 1px #000;
 }
 button:hover {
-  background-color: var(--btn-hov);
   background-image:
-    repeating-linear-gradient(53deg, rgba(0, 0, 0, 0.25) 0 1px, transparent 1px 17px),
-    repeating-linear-gradient(-41deg, rgba(0, 0, 0, 0.20) 0 1px, transparent 1px 23px),
+    radial-gradient(circle at 4px 4px, var(--rivet) 0 1.5px, transparent 2px),
+    radial-gradient(circle at calc(100% - 4px) 4px, var(--rivet) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 4px calc(100% - 4px), var(--rivet) 0 1.5px, transparent 2px),
+    radial-gradient(circle at calc(100% - 4px) calc(100% - 4px), var(--rivet) 0 1.5px, transparent 2px),
     linear-gradient(var(--btn-hov), var(--btn-hi));
-  border-color: #a68b5c;
 }
-button:active {
-  background-image: linear-gradient(var(--btn-lo), var(--btn-hi));
-  box-shadow: inset 2px 2px 3px rgba(0, 0, 0, 0.7);
+button:active { box-shadow: inset 2px 2px 3px rgba(0, 0, 0, 0.7), 0 0 0 1px #000; }
+
+/* Fields are sunk into the panel: the bevel runs dark top-left. */
+.sitesearch input, .field input, .field select, .themepick select, pre {
+  box-shadow:
+    inset 2px 2px 3px rgba(0, 0, 0, 0.75),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.06);
 }
+.field.check input { box-shadow: none; }
 
 /* ---------------------------------------------------------------- footer */
 
-/* Stone again under the scroll, the way their copyright block sits on the rock below the roll. */
+/* Their .footer: centred, on the stone under the scroll, the disclaimer in
+ * italics. Ours stands on the same column with no band of its own. */
 footer {
-  border-top: 2px solid var(--wood-lit);
-  background-color: var(--stone-foot);
-  background-image:
-    repeating-linear-gradient(58deg, rgba(0, 0, 0, 0.40) 0 1px, transparent 1px 63px),
-    repeating-linear-gradient(-49deg, rgba(0, 0, 0, 0.34) 0 1px, transparent 1px 87px);
-  color: var(--text-dim);
+  padding: 6px 0 26px;
+  text-align: center;
+  color: var(--text);
+  text-shadow: var(--drop);
 }
+footer p { margin-left: auto; margin-right: auto; }
+footer p:nth-child(3) { font-style: italic; color: var(--text-dim); }
 footer .retro { font-family: var(--mono); }
+footer .badges { justify-content: center; }
+
+/* ------------------------------------------------------------ responsive */
+
+/* Below 720px there is no room for pillars: the column is the screen, the
+ * scroll is full width, and the rolls may not overhang it — an overhang
+ * here is horizontal page scroll, which 1.4.10 does not forgive. The
+ * shading band shrinks to 8px inside main's 10px padding. */
+@media (max-width: 720px) {
+  .page-wrap { padding: 0 8px; background-image: url("/static/osrs-stone.svg"); background-size: 360px 360px; background-repeat: repeat; background-position: 0 0; }
+  .brand { font-size: 44px; }
+  .brand small { font-size: 15px; padding: 4px 22px 3px; }
+  .toolbar { align-self: stretch; flex-direction: column; align-items: stretch; }
+  main {
+    margin-top: 34px;
+    padding: 24px 10px 26px;
+    background-image:
+      linear-gradient(90deg,
+        var(--scroll-edge) 0, var(--scroll) 8px, var(--scroll-mid) 40%,
+        var(--scroll-mid) 60%, var(--scroll) calc(100% - 8px), var(--scroll-edge) 100%);
+  }
+  main::before { margin: -42px -10px 18px; height: 36px; }
+  main::after  { margin: 20px -10px -44px; height: 36px; }
+}
 
 /* ------------------------------------------------------------ preferences */
 
-/* The game is dark and so is our chrome; a light-preference reader gets a brighter sheet rather than a second theme that would drift out of step. Anyone who actually wants a light site has one in the theme picker. */
+/* The game is dark and so is the column; a light-preference reader gets a
+ * brighter sheet rather than a second theme. */
 @media (prefers-color-scheme: light) {
-  :root { --scroll: #dcc192; --parch-0: #e8d49a; --parch-1: #dcc689; }
+  :root { --scroll: #d2b986; --scroll-mid: #e6cd9a; --parch-0: #e8d49a; --parch-1: #dcc689; }
 }
 
-/* Bevels and grain are decoration; drop them where the reader has asked for less. The sheet gets LIGHTER here, not darker: everything on it is dark ink, so more paper is more contrast. */
+/* Textures are decoration; drop them where the reader has asked for less.
+ * The sheet gets LIGHTER, since everything on it is dark ink. */
 @media (prefers-contrast: more) {
   :root {
     --text-dim: #ded8c8;
     --link: #a8dc50;
     --scroll: #e3d0a2;
+    --scroll-mid: #e3d0a2;
+    --scroll-edge: #e3d0a2;
     --parch-0: #ecdcb4;
     --scroll-h: #4a2c06;
-    --ink-dim: #3a2c16;
-    --link-ink: #1f3d0a;
-    --code-ink: #5c2103;
+    --ink-dim: #1f170a;
+    --link-ink: #3d2406;
+    --code-ink: #4e1c02;
     --bad-ink: #800701;
   }
-  body, .masthead, footer, button { background-image: none; }
+  .page-wrap { background-image: none; }
   main { background-image: none; }
+  button { background-image: none; }
 }
 
 /* Print flattens to ink on paper; openget-layout.css handles most of it,
- * but this skin also paints main, its rolled ends, and every panel on it. */
+ * but this skin also paints the column, main, its rolls, and every panel. */
 @media print {
-  main { background: #fff; color: #000; box-shadow: none; }
+  .page-wrap { background: #fff; padding: 0; max-width: none; }
+  main { background: #fff; color: #000; box-shadow: none; margin: 0; max-width: none; }
   main::before, main::after { display: none; }
   h1, h2, h3 { color: #000; text-shadow: none; }
-  /* Every selector that beat the plain `a` rule on screen beats it on paper too, so each one is restated rather than left to the layout sheet's single `a { color: #000 }`. */
+  /* Every selector that beat the plain `a` rule on screen beats it on paper too. */
   a:where(main *), tbody :is(td, th) a, thead th a,
   .facts a, .notes a, .chartbox a, .ogform a, .status-bar a { color: #000; }
   .facts, .notes, .chartbox, .ogform, .status-bar { background: #fff; color: #000; }
-  .facts :is(h2, h3), .notes :is(h2, h3), .chartbox figcaption { color: #000; text-shadow: none; }
+  .facts :is(h2, h3), .notes :is(h2, h3), .chartbox figcaption { background: #fff; color: #000; text-shadow: none; }
   .facts dt, .facts dd, .notes li, .status-bar { color: #000; }
   table { background: #fff; color: #000; box-shadow: none; }
   thead th { background: #eee; color: #000; text-shadow: none; }
-  /* The chart is an inline SVG, so flattening its box leaves its own fills
-     behind: --text-dim axis labels came out at about 2:1 on white paper. */
   svg.chart .ylab, svg.chart .xlab, svg.chart .legend,
   svg.chart .chart-empty { fill: #000; }
   svg.chart .grid { stroke: #999; }

@@ -60,6 +60,9 @@ main:focus { outline: none; }
 
 .masthead { padding: 12px 16px 0; }
 
+/* A skin hook around the three masthead forms. Contents by default, so in any skin that does not claim it the forms remain flex items of .masthead-inner and lay out exactly as they did before the wrapper existed. */
+.toolbar { display: contents; }
+
 /* Centred, not baseline-aligned: the three control clusters' first flex
  * items disagree about where a text baseline even is (input text, a
  * checkbox's bottom edge, a select's option text), so nothing lines up on

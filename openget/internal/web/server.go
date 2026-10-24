@@ -294,11 +294,14 @@ const layoutHTML = `<!doctype html>
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
+{{/* .page-wrap and .toolbar are skin hooks with no semantics: the OSRS skin draws its stone column on the first and its black control bar on the second. Every other skin leaves .toolbar as display:contents, so its three forms stay flex items of .masthead-inner exactly as before. */}}
+<div class="page-wrap">
 <header class="masthead">
   <div class="masthead-inner">
     <div class="brand"><a href="/">OpenGET</a>
       <small>Old School RuneScape Grand Exchange tracker</small>
     </div>
+    <div class="toolbar">
     <form class="sitesearch" method="get" action="/search" role="search" aria-label="Search items">
       <input type="search" name="q" value="{{.Query}}" placeholder="Search items…" aria-label="Search items">
       <button type="submit">Go</button>
@@ -317,6 +320,7 @@ const layoutHTML = `<!doctype html>
       </label>
       <button type="submit">Apply</button>
     </form>
+    </div>
   </div>
   <nav class="tabs">
     {{/* The newline between the links is load-bearing for text browsers: nav.tabs is a flex container, so graphical browsers drop whitespace-only text nodes between flex items and the gap property alone spaces the tabs, while Lynx (which reads no CSS) collapses it to the single space that keeps "Home Items Margins" from rendering as "HomeItemsMargins". */}}
@@ -358,6 +362,7 @@ const layoutHTML = `<!doctype html>
         src="/static/trans-flag.gif" width="88" height="31" alt="Transgender pride flag"></p>
   </div>
 </footer>
+</div>
 </body>
 </html>`
 
