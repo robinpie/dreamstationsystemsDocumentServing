@@ -200,7 +200,7 @@ func listOptionsFrom(r *http.Request, base store.ListOptions) store.ListOptions 
 func (s *Server) items(ctx context.Context, r *http.Request) (*render.Doc, render.HTMLOptions, error) {
 	o := listOptionsFrom(r, store.ListOptions{Sort: "gpvol", Desc: true})
 	d, total, err := s.vb(r).ListPage(ctx, "All items", "/items", o,
-		"Every tradeable item the API reports. Click a column to sort.")
+		"Every tradeable item the API reports.")
 	if err != nil {
 		return nil, render.HTMLOptions{}, err
 	}

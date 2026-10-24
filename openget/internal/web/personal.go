@@ -477,8 +477,6 @@ func (s *Server) tracker(ctx context.Context, r *http.Request) (*render.Doc, ren
 		}})
 	}
 
-	d.Note("Realised profit is money received minus money spent.")
-	d.Note("Your ledger is private.")
 	return d, render.HTMLOptions{}, nil
 }
 

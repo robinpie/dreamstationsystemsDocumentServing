@@ -653,7 +653,7 @@ func (b *Builder) StoreProfit(ctx context.Context, limit int) (*render.Doc, erro
 		}
 	}
 	d.Add(t)
-	d.Note("The price shown is for the first unit; shop prices rise as the stock runs down. Stock is the shop's full stock.")
+	d.Note("The price shown is for the first unit; shop prices rise as the stock runs down. Stock is the shop's maximum stock, not what it has right now.")
 	d.Note("Items trading under %s a day are left out.", render.GPShort(StoreMinVolume))
 	b.f2pNote(d)
 	b.addFreshness(ctx, d)

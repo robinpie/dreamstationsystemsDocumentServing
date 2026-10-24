@@ -183,9 +183,9 @@ func Finders() []Finder {
 		{
 			Slug:    "new",
 			Title:   "New items",
-			Blurb:   "Items most recently added to the game, newest first.",
+			Blurb:   "Items most recently seen by this archive, newest first.",
 			Options: store.ListOptions{Sort: "newest", Desc: true},
-			Note:    "\"New\" means new to this archive. Items that existed before OpenGET started recording all share the date of the first mapping poll.",
+			Note:    "Items that existed before OpenGET started recording all share the date of the first mapping poll.",
 		},
 	}
 }
@@ -429,10 +429,6 @@ func (b *Builder) ItemPage(ctx context.Context, id int, window string) (*render.
 		d.Note("The wiki's /volumes figure doesn't match our 24-hour totals, so both are shown.")
 	}
 
-	if it.BuyLimit != nil {
-		d.Note("Some items share one buy limit across doses or charges (prayer potions, for example). " +
-			"The API doesn't say which, so this figure may be too high.")
-	}
 	b.addFreshness(ctx, d)
 	return d, nil
 }

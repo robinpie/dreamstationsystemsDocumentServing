@@ -153,8 +153,8 @@ func (s *Server) renderDoc(w http.ResponseWriter, r *http.Request, doc *render.D
 	isListPage := doc.Path == "/items" || strings.HasPrefix(doc.Path, "/flips/") || isOtherListPage
 	noHeading := doc.Path == "/" || isListPage
 	subtitle := doc.Subtitle
-	// The tax calculator has no notes of its own, so relocating its blurb would conjure a whole Notes panel to hold a single stray line. Drop the blurb from the visible page instead; it still feeds the meta description, which is the point of keeping it on the Doc.
-	if isListPage && subtitle != "" && doc.Path != "/ge-tax-calculator" {
+	// The tax calculator has no notes of its own, so relocating its blurb would conjure a whole Notes panel to hold a single stray line. /items has the same problem from the other side: its blurb is only the page name restated, and as a note it's noise. Drop the blurb from the visible page on both instead; it still feeds the meta description (and the Gopher/Gemini subtitle), which is the point of keeping it on the Doc.
+	if isListPage && subtitle != "" && doc.Path != "/ge-tax-calculator" && doc.Path != "/items" {
 		doc.Footnotes = append([]string{subtitle}, doc.Footnotes...)
 	}
 	body := render.HTMLBody(doc, opts)
@@ -356,10 +356,17 @@ const layoutHTML = `<!doctype html>
     <p><a href="/about">About</a> · <a href="/status">Status</a> · <a href="/api">API</a> · openget {{.Version}}</p>
     <p class="badges"><a href="https://www.w3.org/WAI/WCAG2AA-Conformance"
         title="Explanation of WCAG 2 Level AA conformance"><img src="/static/wcag2.2AA.svg"
-        width="88" height="31"
-        alt="Level AA conformance, W3C Web Content Accessibility Guidelines 2.2"></a><img
-        src="/static/debian-powered.gif" width="88" height="31" alt="Powered by Debian"><img
-        src="/static/trans-flag.gif" width="88" height="31" alt="Transgender pride flag"></p>
+        width="88" height="31" loading="lazy"
+        alt="Level AA conformance, W3C Web Content Accessibility Guidelines 2.2"></a><picture><source
+        srcset="/static/debian-powered.webp" type="image/webp"><source
+        srcset="/static/debian-powered.gif" type="image/gif"><source
+        srcset="/static/debian-powered.jxl" type="image/jxl"><source
+        srcset="/static/debian-powered.avif" type="image/avif"><img
+        src="/static/debian-powered.gif" width="88" height="31" loading="lazy" alt="Powered by Debian"></picture><picture><source
+        srcset="/static/trans-flag.webp" type="image/webp"><source
+        srcset="/static/trans-flag.gif" type="image/gif"><source
+        srcset="/static/trans-flag.avif" type="image/avif"><img
+        src="/static/trans-flag.gif" width="88" height="31" loading="lazy" alt="Transgender pride flag"></picture></p>
   </div>
 </footer>
 </div>
@@ -388,6 +395,12 @@ func (s *Server) static(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "image/svg+xml")
 	case strings.HasSuffix(name, ".gif"):
 		w.Header().Set("Content-Type", "image/gif")
+	case strings.HasSuffix(name, ".webp"):
+		w.Header().Set("Content-Type", "image/webp")
+	case strings.HasSuffix(name, ".avif"):
+		w.Header().Set("Content-Type", "image/avif")
+	case strings.HasSuffix(name, ".jxl"):
+		w.Header().Set("Content-Type", "image/jxl")
 	case strings.HasSuffix(name, ".woff2"):
 		w.Header().Set("Content-Type", "font/woff2")
 	default:
