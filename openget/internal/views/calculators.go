@@ -92,7 +92,6 @@ func (b *Builder) CalcIndex(ctx context.Context) (*render.Doc, error) {
 		items = append(items, render.Link{
 			Text: k.Title,
 			Href: "/calc/" + k.Kind,
-			Desc: fmt.Sprintf("%s (%d)", k.Blurb, n),
 		})
 	}
 	if len(items) == 0 {
@@ -101,10 +100,10 @@ func (b *Builder) CalcIndex(ctx context.Context) (*render.Doc, error) {
 		d.Add(render.Links{Items: items})
 	}
 	d.Add(render.Links{Title: "Whole-catalogue calculators", Items: []render.Link{
-		{Text: "High alchemy", Href: "/alch", Desc: "every item, alch value against market price"},
-		{Text: "Low alchemy", Href: "/alch?spell=low", Desc: "the level 21 spell, 40% of the item's value"},
-		{Text: "Store profit", Href: "/store-profit", Desc: "shop shelf against market price"},
-		{Text: "GE tax calculator", Href: "/ge-tax-calculator", Desc: "what a sale actually pays out"},
+		{Text: "High alchemy", Href: "/alch"},
+		{Text: "Low alchemy", Href: "/alch?spell=low"},
+		{Text: "Store profit", Href: "/store-profit"},
+		{Text: "GE tax calculator", Href: "/ge-tax-calculator"},
 	}})
 	d.Add(render.Para{Muted: true, Text: "Inputs are costed at the price you would pay to buy them right now, " +
 		"and outputs at the price you would receive selling right now, minus tax."})
