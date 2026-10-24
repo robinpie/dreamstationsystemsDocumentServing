@@ -88,6 +88,7 @@ func (s *Server) routes() {
 
 	m.HandleFunc("GET /chart/{id}", s.chartSVG)
 	m.HandleFunc("GET /sitemap.xml", s.sitemap)
+	m.HandleFunc("GET /speculationrules.json", speculationRules)
 	m.HandleFunc("GET /static/", s.static)
 	m.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
@@ -189,6 +190,8 @@ func (s *Server) renderDoc(w http.ResponseWriter, r *http.Request, doc *render.D
 	w.Header().Set("Cache-Control", "public, max-age=60")
 	// Which is only safe to share because of this: the free-to-play toggle and the favourite button both read cookies, so without Vary an intermediary could hand one reader's filtered page to somebody who never set it.
 	w.Header().Set("Vary", "Cookie")
+	// Speculation rules by header rather than an inline <script type="speculationrules">: the rules are inert JSON either way, but a header keeps every page free of <script> elements altogether, which is what the ZERO JavaScript badge promises. The value is a structured-field string, hence the quotes. See speculationRules below.
+	w.Header().Set("Speculation-Rules", `"/speculationrules.json"`)
 	w.WriteHeader(code)
 	if err := s.tmpl.Execute(w, data); err != nil {
 		s.log.Error("template", "err", err)
@@ -419,6 +422,32 @@ func (s *Server) static(w http.ResponseWriter, r *http.Request) {
 	// Assets are embedded in the binary, so they only ever change on deploy.
 	w.Header().Set("Cache-Control", "public, max-age=3600")
 	w.Write(b)
+}
+
+// speculationRulesJSON lets Chromium prerender a same-origin page once the reader hovers a link for a moment or presses on it ("moderate"), so navigation is instant on a site with no client-side code to make it so. Browsers without support ignore the header.
+//
+// "moderate", not "eager": every speculation is a real page build against SQLite on a small VPS, and hover is a strong enough signal to be worth it. The exclusions are everything that is not an HTML page or that a GET should not do on spec: /restore/{code} sets the identity cookie (and the one-click link to it sits on /code, right under the pointer), /u/ is the private alert feed, /forget and /tracker/clear are the confirm pages for destructive POSTs, and the rest are API, assets, charts and plumbing. rel=nofollow is honoured too, so a link can opt out without touching this list.
+const speculationRulesJSON = `{
+  "prerender": [{
+    "where": {"and": [
+      {"href_matches": "/*"},
+      {"not": {"href_matches": [
+        "/restore/*", "/u/*", "/forget", "/tracker/clear",
+        "/api", "/api/*", "/static/*", "/chart/*", "/retro/*",
+        "/sitemap.xml", "/healthz", "/speculationrules.json"
+      ]}},
+      {"not": {"selector_matches": "[rel~=nofollow]"}}
+    ]},
+    "eagerness": "moderate"
+  }]
+}
+`
+
+func speculationRules(w http.ResponseWriter, r *http.Request) {
+	// Browsers reject rule sets served as anything else.
+	w.Header().Set("Content-Type", "application/speculationrules+json")
+	w.Header().Set("Cache-Control", "public, max-age=3600")
+	fmt.Fprint(w, speculationRulesJSON)
 }
 
 func (s *Server) sitemap(w http.ResponseWriter, r *http.Request) {
