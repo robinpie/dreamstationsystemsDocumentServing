@@ -31,7 +31,6 @@ body {
 
 /* Every skin is required to draw a focus ring, but none of them is trusted to remember. currentColor is never invisible against the text it accompanies, so this is a floor rather than a design: a skin that sets nothing still passes 2.4.7, and a skin that sets its own colour overrides it by cascade order. */
 :focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
-main:focus { outline: none; }
 
 /* Visually hidden, still read aloud and still focusable. Used for the page h1 on pages whose title is already carried by the masthead or the nav tab, and for the skip link until it takes focus. */
 .vh {
@@ -80,7 +79,7 @@ main:focus { outline: none; }
   font-size: 30px;
   line-height: 1.1;
 }
-.brand small {
+.brand .tagline {
   display: block;
   margin-top: 2px;
   font-size: 11px;
@@ -88,6 +87,8 @@ main:focus { outline: none; }
 
 /* Named .sitesearch rather than .searchbox: 7.css defines .searchbox as one of its own components and would otherwise take this element's display and position out from under the masthead. */
 .sitesearch { margin-left: auto; display: flex; gap: 6px; }
+/* .sitesearch is the <search> landmark; the form inside it gives up its box so the input and button stay this flex row's items. */
+.sitesearch form { display: contents; }
 .sitesearch input { padding: 5px 8px; font: inherit; min-width: 190px; }
 
 /* The site-wide free-to-play filter, in the masthead since it applies to
@@ -125,6 +126,8 @@ nav.tabs {
   gap: 3px;
 }
 nav.tabs a { padding: 6px 13px 5px; font-size: 13px; }
+/* ROI and GE are <abbr title> for the expansion, but a dotted underline inside a tab reads as a second, smaller link. The tooltip and the expansion stay. */
+nav.tabs abbr { text-decoration: none; }
 
 main {
   max-width: 1180px;

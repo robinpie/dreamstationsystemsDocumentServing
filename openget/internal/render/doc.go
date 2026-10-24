@@ -150,7 +150,9 @@ type Links struct {
 	Level int
 	// NavLabel, when set, wraps the list in <nav aria-label="..."> on the web, for a set of links that is a way around the page rather than part of its content. Empty leaves it a plain list.
 	NavLabel string
-	Items    []Link
+	// TitleIsStatus renders Title on the web as a paragraph rather than a heading, for a title that reports a state ("Page 1 of 47") instead of naming a section. The text renderers print Title the same either way.
+	TitleIsStatus bool
+	Items         []Link
 }
 
 func (Links) isBlock() {}
@@ -226,6 +228,10 @@ type Field struct {
 	Kind    string // "text", "number", "select", "checkbox"
 	Options []Option
 	Hint    string
+	// Min, Max and Step become the matching attributes on a number input, so the browser refuses an impossible value before it is sent. Empty omits the attribute; Step "any" allows fractions. Web only: the text protocols have no form controls to constrain. The server still validates everything.
+	Min, Max, Step string
+	// Required marks a field the handler rejects when it is blank.
+	Required bool
 }
 
 // Option is one choice in a select field.

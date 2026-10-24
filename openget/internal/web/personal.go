@@ -337,8 +337,8 @@ func (s *Server) prefsPage(ctx context.Context, r *http.Request) (*render.Doc, r
 		Action: "/prefs", Method: "post",
 		Fields: []render.Field{
 			{Name: "sort", Label: "Default sort", Kind: "select", Options: sortOpts},
-			{Name: "rows", Label: "Rows per page", Kind: "number", Value: strconv.Itoa(p.RowsPerPage)},
-			{Name: "minvol", Label: "Hide items below this 24h volume", Kind: "number", Value: strconv.FormatInt(p.MinVolume, 10)},
+			{Name: "rows", Label: "Rows per page", Kind: "number", Min: "10", Max: "500", Value: strconv.Itoa(p.RowsPerPage)},
+			{Name: "minvol", Label: "Hide items below this 24h volume", Kind: "number", Min: "0", Value: strconv.FormatInt(p.MinVolume, 10)},
 			{Name: "tz", Label: "Time zone", Value: p.TZ, Hint: "IANA name, e.g. Europe/London"},
 		},
 		Submit: "Save",
@@ -404,11 +404,11 @@ func (s *Server) tracker(ctx context.Context, r *http.Request) (*render.Doc, ren
 	d.Add(render.Form{
 		Action: "/tracker", Method: "post", Prompt: "Record a trade",
 		Fields: []render.Field{
-			{Name: "item", Label: "Item ID", Kind: "number"},
+			{Name: "item", Label: "Item ID", Kind: "number", Min: "0", Required: true},
 			{Name: "side", Label: "Side", Kind: "select", Options: []render.Option{
 				{Value: "buy", Label: "bought"}, {Value: "sell", Label: "sold"}}},
-			{Name: "qty", Label: "Quantity", Kind: "number", Value: "1"},
-			{Name: "price", Label: "Price each", Kind: "number"},
+			{Name: "qty", Label: "Quantity", Kind: "number", Min: "1", Required: true, Value: "1"},
+			{Name: "price", Label: "Price each", Kind: "number", Min: "0"},
 			{Name: "note", Label: "Note"},
 		},
 		Submit: "Record",
@@ -628,9 +628,9 @@ func (s *Server) alertsPage(ctx context.Context, r *http.Request) (*render.Doc, 
 	d.Add(render.Form{
 		Action: "/alerts", Method: "post", Prompt: "Add an alert",
 		Fields: []render.Field{
-			{Name: "item", Label: "Item ID", Kind: "number"},
+			{Name: "item", Label: "Item ID", Kind: "number", Min: "0", Required: true},
 			{Name: "cond", Label: "When the", Kind: "select", Options: condOpts},
-			{Name: "threshold", Label: "Threshold", Kind: "number"},
+			{Name: "threshold", Label: "Threshold", Kind: "number", Step: "any", Required: true},
 		},
 		Submit: "Add alert",
 	})

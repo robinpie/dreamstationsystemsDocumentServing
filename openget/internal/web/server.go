@@ -207,8 +207,10 @@ func (s *Server) errorPage(w http.ResponseWriter, r *http.Request, code int, tit
 }
 
 type navEntry struct {
-	Label, Href string
-	Current     bool
+	// Label is markup, not text, so a tab can carry an <abbr>. Every label is a constant in navItems; nothing a reader sends ever reaches it.
+	Label   template.HTML
+	Href    string
+	Current bool
 }
 
 func navItems(path string) []navEntry {
@@ -216,13 +218,13 @@ func navItems(path string) []navEntry {
 		{Label: "Home", Href: "/"},
 		{Label: "Items", Href: "/items"},
 		{Label: "Margins", Href: "/flips/margin"},
-		{Label: "ROI", Href: "/flips/roi"},
+		{Label: `<abbr title="Return on investment">ROI</abbr>`, Href: "/flips/roi"},
 		{Label: "Potential", Href: "/flips/potential"},
 		{Label: "Volume", Href: "/flips/volume"},
 		{Label: "Alch", Href: "/alch"},
 		{Label: "Money makers", Href: "/calc"},
 		{Label: "Indices", Href: "/indices"},
-		{Label: "GE tax", Href: "/ge-tax-calculator"},
+		{Label: `<abbr title="Grand Exchange">GE</abbr> tax`, Href: "/ge-tax-calculator"},
 		{Label: "Favourites", Href: "/favourites"},
 		{Label: "Tracker", Href: "/tracker"},
 		{Label: "Alerts", Href: "/alerts"},
@@ -299,19 +301,20 @@ const layoutHTML = `<!doctype html>
 <header class="masthead">
   <div class="masthead-inner">
     <div class="brand"><a href="/">OpenGET</a>
-      <small>Old School RuneScape Grand Exchange tracker</small>
+      <span class="tagline">Old School RuneScape Grand Exchange tracker</span>
     </div>
     <div class="toolbar">
-    <form class="sitesearch" method="get" action="/search" role="search" aria-label="Search items">
+    {{/* <search> is the search landmark, so the form inside no longer needs role="search". .sitesearch moved up onto it, and the form is display:contents in the layout sheet, so the input and button are still its flex items; the form is the box made invisible rather than the landmark, because display:contents has a history of dropping an element's role along with its box. The two forms after it are deliberately unnamed: a named form is a landmark, and a checkbox and a theme picker are not places anyone navigates to. */}}
+    <search class="sitesearch" aria-label="Search items"><form method="get" action="/search">
       <input type="search" name="q" value="{{.Query}}" placeholder="Search items…" aria-label="Search items">
       <button type="submit">Go</button>
-    </form>
-    <form class="f2ptoggle" method="post" action="/f2p" aria-label="Membership filter">
+    </form></search>
+    <form class="f2ptoggle" method="post" action="/f2p">
       <input type="hidden" name="return" value="{{.Return}}">
       <label><input type="checkbox" name="f2p" value="1"{{if .F2P}} checked{{end}}> Free-to-play only</label>
       <button type="submit">Apply</button>
     </form>
-    <form class="themepick" method="post" action="/theme" aria-label="Site theme">
+    <form class="themepick" method="post" action="/theme">
       <input type="hidden" name="return" value="{{.Return}}">
       <label><span class="vh">Theme</span>
         <select name="theme">
@@ -322,13 +325,13 @@ const layoutHTML = `<!doctype html>
     </form>
     </div>
   </div>
-  <nav class="tabs">
+  <nav class="tabs" aria-label="Site">
     {{/* The newline between the links is load-bearing for text browsers: nav.tabs is a flex container, so graphical browsers drop whitespace-only text nodes between flex items and the gap property alone spaces the tabs, while Lynx (which reads no CSS) collapses it to the single space that keeps "Home Items Margins" from rendering as "HomeItemsMargins". */}}
     {{range .Nav}}<a href="{{.Href}}"{{if .Current}} aria-current="page"{{end}}>{{.Label}}</a>
     {{end}}
   </nav>
 </header>
-<main id="content" tabindex="-1">
+<main id="content">
   {{if not .NoHeading}}
   {{if .Title}}<h1>{{.Title}}</h1>{{end}}
   {{if .Subtitle}}<p class="subtitle">{{.Subtitle}}</p>{{end}}

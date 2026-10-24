@@ -203,7 +203,7 @@ button, select { min-height: 24px; }
 .brand a, .brand a:visited { color: inherit; text-decoration: none; }
 .brand a:hover { color: #0a3d68; }
 /* Selawik sets a tighter default than the fallback stack the layout was spaced for, which leaves the tagline sitting on the wordmark's descenders. A little more room and a little more size. */
-.brand small {
+.brand .tagline {
   color: var(--og-glass-ink);
   font-weight: 400;
   font-size: 12px;
@@ -254,7 +254,8 @@ main { background: var(--og-surface); }
 
 /* --------------------------------------------------------------- content */
 
-h1, h2, h3 { font-weight: 400; color: #0b3c68; }
+/* .linkhead is here because it is not always a heading: the pagination line is a <p class="linkhead"> and would otherwise lose the blue. */
+h1, h2, h3, .linkhead { font-weight: 400; color: #0b3c68; }
 /* Segoe UI Light at a large size is the Windows 7 heading, and the reason the Light weight of Selawik is shipped at all. */
 h1 { font-weight: 300; }
 /* :not([class]) keeps the section rule off the panel title bars, which are h2 as well. */

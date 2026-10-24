@@ -338,9 +338,9 @@ func (b *Builder) TaxCalc(ctx context.Context, price int64, qty int64, itemID in
 	d.Add(render.Form{
 		Action: "/ge-tax-calculator", Method: "get", Prompt: "Sale price per item",
 		Fields: []render.Field{
-			{Name: "price", Label: "Price per item (gp)", Kind: "number", Value: fmt.Sprint(price)},
-			{Name: "qty", Label: "Quantity", Kind: "number", Value: fmt.Sprint(qty)},
-			{Name: "item", Label: "Item ID (optional, to check the exempt list)", Kind: "number",
+			{Name: "price", Label: "Price per item (gp)", Kind: "number", Min: "0", Value: fmt.Sprint(price)},
+			{Name: "qty", Label: "Quantity", Kind: "number", Min: "1", Value: fmt.Sprint(qty)},
+			{Name: "item", Label: "Item ID (optional, to check the exempt list)", Kind: "number", Min: "0",
 				Value: optInt(itemID), Hint: "Leave blank to assume the item is taxable"},
 		},
 		Submit: "Work it out",

@@ -34,6 +34,8 @@ func HTMLBody(d *Doc, o HTMLOptions) string {
 	var b strings.Builder
 	// Column and fact hints are collected here and emitted once, hidden, at the end of the body, with each header or term pointing at its own by aria-describedby. The title attribute stays too, for the mouse tooltip; aria-describedby wins where both are present, so nothing is read twice.
 	var hints hintSet
+	// forms numbers the Form blocks, for their prompt ids.
+	forms := 0
 
 	for _, blk := range d.Blocks {
 		switch v := blk.(type) {
@@ -84,7 +86,10 @@ func HTMLBody(d *Doc, o HTMLOptions) string {
 			if v.NavLabel != "" {
 				fmt.Fprintf(&b, `<nav aria-label="%s">`, escapeAttr(v.NavLabel))
 			}
-			if v.Title != "" {
+			if v.Title != "" && v.TitleIsStatus {
+				// A status line, not a section: "Page 1 of 47" as an h2 was the only visible heading on /items, so browsing by headings found the page count and nothing else. Same class, so it looks the same as before.
+				fmt.Fprintf(&b, `<p class="linkhead">%s</p>`+"\n", escapeText(v.Title))
+			} else if v.Title != "" {
 				// .linkhead, not a bare heading: this is a label on a list, and at h2 it would otherwise take the section rule both skins draw under a bare h2 and the 24px that goes with it.
 				lvl := headingLevel(v.Level)
 				fmt.Fprintf(&b, `<h%d class="linkhead">%s</h%d>`+"\n", lvl, escapeText(v.Title), lvl)
@@ -125,15 +130,17 @@ func HTMLBody(d *Doc, o HTMLOptions) string {
 				method = "get"
 			}
 			// Deliberately NOT .window: the form is a flex container whose children are the fields themselves, with nowhere to put a .window-body.
-			// The prompt also gives the form its accessible name, so it counts as a landmark. A fieldset/legend would name it too, but would draw a box every skin would then have to undraw.
+			// The visible prompt also gives the form its accessible name, by aria-labelledby rather than a second copy in aria-label, so the two cannot drift. Named, the form counts as a landmark. A fieldset/legend would name it too, but would draw a box every skin would then have to undraw. The id is numbered per body, since a page may carry more than one form.
+			forms++
+			promptID := fmt.Sprintf("form-%d-prompt", forms)
 			label := ""
 			if v.Prompt != "" {
-				label = fmt.Sprintf(` aria-label="%s"`, escapeAttr(v.Prompt))
+				label = fmt.Sprintf(` aria-labelledby="%s"`, promptID)
 			}
 			fmt.Fprintf(&b, `<form class="ogform" method="%s" action="%s"%s>`,
 				escapeAttr(method), escapeAttr(v.Action), label)
 			if v.Prompt != "" {
-				fmt.Fprintf(&b, `<p class="muted">%s</p>`, escapeText(v.Prompt))
+				fmt.Fprintf(&b, `<p class="muted" id="%s">%s</p>`, promptID, escapeText(v.Prompt))
 			}
 			for _, f := range v.Fields {
 				htmlField(&b, f)
@@ -150,13 +157,14 @@ func HTMLBody(d *Doc, o HTMLOptions) string {
 	}
 
 	if len(d.Footnotes) > 0 {
-		b.WriteString(`<div class="notes window">` +
-			`<h2 class="title-bar"><span class="title-bar-text">Notes</span></h2>` +
+		// An <aside>: the notes qualify the page rather than being part of its main flow. Named by its own heading, so the complementary landmark announces as "Notes". There is only ever one per page, so the id is fixed.
+		b.WriteString(`<aside class="notes window" aria-labelledby="notes-title">` +
+			`<h2 class="title-bar" id="notes-title"><span class="title-bar-text">Notes</span></h2>` +
 			`<ul class="window-body">`)
 		for _, f := range d.Footnotes {
 			fmt.Fprintf(&b, "<li>%s</li>", escapeText(f))
 		}
-		b.WriteString("</ul></div>\n")
+		b.WriteString("</ul></aside>\n")
 	}
 	hints.render(&b)
 	return b.String()
@@ -336,13 +344,29 @@ func htmlField(b *strings.Builder, f Field) {
 		if kind == "" {
 			kind = "text"
 		}
-		fmt.Fprintf(b, `<input type="%s" id="%s" name="%s" value="%s"%s>`,
-			escapeAttr(kind), escapeAttr(id), escapeAttr(f.Name), escapeAttr(f.Value), desc)
+		fmt.Fprintf(b, `<input type="%s" id="%s" name="%s" value="%s"%s%s>`,
+			escapeAttr(kind), escapeAttr(id), escapeAttr(f.Name), escapeAttr(f.Value), constraints(f), desc)
 	}
 	if f.Hint != "" {
 		fmt.Fprintf(b, `<small class="muted" id="%s_hint">%s</small>`, escapeAttr(id), escapeText(f.Hint))
 	}
 	b.WriteString("</div>")
+}
+
+// constraints renders a text-like input's validation attributes. min/max/step only mean anything on a number input, so they are dropped elsewhere rather than shipped as dead attributes.
+func constraints(f Field) string {
+	var s strings.Builder
+	if f.Kind == "number" {
+		for _, a := range [...]struct{ name, val string }{{"min", f.Min}, {"max", f.Max}, {"step", f.Step}} {
+			if a.val != "" {
+				fmt.Fprintf(&s, ` %s="%s"`, a.name, escapeAttr(a.val))
+			}
+		}
+	}
+	if f.Required {
+		s.WriteString(" required")
+	}
+	return s.String()
 }
 
 func toneClass(t int) string {

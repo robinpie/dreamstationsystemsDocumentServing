@@ -177,7 +177,6 @@ main .ogform :focus-visible,
 main .status-bar :focus-visible,
 main pre :focus-visible,
 main thead :focus-visible { outline-color: var(--gold); }
-main:focus { outline: none; }
 ::selection { background: var(--wood-lit); color: #fff; }
 
 .skip {
@@ -215,7 +214,7 @@ main:focus { outline: none; }
 .brand a, .brand a:visited { color: inherit; }
 .brand a:hover { color: #fff; text-decoration: none; }
 /* The ribbon: notched ends cut by clip-path, so it costs no image. */
-.brand small {
+.brand .tagline {
   display: table;
   margin: 2px auto 0;
   padding: 5px 30px 4px;
@@ -561,7 +560,7 @@ footer .badges { justify-content: center; }
 @media (max-width: 720px) {
   .page-wrap { padding: 0 8px; background-image: url("/static/osrs-stone.svg"); background-size: 360px 360px; background-repeat: repeat; background-position: 0 0; }
   .brand { font-size: 44px; }
-  .brand small { font-size: 15px; padding: 4px 22px 3px; }
+  .brand .tagline { font-size: 15px; padding: 4px 22px 3px; }
   .toolbar { align-self: stretch; flex-direction: column; align-items: stretch; }
   main {
     margin-top: 34px;
@@ -610,7 +609,7 @@ footer .badges { justify-content: center; }
   .page-wrap { background: #fff; padding: 0; max-width: none; }
   main { background: #fff; color: #000; box-shadow: none; margin: 0; max-width: none; }
   main::before, main::after { display: none; }
-  h1, h2, h3 { color: #000; text-shadow: none; }
+  h1, h2, h3, .linkhead { color: #000; text-shadow: none; }
   /* Every selector that beat the plain `a` rule on screen beats it on paper too. */
   a:where(main *), tbody :is(td, th) a, thead th a,
   .facts a, .notes a, .chartbox a, .ogform a, .status-bar a { color: #000; }
