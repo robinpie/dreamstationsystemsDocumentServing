@@ -269,7 +269,7 @@ button, select { min-height: 24px; }
 footer { padding: 18px 16px; font-size: 12.5px; }
 footer .inner { max-width: 1180px; margin: 0 auto; }
 footer p { max-width: 90ch; margin: 5px 0; }
-/* The 88x31 badge row. All three are that size, which is the whole reason the format survived. */
+/* The 88x31 badge row. Every one of them is that size, which is the whole reason the format survived. */
 footer .badges { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 14px; }
 footer .badges img { display: block; }
 

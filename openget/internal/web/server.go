@@ -366,7 +366,12 @@ const layoutHTML = `<!doctype html>
         srcset="/static/trans-flag.webp" type="image/webp"><source
         srcset="/static/trans-flag.gif" type="image/gif"><source
         srcset="/static/trans-flag.avif" type="image/avif"><img
-        src="/static/trans-flag.gif" width="88" height="31" loading="lazy" alt="Transgender pride flag"></picture></p>
+        src="/static/trans-flag.gif" width="88" height="31" loading="lazy" alt="Transgender pride flag"></picture><picture><source
+        srcset="/static/zero-javascript.jxl" type="image/jxl"><source
+        srcset="/static/zero-javascript.webp" type="image/webp"><source
+        srcset="/static/zero-javascript.png" type="image/png"><source
+        srcset="/static/zero-javascript.avif" type="image/avif"><img
+        src="/static/zero-javascript.png" width="88" height="31" loading="lazy" alt="Proudly ZERO JavaScript!"></picture></p>
   </div>
 </footer>
 </div>
@@ -395,6 +400,8 @@ func (s *Server) static(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "image/svg+xml")
 	case strings.HasSuffix(name, ".gif"):
 		w.Header().Set("Content-Type", "image/gif")
+	case strings.HasSuffix(name, ".png"):
+		w.Header().Set("Content-Type", "image/png")
 	case strings.HasSuffix(name, ".webp"):
 		w.Header().Set("Content-Type", "image/webp")
 	case strings.HasSuffix(name, ".avif"):
