@@ -609,9 +609,7 @@ func (b *Builder) About(ctx context.Context) (*render.Doc, error) {
 
 	d.Add(render.Heading{Level: 2, Text: "Where the data comes from"})
 	d.Add(render.Para{Text: Credit})
-	d.Add(render.Para{Text: "Shop inventories come from a second source: Bucket, the wiki's structured-data " +
-		"extension, which publishes what every shop in the game stocks and at what price. Only /store-profit uses it, " +
-		"and only because no price feed carries what a shopkeeper has on the shelf."})
+	d.Add(render.Para{Text: "Shop inventories come from Bucket, the wiki's structured-data extension."})
 	d.Add(render.Links{Items: []render.Link{
 		{Text: "OSRS Wiki real-time prices documentation", Href: "https://oldschool.runescape.wiki/w/RuneScape:Real-time_Prices"},
 		{Text: "The wiki's Bucket API", Href: "https://oldschool.runescape.wiki/w/RuneScape:Bucket"},
