@@ -50,6 +50,7 @@
 
 server {
     include snippets/commonHeaders.conf;
+    include snippets/dotEnv.conf;
     include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;
@@ -64,6 +65,7 @@ server {
 # human. This block answers for one name and nothing else.
 server {
     include snippets/commonHeaders.conf;
+    include snippets/dotEnv.conf;
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;

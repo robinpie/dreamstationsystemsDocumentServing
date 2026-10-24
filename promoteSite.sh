@@ -48,6 +48,7 @@ NGINX_CONFD=(
 NGINX_SNIPPETS=(
 	accessLog.conf
 	commonHeaders.conf
+	dotEnv.conf
 	feeds.conf
 	fortuneCookie.conf
 	miscStuff.conf

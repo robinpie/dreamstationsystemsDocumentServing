@@ -586,6 +586,17 @@ DELIBERATELY NOT SENT (decided 2026-09-29, Observatory walkthrough):
 
 security.txt (RFC 9116) lives at rootdomain/.well-known/security.txt and its Expires: field must be refreshed before 2027-08-26 or the file is formally invalid.
 
+/.env (the scanner greeting)
+
+GET /.env on ANY Host — every vhost, the 444 catchall, pool.ntp.org, the Tesla notice, staging, fortunes, the onion — answers 200 text/plain: "Looking for vulnerabilities on my server? Please do, just privately report them to me: <https://dreamstation.systems/.well-known/security.txt>". snippets/dotEnv.conf, an exact `location = /.env`, included from every server block (put it next to commonHeaders.conf in any new one). Added 2026-10-24.
+
+Two things it needed from the blocks around it:
+  - A server-level `return` runs in the server rewrite phase, BEFORE location matching, so it would swallow /.env. The catchall's 444, pool.ntp.org's 301 and teslaNotice.conf's 299 therefore now live in `location / { ... }` — same behaviour for every other path. Any new block that answers with a bare server-level return needs the same treatment or /.env silently stops working there.
+  - auth_basic is inherited, so the snippet sets `auth_basic off` (staging and fortunes :443 would otherwise 401 it).
+Exact match only: /.env.bak, /.env.local etc. are untouched.
+
+Check: for h in dreamstation.systems staging.dreamstation.systems fortunes.dreamstation.systems grandexchange.dreamstation.systems hansendiscountelectronics.com nosuch.example; do curl -sk --resolve $h:443:67.215.249.229 https://$h/.env; curl -s -H "Host: $h" http://67.215.249.229/.env; done
+
 MISCSTUFF (directory listings)
 
 /miscStuff/ and everything under it gets nginx's autoindex — the only place on the site that lists directories. snippets/miscStuff.conf, a `location ^~ /miscStuff/ { autoindex on; }` included from the apex :80 and :443 blocks, the onion vhost and staging. ^~ so no regex location can take a path inside it; no add_header, so commonHeaders.conf is still inherited. Files with an extension mime.types doesn't know (.c, .h, .shar, .6, extensionless CHANGES...) are served as text/plain; charset=utf-8 so they display instead of downloading; known types keep their own. Content is rootdomain/miscStuff/ in the repo, deployed like any other page. Added 2026-10-16.

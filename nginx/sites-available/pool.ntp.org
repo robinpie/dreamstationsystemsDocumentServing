@@ -1,5 +1,6 @@
 server {
     include snippets/accessLog.conf;
+    include snippets/dotEnv.conf;
     listen 80;
     listen [::]:80;
     server_name pool.ntp.org *.pool.ntp.org ntppool.org *.ntppool.org;
@@ -8,5 +9,9 @@ server {
     # its subdomains (the NTP pool project's domains, not something we own
     # or control). If that traffic ever lands on this server, send them to
     # the real project site instead of falling through to the 444 catchall.
-    return 301 https://www.ntppool.org/;
+    # In `location /`, not at server level, so /.env (snippets/dotEnv.conf)
+    # still matches — a server-level return runs before location matching.
+    location / {
+        return 301 https://www.ntppool.org/;
+    }
 }

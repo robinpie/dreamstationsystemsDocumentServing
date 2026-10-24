@@ -1,5 +1,6 @@
 server {
     include snippets/accessLog.conf;
+    include snippets/dotEnv.conf;
     listen 80 default_server;
     listen [::]:80 default_server;
     server_name _;
@@ -12,5 +13,11 @@ server {
     # Any Host that doesn't match a configured server block lands here
     # (e.g. an unconfigured subdomain someone pointed at this IP).
     # Drop the connection instead of silently serving the main site's content.
-    return 444;
+    #
+    # In `location /` rather than at server level, because a server-level
+    # return runs before location matching and would also swallow /.env
+    # (snippets/dotEnv.conf), the one path every Host gets an answer on.
+    location / {
+        return 444;
+    }
 }

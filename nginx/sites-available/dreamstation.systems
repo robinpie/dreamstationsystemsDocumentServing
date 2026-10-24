@@ -158,6 +158,7 @@ map $arg_to $proto_base {
 
 server {
     include snippets/commonHeaders.conf;
+    include snippets/dotEnv.conf;
     include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;
@@ -193,6 +194,7 @@ server {
 # is sensitive.
 server {
     include snippets/commonHeaders.conf;
+    include snippets/dotEnv.conf;
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
@@ -225,6 +227,7 @@ server {
 # that ever succeeds.
 server {
     include snippets/commonHeaders.conf;
+    include snippets/dotEnv.conf;
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
@@ -254,6 +257,7 @@ server {
 # domain requires TLS for inbound mail.
 server {
     include snippets/commonHeaders.conf;
+    include snippets/dotEnv.conf;
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;

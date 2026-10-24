@@ -36,6 +36,7 @@
 
 server {
     include snippets/commonHeaders.conf;
+    include snippets/dotEnv.conf;
     include snippets/accessLog.conf;
     listen 80;
     listen [::]:80;
