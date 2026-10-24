@@ -32,6 +32,7 @@ NGINX_SITES=(
 	modernmotherfuckingwebsite.dreamstation.systems
 	hansendiscountelectronics.com
 	onion.dreamstation.systems
+	openget.dreamstation.systems
 	pool-ntp.tesla.com
 	pool.ntp.org
 	staging.dreamstation.systems

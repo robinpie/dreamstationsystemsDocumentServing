@@ -1,0 +1,50 @@
+# openget.dreamstation.systems — permanent redirect to the real home of
+# OpenGET, grandexchange.dreamstation.systems (see that file).
+#
+# Exists so the shorter/more obvious name people guess lands somewhere useful
+# instead of the apex's *.dreamstation.systems wildcard, which would serve the
+# main site's front page under a name it has nothing to do with.
+#
+# Its own certificate (issued with webroot /srv/http, ecdsa), for the same
+# reason grandexchange, fortunes and staging each have one: the apex cert also
+# covers mta-sts, and re-issuing it would put inbound mail's TLS in the blast
+# radius of a web deploy. A redirect on :443 needs a valid cert or browsers
+# never get far enough to see the 301.
+#
+# Path and query are preserved. Port 80 goes straight to the https target in
+# one hop. Uses the shared access log.
+
+server {
+    include snippets/commonHeaders.conf;
+    include snippets/dotEnv.conf;
+    include snippets/accessLog.conf;
+    listen 80;
+    listen [::]:80;
+    server_name openget.dreamstation.systems;
+
+    # certbot renewals (webroot /srv/http) are answered from the apex's docroot.
+    location /.well-known/acme-challenge/ {
+        root /srv/http;
+    }
+
+    location / {
+        return 301 https://grandexchange.dreamstation.systems$request_uri;
+    }
+}
+
+server {
+    include snippets/commonHeaders.conf;
+    include snippets/dotEnv.conf;
+    include snippets/accessLog.conf;
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name openget.dreamstation.systems;
+
+    ssl_certificate     /etc/letsencrypt/live/openget.dreamstation.systems/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/openget.dreamstation.systems/privkey.pem;
+
+    location / {
+        return 301 https://grandexchange.dreamstation.systems$request_uri;
+    }
+}
