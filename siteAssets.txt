@@ -156,10 +156,12 @@ THE 88x31 WALL
       <source srcset="badges/nginx.png"  type="image/png">
       <source srcset="badges/nginx.webp" type="image/webp">
       <source srcset="badges/nginx.avif" type="image/avif">
-      <img src="badges/nginx.png" alt="nginx powered" width="88" height="31">
+      <img src="badges/nginx.png" alt="nginx powered" width="88" height="31" loading="lazy">
     </picture>
 
   (one line per badge in the real markup). A browser takes the FIRST <source> whose type it decodes, so sorting by size is what makes each browser fetch the smallest file it can use. The ORIGINAL IS A <source> TOO, in its own place by size. That matters: in Chrome (no JXL) nginx.png's WebP is 4 bytes bigger than the PNG, and without the PNG listed Chrome would take the WebP. Every browser decodes PNG and GIF, so anything sorted below the original is shipped but never fetched. The original is also the <img> fallback. A tie keeps the original first, then WebP, JXL, AVIF.
+
+  EVERY BADGE <img> IS loading="lazy" (since 2026-10-24). The wall is the page footer, below the fold under four of the five themes, so the browser skips the 13 fetches until the reader scrolls near it. Under ubuntu804 the wall is the position:fixed shelf on the wallpaper, always on screen, so lazy is a no-op there and costs nothing. The set width/height is what keeps lazy loading from moving the layout. The attribute is on the <img>, not the <source>s; the <picture> as a whole follows it.
 
   WHY THE MARKUP IS GENERATED and not just the images: the order is per-image and cannot be guessed at 88x31 (88x31.png: WebP wins; nginx.png: JXL < PNG < WebP; zero-javascript.png: all within 20 bytes), and it changes whenever a source does. Hand-written <source> lists would have to be re-audited on every page every time; they would rot instead.
 

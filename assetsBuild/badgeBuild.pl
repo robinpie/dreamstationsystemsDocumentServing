@@ -492,7 +492,7 @@ sub wall_html {
         $pic .= sprintf '<source srcset="%s" type="%s">',
             esc("$WEB_PATH/$b->{base}.$_->[0]"), $MIME{$_->[0]}
             for @{ $b->{order} };
-        $pic .= sprintf '<img src="%s" alt="%s" width="%d" height="%d">',
+        $pic .= sprintf '<img src="%s" alt="%s" width="%d" height="%d" loading="lazy">',
             esc("$WEB_PATH/$b->{base}.$b->{ext}"), esc($b->{alt}),
             $b->{w}, $b->{h};
         $pic .= '</picture>';
