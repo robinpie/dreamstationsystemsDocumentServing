@@ -30,6 +30,7 @@ NGINX_SITES=(
 	fortunes.dreamstation.systems
 	grandexchange.dreamstation.systems
 	modernmotherfuckingwebsite.dreamstation.systems
+	modern-motherfucking-website.dreamstation.systems
 	hansendiscountelectronics.com
 	onion.dreamstation.systems
 	openget.dreamstation.systems

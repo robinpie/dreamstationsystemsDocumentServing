@@ -323,6 +323,14 @@ Same certificate, same content, same blast radius (deliberately NOT merged with 
                                                        same reasoning as
                                                        grandexchange; certbot
                                                        webroot /srv/http.
+  /etc/nginx/sites-available/modern-motherfucking-website.dreamstation.systems
+                                                     — typo-catcher: 301s
+                                                       (path and query kept) to
+                                                       modernmotherfuckingwebsite.
+                                                       One block on :80 and
+                                                       :443. Own cert (issued
+                                                       2026-10-25 via certbot
+                                                       webroot /srv/http).
   /etc/nginx/sites-available/hansendiscountelectronics.com
                                                      — ITS OWN SMALL STATIC SITE
                                                        (a mock 2000s electronics
@@ -454,6 +462,7 @@ THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every hand
     nginx/sites-available/fortunes.dreamstation.systems
     nginx/sites-available/grandexchange.dreamstation.systems
     nginx/sites-available/hansendiscountelectronics.com
+    nginx/sites-available/modern-motherfucking-website.dreamstation.systems
     nginx/sites-available/modernmotherfuckingwebsite.dreamstation.systems
     nginx/sites-available/onion.dreamstation.systems
     nginx/sites-available/pool-ntp.tesla.com
