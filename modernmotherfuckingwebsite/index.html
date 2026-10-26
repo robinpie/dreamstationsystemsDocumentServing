@@ -191,19 +191,17 @@
 <section>
   <h2>Resource hints: performance tuning in one line</h2>
   <p>You hired a consultant and adopted a “performance framework”. Meanwhile the browser has been begging you to just <em>tell it</em> what’s coming:</p>
-<pre tabindex="0" aria-label="Example: resource hints"><code>&lt;!-- Open the connection early: DNS + TCP + TLS, done before you need it --&gt;
+<pre tabindex="0" aria-label="Example: resource hints"><code>&lt;!-- Open the connection early to hide the wait on TCP, TLS, and the user’s shitty DNS server --&gt;
 &lt;link rel="preconnect" href="https://cdn.example.com" crossorigin&gt;
 
-&lt;!-- Cheap fallback for the "maybe" origins --&gt;
+&lt;!-- Low risk, high reward DNS prefetch for the "maybe" origins --&gt;
 &lt;link rel="dns-prefetch" href="https://analytics.example.com"&gt;
 
-&lt;!-- Fetch the thing the parser can't discover on its own --&gt;
+&lt;!-- Explicitly fetch the bullshit the parser won’t find on its own --&gt;
 &lt;link rel="preload" href="/fonts/body.woff2" as="font" type="font/woff2" crossorigin&gt;
 
-&lt;!-- Tell the browser which image actually matters --&gt;
+&lt;!-- Tell the browser what’s your real content and what’s junk they don’t need to see immediately --&gt;
 &lt;img src="hero.avif" fetchpriority="high" width="1200" height="600" alt="…"&gt;
-
-&lt;!-- And which ones don't --&gt;
 &lt;img src="footer-junk.avif" loading="lazy" decoding="async" width="400" height="300" alt="…"&gt;</code></pre>
   <p>Want instant page navigations like a “real app”? You don’t need a client‐side router. You need <a href="https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API">speculation rules</a>, which is (say it with me) <em>a script tag with some JSON in it</em>:</p>
 <pre tabindex="0" aria-label="Example: speculation rules"><code>&lt;script type="speculationrules"&gt;
