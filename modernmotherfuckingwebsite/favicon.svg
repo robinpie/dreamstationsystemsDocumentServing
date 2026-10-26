@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Asterism">
+  <title>⁂</title>
+  <style>
+    svg { color: #111 }
+    @media (prefers-color-scheme: dark) { svg { color: #eee } }
+  </style>
+  <!-- One asterisk: three round-capped strokes crossing at the origin. Drawn as
+       geometry rather than a U+2042 glyph so it does not depend on the renderer
+       having a font with the asterism in it. Arm length and spacing are tuned so
+       the three stars stay separate down to 16px. Kept in <defs> so the template
+       itself is not painted at the origin. -->
+  <defs>
+    <g id="a" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+      <line x1="0" y1="-5" x2="0" y2="5"/>
+      <line x1="-4.35" y1="-2.5" x2="4.35" y2="2.5"/>
+      <line x1="-4.35" y1="2.5" x2="4.35" y2="-2.5"/>
+    </g>
+  </defs>
+  <use href="#a" x="16" y="8.6"/>
+  <use href="#a" x="8.2" y="22.4"/>
+  <use href="#a" x="23.8" y="22.4"/>
+</svg>
