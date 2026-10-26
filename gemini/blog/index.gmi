@@ -1,5 +1,6 @@
 # blog
 
+=> blackjack1025.gmi “1025/tcp network blackjack”: who deals blackjack on port 1025? | 2026-10-26
 => ipod.gmi          Photos from my 4th generation iPod Touch | 2026-10-19
 => crypto30years.gmi Has mainstream cryptography provided 30 years of protection? (Mostly not, but we’re getting way better) | 2026-10-11
 => earlylawa.gmi     Early insights from lawa, my web crawler | 2026-09-22

@@ -152,7 +152,9 @@ type Links struct {
 	NavLabel string
 	// TitleIsStatus renders Title on the web as a paragraph rather than a heading, for a title that reports a state ("Page 1 of 47") instead of naming a section. The text renderers print Title the same either way.
 	TitleIsStatus bool
-	Items         []Link
+	// TextOnly leaves the list out of the HTML entirely, for a menu the web page already carries in its nav bar. The text protocols have no nav bar, so there it is the page's way around the site and still prints.
+	TextOnly bool
+	Items    []Link
 }
 
 func (Links) isBlock() {}

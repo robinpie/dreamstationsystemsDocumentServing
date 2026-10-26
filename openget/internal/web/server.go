@@ -224,6 +224,7 @@ func navItems(path string) []navEntry {
 		{Label: `<abbr title="Return on investment">ROI</abbr>`, Href: "/flips/roi"},
 		{Label: "Potential", Href: "/flips/potential"},
 		{Label: "Volume", Href: "/flips/volume"},
+		{Label: "New", Href: "/flips/new"},
 		{Label: "Alch", Href: "/alch"},
 		{Label: "Money makers", Href: "/calc"},
 		{Label: "Indices", Href: "/indices"},

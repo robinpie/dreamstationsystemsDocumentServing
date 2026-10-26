@@ -83,6 +83,9 @@ func HTMLBody(d *Doc, o HTMLOptions) string {
 			htmlTable(&b, v, o, &hints)
 
 		case Links:
+			if v.TextOnly {
+				continue
+			}
 			if v.NavLabel != "" {
 				fmt.Fprintf(&b, `<nav aria-label="%s">`, escapeAttr(v.NavLabel))
 			}

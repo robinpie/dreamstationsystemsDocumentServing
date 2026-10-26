@@ -99,7 +99,8 @@ func (b *Builder) Home(ctx context.Context) (*render.Doc, error) {
 	d.Add(render.Heading{Level: 2, Text: "Biggest 24-hour risers", Anchor: "movers"})
 	d.Add(b.itemTable(movers, ""))
 
-	d.Add(render.Links{Title: "Tools", Items: []render.Link{
+	// TextOnly: on the web every entry here is also a nav tab, so the list would only repeat the bar above it. Gemini, Gopher, Spartan and finger have no nav bar, and there this list is how a reader leaves the front page.
+	d.Add(render.Links{Title: "Tools", TextOnly: true, Items: []render.Link{
 		{Text: "All items", Href: "/items", Desc: "every tradeable item, sortable"},
 		{Text: "Highest margins", Href: "/flips/margin", Desc: "raw profit per item"},
 		{Text: "Highest ROI", Href: "/flips/roi", Desc: "profit per gp invested"},
