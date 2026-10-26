@@ -1,0 +1,84 @@
+“1025/tcp network blackjack”: who deals blackjack on port 1025?
+===============================================================
+
+Why is “network blackjack” in every port registry? Where’s the original reference implementation of network blackjack?
+
+This wasn’t the hardest‐to‐find thing I’ve seen, but I don’t think anyone has given a correct answer to this on the WWW before, and my main goal in putting this out there is to make it Googleable and to share a little archives digging story.
+
+If you’re a network person, you’ve probably seen port 1025 in a lot of non‐standard uses. It’s the second unprivileged port, and it was the first dynamic port that Windows 2000, XP, and 2003 handed out to RPC services.
+
+Google is full of pages and pages of forum threads going back to the 90s of people seeing blackjack in their netstat outputs and going “have I been hacked??” or “what is this?” The answer every tool, database, and port‐information site gives, in a chain of circular reporting, is:
+
+    blackjack    1025/tcp    network blackjack
+    blackjack    1025/udp    network blackjack
+
+Network blackjack. It’s in the official IANA Service Name and Transport Protocol Port Number Registry, right now. And the assignee, contact, registration date, and reference fields are all blank. What are you, Network Blackjack?
+
+IANA Service Name and Transport Protocol Port Number Registry: <https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml>
+
+Tracing the sources backwards
+-----------------------------
+
+Assigned Numbers RFCs
+~~~~~~~~~~~~~~~~~~~~~
+
+In the series of the old Assigned Numbers RFCs, network blackjack first appears in RFC 1060 (March 1990):
+
+RFC 1060 — Assigned Numbers (March 1990): <gopher://gopher.quux.org/0/Computers/Standards%20and%20Specs/RFC/docs/rfc1060.txt>
+
+       blackjack       1025/tcp       network blackjack
+
+In RFC 1340 (July 1992), it picked up the UDP line:
+
+RFC 1340 — Assigned Numbers (July 1992): <gopher://gopher.quux.org/0/Computers/Standards%20and%20Specs/RFC/docs/rfc1340.txt>
+
+       blackjack	   1025/tcp   network blackjack
+       blackjack	   1025/udp   network blackjack
+
+It’s propagated forwards into registries ever since.
+
+In RFC 1060, network blackjack appears specifically in the “UNIX PORTS” section. It turns out that, unlike the formal assignments elsewhere in the document, the UNIX PORTS list has no contact or reference column at all. It’s a list of ports people were *observed* using, compiled from real /etc/services files. From here, the goal became pretty clear: find the earliest /etc/services with network blackjack and work from there.
+
+The search for the services
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Obviously, I hoped for the easy path of something like BSD Unix itself shipping the entry. Lots of /etc/services files descended from Berkeley’s, so if 4.3BSD-Tahoe (1988) or 4.3BSD-Reno (1990) had it, that would explain how it ended up in a 1990 RFC.
+
+I pulled a bunch of contemporary Unixes and checked the root filesystem dumps. Unfortunately, I couldn’t find network blackjack in any OS default /etc/services before RFC 1060.
+
+(An aside: along the way I tripped over a nice bit of digital archaeology. The Net/2 source tree contains a stray committed kernel trace file, kerberosIV/kinit/ktrace.out, left behind by a developer in 1991. Among other things, it recorded a program reading /etc/services on a Berkeley machine, so it preserves the full text of Berkeley’s *local* services file from February 9, 1989. That file has an “experimental” section with entries that turn up in RFC 1060’s UNIX PORTS list: meter on 570/571, the maitrd/busboy/garcon load‐balancing services on 997–999, and hermes on 1248/udp, confirming that Berkeley’s local file really was one of the sources for RFC 1060. Unfortunately, blackjack didn’t appear here. Stuff like this feels like pulling audio out of ancient pottery and I love it.)
+
+Usenet
+~~~~~~
+
+If the program was real, someone probably posted it, or at least talked about it, on Usenet. The best record of this era of Usenet is the UTZOO archive: Henry Spencer’s tapes of everything that reached the University of Toronto’s Zoology department from 1981 to 1991.
+
+I downloaded all 161 tapes and scanned all two‐million‐odd articles for “blackjack” and for port 1025, and I found it:
+
+    From: jon@msunix.UUCP (Jonathan Hue)
+    Newsgroups: net.sources.games
+    Subject: revised network blackjack game
+    Message-ID: <241@msunix.UUCP>
+    Date: Thu, 24-Jul-86 02:21:17 EDT
+    Keywords: blackjack game sockets network multiuser
+
+It’s a shell archive containing a complete client/server blackjack game for 4.2/4.3BSD and Ultrix. Up to six people play together from different machines. And the README says:
+
+    If you can edit /etc/services, then define
+    ROOTPRIV in the Makefile, otherwise don't.  Add a line like:
+
+    blackjack	1025/tcp	dealer		# network blackjack
+
+    to /etc/services
+
+That’s it!!!! He told people to add “network blackjack” to their /etc/services, someone did, and it propagated forward from there. Anyone that installed the game the way the README said ended up with the line that would later appear in RFC 1060.
+
+However, it’s still unknown which site it came from. I still haven’t found the “original release” of network blackjack (the source code I’m sharing above is labeled “revised” and contains an “OLD README”).
+
+The code was never formally released under an open‐source license, but I’ll take being posted on net.sources.games as enough permission to at least redistribute it unmodified. I’ve mirrored it, and I’ll let you read the source code and the rest of the Usenet posts for yourself.
+
+network blackjack (1986), mirrored: source code and Usenet posts: <https://dreamstation.systems/miscStuff/network-blackjack-1986/>
+
+I reached out to Jonathan Hue (I’m pretty confident I traced him to the right guy — he mentioned his contemporary employer in other Usenet posts and I found a matching Jonathan Hue on LinkedIn) via LinkedIn and a guessed current‐employer email 10 days ago and haven’t heard back. I’ll update this if I hear back from him. If you know him, please try to get me in contact with him. I’d like to ask him a bit more about this, get comment on this, and see if he’ll formally release it under an open‐source license.
+
+robin@dreamstation.systems: mailto:robin@dreamstation.systems
