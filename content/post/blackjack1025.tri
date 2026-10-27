@@ -73,7 +73,7 @@ In RFC 1060, network blackjack appears specifically in the “UNIX PORTS” sect
 
 Obviously, I hoped for the easy path of something like BSD Unix itself shipping the entry. Lots of `/etc/services` files descended from Berkeley’s, so if 4.3BSD-Tahoe (1988) or 4.3BSD-Reno (1990) had it, that would explain how it ended up in a 1990 RFC.
 
-I pulled a bunch of contemporary Unixes and checked the root filesystem dumps. Unfortunately, I couldn’t find network blackjack in any OS default `/etc/services` before RFC 1060.
+I pulled a bunch of contemporary Unixes and checked the root filesystem dumps. Unfortunately, I couldn’t find network blackjack in the default `/etc/services` of any OS that predates RFC 1060.
 
 // The digression is an <aside> on the web, which triptych has no block for,
 // so it is written twice: raw HTML here, the same words as a paragraph below.
