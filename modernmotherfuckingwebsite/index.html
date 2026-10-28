@@ -52,6 +52,8 @@
   summary { cursor: pointer; font-weight: bold; }
   details { margin: 1rem 0; margin-inline-start: 1.5rem; }
   nav { font-size: .95rem; }
+  body:has(#full-width:checked) { max-width: none; }
+  @media (max-width: 92rem) { .full-width-toggle { display: none; } }
   footer { margin-top: 4rem; color: var(--dim); font-size: .95rem; }
   .gallery { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1.5rem 0; }
   details > .gallery { margin-inline-start: -1.5rem; } /* undo the details indent */
@@ -120,6 +122,7 @@
 <nav>
   <a href="https://dreamstation.systems/personal/">Main site</a> ·
   <a href="mailto:robin@dreamstation.systems">robin@dreamstation.systems</a>
+  <span class="full-width-toggle">· <label><input type="checkbox" id="full-width"> Full width</label></span>
 </nav>
 
 <header>
