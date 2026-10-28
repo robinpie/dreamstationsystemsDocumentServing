@@ -30,7 +30,7 @@ MARKUP=$(cat <<'PANGO'
 <span foreground="@DIM@">security-minded systems and infrastructure generalist</span>
 
 <span foreground="@PROMPT@" size="118%">⁂</span> <span foreground="@BODY@">pool.ntp.org member, score 20/20</span>
-<span foreground="@PROMPT@" size="118%">⁂</span> <span foreground="@BODY@">CVE pending · bug bounty awarded</span>
+<span foreground="@PROMPT@" size="118%">⁂</span> <span foreground="@BODY@">GHSA Finder credit · bug bounty awarded</span>
 <span foreground="@PROMPT@" size="118%">⁂</span> <span foreground="@BODY@">open source contributor and developer</span>
 
 <span foreground="@URL@">dreamstation.systems/professional</span>
