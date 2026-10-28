@@ -51,9 +51,9 @@ APPLE TOUCH ICON
 OPENGRAPH
   Tags live in professional/index.html, after <link rel="canonical">. og:description is intentionally shorter than the page's meta description. twitter:title/description/image are omitted: they fall back to the og:* tags.
 
-  The card is a terminal mock: `finger robin@localhost`, name, tagline, three asterism bullets, URL. Monochrome: pure black background, pure white text, saved as a grayscale PNG (the greys are text antialiasing only, not palette). Rendered with Pango markup at -pointsize 22; at 30 the block overflowed 1200px. Font is Noto Sans Mono, one of the few monospace faces here with U+2042.
+  The card is a terminal mock: `finger robin@localhost`, name, tagline, two asterism bullets, URL. Monochrome: pure black background, pure white text, saved as a grayscale PNG (the greys are text antialiasing only, not palette). Rendered with Pango markup at -pointsize 22; at 30 the block overflowed 1200px. Font is Noto Sans Mono, one of the few monospace faces here with U+2042.
 
-  The stats on the card (pool score, CVE status) are point-in-time and scrapers cache images hard. After re-running makeOg.sh, bust the caches via Facebook's Sharing Debugger and LinkedIn's Post Inspector, or the old card will keep appearing for weeks.
+  The stats on the card (pool score, GHSA credit / bug bounty) are point-in-time and scrapers cache images hard. After re-running makeOg.sh, bust the caches via Facebook's Sharing Debugger and LinkedIn's Post Inspector, or the old card will keep appearing for weeks.
 
   Filename gotcha: the file is ogimage.png, NOT og.png. Writing og.png would silently leave an orphan and the real card stale. Do not "tidy" the name — scrapers cache og:image URLs hard and a rename costs a re-scrape everywhere.
 
