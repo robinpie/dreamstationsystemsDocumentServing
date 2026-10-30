@@ -5,7 +5,8 @@
     makeFeed.py --check    exit 1 if either file is out of date, write nothing
 
 Source of truth is the <ul class="posts"> list in blog.html (hrefs, titles,
-<time datetime> values) plus each post's og:description. Output is
+<time datetime> values) plus each post's og:description (the summary) and
+its <main id="content"> (the full text). Output is
 deterministic — no "generated at" timestamp — since the pre-commit hook
 regenerates and re-stages these files on every commit. See feeds.txt.
 """
@@ -14,6 +15,7 @@ import html
 import re
 import sys
 from pathlib import Path
+from urllib.parse import urljoin
 from xml.sax.saxutils import escape, quoteattr
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -120,9 +122,8 @@ def parse_posts(blog_html):
 def summarize(post):
     """The entry summary: each post's own og:description.
 
-    Deliberately a summary and not the full article. Post bodies are threaded
-    with SSI conditionals and theme chrome includes that mean nothing outside
-    nginx, so shipping them raw would put <!--# if expr= --> in every reader.
+    Shipped alongside the full text (see body()), not instead of it: readers
+    use it for list previews, and Atom wants one when content is present.
     """
     path = BLOG.parent / post["href"]
     if not path.exists():
@@ -134,6 +135,57 @@ def summarize(post):
     if not meta:
         raise PostError(f'{post["href"]} has no og:description')
     return html.unescape(meta.group(1)).strip()
+
+
+# URL-bearing attributes in post bodies. Plenty of readers ignore Atom's
+# xml:base and RSS has no base at all, so every relative reference is made
+# absolute against the post's own URL.
+URL_ATTR = re.compile(r'\b(href|src|poster)="([^"]*)"')
+SRCSET_ATTR = re.compile(r'\bsrcset="([^"]*)"')
+
+
+def body(post):
+    """The entry's full text: the inside of the post's <main id="content">.
+
+    What comes out, and why:
+      - the <h1 class="post-title"> -- the reader already shows the entry
+        title, and the h1 also carries the Pangram badge, which would be
+        a stray image at the top of every entry;
+      - HTML comments (the dateline cross-check note, any future ones) --
+        stripComments.pl drops them from the served page too;
+      - SSI. <main> carries none today; the theme chrome and every
+        <!--# if --> sit outside it. If one ever appears inside, this
+        refuses rather than ship a directive no reader can evaluate.
+    Relative href/src/poster/srcset are rewritten to absolute URLs.
+    """
+    path = BLOG.parent / post["href"]
+    text = path.read_text(encoding="utf-8")
+    m = re.search(r'<main id="content">(.*?)</main>', text, re.S)
+    if not m:
+        raise PostError(f'{post["href"]} has no <main id="content">')
+    inner = m.group(1)
+
+    if "<!--#" in inner:
+        raise PostError(f'{post["href"]}: SSI inside <main>; the feed '
+                        f'cannot carry it (see feeds.txt)')
+
+    inner = re.sub(r'<h1 class="post-title">.*?</h1>', "", inner, count=1,
+                   flags=re.S)
+    inner = re.sub(r"<!--.*?-->", "", inner, flags=re.S)
+
+    base = post["url"]
+    inner = URL_ATTR.sub(
+        lambda u: f'{u.group(1)}="{urljoin(base, html.unescape(u.group(2))).replace("&", "&amp;")}"',
+        inner)
+    inner = SRCSET_ATTR.sub(
+        lambda u: 'srcset="' + ", ".join(
+            " ".join([urljoin(base, c.split()[0])] + c.split()[1:])
+            for c in u.group(1).split(",") if c.strip()) + '"',
+        inner)
+
+    # Tidy the blank lines the removals leave behind.
+    inner = re.sub(r"\n\s*\n(\s*\n)+", "\n\n", inner).strip()
+    return inner
 
 
 def atom(posts):
@@ -161,6 +213,7 @@ def atom(posts):
             f'    <published>{rfc3339(post["published"])}</published>',
             f'    <updated>{rfc3339(post["updated"])}</updated>',
             f'    <summary type="text">{escape(post["summary"])}</summary>',
+            f'    <content type="html">{escape(post["body"])}</content>',
             "  </entry>",
         ]
     out += ["</feed>", ""]
@@ -171,7 +224,8 @@ def rss(posts):
     latest = max(p["updated"] for p in posts)
     out = [
         '<?xml version="1.0" encoding="utf-8"?>',
-        '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
+        ('<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" '
+        'xmlns:content="http://purl.org/rss/1.0/modules/content/">'),
         "  <channel>",
         f"    <title>{escape(FEED_TITLE)}</title>",
         f"    <link>{escape(BLOG_URL)}</link>",
@@ -193,6 +247,9 @@ def rss(posts):
             f'      <pubDate>{rfc822(post["updated"])}</pubDate>',
             f'      <guid isPermaLink="true">{escape(post["url"])}</guid>',
             f'      <description>{escape(post["summary"])}</description>',
+            # Full text the RSS way: description stays the summary, the
+            # content module carries the article.
+            f'      <content:encoded>{escape(post["body"])}</content:encoded>',
             "    </item>",
         ]
     out += ["  </channel>", "</rss>", ""]
@@ -206,6 +263,7 @@ def main():
         posts = parse_posts(BLOG.read_text(encoding="utf-8"))
         for post in posts:
             post["summary"] = summarize(post)
+            post["body"] = body(post)
     except (PostError, OSError) as exc:
         print(f"makeFeed: {exc}", file=sys.stderr)
         return 1
