@@ -1,0 +1,40 @@
+# How you can still get a brand new IPv4 /24 from ARIN for $275 ⅌ year, with some strings attached
+
+I recently set up my own AS. I’m not going to run through the whole process here since it was entirely tutorial‐following on my part, but there’s an interesting part of the process I don’t think too many people are aware of: there’s still *brand new* IPv4 space being handed out for no charge other than the standard Registration Services Plan fee.
+
+=> https://www.arin.net/resources/fees/fee_schedule/   the standard Registration Services Plan fee
+
+ARIN’s free pool ran dry in 2015, and leasing IPv4 space currently runs about $1200–2400 ⅌ year.
+
+However, in 2010, ARIN received 23.0.0.0/8 from IANA. They carved out 23.128.0.0/10 for the following purpose:
+
+*Number Resource Policy Manual*:
+
+=> https://www.arin.net/participate/policy/nrpm/   Number Resource Policy Manual
+
+> ARIN shall allocate a contiguous /10 from its last /8 IPv4 allocation from IANA. This IPv4 allocation will be set aside and dedicated to facilitate IPv6 deployment. Allocations and assignments from this block must be justified by immediate IPv6 deployment requirements. Examples of such needs include: IPv4 addresses for key dual stack DNS servers, and NAT-PT or NAT464 translators. ARIN staff will use their discretion when evaluating justifications.
+
+> A /24 will be allocated. […]
+
+According to anecdotes, “I run an IPv6‐first network that needs NAT64/464XLAT to interface with the IPv4‐only internet” is an adequate reason.
+
+Some further details on qualification, summarized from the manual:
+
+* You can’t have received 4.10 space in the previous six months.
+* Your earlier 4.10 blocks must still meet the policy’s requirements, and they must be at least 80% used.
+* No other allocation or assignment can meet the need. For example, if you already own a ton of IPv4 space, you’re probably locked out of 4.10.
+
+Also note that 4.10 space is not transferable.
+
+The smallest annual fee category covers both a /24 of IPv4 and an IPv6 block of /40 or smaller, so it probably won’t cost you any extra unless you’re using way too much IPv4 relative to your IPv6.
+
+## Don’t abuse it
+
+Don’t sublease to customers, don’t use it for single‐stack IPv4 hosts, don’t use it outside of the ARIN region. ARIN does carry out abuse cases over NRPM 4.10 space.
+
+## It’s accessible
+
+If you are rolling out IPv6 in the ARIN region and need IPv4 for translators or dual‐stack services, you can likely get a fresh /24 from ARIN for nothing on top of your existing RSP fee. You don’t need to pay market rates or win the waiting list lottery. The pool has more than 13,000 /24s left with only about 55 issued ⅌ month, and requests are usually reviewed within days.
+
+=> /blog/   back to blog
+=> /        back to home

@@ -5,8 +5,15 @@
     <link>https://dreamstation.systems/personal/blog.html</link>
     <description>the least consistent blog on the W3</description>
     <language>en</language>
-    <lastBuildDate>Mon, 26 Oct 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 29 Oct 2026 00:00:00 +0000</lastBuildDate>
     <atom:link rel="self" type="application/rss+xml" href="https://dreamstation.systems/personal/rss.xml"/>
+    <item>
+      <title>How you can still get a brand new IPv4 /24 from ARIN for $275 ⅌ year, with some strings attached</title>
+      <link>https://dreamstation.systems/personal/arin410.html</link>
+      <pubDate>Thu, 29 Oct 2026 00:00:00 +0000</pubDate>
+      <guid isPermaLink="true">https://dreamstation.systems/personal/arin410.html</guid>
+      <description>ARIN still hands out fresh IPv4 /24s, at no extra cost, to networks deploying IPv6 under NRPM 4.10.</description>
+    </item>
     <item>
       <title>“1025/tcp network blackjack”: who deals blackjack on port 1025?</title>
       <link>https://dreamstation.systems/personal/blackjack1025.html</link>

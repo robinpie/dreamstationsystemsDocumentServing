@@ -1,5 +1,6 @@
 # blog
 
+=> arin410.gmi       How you can still get a brand new IPv4 /24 from ARIN for $275 ⅌ year, with some strings attached | 2026-10-29
 => blackjack1025.gmi “1025/tcp network blackjack”: who deals blackjack on port 1025? | 2026-10-26
 => ipod.gmi          Photos from my 4th generation iPod Touch | 2026-10-19
 => crypto30years.gmi Has mainstream cryptography provided 30 years of protection? (Mostly not, but we’re getting way better) | 2026-10-11
