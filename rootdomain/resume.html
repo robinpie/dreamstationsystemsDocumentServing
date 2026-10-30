@@ -240,8 +240,13 @@ td {
 /* ---------- Print ---------- */
 
 @media print {
+  /* Browsers print in "economy" mode by default, dropping background
+     colours (the solid bullets are backgrounds) and lightening other
+     colours. Opt out; it inherits to every element and pseudo-element. */
   html {
     background: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .page {
