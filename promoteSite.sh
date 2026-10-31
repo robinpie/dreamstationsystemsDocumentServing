@@ -283,7 +283,7 @@ promote_retro staticish/gemini/dreamstation.systems /srv/gemini ntpstats.gmi law
 # (fhs/etc/nginx/sites-available/modernmotherfuckingwebsite.dreamstation.systems).
 # Straight from the repo like the retro roots — it has no staging copy — but
 # root-owned like /srv/http, since nothing writes there at runtime.
-if [ -d "$ROOT/modernmotherfuckingwebsite" ]; then
+if [ -d "$ROOT/staticish/http/modernmotherfuckingwebsite.dreamstation.systems" ]; then
 	sudo rsync -a --delete \
 		--chown=root:root --chmod=D755,F644 \
 		"$ROOT/staticish/http/modernmotherfuckingwebsite.dreamstation.systems/" /srv/modernmotherfuckingwebsite/
