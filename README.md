@@ -12,23 +12,43 @@ The main site’s pages (`staticish/http/dreamstation.systems/personal/`’s ind
 
 Some scripting and layout is AI-assisted, and there’s some AI‐slop documentation in various text files (i’ll try to clean the documentation up eventually). The served prose is mine, of course.
 
-| Subtree                                                           | Domain / destination                                                        | License       |
-|-------------------------------------------------------------------|-----------------------------------------------------------------------------|---------------|
-| `openget/`                                                        | https://grandexchange.dreamstation.systems                                  | GPL-2.0-only  |
-| `staticish/http/dreamstation.systems/`                            | https://dreamstation.systems                                                | mixed / messy |
-| `cgi/`                                                            | https://dreamstation.systems/professional/status                            | mixed / messy |
-| `staticish/gopher/dreamstation.systems/`                          | gopher://dreamstation.systems                                               | mixed / messy |
-| `staticish/gemini/dreamstation.systems/`                          | gemini://dreamstation.systems (+ `spartan://`)                              | mixed / messy |
-| `fhs/etc/nginx/`                                                  | `/etc/nginx`                                                                | mixed / messy |
-| `fhs/etc/`                                                        | the rest of `/etc` (gophernicus, molly-brown, fail2ban, …)                  | mixed / messy |
-| `statusSample/`                                                   | `/usr/local/bin` + systemd                                                  | mixed / messy |
-| `buildTimeTools/assetsBuild/`                                     | build-time only, not served                                                 | mixed / messy |
-| `buildTimeTools/lawaPage/`                                        | builds the lawa stats page                                                  | mixed / messy |
-| `buildTimeTools/triptych/`                                        | `triptych.pl` + `triptych.conf`: renders one source to HTML, Gopher, Gemini | mixed / messy |
-| `unbuiltContent/triptychContent/`                                 | source for `triptych.pl`, not served directly                               | mixed / messy |
-| `unbuiltContent/triptychTemplates/`                               | page chrome for `triptych.pl`, not served directly                          | mixed / messy |
-| `gitHooks/`                                                       | pre-commit chain and the post-commit staging hook                           | mixed / messy |
-| `deploy/`                                                         | helpers for `stageSite.sh` / `promoteSite.sh`                               | mixed / messy |
-| `docs/`                                                           | notes on how all of the above fits together                                 | mixed / messy |
-| `staticish/http/modernmotherfuckingwebsite.dreamstation.systems/` | https://modernmotherfuckingwebsite.dreamstation.systems                     | CC0-1.0       |
-| `staticish/http/hansendiscountelectronics.com/site/`              | https://hansendiscountelectronics.com                                       | mixed / messy |
+```
+.
+├── staticish/
+│   ├── http/
+│   │   ├── dreamstation.systems/
+│   │   ├── modernmotherfuckingwebsite.dreamstation.systems/                                                                               [CC0-1.0]
+│   │   └── hansendiscountelectronics.com/
+│   ├── gopher/
+│   │   └── dreamstation.systems/
+│   └── gemini/
+│       └── dreamstation.systems/           also served on spartan
+├── cgi/                                    http(s)://dreamstation.systems/professional/status, http(s)://fortunes.dreamstation.systems
+├── openget/                                http(s)://grandexchange.dreamstation.systems                                                   [GPL-2.0-only]
+├── fhs/
+│   └── etc/
+│       ├── nginx/
+│       │   ├── conf.d/
+│       │   ├── sites-available/
+│       │   └── snippets/
+│       ├── molly-brown/
+│       ├── default/
+│       ├── fail2ban/
+│       │   └── filter.d/
+│       └── logrotate.d/
+├── statusSample/                           /usr/local/bin + systemd: the status page's sampler
+├── buildTimeTools/
+│   ├── assetsBuild/                        feeds, sitemap, font subsets, badges
+│   ├── lawaPage/                           renders the lawa stats page (a timer on the box)
+│   └── triptych/                           triptych.pl + triptych.conf: a little hack I made to convert one document into HTML, gemtext, and Gopher plaintext
+├── unbuiltContent/
+│   ├── triptychContent/
+│   ├── triptychTemplates/                  page chrome per protocol
+│   └── webBadges.csv
+├── gitHooks/
+├── deploy/                                 helpers for stageSite.sh / promoteSite.sh
+├── docs/
+├── stageSite.sh                            commit hook: repo → staging
+├── promoteSite.sh                          staging → live
+└── dangerouslyDeployImmediately.sh         commit, promote, and push all at once
+```

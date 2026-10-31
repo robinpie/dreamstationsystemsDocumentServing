@@ -3,7 +3,7 @@ id: arin410
 kind: post
 title: How you can still get a brand new IPv4 /24 from ARIN for $275 ⅌ year, with some strings attached
 date: 2026-10-29
-updated: 2026-10-29
+updated: 2026-10-31
 description: ARIN still hands out fresh IPv4 /24s, at no extra cost, to networks deploying IPv6 under NRPM 4.10.
 pangram: https://www.pangram.com/history/2c91f419-3ac5-41b8-a930-adde6c98957f?ucc=tp64Jv2K7C4
 ---
@@ -30,7 +30,7 @@ Some further details on qualification, summarized from the manual:
 
 Also note that 4.10 space is not transferable.
 
-The smallest annual fee category covers both a /24 of IPv4 and an IPv6 block of /40 or smaller, so it probably won’t cost you any extra unless you’re using way too much IPv4 relative to your IPv6.
+The smallest annual fee category covers both a /24 of IPv4 and an IPv6 block of /40 or smaller, the second smallest covers a /22 and a /36, and so on, so it probably won’t cost you any extra unless you’re using way too much IPv4 relative to your IPv6.
 
 ## Don’t abuse it
 

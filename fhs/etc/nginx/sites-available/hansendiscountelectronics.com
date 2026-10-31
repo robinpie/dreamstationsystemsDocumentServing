@@ -1,13 +1,12 @@
 # hansendiscountelectronics.com — its own small static site: a mock
-# mid-2000s electronics storefront. Source is staticish/http/hansendiscountelectronics.com/site/
+# mid-2000s electronics storefront. Source is staticish/http/hansendiscountelectronics.com/
 # in this repo, rsynced to /srv/hansendiscountelectronics.com by promoteSite.sh
 # (not staged: like staticish/http/modernmotherfuckingwebsite.dreamstation.systems/, it goes straight from the repo
-# to live). The loose JPEGs beside site/ in that directory are reference
-# screenshots and are NOT deployed.
+# to live).
 #
 # It used to be an alias of the main site (root /srv/http plus the apex's
 # snippet list). It no longer is: no status page, no themes, no feeds, no PGP
-# key — just the files under site/.
+# key — just the files under staticish/http/hansendiscountelectronics.com/.
 #
 # WITHOUT THIS FILE the name does not reach anything. It resolves to this
 # address (A record at Spaceship, the registrar), but a Host matching no

@@ -3,7 +3,7 @@
   <title>robin’s blog</title>
   <subtitle>the least consistent blog on the W3</subtitle>
   <id>https://dreamstation.systems/personal/blog.html</id>
-  <updated>2026-10-29T00:00:00Z</updated>
+  <updated>2026-10-31T00:00:00Z</updated>
   <link rel="alternate" type="text/html" href="https://dreamstation.systems/personal/blog.html"/>
   <link rel="self" type="application/atom+xml" href="https://dreamstation.systems/personal/feed.xml"/>
   <author>
@@ -15,9 +15,9 @@
     <id>https://dreamstation.systems/personal/arin410.html</id>
     <link rel="alternate" type="text/html" href="https://dreamstation.systems/personal/arin410.html"/>
     <published>2026-10-29T00:00:00Z</published>
-    <updated>2026-10-29T00:00:00Z</updated>
+    <updated>2026-10-31T00:00:00Z</updated>
     <summary type="text">ARIN still hands out fresh IPv4 /24s, at no extra cost, to networks deploying IPv6 under NRPM 4.10.</summary>
-    <content type="html">&lt;p class="dateline"&gt;&lt;time datetime="2026-10-29"&gt;2026-10-29&lt;/time&gt;&lt;/p&gt;
+    <content type="html">&lt;p class="dateline"&gt;&lt;time datetime="2026-10-29"&gt;2026-10-29&lt;/time&gt;, edited &lt;time datetime="2026-10-31"&gt;2026-10-31&lt;/time&gt;&lt;/p&gt;
 
     &lt;p&gt;I recently set up my own AS. I’m not going to run through the whole process here since it was entirely tutorial‐following on my part, but there’s an interesting part of the process I don’t think too many people are aware of: there’s still &lt;em&gt;brand new&lt;/em&gt; IPv4 space being handed out for no charge other than &lt;a href="https://www.arin.net/resources/fees/fee_schedule/"&gt;the standard Registration Services Plan fee&lt;/a&gt;.&lt;/p&gt;
 
@@ -47,7 +47,7 @@
 
     &lt;p&gt;Also note that 4.10 space is not transferable.&lt;/p&gt;
 
-    &lt;p&gt;The smallest annual fee category covers both a /24 of IPv4 and an IPv6 block of /40 or smaller, so it probably won’t cost you any extra unless you’re using way too much IPv4 relative to your IPv6.&lt;/p&gt;
+    &lt;p&gt;The smallest annual fee category covers both a /24 of IPv4 and an IPv6 block of /40 or smaller, the second smallest covers a /22 and a /36, and so on, so it probably won’t cost you any extra unless you’re using way too much IPv4 relative to your IPv6.&lt;/p&gt;
 
     &lt;h2&gt;Don’t abuse it&lt;/h2&gt;
 

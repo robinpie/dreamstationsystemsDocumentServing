@@ -26,7 +26,7 @@ Some further details on qualification, summarized from the manual:
 
 Also note that 4.10 space is not transferable.
 
-The smallest annual fee category covers both a /24 of IPv4 and an IPv6 block of /40 or smaller, so it probably won’t cost you any extra unless you’re using way too much IPv4 relative to your IPv6.
+The smallest annual fee category covers both a /24 of IPv4 and an IPv6 block of /40 or smaller, the second smallest covers a /22 and a /36, and so on, so it probably won’t cost you any extra unless you’re using way too much IPv4 relative to your IPv6.
 
 ## Don’t abuse it
 

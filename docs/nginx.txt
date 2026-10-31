@@ -338,11 +338,8 @@ Same certificate, same content, same blast radius (deliberately NOT merged with 
                                                        /srv/hansendiscountelectronics.com,
                                                        rsynced there by promote
                                                        from the repo's
-                                                       staticish/http/hansendiscountelectronics.com/site/
-                                                       (no staging; the JPEGs
-                                                       beside site/ are
-                                                       reference screenshots and
-                                                       are not deployed). WAS an
+                                                       staticish/http/hansendiscountelectronics.com/
+                                                       (no staging). WAS an
                                                        alias of the main site
                                                        until 2026-09-25; no
                                                        longer shares /srv/http

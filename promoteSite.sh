@@ -7,7 +7,7 @@
 #   staticish/gopher/dreamstation.systems/          -> /srv/gopher         gophernicus doc root
 #   staticish/gemini/dreamstation.systems/          -> /srv/gemini         molly-brown doc root (Spartan too)
 #   staticish/http/modernmotherfuckingwebsite.dreamstation.systems/ -> /srv/modernmotherfuckingwebsite  its own vhost
-#   staticish/http/hansendiscountelectronics.com/site/ -> /srv/hansendiscountelectronics.com  its own vhost
+#   staticish/http/hansendiscountelectronics.com/ -> /srv/hansendiscountelectronics.com  its own vhost
 #   statusSample/    -> /usr/local/bin + units  the status page's other half
 #   statusSample/starport/ -> starport, over SSH  the second host's sampler
 #   fhs/etc/nginx/           -> /etc/nginx          vhosts and snippets
@@ -294,13 +294,12 @@ fi
 #
 # A small static storefront, served by its own vhost
 # (fhs/etc/nginx/sites-available/hansendiscountelectronics.com). Same deal as
-# modernmotherfuckingwebsite above. Only site/ is deployed — the JPEGs beside
-# it are reference screenshots, not part of the site.
-if [ -d "$ROOT/staticish/http/hansendiscountelectronics.com/site" ]; then
+# modernmotherfuckingwebsite above.
+if [ -d "$ROOT/staticish/http/hansendiscountelectronics.com" ]; then
 	sudo rsync -a --delete \
 		--chown=root:root --chmod=D755,F644 \
-		"$ROOT/staticish/http/hansendiscountelectronics.com/site/" /srv/hansendiscountelectronics.com/
-	echo "Promoted staticish/http/hansendiscountelectronics.com/site/ → /srv/hansendiscountelectronics.com"
+		"$ROOT/staticish/http/hansendiscountelectronics.com/" /srv/hansendiscountelectronics.com/
+	echo "Promoted staticish/http/hansendiscountelectronics.com/ → /srv/hansendiscountelectronics.com"
 fi
 
 # --------------------------------------------------------------- statusSample
