@@ -1,5 +1,5 @@
 #!/bin/bash
-# Stage: rsyncs rootdomain/ to /srv/httpstaging for preview. Runs on every
+# Stage: rsyncs staticish/http/dreamstation.systems/ to /srv/httpstaging for preview. Runs on every
 # commit/merge (post-commit/post-merge hooks); touches nothing live. See
 # githooks.txt for the full stage/promote split.
 set -eu
@@ -31,8 +31,8 @@ for f in "$ROOT"/statusSample/*.sh "$ROOT"/statusSample/starport/*.sh; do
 	fi
 done
 
-# lawaPage/: the two Perl scripts behind /personal/lawa.html's live numbers.
-for f in "$ROOT"/lawaPage/*.pl; do
+# buildTimeTools/lawaPage/: the two Perl scripts behind /personal/lawa.html's live numbers.
+for f in "$ROOT"/buildTimeTools/lawaPage/*.pl; do
 	[ -f "$f" ] || continue
 	if ! perl -c "$f" >/dev/null 2>&1; then
 		echo "ABORT: ${f#"$ROOT"/} fails syntax check — nothing staged." >&2
@@ -44,9 +44,9 @@ done
 # The comment stripper runs on what is about to be staged, so it is gated
 # like the rest: a stripper that cannot compile must not leave staging (and
 # then live) holding the unstripped tree.
-if ! perl -c "$ROOT/stripComments.pl" >/dev/null 2>&1; then
-	echo "ABORT: stripComments.pl fails syntax check — nothing staged." >&2
-	perl -c "$ROOT/stripComments.pl" || true
+if ! perl -c "$ROOT/deploy/stripComments.pl" >/dev/null 2>&1; then
+	echo "ABORT: deploy/stripComments.pl fails syntax check — nothing staged." >&2
+	perl -c "$ROOT/deploy/stripComments.pl" || true
 	exit 1
 fi
 
@@ -63,7 +63,7 @@ sudo rsync -a --delete \
 	--exclude '/personal/lawa-data.tok.html' \
 	--exclude '/personal/lawa-box.html' \
 	--exclude '/personal/lawa-box.tok.html' \
-	"$ROOT/rootdomain/" "$STAGING/"
+	"$ROOT/staticish/http/dreamstation.systems/" "$STAGING/"
 
 # HTML comments come out of the served copy here, not in promote, so staging
 # previews exactly the bytes promote will make live. SSI, conditional comments
@@ -71,10 +71,10 @@ sudo rsync -a --delete \
 # everything. Rewrites files in place with their mtimes preserved, so promote's
 # rsync does not see every stripped page as changed. See githooks.txt,
 # "comment stripping".
-sudo perl "$ROOT/stripComments.pl" "$ROOT/rootdomain" "$STAGING"
+sudo perl "$ROOT/deploy/stripComments.pl" "$ROOT/staticish/http/dreamstation.systems" "$STAGING"
 
 sudo chown -R root:root "$STAGING/"
 sudo chmod -R u=rwX,go=rX "$STAGING/"
 
-echo "Staged rootdomain/ → $STAGING  (https://staging.dreamstation.systems)"
+echo "Staged staticish/http/dreamstation.systems/ → $STAGING  (https://staging.dreamstation.systems)"
 echo "Run ./promoteSite.sh to go live."

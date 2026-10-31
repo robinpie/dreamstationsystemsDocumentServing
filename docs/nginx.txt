@@ -1,0 +1,749 @@
+nginx
+=====
+
+Serves /srv/http/ on port 80, scoped to dreamstation.systems / www.dreamstation.systems only. Content is intentionally minimal — index.html just tells visitors to use something else.
+
+nginx dispatches on the Host header, so each hostname gets its own server block — this sets up name-based virtual hosting for future subdomains.
+
+Config layout:
+  /etc/nginx/conf.d/compression.conf                 — Brotli, http-wide, next
+                                                       to nginx.conf's stock
+                                                       `gzip on`. Also sets
+                                                       gzip_vary (brotli reuses
+                                                       it for Vary). NEEDS the
+                                                       apt package
+                                                       libnginx-mod-http-brotli-filter
+                                                       — on a
+                                                       rebuild, install it
+                                                       BEFORE promoting or
+                                                       nginx -t fails. No zstd:
+                                                       Debian ships no nginx
+                                                       zstd module, and a
+                                                       hand-built .so must match
+                                                       the exact nginx build, so
+                                                       every nginx security
+                                                       update would break nginx
+                                                       -t until it was rebuilt.
+  /etc/nginx/conf.d/logFormat.conf                   — defines the `combinedHost`
+                                                       log format: Debian's
+                                                       `combined` with the Host
+                                                       header appended as
+                                                       host=<value>, then
+                                                       proto=http|TLSv1.2|TLSv1.3
+                                                       (a map on $ssl_protocol,
+                                                       which is empty on plain
+                                                       HTTP), cipher=$ssl_cipher
+                                                       and curve=$ssl_curve (the
+                                                       key-exchange group; TLS
+                                                       1.3 cipher names omit it),
+                                                       both `-` on plain HTTP.
+                                                       nginx 1.26 logs the ML-KEM
+                                                       hybrid groups as hex
+                                                       (0x11ec), so the map names
+                                                       them; an unknown 0x....
+                                                       means add a map line.
+                                                       Tally with
+                                                       grep -o 'proto=[^ ]*' |
+                                                       sort | uniq -c. The onion
+                                                       vhost logs nothing, so
+                                                       never shows. In conf.d
+                                                       because log_format is
+                                                       http context and conf.d/*
+                                                       is included BEFORE
+                                                       sites-enabled/*, so the
+                                                       name is defined before
+                                                       any block uses it; a
+                                                       snippet could not work,
+                                                       being server context. It
+                                                       does NOT set access_log —
+                                                       that would ADD a second
+                                                       destination next to
+                                                       nginx.conf's and log
+                                                       everything twice. Applied
+                                                       per-server by
+                                                       snippets/accessLog.conf.
+                                                       Appended rather than
+                                                       inserted so anything
+                                                       reading these logs
+                                                       positionally still works.
+  /etc/nginx/snippets/accessLog.conf                 — `access_log ... combinedHost`
+                                                       (format defined in
+                                                       conf.d/logFormat.conf).
+                                                       INCLUDE IT IN EVERY NEW
+                                                       SERVER BLOCK: a block
+                                                       without it silently
+                                                       inherits nginx.conf's
+                                                       plain `combined` and
+                                                       drops the Host, so the
+                                                       one vhost you forget is
+                                                       the one you cannot later
+                                                       account for. The lone
+                                                       exception is
+                                                       grandexchange's :443
+                                                       block, which logs to
+                                                       openget-access.log (in
+                                                       combinedHost, named
+                                                       directly) —
+                                                       access_log does not
+                                                       override at the same
+                                                       level, it ADDS, so
+                                                       including it there would
+                                                       double-log OpenGET.
+  /etc/nginx/snippets/statusCgi.conf                 — the /professional/status
+                                                       location: fcgiwrap ->
+                                                       /srv/cgi/status.cgi, its
+                                                       502/504 static backstop,
+                                                       and a trailing-slash
+                                                       redirect. ALSO the
+                                                       internal-only
+                                                       /professional/status-box
+                                                       fragment, and one of the
+                                                       three places SSI is
+                                                       switched on
+                                                       (= /professional/index.html,
+                                                       which pulls that fragment
+                                                       into the resume page's
+                                                       corner). The other two
+                                                       are both in theme.conf,
+                                                       below.
+                                                       INCLUDED FROM
+                                                       BOTH the :80 and the apex
+                                                       :443 block below, so the
+                                                       two cannot drift apart
+                                                       (a status page that
+                                                       worked over HTTP but 404d
+                                                       over HTTPS would be a
+                                                       silly bug). See
+                                                       ~/configNotes/status.txt
+  /etc/nginx/snippets/teslaNotice.conf               — default_type/charset and
+                                                       the `return 299` carrying
+                                                       the "this is not Tesla
+                                                       infrastructure" notice.
+                                                       INCLUDED FROM BOTH the
+                                                       :80 and :443 blocks of
+                                                       sites-available/
+                                                       pool-ntp.tesla.com, for
+                                                       the same
+                                                       cannot-drift reason as
+                                                       statusCgi.conf above —
+                                                       here it matters more,
+                                                       since the whole file is
+                                                       one prose body
+                                                       that will get edited.
+  /etc/nginx/snippets/theme.conf                     — server-side theme
+                                                       selection for the themed
+                                                       pages under /personal/
+                                                       (list generated by
+                                                       triptych.pl). Switches SSI
+                                                       on for exactly those
+                                                       files, sets the theme
+                                                       cookie and Vary. ALSO
+                                                       the internal-only
+                                                       /personal/chrome/
+                                                       location, SSI on again,
+                                                       which serves the three
+                                                       desktop fragments the
+                                                       ubuntu804 theme wraps a
+                                                       page in. The
+                                                       two maps it depends on
+                                                       are NOT here — map is
+                                                       http context, so they
+                                                       live at the top of
+                                                       sites-available/
+                                                       dreamstation.systems.
+                                                       INCLUDED FROM both the
+                                                       :80 and apex :443 block,
+                                                       same anti-drift reason
+                                                       as statusCgi.conf.
+                                                       See THEME SELECTION below
+  /etc/nginx/sites-available/dreamstation.systems   — main site, server_name
+                                                       dreamstation.systems
+                                                       www.dreamstation.systems
+                                                       mta-sts.dreamstation.systems
+                                                       *.dreamstation.systems
+                                                       (the wildcard means any
+                                                       unrecognized subdomain
+                                                       falls through to this
+                                                       block and gets the same
+                                                       content, rather than the
+                                                       000-default-catchall's
+                                                       444 — nginx still prefers
+                                                       more specific server
+                                                       blocks like pool.ntp.org's
+                                                       *.pool.ntp.org, so this
+                                                       only catches subdomains
+                                                       of dreamstation.systems
+                                                       itself)
+                                                       (plus an HTTPS block
+                                                       for mta-sts.dreamstation.systems,
+                                                       needed so mail senders can
+                                                       fetch the MTA-STS policy)
+                                                       (plus an EXPLICIT HTTPS
+                                                       block for the apex —
+                                                       see below)
+
+APEX HTTPS
+----------
+The apex has an explicit :443 block, and needs one. Without it, https://dreamstation.systems/ still appears to work: the mta-sts block is then the only :443 server for this domain, so nginx uses it as the default server for any unmatched :443 request, and the certificate it loads happens to carry dreamstation.systems as a SAN:
+
+    subject=CN=dreamstation.systems
+    SAN: DNS:dreamstation.systems, DNS:mta-sts.dreamstation.systems
+
+That is a coincidence of block ordering and SAN contents, not a configuration. Adding any :443 block that sorted earlier would silently break the apex — and with it professional/index.html's declared https canonical and the status page. Hence the explicit block:
+
+    server { listen 443 ssl; server_name dreamstation.systems www....;
+             root /srv/http; include snippets/statusCgi.conf; }
+
+Same certificate, same content, same blast radius (deliberately NOT merged with grandexchange's separate cert — see that file's note about keeping inbound mail's TLS out of a web deploy's blast radius). Port 80 is still deliberately not redirected to HTTPS: this box's character is serving plain old protocols, and nothing here is sensitive.
+  /etc/nginx/sites-available/pool.ntp.org            — server_name pool.ntp.org,
+                                                       *.pool.ntp.org,
+                                                       ntppool.org,
+                                                       *.ntppool.org; 301
+                                                       redirect to
+                                                       https://www.ntppool.org/.
+                                                       This server is a member
+                                                       of the NTP Pool project
+                                                       (we don't own the
+                                                       pool.ntp.org / ntppool.org
+                                                       domains themselves —
+                                                       the project's DNS just
+                                                       points them at member
+                                                       servers, including us
+                                                       occasionally). People
+                                                       sometimes point a browser
+                                                       at their NTP server out
+                                                       of mistake or curiosity;
+                                                       the project recommends
+                                                       serving this redirect
+                                                       for that case.
+  /etc/nginx/sites-available/pool-ntp.tesla.com     — server_name
+                                                       pool-ntp.tesla.com; a
+                                                       fixed HTTP 299 with an
+                                                       HTML notice, on every
+                                                       path. Tesla CNAMEs that
+                                                       name to pool.ntp.org and
+                                                       lists it as a scan
+                                                       target, so their
+                                                       Assetnote scanner keeps
+                                                       landing on us and
+                                                       throwing exploits at a
+                                                       stranger's IP. 299 is
+                                                       not a real code: 2xx so
+                                                       the body is kept, odd
+                                                       enough to be noticed in
+                                                       a scan report. TWO blocks,
+                                                       :80 and :443, sharing the
+                                                       body via
+                                                       snippets/teslaNotice.conf
+                                                       so the two cannot drift.
+                                                       :443 reuses the
+                                                       dreamstation.systems cert
+                                                       — it does not match this
+                                                       name and does not need to,
+                                                       since the scanner ignores
+                                                       the mismatch and no real
+                                                       client asks for the name.
+                                                       Without the :443 block
+                                                       the scanner's HTTPS half
+                                                       falls through to the
+                                                       apex (first :443 block in
+                                                       config order) and gets the
+                                                       real site, defeating the
+                                                       point. Same family as the
+                                                       pool.ntp.org block: a
+                                                       Host we do not own but
+                                                       predictably receive,
+                                                       answered rather than
+                                                       444'd.
+  /etc/nginx/sites-available/grandexchange.dreamstation.systems
+                                                     — the OpenGET OSRS
+                                                       Grand Exchange site.
+                                                       EXACT server_name, so
+                                                       it beats the
+                                                       *.dreamstation.systems
+                                                       wildcard above. :80
+                                                       redirects to :443
+                                                       (the only host here
+                                                       that does); :443
+                                                       proxies to
+                                                       127.0.0.1:4151. Uses
+                                                       its OWN certificate,
+                                                       deliberately not an
+                                                       expansion of the apex
+                                                       one — that lineage
+                                                       also covers mta-sts,
+                                                       and re-issuing it to
+                                                       add a web host would
+                                                       put inbound mail's
+                                                       TLS in the blast
+                                                       radius of a web
+                                                       deploy. Full details
+                                                       in openget.txt.
+  /etc/nginx/sites-available/staging.dreamstation.systems
+                                                     — the site as of the last
+                                                       commit, docroot
+                                                       /srv/httpstaging, behind
+                                                       HTTP basic auth. EXACT
+                                                       server_name, and that is
+                                                       the whole security
+                                                       boundary: delete this
+                                                       vhost and the wildcard
+                                                       above answers the name
+                                                       with the LIVE site and
+                                                       no password. :80
+                                                       redirects to :443 and
+                                                       serves nothing, because
+                                                       basic auth puts the
+                                                       password on the wire in
+                                                       cleartext. Own cert,
+                                                       same reasoning as
+                                                       grandexchange. Full
+                                                       details in githooks.txt.
+  /etc/nginx/sites-available/fortunes.dreamstation.systems
+                                                     — add-a-fortune form and
+                                                       tarball download, one
+                                                       CGI (cgi/fortunes.cgi),
+                                                       behind HTTP basic auth.
+                                                       :80 redirects only. Own
+                                                       cert. Writes to
+                                                       /srv/http/fortunes/,
+                                                       which promote carves
+                                                       out. Full details in
+                                                       ~/configNotes/fortunes.txt.
+  /etc/nginx/sites-available/modernmotherfuckingwebsite.dreamstation.systems
+                                                     — one static page, root
+                                                       /srv/modernmotherfuckingwebsite,
+                                                       rsynced there by promote
+                                                       from the repo dir of the
+                                                       same name (no staging).
+                                                       ONE server block on both
+                                                       :80 and :443, since the
+                                                       content is identical; :80
+                                                       not redirected. Own cert,
+                                                       same reasoning as
+                                                       grandexchange; certbot
+                                                       webroot /srv/http.
+  /etc/nginx/sites-available/modern-motherfucking-website.dreamstation.systems
+                                                     — typo-catcher: 301s
+                                                       (path and query kept) to
+                                                       modernmotherfuckingwebsite.
+                                                       One block on :80 and
+                                                       :443. Own cert (issued
+                                                       2026-10-25 via certbot
+                                                       webroot /srv/http).
+  /etc/nginx/sites-available/hansendiscountelectronics.com
+                                                     — ITS OWN SMALL STATIC SITE
+                                                       (a mock 2000s electronics
+                                                       storefront), root
+                                                       /srv/hansendiscountelectronics.com,
+                                                       rsynced there by promote
+                                                       from the repo's
+                                                       staticish/http/hansendiscountelectronics.com/site/
+                                                       (no staging; the JPEGs
+                                                       beside site/ are
+                                                       reference screenshots and
+                                                       are not deployed). WAS an
+                                                       alias of the main site
+                                                       until 2026-09-25; no
+                                                       longer shares /srv/http
+                                                       or any of the apex's
+                                                       snippets. ONE server
+                                                       block on both :80 and
+                                                       :443, like
+                                                       modernmotherfuckingwebsite.
+                                                       Own cert (expires
+                                                       2026-12-21), certbot
+                                                       webroot /srv/http, hence
+                                                       an acme-challenge
+                                                       location rooted there.
+                                                       Indexable: the noindex
+                                                       it carried as an alias
+                                                       is gone (see ALIAS
+                                                       VHOSTS below). No www —
+                                                       the name has no A record,
+                                                       so it is in neither the
+                                                       cert nor the server_name
+                                                       line. NOTE this name is
+                                                       outside
+                                                       dreamstation.systems, so
+                                                       there is NO wildcard A
+                                                       record standing behind
+                                                       it: DNS is a record of
+                                                       its own at the registrar,
+                                                       and without this file the
+                                                       catchall 444s it.
+  /etc/nginx/sites-available/bare-ip                 — server_name
+                                                       67.215.249.229; serves
+                                                       the site to anyone who
+                                                       arrives by address rather
+                                                       than name. Without it,
+                                                       http://<ip>/ matches no
+                                                       server_name, falls to the
+                                                       catchall and is DROPPED
+                                                       with 444 — while the same
+                                                       request over HTTPS works
+                                                       fine (no :443
+                                                       default_server, so
+                                                       unmatched SNI reaches the
+                                                       apex): the address would
+                                                       work on one port and be a
+                                                       black hole on the other.
+                                                       Its own block rather
+                                                       than softening
+                                                       the catchall, which
+                                                       should keep dropping
+                                                       unrecognized NAMES; a
+                                                       bare address names
+                                                       nothing and is how
+                                                       someone holding only the
+                                                       IP reaches a human.
+                                                       IPv4-only because the box
+                                                       has no global IPv6 — add
+                                                       the address here if that
+                                                       changes.
+  /etc/nginx/sites-available/000-default-catchall    — default_server block,
+                                                       server_name _, returns
+                                                       444 (drops connection)
+                                                       for any Host that
+                                                       doesn't match a real
+                                                       server block
+  /etc/nginx/sites-available/onion.dreamstation.systems
+                                                     — the Tor onion service:
+                                                       two server blocks on
+                                                       127.0.0.1:8081 (main
+                                                       site; OpenGET), fed by
+                                                       tor@onion. No access
+                                                       log, absolute_redirect
+                                                       off, sub_filter on the
+                                                       OpenGET links. Full
+                                                       account in
+                                                       ~/configNotes/onion.txt.
+  /etc/nginx/conf.d/onionLocation.conf               — the two maps behind the
+                                                       Onion-Location header
+                                                       (HTTPS only; apex and
+                                                       grandexchange only).
+  /etc/nginx/snippets/onionLocation.conf             — the add_header itself.
+                                                       Same inheritance trap as
+                                                       commonHeaders.conf, so
+                                                       theme.conf re-includes it.
+  /etc/nginx/conf.d/csp.conf                         — the $csp map behind the
+                                                       Content-Security-Policy
+                                                       header (strict on the
+                                                       apex /index.html,
+                                                       baseline elsewhere). Also
+                                                       map_hash_bucket_size 128.
+                                                       See COMMON HEADERS.
+  /etc/nginx/conf.d/mimeTypes.conf                   — types mime.types lacks:
+                                                       image/jxl for the badge
+                                                       wall's .jxl files. An
+                                                       http-level types block
+                                                       ADDS to mime.types.
+  /etc/nginx/conf.d/serverNamesHash.conf             — server_names_hash_bucket_size
+                                                       128. Onion names are 62-76
+                                                       chars; with the default 64
+                                                       nginx -t FAILS outright.
+
+All are symlinked into /etc/nginx/sites-enabled/. EDIT sites-available — `tee` into a sites-enabled path writes THROUGH the symlink and silently clobbers the real config.
+
+Content is SERVED from /srv/http/ but its SOURCE OF TRUTH is the monorepo at ~/configNotes/documentServing/staticish/http/dreamstation.systems/. Do not hand-edit /srv/http — edit staticish/http/dreamstation.systems/, commit (the hook stages it to /srv/httpstaging), and run ~/configNotes/documentServing/promoteSite.sh (rsync --delete to /srv/http, preserving certbot's .well-known/acme-challenge/ webroot dir and ntpstats.txt). Nothing goes live without that second step — see githooks.txt, and ~/configNotes/documentServing/README.md.
+
+THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every hand-authored file above lives in ~/configNotes/documentServing/fhs/etc/nginx/ and is installed by promoteSite.sh:
+
+    fhs/etc/nginx/conf.d/compression.conf
+    fhs/etc/nginx/conf.d/csp.conf
+    fhs/etc/nginx/conf.d/logFormat.conf
+    fhs/etc/nginx/conf.d/mimeTypes.conf
+    fhs/etc/nginx/conf.d/onionLocation.conf
+    fhs/etc/nginx/conf.d/robotsTag.conf
+    fhs/etc/nginx/conf.d/serverNamesHash.conf
+    fhs/etc/nginx/sites-available/000-default-catchall
+    fhs/etc/nginx/sites-available/bare-ip
+    fhs/etc/nginx/sites-available/dreamstation.systems
+    fhs/etc/nginx/sites-available/fortunes.dreamstation.systems
+    fhs/etc/nginx/sites-available/grandexchange.dreamstation.systems
+    fhs/etc/nginx/sites-available/hansendiscountelectronics.com
+    fhs/etc/nginx/sites-available/modern-motherfucking-website.dreamstation.systems
+    fhs/etc/nginx/sites-available/modernmotherfuckingwebsite.dreamstation.systems
+    fhs/etc/nginx/sites-available/onion.dreamstation.systems
+    fhs/etc/nginx/sites-available/pool-ntp.tesla.com
+    fhs/etc/nginx/sites-available/pool.ntp.org
+    fhs/etc/nginx/sites-available/staging.dreamstation.systems
+    fhs/etc/nginx/snippets/commonHeaders.conf
+    fhs/etc/nginx/snippets/feeds.conf
+    fhs/etc/nginx/snippets/miscStuff.conf
+    fhs/etc/nginx/snippets/onionLocation.conf
+    fhs/etc/nginx/snippets/pgpKey.conf
+    fhs/etc/nginx/snippets/robotsTag.conf
+    fhs/etc/nginx/snippets/accessLog.conf
+    fhs/etc/nginx/snippets/statusCgi.conf
+    fhs/etc/nginx/snippets/teslaNotice.conf
+    fhs/etc/nginx/snippets/theme.conf
+    fhs/etc/nginx/snippets/wkd.conf
+
+DO NOT HAND-EDIT /etc/nginx for any of these. The next PROMOTE reinstalls them and your edit is gone with no warning. Edit the repo copy and commit.
+
+Not in the repo, and deliberately: sites-available/default and snippets/{fastcgi-php,snakeoil}.conf are Debian's, unmodified; the sites-enabled symlinks are made once by hand; and the certificates are certbot's. That is why promoteSite.sh installs a NAMED LIST of files one at a time instead of rsyncing the tree — an rsync --delete into /etc/nginx would eat all of the above. Adding a file to fhs/etc/nginx/ therefore does nothing until it is added to NGINX_SITES or NGINX_SNIPPETS at the top of promoteSite.sh, AND symlinked into sites-enabled if it is a vhost.
+
+nginx config cannot be syntax-checked before it is installed — the vhosts `include snippets/...` relative to nginx's own prefix, so a copy in the repo does not resolve. promoteSite.sh therefore installs, runs `nginx -t`, and rolls the files back from a backup if the test fails. The running server is never at risk: the reload happens only after `nginx -t` passes, and until then nginx keeps serving the last good config out of memory.
+
+The .bak / .bak2 / .bak-20260827-150428 copies sitting in sites-available/ are inert (sites-enabled/* globs symlinks, and nothing links to them); git supersedes them.
+  index.html   — "use something else" page
+  resume.png
+  robots.txt
+
+OPENPGP WEB KEY DIRECTORY (WKD)
+-------------------------------
+Publishes the PGP key so `gpg --locate-keys robin@dreamstation.systems` just works, with no keyserver involved. Spec: draft-koch-openpgp-webkey-service.
+
+Both methods are served, because GnuPG tries ADVANCED first and only falls back to DIRECT:
+
+  advanced  https://openpgpkey.dreamstation.systems/.well-known/openpgpkey/
+              dreamstation.systems/hu/<hash>
+  direct    https://dreamstation.systems/.well-known/openpgpkey/hu/<hash>
+
+<hash> is z-base-32(sha1("robin")) — NOT a hash of the full address:
+  e78qu5ozuc8c6n6nqoryxgomnzs4j1c7
+Recompute with: gpg-wks-client --print-wkd-hash robin@dreamstation.systems
+
+Three things are easy to get wrong here:
+  - The key file must be BINARY OpenPGP, not ASCII-armored. Generate it with `gpg --dearmor < staticish/http/dreamstation.systems/pgp.asc`. An armored file is served happily by nginx and rejected silently by gpg.
+  - The empty `policy` file next to each hu/ dir is REQUIRED. Without it the method is not considered supported.
+  - Content-Type must be application/octet-stream. The hu/ files are extensionless, so they inherit nginx.conf's default_type and this is already correct — do NOT add a types{} entry for them.
+
+snippets/wkd.conf holds the CORS header and is included from BOTH the apex :443 block and the openpgpkey block, same anti-drift reasoning as statusCgi.conf. The openpgpkey vhost shares /srv/http as its docroot (so one rsync covers it) but returns 404 for everything outside the WKD tree.
+
+The openpgpkey name resolves via the *.dreamstation.systems wildcard regardless, and without its own block the apex :443 block answers it — so the cert MUST carry a SAN for it, or advanced lookups die in the TLS handshake and fall back to direct without ever saying so.
+
+Verify:
+  gpg --locate-external-keys robin@dreamstation.systems   (from an empty GNUPGHOME, or it just reads the local keyring and proves nothing)
+  gpg-wks-client --check robin@dreamstation.systems
+
+/pgp.asc CONTENT-TYPE
+---------------------
+The armored key linked from /professional is a DIFFERENT file from the WKD ones above, and wants the opposite treatment. .asc is absent from /etc/nginx/mime.types, so it would inherit default_type application/octet-stream and browsers would download it instead of showing it. snippets/pgpKey.conf serves it as text/plain; charset=utf-8, included from both apex blocks (:80 and :443) — the same anti-drift pattern as clacks/statusCgi/wkd.
+
+text/plain rather than the registered application/pgp-keys (RFC 3156): the registered type also triggers a download in browsers, which is the whole behaviour being fixed, and this file exists to be read and copy-pasted. Anything consuming keys by content type uses the WKD tree.
+
+It is an exact-match `location = /pgp.asc`, so it cannot touch the WKD regex location — the hu/ files stay application/octet-stream. No add_header in the snippet, so clacks is still inherited.
+
+CERTIFICATE (dreamstation.systems lineage)
+------------------------------------------
+authenticator = webroot, webroot_path = /srv/http. 4 SANs:
+  dreamstation.systems, mta-sts.dreamstation.systems, openpgpkey.dreamstation.systems, www.dreamstation.systems
+
+To expand again:
+  sudo certbot certonly --webroot -w /srv/http \
+    --cert-name dreamstation.systems --expand \
+    -d dreamstation.systems -d www.dreamstation.systems \
+    -d mta-sts.dreamstation.systems -d openpgpkey.dreamstation.systems
+
+renewal-hooks/deploy/fix-perms-restart-mail.sh fixes privkey perms (root:ssl-cert 640) and reloads nginx + postfix/dovecot/vsftpd. It runs on manual issuance too, not just scheduled renewal — check with `ls -lL /etc/letsencrypt/live/dreamstation.systems/privkey.pem` if mail breaks after a cert operation.
+
+NOTE: adding a :443 block for a name NOT in the cert is worse than useless — the wildcard DNS means it will resolve and connect, then fail verification. Expand the cert first.
+
+COMMON HEADERS (X-Clacks-Overhead and the security headers)
+-----------------------------------------------------------
+Every server block for this domain sends:
+
+    X-Clacks-Overhead: GNU Terry Pratchett
+    X-Content-Type-Options: nosniff
+    Referrer-Policy: strict-origin-when-cross-origin
+    Content-Security-Policy: <from the $csp map in conf.d/csp.conf>
+
+They live in snippets/commonHeaders.conf (clacks.conf until 2026-09-29, when
+the security headers joined it after a Mozilla HTTP Observatory review — one
+include already sat at every correct spot, so folding them in could not
+create a new place to forget). The snippet is INCLUDED FROM every server block (both dreamstation.systems blocks, openpgpkey, mta-sts, and both grandexchange blocks) rather than being set once in nginx.conf's http block. Same anti-drift reasoning as statusCgi.conf and wkd.conf, plus it keeps pool.ntp.org's redirect — a name we do not own — out of it.
+
+Two traps, both already handled:
+  - add_header is inherited into a nested block ONLY IF that block sets no add_header of its own. wkd.conf's location sets the CORS header, so it would have silently dropped the clacks header; it includes commonHeaders.conf again for that reason. theme.conf's location is the second such place (it sets Set-Cookie and Vary) and does the same. Any FUTURE location that adds a header must too.
+  - openget sets this header itself (openget/internal/web/server.go), so grandexchange's :443 block has a `proxy_hide_header X-Clacks-Overhead;` to avoid sending it twice. nginx is the single authority for every host, which also means a 502 from a stopped openget daemon still carries the header.
+
+`always` is set so it survives error responses too. Not served over Gopher, Gemini, Spartan or finger — none of them have response headers to put it in.
+
+Check with: curl -sI https://dreamstation.systems/ | grep -iE 'clacks|nosniff|referrer|content-security'
+
+CSP. Two policies, chosen by "$server_name:$uri" in conf.d/csp.conf:
+  - STRICT on the apex landing page (/index.html, on :80, :443, staging and
+    the onion): default-src 'none'; img-src 'self'; base-uri 'none';
+    form-action 'none'. That page is three links. Honestly score-shaped: it is
+    the page the Observatory grades and the one with nothing to protect. If it
+    ever gains a stylesheet, script or image, widen the row.
+  - BASELINE everywhere else: object-src 'none'; base-uri 'self'. No script
+    or style limits — 24 pages have inline <script>, many use style=, a few
+    load React/Babel from unpkg. No form-action — the /personal/ protocol
+    switcher 302s to http:// and .onion origins and browsers check
+    form-action against the redirect target. A real policy would start as a
+    Content-Security-Policy-Report-Only survey.
+
+THEME COOKIE. Set-Cookie in theme.conf carries $theme_cookie_flags (map in
+sites-available/dreamstation.systems): "; Secure; HttpOnly" when $https is
+on, nothing otherwise. Not Secure everywhere, because :80 is deliberately
+not redirected and a browser drops a Secure cookie set over HTTP. (The
+Observatory may still dock the cookie test for the :80 copy. Accepted.)
+
+DELIBERATELY NOT SENT (decided 2026-09-29, Observatory walkthrough):
+  - HSTS, and no :80 -> :443 redirect: the plain-HTTP character of the box,
+    and the /personal/ switcher's "http" option, which HSTS would silently
+    turn back into HTTPS. Costs 40 Observatory points; accepted.
+  - X-Frame-Options / frame-ancestors: no logged-in actions to clickjack, and
+    embedding is not something to forbid. Costs 20; accepted.
+  - COOP, CORP, COEP, SRI: not scored against us. CORP would break
+    hotlinking; COEP require-corp would break the unpkg pages; SRI on the
+    floating unpkg URLs (@18, unversioned Babel) would break at the next
+    upstream release unless the versions were pinned first.
+
+security.txt (RFC 9116) lives at staticish/http/dreamstation.systems/.well-known/security.txt and its Expires: field must be refreshed before 2027-08-26 or the file is formally invalid.
+
+/.env (the scanner greeting)
+
+GET /.env on ANY Host — every vhost, the 444 catchall, pool.ntp.org, the Tesla notice, staging, fortunes, the onion — answers 200 text/plain: "Looking for vulnerabilities on my server? Please do, just privately report them to me: <https://dreamstation.systems/.well-known/security.txt>". snippets/dotEnv.conf, an exact `location = /.env`, included from every server block (put it next to commonHeaders.conf in any new one). Added 2026-10-24.
+
+Two things it needed from the blocks around it:
+  - A server-level `return` runs in the server rewrite phase, BEFORE location matching, so it would swallow /.env. The catchall's 444, pool.ntp.org's 301 and teslaNotice.conf's 299 therefore now live in `location / { ... }` — same behaviour for every other path. Any new block that answers with a bare server-level return needs the same treatment or /.env silently stops working there.
+  - auth_basic is inherited, so the snippet sets `auth_basic off` (staging and fortunes :443 would otherwise 401 it).
+Exact match only: /.env.bak, /.env.local etc. are untouched.
+
+Check: for h in dreamstation.systems staging.dreamstation.systems fortunes.dreamstation.systems grandexchange.dreamstation.systems hansendiscountelectronics.com nosuch.example; do curl -sk --resolve $h:443:67.215.249.229 https://$h/.env; curl -s -H "Host: $h" http://67.215.249.229/.env; done
+
+MISCSTUFF (directory listings)
+
+/miscStuff/ and everything under it gets nginx's autoindex — the only place on the site that lists directories. snippets/miscStuff.conf, a `location ^~ /miscStuff/ { autoindex on; }` included from the apex :80 and :443 blocks, the onion vhost and staging. ^~ so no regex location can take a path inside it; no add_header, so commonHeaders.conf is still inherited. Files with an extension mime.types doesn't know (.c, .h, .shar, .6, extensionless CHANGES...) are served as text/plain; charset=utf-8 so they display instead of downloading; known types keep their own. Content is staticish/http/dreamstation.systems/miscStuff/ in the repo, deployed like any other page. Added 2026-10-16.
+
+ALIAS VHOSTS AND X-Robots-Tag
+-----------------------------
+There are currently NO alias vhosts. hansendiscountelectronics.com was one
+(same docroot as the apex under a second name, duplicate content by
+construction) until 2026-09-25, when it got its own site and its noindex was
+removed. The machinery below is kept, with an empty map, for the next alias:
+today NO vhost sends X-Robots-Tag through it (staging and fortunes set their
+own noindex header directly, and are unaffected).
+
+A HEADER, NOT robots.txt: for an alias sharing /srv/http, /robots.txt is the
+same file under both names — and it deliberately says Allow: / ("robots.txt is
+a suicide note", which is about archiving, and the apex means it). A response
+header is the only part of the answer that can differ per vhost.
+
+Two files, the usual split, because map is http context:
+  conf.d/robotsTag.conf     — map $server_name $robots_tag. Keyed on the vhost's
+                              CONFIGURED name, not $host, exactly like the
+                              $drafts map: no request header can move a name in
+                              or out of the list. Every other vhost gets "",
+                              and nginx omits an add_header whose value is
+                              empty, so nothing else on the box sends the header
+                              at all. THAT is what makes the snippet safe to
+                              include from files the apex shares.
+  snippets/robotsTag.conf   — the add_header itself.
+
+SAME TRAP AS commonHeaders.conf: a location with an add_header of its own drops the
+server-level one. So theme.conf and wkd.conf re-include robotsTag.conf in the
+same two places they already re-include commonHeaders.conf. A themed /personal/ page is the
+single page you would least like indexed twice, so forgetting that repeat would
+defeat most of the point.
+
+  Check (on an alias, when there is one):  curl -sI https://<alias>/ | grep -i robots
+          curl -sI https://dreamstation.systems/personal/index.html | grep -ci robots   # must be 0
+
+To add another alias: a row in the map, plus the vhost. To retire one: remove
+the vhost, the row, the sites-enabled symlink and the NGINX_SITES line, and
+`sudo certbot delete --cert-name <name>` so renewals stop chasing a name that
+may no longer resolve.
+
+Adding a whole new DOMAIN (not a subdomain) differs from the list below in two
+places: step 1 is a real DNS record rather than the wildcard, and the cert in
+step 2 is a NEW one (`certbot certonly --webroot -w /srv/http -d <name>
+--key-type ecdsa`) rather than an expansion of the apex's. The webroot is the
+live docroot, and promote carves .well-known/acme-challenge/ out of its
+--delete, so renewals keep working.
+
+Adding a new subdomain later:
+  1. Point DNS for the subdomain at this VPS. (Often already done — there is a wildcard A record, which is why an unconfigured subdomain still resolves and connects instead of failing fast. See the NOTE above.)
+  2. Expand the cert to cover it FIRST — see CERTIFICATE above. A :443 block for a name missing from the cert resolves, connects, and then fails hostname verification, which is a much more confusing failure than a 404.
+  3. Add /etc/nginx/sites-available/<subdomain>.dreamstation.systems with its own server_name and root/content.
+  4. Symlink it into sites-enabled/.
+  5. sudo nginx -t && sudo systemctl reload nginx
+
+Useful commands:
+  sudo nginx -t                     — test config syntax
+  sudo systemctl status nginx
+  sudo systemctl reload nginx       — reload config without dropping connections
+  sudo systemctl restart nginx
+  sudo journalctl -u nginx
+
+THEME SELECTION (/personal/)
+----------------------------
+The themed pages under /personal/ (every page triptych renders to the web, and their translations) let a visitor pick one of five stylesheets. The choice is resolved entirely by nginx, server-side: no JavaScript is involved, and the right stylesheet is in the markup as served.
+
+Two halves, in two files, because map is only valid in http context:
+
+  sites-available/dreamstation.systems   the four maps, at the top, outside
+                                         every server block
+  snippets/theme.conf                    the location that turns SSI on, and
+                                         the internal /personal/chrome/ one
+
+FOUR maps, not two. $theme_cookie and $theme resolve the precedence chain below; $theme_color_light and $theme_color_dark then key off the RESOLVED $theme to give the page its <meta name="theme-color">, so the browser's own chrome is tinted to match the stylesheet that was actually served instead of carrying one value that is wrong for four themes out of five. They key off $theme and not off the cookie or the query parameter precisely so they cannot disagree with the stylesheet.
+
+Four of the five themes are fixed-appearance, so their light and dark entries are identical on purpose; only `plain` — which is almost an empty stylesheet, i.e. browser defaults — really follows prefers-color-scheme, and it is the one theme whose two values differ. The colour values are QUOTED in the map: an unquoted # opens a comment in nginx.conf and would silently truncate every one of them to the empty string.
+
+Precedence is one chain: ?theme=<id> if it names a known theme, else the cookie if IT names a known theme, else ubuntu804. Both maps list the themes explicitly, so an unknown value from either source lands on the default and can never reach the page.
+
+The default lives in ONE place: `default` in the $theme_cookie map. Nothing is hard-coded in the pages.
+
+The switcher is a GET form submitting to ?theme=<id>. It is NOT a set of links carrying the parameter around the site: that would have meant editing every <a href> on every themed page to append it, and one forgotten link resets the theme mid-navigation. The cookie carries it instead, so no href anywhere had to change.
+
+WHY THE QUERY PARAMETER IS SERVED, NOT REDIRECTED
+  The obvious design is: ?theme= sets the cookie, then 302 to the bare path. Do not do this. With cookies disabled the redirect drops the parameter and the cookie never comes back, so the page reloads looking identical and the switcher appears broken — a silent no-op. Serving the requested theme on the same request means a cookieless visitor gets what they asked for and merely loses it on the next navigation. Also one round trip cheaper, and the ?theme= URL is bookmarkable as a way to pin a theme with no cookie at all.
+
+A THEME THAT NEEDS MARKUP (ubuntu804)
+  Four of the five themes are only a stylesheet. ubuntu804 is not: it draws an Ubuntu 8.04 desktop around the page — GNOME panel, window frame, a Firefox 3 menu bar whose menus really open, location bar, status bar — and none of that markup exists in the pages. It lives in three fragments under /personal/chrome/ and each themed page pulls them in guarded on the theme, so the other four expand them to nothing and ship not a byte of it. The SSI that was already selecting the stylesheet is what makes this cost nothing new.
+
+  Served by its own location, `internal` and `ssi on`. Both matter:
+    - ssi on HERE TOO. An #include virtual is a subrequest, and whether its output gets SSI-parsed is decided by the config of the location serving IT, not the parent. Without it the panel clock ships to the browser as a literal SSI comment and silently never renders.
+    - internal because the three files are deliberately unbalanced HTML — top opens what bottom closes — so they are meaningless alone. Subrequests still reach them; a direct hit gets 404.
+
+  See ubuntu804theme.txt for the whole design.
+
+THE PROTOCOL SWITCHER (HTTP / HTTPS / .onion)
+  A second GET form inside #theme-switcher, left of the theme one: a <select name="to"> and a Go button. Same no-JavaScript rule. A form cannot change its own action from a <select>, so it submits to nginx and nginx redirects:
+
+    action  = /personal/proto + $document_uri     (stamped in by SSI)
+    request = /personal/proto/personal/gzipt.html?theme=motif&to=onion
+    answer  = 302 http://<onion>/personal/gzipt.html?theme=motif
+
+  The location is in theme.conf; two more maps sit beside the theme ones. $proto_base turns ?to= into an origin, and is a whitelist with HTTPS as the default. $proto_now says which of the three the CURRENT request came over, and SSI uses it to mark the right <option> selected. The path half is whitelisted by the location's regex, so neither half of the redirect target is visitor-controlled: it is not an open redirect.
+
+  ?theme= is carried across on purpose. Cookies do not follow to the onion origin, so without it a visitor on motif would land on ubuntu804. It comes from a hidden field rather than from the cookie, so it also works for a cookieless visitor who arrived on a ?theme= URL.
+
+  The location lives under /personal/ and its regex repeats theme.conf's page list, as does the language switcher's. All three copies are GENERATED: triptych.pl rewrites the text inside each `/personal/(…)` group from unbuiltContent/triptychContent/ on every run, and preCommit.sh stages it, so a new .tri is themed and gets working switchers with nothing else to edit. `./buildTimeTools/triptych/triptych.pl --check` reports a list that has drifted.
+
+  Choosing HTTP from an HTTPS page will appear to do nothing in a current Firefox or Chrome: they upgrade the navigation themselves and only fall back if :443 fails. `curl -sI 'localhost/personal/proto/personal/index.html?to=http'` shows the server doing the right thing. Same story as the plain links on /professional/.
+
+THINGS THAT WILL BITE
+  - The file list in theme.conf's regex is explicit, and triptych.pl writes it (see above). A page that is NOT on it is served WITHOUT SSI, so its stylesheet href comes out as themes/.css and the page renders unstyled. This is the loud failure mode; it is loud on purpose. It bites only a hand-written themed page — triptych owns the whole list and would drop a hand-added name on the next run, so such a page would have to become a .tri (or the generator taught about it).
+  - /personal/ with no filename works only because the server-level `index` makes it an internal redirect to /personal/index.html and location matching runs AGAIN on the rewritten URI. If `index` is ever moved into a location that the regex does not follow, the bare directory URL starts serving raw SSI comments.
+  - NEVER add gzip_static (or brotli_static) for this tree. The SSI filter cannot parse a precompressed body. (Not currently used anywhere here.)
+  - SSI drops Content-Length and disables sendfile for the themed files. Irrelevant at this site's traffic; noted so it is not a surprise.
+  - Adding a theme is THREE steps, not one: themes/<id>.css, the id in ALL FOUR maps, and an <option> in each page's form. The stylesheet alone does nothing — the two $theme maps are the whitelist. A missing entry in the two colour maps is the quiet one: it does not fall back to an unstyled page, it just serves the default theme's theme-color, which merely looks slightly wrong.
+  - NGINX VARIABLES DO NOT SURVIVE AN #include virtual. They are re-evaluated against the subrequest, which has the fragment's URI and no query args, so inside a fragment $document_uri names the fragment and $theme resolves to the map default rather than the visitor's theme. Variables set with #set DO arrive, because SSI looks them up in the main request too — which is why ubuntu804's page title and location-bar path are handed in that way. Both behaviours verified against nginx 1.26.3 on this box, not assumed.
+  - SSI DOES NOT UNDERSTAND HTML COMMENT NESTING. It scans the byte stream for its own opening sequence, so an SSI directive written inside an HTML comment as documentation is not an example, it is executed.
+  - The pages do not render correctly from disk over file://. Serve them.
+  - CHANGING THE DEFAULT DOES NOT MOVE EXISTING VISITORS. theme.conf re-sends Set-Cookie on every request with a one-year Max-Age, so anyone who has loaded a themed page in the last year carries an explicit cookie naming whatever the default was THEN, and the cookie beats the map default. A default change therefore reaches cookieless visitors only, and nothing in the config can tell a cookie that records a real choice from one that merely records the old default. If a default change ever has to reach everybody, the only lever is renaming the cookie, which also discards the genuine choices — decide which you want before reaching for it.
+
+VERIFYING
+  Config test, then the behaviours that actually matter:
+
+    curl -s localhost/personal/index.html | grep themes/          # ubuntu804
+    curl -s 'localhost/personal/index.html?theme=motif' | grep themes/
+    curl -s --cookie theme=skeuslop localhost/personal/gzipt.html | grep themes/
+    curl -s 'localhost/personal/index.html?theme=bogus' | grep themes/  # ubuntu804
+    curl -s localhost/personal/ | grep -c '<!--#'                 # must be 0
+    curl -sI localhost/personal/index.html | grep -i 'vary\|clacks'
+    curl -s 'localhost/personal/index.html?theme=plain' | grep theme-color
+    curl -s 'localhost/personal/index.html?theme=motif' | grep theme-color
+    curl -sI 'localhost/personal/proto/personal/gzipt.html?to=onion&theme=motif' | grep -i location
+    curl -sI 'localhost/personal/proto/personal/gzipt.html?to=//evil.example' | grep -i location   # https://dreamstation.systems/...
+    curl -sI 'localhost/personal/proto/etc/passwd?to=http' | head -1                              # 404
+
+  The theme-color pair must track the stylesheet on the line above it: plain is the only theme whose two values differ (#ffffff / #121212).
+
+  The last two are the regressions worth guarding: raw SSI leaking on the directory URL, and the clacks header being dropped by this location's own add_header.

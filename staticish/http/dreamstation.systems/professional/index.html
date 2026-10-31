@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<!--
+  My professional site. Section ids double as nav anchors.
+
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Robin Reel ⁂ systems, infrastructure, security</title>
+  <meta name="description" content="Robin Reel ⁂ systems, infrastructure and security ⁂ Springfield MO.">
+  <meta name="author" content="Robin Reel">
+  <link rel="canonical" href="https://dreamstation.systems/professional/">
+  <!-- hreflang for the toki pona translation, index.tok.html, which carries
+       the same three lines. (It was developed out of sight: these lines and
+       the language nav in the header sat inside an SSI "if" on the $drafts
+       variable, true on the staging vhost only, and index.tok.html carried a
+       noindex. triptych.md section 9 describes the gate; do not spell an SSI
+       directive out in a comment here, because nginx would parse it.) -->
+  <link rel="alternate" hreflang="en" href="https://dreamstation.systems/professional/">
+  <link rel="alternate" hreflang="tok" href="https://dreamstation.systems/professional/index.tok.html">
+  <link rel="alternate" hreflang="x-default" href="https://dreamstation.systems/professional/">
+
+  <!-- The anti-robot stuff on the internet is so stupid. How did we get so discriminatory and scared of SERVING WEBPAGES  -->
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <meta property="og:type" content="profile">
+  <meta property="profile:first_name" content="Robin">
+  <meta property="profile:last_name" content="Reel">
+  <meta property="profile:username" content="robinpie">
+  <meta property="og:title" content="Robin Reel ⁂ systems, infrastructure, security">
+  <meta property="og:description" content="Security-minded systems and infrastructure generalist.">
+  <meta property="og:url" content="https://dreamstation.systems/professional/">
+  <meta property="og:site_name" content="dreamstation.systems">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://dreamstation.systems/professional/ogimage.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Terminal card. A shell prompt reads: robin@dreamstation:~$ finger robin@localhost. Below it: Robin Reel, security-minded systems and infrastructure generalist. pool.ntp.org member, score 20/20. GHSA Finder credit, bug bounty awarded. Open source contributor and developer. Footer: dreamstation.systems/professional.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image:alt" content="Terminal card. A shell prompt reads: robin@dreamstation:~$ finger robin@localhost. Below it: Robin Reel, security-minded systems and infrastructure generalist. pool.ntp.org member, score 20/20. GHSA Finder credit, bug bounty awarded. Open source contributor and developer. Footer: dreamstation.systems/professional.">
+
+  <!-- JSON-LD. Every claim here mirrors something stated in the body below. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ProfilePage",
+        "@id": "https://dreamstation.systems/professional/",
+        "url": "https://dreamstation.systems/professional/",
+        "name": "Robin Reel ⁂ systems, infrastructure, security",
+        "mainEntity": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "isPartOf": { "@id": "https://dreamstation.systems/#website" }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://dreamstation.systems/#website",
+        "dateModified": "2026-10-27",
+        "url": "https://dreamstation.systems/",
+        "name": "dreamstation.systems",
+        "description": "The personal domain of Robin Reel: a professional profile, an informal personal site and blog, and a public status page for the services running on the host.",
+        "inLanguage": "en",
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "publisher": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "copyrightHolder": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "about": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "accessMode": ["textual", "visual"],
+        "accessibilityFeature": [
+          "alternativeText",
+          "structuralNavigation",
+          "displayTransformability",
+          "readingOrder"
+        ],
+        "accessibilityHazard": "none",
+        "accessibilitySummary": "Semantic HTML with a skip link, a heading outline, alt text on images and no reliance on JavaScript. Claims WCAG 2.2 Level AA conformance."
+      },
+      {
+        "@type": "Person",
+        "@id": "https://dreamstation.systems/professional/#robin",
+        "name": "Robin Reel",
+        "url": "https://dreamstation.systems/professional/",
+        "image": "https://dreamstation.systems/professional/ogimage.png",
+        "description": "Security-minded systems and infrastructure generalist.",
+        "jobTitle": "IT Specialist",
+        "email": "mailto:robin@dreamstation.systems",
+        "telephone": "+1-417-209-6319",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Springfield",
+          "addressRegion": "MO",
+          "addressCountry": "US"
+        },
+        "worksFor": {
+          "@type": "Organization",
+          "name": "Health Hub Clinic & Health Guardian Imaging"
+        },
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "Missouri State University",
+          "sameAs": "https://www.missouristate.edu/"
+        },
+        "knowsAbout": [
+          "Systems administration",
+          "Network infrastructure",
+          "Information security",
+          "Linux",
+          "NTP and NTS",
+          "Email authentication (SPF, DKIM, DMARC)",
+          "Vulnerability research"
+        ],
+        "hasCredential": [
+          {
+            "@type": "EducationalOccupationalCredential",
+            "name": "CompTIA Security+",
+            "credentialCategory": "certificate",
+            "recognizedBy": { "@type": "Organization", "name": "CompTIA" }
+          },
+          {
+            "@type": "EducationalOccupationalCredential",
+            "name": "CompTIA Network+",
+            "credentialCategory": "certificate",
+            "recognizedBy": { "@type": "Organization", "name": "CompTIA" }
+          },
+          {
+            "@type": "EducationalOccupationalCredential",
+            "name": "CompTIA A+",
+            "credentialCategory": "certificate",
+            "recognizedBy": { "@type": "Organization", "name": "CompTIA" }
+          }
+        ],
+        "sameAs": [
+          "https://github.com/robinpie",
+          "https://www.linkedin.com/in/robin-reel/",
+          "https://dreamstation.systems/personal/",
+          "https://dreamstation.systems/personal/blog.html"
+        ]
+      },
+      {
+        "@type": "Person",
+        "@id": "https://sushii64.com/#jade",
+        "name": "Jade K.",
+        "url": "https://sushii64.com"
+      },
+      {
+        "@type": "WebApplication",
+        "@id": "https://grandexchange.dreamstation.systems/#openget",
+        "name": "OpenGET",
+        "url": "https://grandexchange.dreamstation.systems",
+        "description": "A market analysis tool and price tracker for the Old School RuneScape in-game economy. Go backend, SQLite storage. Conforms to WCAG 2.2 Level AA.",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "No JavaScript required",
+        "programmingLanguage": "Go",
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://github.com/robinpie/ath#ath",
+        "name": "!~ATH",
+        "url": "https://github.com/robinpie/ath",
+        "codeRepository": "https://github.com/robinpie/ath",
+        "description": "A concurrent esoteric programming language in which all control flow is predicated on waiting for something to die, after the fictional ~ATH language from Homestuck. Self-hosting: the transpiler is written in !~ATH and emits C89 through a continuation-passing style transform, in around 19,000 lines of !~ATH with 497 test cases. Ships !^CAKE, a companion schema definition language, and a browser playground at https://robinpie.neocities.org/ath/.",
+        "programmingLanguage": ["!~ATH", "C"],
+        "runtimePlatform": ["Linux", "Windows", "WebAssembly"],
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" }
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://github.com/robinpie/xcaca#xcaca",
+        "name": "xcaca",
+        "url": "https://github.com/robinpie/xcaca",
+        "codeRepository": "https://github.com/robinpie/xcaca",
+        "description": "An X11 server that renders its framebuffer as ASCII art in a terminal, so ordinary X clients can run over SSH or in headless environments. Built on the Kdrive backend, using libcaca for rendering.",
+        "programmingLanguage": "C",
+        "runtimePlatform": "Linux",
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" }
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://github.com/robinpie/.hsp-to-web#hsp",
+        "name": "Hypnospace Outlaw page converter",
+        "url": "https://github.com/robinpie/.hsp-to-web",
+        "codeRepository": "https://github.com/robinpie/.hsp-to-web",
+        "description": "Converts pages from the game Hypnospace Outlaw into real web pages, which meant reverse engineering the game's undocumented .hsp page format first. Also reimplements the game's tracker music playback to convert each .hsm module to audio.",
+        "creativeWorkStatus": "In progress",
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" }
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://github.com/robinpie/viewpoint#viewpoint",
+        "name": "viewpoint",
+        "url": "https://github.com/robinpie/viewpoint",
+        "codeRepository": "https://github.com/robinpie/viewpoint",
+        "description": "A terminal multiplexer built around a desktop window manager metaphor: floating windows with title bars, draggable borders, minimize and maximize buttons, edge snapping and a taskbar, each running its own program in a dedicated PTY. Fully rebindable keymap with an in-application settings panel covering keybindings, theming, scrollback and user-defined desktop icons, backed by an XDG-style config file. Roughly 11,000 lines of C, built on notcurses, libvterm, libsixel and GPM.",
+        "programmingLanguage": "C",
+        "runtimePlatform": "Linux",
+        "creativeWorkStatus": "In progress",
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" }
+      },
+      {
+        "@type": "CreativeWork",
+        "@id": "https://dreamstation.systems/professional/#ilo-toki-nasa",
+        "name": "ilo toki nasa",
+        "description": "An 11M-parameter smolGPT-style decoder trained from scratch on Toki Pona, with a corpus built from the kulupu lapo poki corpus and filtered using programmatic grammar analyzers.",
+        "inLanguage": "tok",
+        "creativeWorkStatus": "In progress",
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" }
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://github.com/OboeLang/oboe#oboe",
+        "name": "Oboe",
+        "url": "https://github.com/OboeLang/oboe",
+        "codeRepository": "https://github.com/OboeLang/oboe",
+        "description": "A general-purpose programming language with a self-hosting compiler: the lexer, parser, code generator and diagnostics are written in Oboe and transpile to C. Includes a toolchain and package manager with a lockfile, plus reedbed, the package registry servers.",
+        "programmingLanguage": ["Oboe", "C"],
+        "author": [
+          { "@id": "https://dreamstation.systems/professional/#robin" },
+          { "@id": "https://sushii64.com/#jade" }
+        ]
+      },
+      {
+        "@type": "Blog",
+        "@id": "https://dreamstation.systems/personal/blog.html#blog",
+        "url": "https://dreamstation.systems/personal/blog.html",
+        "name": "robin’s blog",
+        "isPartOf": { "@id": "https://dreamstation.systems/#website" },
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" }
+      }
+    ]
+  }
+  </script>
+
+  <style>html{color-scheme:light dark}body{padding:1rem;font:100%/1.5 system-ui,sans-serif}.skip:not(:focus){position:absolute;left:-100vw}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(20rem,100%),1fr));gap:1rem}section{margin-block:2rem}article,th,td,.statbox{border:1px solid#888}article{border-radius:.5rem;padding:1rem}article>:first-child{margin-top:0}article>:last-child{margin-bottom:0}table{border-collapse:collapse;width:100%}caption,th,td{padding:.5em}caption{text-align:left}header{display:flow-root}header ul{display:flex;flex-wrap:wrap;gap:.25rem 1rem;list-style:none;padding:0}header li+li:before{content:"⁂"/"";margin-inline-end:1rem}header a{display:inline-block;padding:.25rem 0}ul{padding-left:1.2em}a{overflow-wrap:anywhere}pre,.scroll{overflow-x:auto}.proto{font-size:.85rem}.proto [aria-current]{font-weight:700}.statbox{float:right;width:min(15rem,100%);border-radius:.5rem;padding:.5rem .75rem;margin:0 0 1rem 1.5rem;font-size:.85rem}.sbrow{display:grid;grid-template-columns:2.2rem 1fr 2.4rem;gap:.5rem;align-items:center;margin-block:.35rem}.bar{display:flex;height:.7rem;border:1px solid;border-radius:.25rem;overflow:hidden}.bar>*{height:100%;background:currentColor}.bar u{opacity:.3}.sbval{font-variant:tabular-nums;text-align:right}.sbmore{margin:.5rem 0 0;text-align:center}.lawabox{clear:right}.lbstate,.lbnums{margin:0}.lbstate{font-weight:700}@media(max-width:40rem){.statbox{float:none;width:auto;margin-left:0}}:focus-visible{outline:2px solid;outline-offset:2px}</style>
+</head>
+
+<body>
+
+<a class="skip" href="#main">Skip to main content</a>
+
+<header>
+
+  <!-- Server vitals box, injected by nginx SSI from status.cgi in box mode.
+       See ~/configNotes/status.txt. The <aside> element itself comes from the
+       CGI, so if the include fails this expands to nothing and the page is
+       unchanged rather than left with an empty bordered box. That takes the
+       stub: ssi_silent_errors does not stop nginx embedding the subrequest's
+       own 404/502 error page. -->
+  <!--# block name="nobox" --><!--# endblock --><!--#include virtual="/professional/status-box" stub="nobox" -->
+
+  <!-- lawa, the web crawler on starport: a status fragment lawaPage.timer
+       rewrites every 5 minutes (buildTimeTools/lawaPage/lawaPage.pl, box(); ~/configNotes/
+       lawa.txt). Stacks under the vitals box via .lawabox{clear:right}. Same
+       empty-stub trick, so a missing file leaves nothing behind. -->
+  <!--# block name="nolawa" --><!--# endblock --><!--#include virtual="/personal/lawa-box.html" stub="nolawa" -->
+
+  <!-- Protocol switcher. After the status box in source so the float sits to
+       its right; absolute URLs so each link means the same thing whichever of
+       the three you are reading this over. Port 80 is not redirected and there
+       is no HSTS, so the server really does answer the HTTP link over HTTP — but
+       Firefox (HTTPS-First) and Chrome upgrade the navigation themselves, and
+       only fall back if :443 fails, hence the label. -->
+  <nav class="proto" aria-label="Protocol">
+    <a href="https://dreamstation.systems/professional/">HTTPS</a> |
+    <a href="http://dreamstation.systems/professional/">HTTP (modern browsers upgrade this)</a> |
+    <a href="http://dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion/professional/">.onion (requires Tor Browser)</a>
+  </nav>
+  <!-- Language switcher, in the shape of the protocol one above it. Relative,
+       unlike those links: it should keep you on whichever of the three origins
+       you arrived over. aria-current marks the language you are reading. -->
+  <nav class="proto" aria-label="Language">
+    <a href="./" hreflang="en" lang="en" aria-current="page">English</a> |
+    <a href="index.tok.html" hreflang="tok" lang="tok">toki pona</a>
+  </nav>
+
+  <h1>Robin Reel</h1>
+  <p>Security‐minded systems and infrastructure generalist.</p>
+
+  <address>
+    <ul>
+      <li>Springfield, Missouri (open to remote or relocation)</li>
+      <li><a href="mailto:robin@dreamstation.systems">robin@dreamstation.systems</a></li>
+      <li><a href="tel:+14172096319">(417) 209‒6319</a></li>
+      <li><a href="https://github.com/robinpie" rel="me">GitHub</a></li>
+      <li><a href="https://www.linkedin.com/in/robin-reel/" rel="me">LinkedIn</a></li>
+      <li><a href="../personal/blog.html" rel="me">Blog (informal personal site)</a></li>
+      <li><a href="../resume.html">Resume</a></li>
+    </ul>
+  </address>
+
+  <nav aria-label="Sections">
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#security">Independent security research</a></li>
+      <li><a href="#infrastructure">Infrastructure I run</a></li>
+      <li><a href="#software">Software</a></li>
+      <li><a href="#opensource">Open source</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#education">Education</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+
+<section id="about">
+  <h2>About</h2>
+
+  <p>I am an IT specialist at a healthcare provider in Springfield, Missouri, where I look after the network, the servers, the endpoints and the security of both. I am finishing a BS in Information Technology on the IT Infrastructure track at Missouri State University in May 2027.</p>
+
+  <p>I’m most passionate about working with things that people actually depend on. I operate two public NTP servers and my own mail server. I’ve also found multiple security vulnerabilities in deployed software, including one that was a risk to patient safety.</p>
+
+  <p>I’m most interested in infrastructure, systems administration, and security roles where reliability and security have real stakes. Available full‐time beginning <time datetime="2027-05">May 2027</time>, or possibly sooner for internships/temporary work.</p>
+</section>
+
+
+<section id="experience">
+  <h2>Experience</h2>
+
+  <div class="cards">
+
+  <article>
+    <h3>IT Specialist, <time datetime="2026-08">August 2026</time> – present ✦ IT Intern, <time datetime="2026-04">April 2026</time> – <time datetime="2026-08">August 2026</time></h3>
+    <p><strong>Health Hub Clinic &amp; Health Guardian Imaging</strong></p>
+    <p>IT for a clinic and an affiliated imaging practice, in an environment subject to HIPAA.</p>
+
+    <h4>Infrastructure</h4>
+    <ul>
+      <li>Replaced end‐of‐support Windows Server 2016 file server and Active Directory domain controllers with Samba on Debian Linux, avoiding at least $3,000 in licensing and upgrade costs.</li>
+      <li>Migrated an aging PACS gateway to a virtualized environment after its hardware began to fail, ending recurring downtime for imaging.</li>
+      <li>Replaced a double‐NATing consumer wireless router with managed access points, and migrated an end‐of‐support SonicWall TZ600 firewall to a TZ670.</li>
+      <li>Moved an off‐site VPN‐connected NAS onto the on‐site LAN and reintegrated it with the firewall, the Windows clients and the imaging system clients.</li>
+      <li>Restored server access within two hours of storm damage to a jumpbox by tracing the fault to electrical pitting on a RAID controller pin and shimming the connection.</li>
+      <li>Produced the first documentation of the network, which had none, using Nmap, firewall configuration review and physical cable tracing.</li>
+      <li>Rearchitected internal network routing, allowing a building subtenant to share our internet connection without changing our addressing scheme or exposing internal services.</li>
+    </ul>
+
+    <h4>Security</h4>
+    <ul>
+      <li>I discovered an unauthenticated endpoint allowing attackers to HTTP PATCH patient charts, including medications and allergies. I also found a PHI‐exposing authentication bypass vulnerability in the in‐house EMR, and found three other vulnerabilities in other in‐house software: stored XSS via poorly sanitized UGC, and two instances of broken access control exposing private messages. I fixed two and escalated three to developers. I then verified the findings were completely remediated.</li>
+      <li>Deployed Wazuh SIEM with agents on the office servers, roughly twenty workstations and the PACS gateway.</li>
+      <li>Configured Microsoft Intune compliance baselines and Entra ID Conditional Access policies supporting HIPAA compliance for Windows, Office and Teams.</li>
+      <li>Discovered long‐standing unenforced DMARC and broken SPF on one domain, demoed spoofing of sender addresses, then brought company domains to an enforced DMARC policy and corrected SPF records.</li>
+      <li>Ran an authorized phishing simulation end to end, including the pretext and landing page, and briefed leadership on the results.</li>
+      <li>Discovered and remediated other security issues: SMB signing was disabled, EoS software was running on multiple endpoints, and unencrypted DICOM was traveling on the general office LAN.</li>
+    </ul>
+
+
+  </article>
+  </div>
+</section>
+
+
+<section id="security">
+  <h2>Independent security research</h2>
+
+  <div class="cards">
+
+  <article>
+    <h3>Manifold Markets — double‐spend in dependent multiple‐choice markets</h3>
+    <p>Discovered and responsibly disclosed. Bug bounty awarded.</p>
+    <p>Manifold’s dependent multiple‐choice markets are ones where exactly one option is expected to resolve YES and the rest NO, so the automated market maker continuously rebalances the options to sum to 100%. Because the AMM could be made to fill several of a user’s resting limit orders in a single rebalance, all of them executed, even when the account held only enough balance to cover one. For example, on a three‐way market sitting at 33/33/33, a YES purchase on the first option drives the AMM to push the other two down together, which could fill two orders waiting there and spend the same money twice.</p>
+  </article>
+
+  <article>
+    <h3>OpenEMR — integrity issue</h3>
+    <p>Finder credit on <a href="https://github.com/openemr/openemr/security/advisories/GHSA-phvv-q7m7-8mc2">GHSA-phvv-q7m7-8mc2</a>. A missing authorization check allowed any authenticated staff to arbitrarily overwrite the patient‐portal document‐table profile configuration with no CSRF token. </p>
+  </article>
+  </div>
+</section>
+
+
+<section id="infrastructure">
+  <h2>Infrastructure I run</h2>
+
+  <div class="cards">
+
+  <article>
+    <h3>AS403102 SLEEPTIME-NETWORK</h3>
+    <p>AS403102 SLEEPTIME-NETWORK is a multihomed autonomous system upstreamed at Tritan and Route64. I run BGP with BIRD from a Debian server, with local‐preference and AS‐path prepending to steer traffic and fail over automatically. I secured routing with IRR route6/aut‐num/as‐set objects and RPKI ROAs, meeting upstream filtering requirements and rejecting RPKI‐invalid routes.</p>
+  </article>
+  
+  <article>
+    <h3>Public NTP and NTS servers</h3>
+    <p>A stratum 2 time server in <a href="https://www.ntppool.org/scores/67.215.249.229">pool.ntp.org</a>, serving plain NTP on UDP/123 and NTS on TCP/4460, running chrony on Debian. It currently holds the maximum pool monitoring score of 20.</p>
+    <p>A secondary time server in <a href="https://www.ntppool.org/scores/198.44.55.245">pool.ntp.org</a>, serving plain NTP on UDP/123, also running chrony on Debian.</p>
+    <ul>
+      <li>Simple stats at <a href="/professional/status">the service status page</a>, detailed stats at <a href="../ntpstats.txt">ntpstats.txt</a></li>
+      <li><a href="/personal/ntpuserinfo.html">Information for users</a></li>
+      <li>Around 153 million unique client IP addresses seen, or about one in every 24 routable IPv4 addresses.</li>
+      <li>Abusive clients shed with an nftables rate limiter.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3>Other services on dreamstation.systems</h3>
+    <ul>
+      <li>A personal mail server with SPF, DKIM, DMARC, MTA-STS and TLS-RPT configured correctly, which moved its SpamAssassin score from 4.9 to 0.6.</li>
+      <li>A DMZ bridged to a VPS over WireGuard, allowing me to run public‐facing servers on a home network physically behind NAT.</li>
+      <li>An obfs4 Tor bridge carrying roughly 500 GB of traffic a month.</li>
+      <li>Gopher, Gemini, Spartan, finger and several other small protocols.</li>
+      <li>A <a href="/professional/status">service status page</a>.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3>This website <a href="https://github.com/robinpie/dreamstationsystemsDocumentServing">(repo)</a></h3>
+    <ul>
+      <li>Status page with most services and machine resources monitored, powered by a Perl CGI script</li>
+      <li>Comprehensive JSON-LD Profile graph in place, making my profile information machine‐readable.</li>
+      <li>Staging environment behind HTTP basic authentication for ensuring content is presented correctly over a real server before publicizing.</li>
+      <li>Web Key Directory, <code>/.well-known/security.txt</code>, <code>robots.txt</code>, <code>llms.txt</code>, and <code>humans.txt</code> in place.</li>
+      <li>Also available as a Tor onion service: <a href="http://dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion/professional/">http://dreamdzmalrqmkkptrzdvafx3lbinn3j5gvshqrnjtb72begyoqhwuqd.onion/professional/</a></li>
+    </ul>
+  </article>
+  
+  <article>
+    <h3><a href="../personal/lawa.html">lawa</a> (web crawler)</h3>
+    <ul>
+      <li>Currently collecting data on the Web's HTTP headers for future analysis. Preliminary live data is available at the link above.</li>
+      <li><a href="https://dreamstation.systems/personal/earlylawa.html">A blog post on early insights</a></li>
+    </ul>
+  </article>
+
+  <article>
+    <h3>Segmented home network</h3>
+    <ul>
+      <li>VLAN segmentation with a Wazuh SIEM instance collecting logs and flagging anomalous traffic.</li>
+      <li>Log collection for legacy machines too old to run the Wazuh agent, which Windows gives no native syslog path off of. I wrote the shipper and the parser myself in Perl, with local Qwen models summarizing the results.</li>
+      <li>Dual‐stack IPv4 and IPv6 with semantic addressing (172.26.vlan.host, purpose‐specific /64s).</li>
+    </ul>
+  </article>
+  </div>
+</section>
+
+
+<section id="software">
+  <h2>Software</h2>
+
+  <div class="cards">
+
+  <article>
+    <h3><a href="https://grandexchange.dreamstation.systems">OpenGET</a></h3>
+    <p>A market analysis tool and price tracker for the Old School RuneScape in‐game economy. Go backend, SQLite storage.</p>
+    <ul>
+      <li>Ingests the OSRS Wiki real‐time prices API into a tiered archive with a five‐year backfill: dual‐pool WAL SQLite with nightly rollup, prune and compaction.</li>
+      <li>Accountless, cookie‐based identity: 128‐bit tokens encoded in Crockford Base32, with only SHA-256 hashes of the tokens stored server‐side.</li>
+      <li>One shared document model; make a change in one place and render every page to HTML, gemtext, Gopher maps and plaintext.</li>
+      <li>Conforms to WCAG 2.2 Level AA.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3><a href="https://github.com/robinpie/ath">!~ATH</a></h3>
+    <p>A concurrent esoteric programming language in which all control flow is predicated on waiting for something to die, after the fictional ~ATH language from Homestuck. Loops wait on the death of an entity and run their body in the death callback.</p>
+    <ul>
+      <li>Self‐hosting: the transpiler is written in !~ATH and emits C89 through a continuation‐passing style transform. Around 19,000 lines of !~ATH and 497 test cases.</li>
+      <li>Entities include timers, processes, connections, file watchers and raw IPv4 sockets. The language supports networking, I/O and a C FFI. Targets Linux, Windows and WebAssembly.</li>
+      <li>Ships a <a href="https://robinpie.neocities.org/ath/">browser playground</a> for version 1.3.</li>
+      <li><strong>!^CAKE</strong>, a companion schema definition language about baking, fills a hole in !~ATH’s FFI, which could marshal scalars and pointers but not aggregates. A recipe describes a C‐compatible byte layout, recipes compose through merge and tagged‐union operators, and every recipe reduces deterministically to an eight‐character code that two peers can compare over a wire before exchanging any payload.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3><a href="https://github.com/robinpie/xcaca">xcaca</a></h3>
+    <p>An X11 server that renders its framebuffer as ASCII art in a terminal, so ordinary X clients can run over SSH or in headless environments.</p>
+    <ul>
+      <li>Built on the Kdrive backend, and using libcaca for rendering.</li>
+      <li>Synthesizes evdev scancodes from libcaca character events to give X clients keyboard and mouse input, both over SSH or locally.</li>
+      <li>Selectable dithering algorithms and character sets, with brightness, gamma and contrast controls, and terminal cell aspect ratio detected at startup through TIOCGWINSZ.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3><a href="https://github.com/robinpie/.hsp-to-web">Hypnospace Outlaw page converter</a></h3>
+    <p>In progress. Converts pages from the game <cite>Hypnospace Outlaw</cite> into real web pages, which meant reverse engineering the game’s undocumented page format first.</p>
+    <ul>
+      <li>Documented the <code>.hsp</code> format completely: a Construct 2 array export whose three axes carry elements, states and properties, including the conditional state resolution the game uses to swap page content on story flags, and the coordinate and layout rules across all 1,292 shipped pages.</li>
+      <li>Reimplemented the game’s tracker music playback well enough to convert each <code>.hsm</code> module down to an audio file: pattern sequencing, per‐pattern BPM, the instrument table, note pitch, per‐step volume, pan and note gating.</li>
+      <li>Currently rewriting the rendering logic so accessibility features work properly, rather than mimicking the game’s behavior as the first pass does.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3><a href="https://github.com/robinpie/viewpoint">viewpoint</a></h3>
+    <p>In progress. A terminal multiplexer built around a desktop window manager metaphor: floating windows with title bars, draggable borders, minimize and maximize buttons, edge snapping and a taskbar, each running its own program in a dedicated PTY. Roughly 11,000 lines of C. Built on notcurses, libvterm, libsixel and GPM.</p>
+    <ul>
+      <li>Fully rebindable keymap with an in‐application settings panel covering keybindings, theming, scrollback and user‐defined desktop icons, backed by an XDG‐style config file.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3 lang="tok">ilo toki nasa</h3>
+    <p>An 11M‐parameter smolGPT‐style decoder trained from scratch on Toki Pona. I built the corpus from the <a href="https://github.com/kulupu-lapo/poki" lang="tok">kulupu lapo poki</a> corpus, stripping metadata and using programmatic grammar analyzers to remove text that was not actually Toki Pona. Output is approaching coherence.</p>
+  </article>
+
+  <article>
+    <h3><a href="https://github.com/OboeLang/oboe">Oboe</a></h3>
+    <p>A general‐purpose programming language I am co‐creating with <a href="https://sushii64.com">Jade K.</a>.</p>
+    <ul>
+      <li>Self‐hosting compiler: the lexer, parser, code generator and diagnostics are written in Oboe and transpile to C.</li>
+      <li>Toolchain and package manager with a lockfile, plus <a href="https://github.com/OboeLang/reedbed">reedbed</a>, the package registry servers.</li>
+    </ul>
+  </article>
+  </div>
+</section>
+
+
+<section id="opensource">
+  <h2>Open source</h2>
+
+  <div class="cards">
+
+  <article>
+    <h3>Upstream contributions</h3>
+    <p>Pull requests merged into other people’s projects include:</p>
+    <ul>
+      <li><a href="https://github.com/sedwards2009/dinky">dinky</a>, a terminal text editor: added GPM mouse support, tty appearance improvements, a horizontal scrollbar with autohide and mouse capture, and mouse tab reordering with reflow animations.</li>
+      <li><a href="https://github.com/slowscript/warpinator-windows">warpinator-windows</a>: removed a spurious GPL acceptance prompt.</li>
+      <li><a href="https://github.com/izll/plasma-claude-usage">plasma-claude-usage</a>: removed false precision from displayed figures.</li>
+      <li><a href="https://github.com/HunterRDev/AC-Letter-Scorer">AC-Letter-Scorer</a>: corrected character selection to skip leading whitespace.</li>
+    </ul>
+    <p>Open, awaiting review:</p>
+    <ul>
+      <li><a href="https://invent.kde.org/utilities/konsole/-/merge_requests/1233">KDE Konsole</a>: Adds support for passing horizontal scrolling into the inner application. Konsole previously discarded horizontal wheel events.</li>
+      <li><a href="https://invent.kde.org/sdk/eloquens/-/merge_requests/7">KDE Eloquens</a>: Replaces logic depending on a dead API with a local version.</li>
+    </ul>
+    <p>Also a contributor to the Toki Pona localization of Firefox.</p>
+  </article>
+
+  <article>
+    <h3>Arch User Repository</h3>
+    <p>Maintainer of seven packages, writing build scripts with upstream signature verification.</p>
+    <ul>
+      <li><a href="https://aur.archlinux.org/packages/dinky">dinky</a> and <a href="https://aur.archlinux.org/packages/dinky-git">dinky-git</a> — terminal text editor</li>
+      <li><a href="https://aur.archlinux.org/packages/atlantik-git">atlantik-git</a> — KDE client for monopd board games</li>
+      <li><a href="https://aur.archlinux.org/packages/chessament-git">chessament-git</a> — Swiss‐system chess tournament manager</li>
+      <li><a href="https://aur.archlinux.org/packages/kdominate-git">kdominate-git</a> — board domination game</li>
+      <li><a href="https://aur.archlinux.org/packages/hash-o-matic-git">hash-o-matic-git</a> — checksum generator and verifier</li>
+      <li><a href="https://aur.archlinux.org/packages/localquens">localquens</a> — local placeholder text generator, forked from KDE Eloquens</li>
+    </ul>
+  </article>
+  </div>
+
+</section>
+
+
+<section id="skills">
+  <h2>Skills</h2>
+
+  <div class="scroll" role="region" aria-labelledby="skills-cap" tabindex="0">
+  <table>
+    <caption id="skills-cap">Skills by category and proficiency</caption>
+    <thead>
+      <tr>
+        <th scope="col">Category</th>
+        <th scope="col">Proficient</th>
+        <th scope="col">Familiar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Operating systems</th>
+        <td>Linux, server and desktop; Windows desktop</td>
+        <td>Windows Server</td>
+      </tr>
+      <tr>
+        <th scope="row">Infrastructure</th>
+        <td>SonicWall, Wazuh, SMTP, DNS, BGP</td>
+        <td>VMware ESXi, Samba, Nmap, Wireshark, Git, systemd</td>
+      </tr>
+      <tr>
+        <th scope="row">Endpoint management</th>
+        <td>Microsoft Intune, Entra ID</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <th scope="row">Programming</th>
+        <td>Go, Bash</td>
+        <td>C, Perl, SQL, Python, JavaScript and TypeScript</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+
+<section id="education">
+  <h2>Education and certifications</h2>
+
+  <div class="cards">
+
+  <article>
+    <h3>Missouri State University</h3>
+    <p>BS, Information Technology, IT Infrastructure track. Springfield, Missouri. Expected <time datetime="2027-05">May 2027</time>.</p>
+  </article>
+
+  <article>
+    <h3>Certifications</h3>
+    <ul>
+      <li>CompTIA Security+ (2026)</li>
+      <li>CompTIA Network+ (2026)</li>
+      <li>CompTIA A+ (2026)</li>
+    </ul>
+  </article>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Please feel free to <a href="mailto:robin@dreamstation.systems">📧e‐mail me</a> for anything at all, I love hearing from people. I'm <a href="https://datatracker.ietf.org/doc/rfc1855/">RFC 1855</a> compliant 🤪</p>
+  <p><a href="/pgp.asc">PGP public key</a> (fingerprint <code>FB62 3E21 D6B8 7867 1C5E 2603 63CC BF0C D99F 2C2E</code>)</p>
+
+  <p>Built without a framework, just 1,381 bytes of CSS ✨</p>
+
+<pre>#!/usr/bin/env perl
+&{('#/)%'^'``{`').'::'.(',&,(,)*%'^'____^@^@')}(('()?/()'^'{}{`}}'),('**,*@?./*(%,@+%,,@(?#+%,'^'`__^`^@@^@@^`{@^@`@^@@@^').',')</pre>
+
+<a href="https://www.w3.org/WAI/WCAG2AA-Conformance" title="Explanation of WCAG 2 Level AA conformance"><img height="31" width="88" src="https://www.w3.org/WAI/WCAG22/wcag2.2AA" alt="Level AA conformance, W3C Web Content Accessibility Guidelines 2.2"></a>
+
+<img src="/professional/Proudly ZERO JavaScript!.png" alt="Proudly ZERO JavaScript!">
+
+<img src="/professional/thing2.webp" alt="Small site — <20 KB compressed">
+
+</footer>
+
+</body>
+</html>

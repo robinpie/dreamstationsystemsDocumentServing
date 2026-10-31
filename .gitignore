@@ -1,41 +1,41 @@
 # Runtime artifacts 
-assetsBuild/__pycache__/
+buildTimeTools/assetsBuild/__pycache__/
 
-# /rootdomain/ntpstats.txt: written directly into /srv/http by ntpstatsgen.timer
-/rootdomain/ntpstats.txt
+# /staticish/http/dreamstation.systems/ntpstats.txt: written directly into /srv/http by ntpstatsgen.timer
+/staticish/http/dreamstation.systems/ntpstats.txt
 
 # Local documentation
 README.local.md
-/content/tok/README.md
+/unbuiltContent/triptychContent/tok/README.md
 
 # Editor artifacts
 *.kate-swp
 
-# /gopher/ge/ and /gemini/ge/: OpenGET's retro frontends. NOT authored here —
+# /staticish/{gopher,gemini}/dreamstation.systems/ge/: OpenGET's retro frontends. NOT authored here —
 # the openget daemon regenerates ~50 gophermaps/gemtext files under these after
 # every stats recomputation, and `make install-retro` owns the cgi-bin/ scripts.
 # Both dirs are openget:openget on disk. promoteSite.sh excludes them from its
 # rsync and its chown for the same reason. See openget.txt.
-/gopher/ge/
-/gemini/ge/
+/staticish/gopher/dreamstation.systems/ge/
+/staticish/gemini/dreamstation.systems/ge/
 
 # Written every 5 min by ntpstatsgen.timer, straight into the doc roots
-# (same deal as /rootdomain/ntpstats.txt above). See ntpstatsgen.txt.
-/gopher/ntpstats.txt
-/gemini/ntpstats.gmi
+# (same deal as /staticish/http/dreamstation.systems/ntpstats.txt above). See ntpstatsgen.txt.
+/staticish/gopher/dreamstation.systems/ntpstats.txt
+/staticish/gemini/dreamstation.systems/ntpstats.gmi
 
 # lawa's live page: the fragment lawa.html SSI-includes, and the whole Gemini
-# and Gopher copies. Written every 5 min by lawaPage.timer (lawaPage/), straight
+# and Gopher copies. Written every 5 min by lawaPage.timer (buildTimeTools/lawaPage/), straight
 # into the doc roots; excluded from promoteSite.sh's rsyncs. See lawa.txt.
-/rootdomain/personal/lawa-data.html
-/rootdomain/personal/lawa-data.tok.html
+/staticish/http/dreamstation.systems/personal/lawa-data.html
+/staticish/http/dreamstation.systems/personal/lawa-data.tok.html
 # ...and the two-line box under the vitals box on both home pages.
-/rootdomain/personal/lawa-box.html
-/rootdomain/personal/lawa-box.tok.html
-/gopher/lawa.txt
-/gemini/lawa.gmi
-/gopher/tok/lawa.txt
-/gemini/tok/lawa.gmi
+/staticish/http/dreamstation.systems/personal/lawa-box.html
+/staticish/http/dreamstation.systems/personal/lawa-box.tok.html
+/staticish/gopher/dreamstation.systems/lawa.txt
+/staticish/gemini/dreamstation.systems/lawa.gmi
+/staticish/gopher/dreamstation.systems/tok/lawa.txt
+/staticish/gemini/dreamstation.systems/tok/lawa.gmi
 
 # TLS material never belongs in this repo — it is public on GitHub. molly-brown's
 # cert and key live in /etc/molly-brown/certs. Carried up from the capsule's own

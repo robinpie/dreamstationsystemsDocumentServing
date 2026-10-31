@@ -1,0 +1,884 @@
+/* ubuntu804.css — /personal/ as an Ubuntu 8.04 LTS desktop running Firefox 3.
+ *
+ * The chrome this styles lives in three SSI fragments under /personal/chrome/,
+ * not in the pages themselves. See ubuntu804theme.txt in the repo root for how
+ * it works, where the measurements came from, and the traps. */
+
+/* ------------------------------------------------------------------ fonts */
+
+/* Subsets, built by buildTimeTools/assetsBuild/makeFontSubset.py from the census of these
+ * pages on every commit. 382 kB of full faces down to 45 kB.
+ *
+ * DO NOT ADD A unicode-range HERE. Its absence is what makes the subset safe:
+ * without it the browser does per-glyph fallback, so the eight emoji in these
+ * pages — which DejaVu lacks at every weight, and which therefore already fell
+ * through to a system font when the full faces shipped — keep rendering. Add a
+ * range and the browser stops looking past this @font-face for anything inside
+ * it, and they turn to tofu.
+ *
+ * A character these files lack is not tofu either, just a fallback font. See
+ * makeFontSubset.py's header, and ubuntu804theme.txt. */
+@font-face {
+  font-family: "DejaVu Web"; font-style: normal; font-weight: 400;
+  font-display: swap; src: url(ubuntu804/f/dejavu.woff2) format("woff2");
+}
+@font-face {
+  font-family: "DejaVu Web"; font-style: normal; font-weight: 700;
+  font-display: swap; src: url(ubuntu804/f/dejavu-bold.woff2) format("woff2");
+}
+
+/* ----------------------------------------------------------------- tokens */
+
+:root {
+  /* Chrome palette, measured off the reference screenshot.
+   *
+   * All 921,600 of its pixels sit exactly on the RGB565 lattice — red and blue
+   * are multiples of 8, green of 4, with no exceptions — so it was captured
+   * from a 16-bit framebuffer. Every value below is therefore the TRUNCATED
+   * form of whatever the Human theme really specified. They stay as measured. */
+  --panel-bg:       #e8e8e0;   /* panel, menu bar, toolbars, status bar */
+  --win-border:     #383838;   /* window outer frame */
+  --frame-top:      #b0a498;   /* 1px above the title bar */
+  --title-edge-top: #604830;
+  --title-edge-bot: #805c30;
+  --title-side:     #e0b078;   /* 1px highlight inside the frame */
+  --sep:            #c8c0b0;   /* toolbar separator, dark half */
+  --sep-lit:        #f8fcf8;   /* toolbar separator, light half */
+  --bevel-dark:     #d8ccc0;   /* window inner bevel, right and bottom */
+  --urlbar-border:  #884818;
+  --urlbar-lit:     #f8b078;
+  --urlbar-bg:      #f8fcf8;
+  --btn-border:     #706860;
+  --frame-grey:     #807468;   /* status bar rule, scrollbar frames */
+  --content-bg:     #f8fcf8;
+  --wallpaper-avg:  #a05828;   /* Heron mid-tone, shows before the image does */
+  --ink:            #000;
+  --ink-dim:        #808078;   /* greyed-out, inert menu entries */
+
+  /* Content palette, lifted from /usr/share/ubuntu-artwork/ubuntu.css */
+  --text:           #002b3d;
+  --brown:          #6d4c07;   /* headings and links, including :visited */
+  --header-tan:     #dbba75;   /* header.webp's flat field */
+
+  /* Geometry */
+  --panel-h:  24px;
+  --strip-h:  48px;            /* the reference shows 85px; 48 gives more
+                                * window. Single source of truth. */
+  --chrome-font: 13.33px;      /* "Sans 10" at 96dpi */
+  --masthead-h: 90px;          /* ubuntu.css / header.png */
+  --logo-w: 454px;             /* Ubuntu 8.04 headerlogo.png's slot */
+
+  --chrome-stack: "DejaVu Web", "DejaVu Sans", Verdana, Helvetica, Arial, sans-serif;
+  --mono-stack: "DejaVu Sans Mono", "Liberation Mono", monospace;
+}
+
+/* ---------------------------------------------------------------- desktop */
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  overflow: hidden;                    /* the DESKTOP never scrolls; the
+                                        * browser viewport inside it does */
+  font: 400 var(--chrome-font)/1.2 var(--chrome-stack);
+  color: var(--ink);
+  /* warty-final-ubuntu.png, which despite the name is 8.04's DEFAULT
+   * background — the one with the heron. ubuntu-wallpapers.xml declares
+   * <options>zoom</options> for it, and GNOME's zoom is background-size:cover
+   * against the whole screen. background-attachment:fixed is what makes "the
+   * whole screen" mean the viewport rather than this element's box, which is
+   * the part that matters: the strip along the bottom has to show the rows a
+   * real 8.04 desktop would show there, not the bottom rows of the file. */
+  background: var(--wallpaper-avg) url(ubuntu804/i/heron.webp) center center / cover no-repeat fixed;
+}
+
+/* Short by exactly the strip, because the badge shelf that fills that gap is
+ * the page's <footer> and is position:fixed — it is not a flex child of this
+ * element the way it was in the old template, so it reserves no space here. */
+.desktop {
+  height: calc(100% - var(--strip-h));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------- GNOME panel */
+
+.panel {
+  flex: 0 0 auto;
+  height: var(--panel-h);
+  background: var(--panel-bg);
+  /* Three columns, and the two outer ones are both 1fr, which is the whole
+   * trick: equal-width sides put the middle column dead centre on the screen
+   * no matter how wide the icon or the clock are. */
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 5px 0 1px;                /* the window-list icon's ink starts at
+                                        * x=1 in the reference */
+  z-index: 2;
+}
+/* The window-list applet's one entry, and the site's home link. At rest it is
+ * the reference exactly, so hover and focus are all these rules add, and they
+ * borrow the toolbar Home button's treatment so the two homes look like the
+ * same control. */
+.panel a.winlist {
+  grid-column: 1;
+  justify-self: start;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+.panel a.winlist:hover {
+  border-color: #c09060;
+  background: linear-gradient(to bottom, #fbe4cc, #f4c99f);
+}
+.panel a.winlist:focus-visible {
+  outline: 2px solid var(--urlbar-border);
+  outline-offset: -1px;
+}
+.panel a.winlist img { width: 24px; height: 24px; display: block; }
+
+/* Every chrome icon is an <img> inside a <picture> (lossless AVIF/JXL/WebP/
+ * PNG, smallest first). display: contents takes the <picture> out of layout,
+ * so the <img> stays the flex item and every rule written against it — the
+ * throbber's margin-left: auto, the title-bar icon's flex: 0 0 auto, the
+ * narrow-screen display: none — still applies as if the wrapper weren't
+ * there. */
+.panel picture, .titlebar picture, .menubar picture, .navbar picture {
+  display: contents;
+}
+
+/* "Live session user" in the reference; the site name here. Centred on the
+ * panel rather than pinned to the reference's x=544, because a name of any
+ * length has to stay put at any window width. */
+.panel .who {
+  grid-column: 2;
+  min-width: 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.panel .clock {
+  grid-column: 3;
+  justify-self: end;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;  /* so the width does not twitch at
+                                        * every minute boundary */
+}
+
+/* ------------------------------------------------------------ window frame */
+
+.window {
+  flex: 1 1 auto;
+  min-height: 0;                       /* without this the flex item refuses
+                                        * to shrink and the status bar is
+                                        * pushed off the bottom */
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--win-border);
+  border-top-color: var(--frame-top);
+  background: var(--panel-bg);
+  position: relative;
+  z-index: 1;
+}
+
+.titlebar {
+  flex: 0 0 auto;
+  height: 24px;                        /* 1px top edge + 22px + 1px bottom */
+  border-top: 1px solid var(--title-edge-top);
+  border-bottom: 1px solid var(--title-edge-bot);
+  /* Twenty-two hard 1px bands, one per row, sampled at x=300 from rows
+   * y26..y47. Hard stops rather than an interpolated ramp for two reasons.
+   * First, a ramp puts each output row halfway between two sampled colours.
+   * Second, these plateaus are what the original actually was — the source
+   * framebuffer was 16-bit, so the gradient was already quantised into steps
+   * on the machine that drew it. It darkens to #c88038 at row 37 and lifts
+   * again to row 46, which no two-stop ramp can do. */
+  background: linear-gradient(to bottom,
+      #f0c898  0px,  #f0c898  1px,  #e8a868  1px,  #e8a868  2px,
+      #e0a460  2px,  #e0a460  4px,  #e0a058  4px,  #e0a058  5px,
+      #d89c58  5px,  #d89c58  6px,  #d89850  6px,  #d89850  7px,
+      #d89450  7px,  #d89450  8px,  #d09048  8px,  #d09048 10px,
+      #d08c40 10px,  #d08c40 11px,  #c88038 11px,  #c88038 13px,
+      #c88438 13px,  #c88438 15px,  #c88440 15px,  #c88440 16px,
+      #c88840 16px,  #c88840 18px,  #d08840 18px,  #d08840 19px,
+      #d08c40 19px,  #d08c40 20px,  #d08c48 20px,  #d08c48 21px,
+      #c88038 21px);
+  box-shadow: inset 1px 0 0 var(--title-side), inset -1px 0 0 var(--title-side);
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+  gap: 3px;
+  color: #fff;
+  font-weight: 700;                    /* metacity's titlebar font was
+                                        * "Sans Bold 10" */
+  text-shadow: 0 1px 1px rgba(64, 32, 0, .45);
+}
+.titlebar .wicon { width: 16px; height: 16px; display: block; flex: 0 0 auto; }
+.titlebar .wtitle {
+  flex: 1 1 auto;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+}
+/* Decorative. Not buttons, not links, not focusable: a control that looks
+ * like it minimises the window and does nothing is worse than a picture of
+ * one. aria-hidden in the markup says the same thing. */
+.titlebar .wbtns { flex: 0 0 auto; display: flex; gap: 3px; }
+.titlebar .wbtn {
+  width: 22px; height: 18px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid #a06830;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, #f0c090, #d08c40);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.45);
+}
+.titlebar .wbtn img { display: block; width: 10px; height: 10px; }
+
+/* Everything below the title bar sits inside the frame's inner bevel. */
+.client {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--sep-lit);
+  border-right: 1px solid var(--bevel-dark);
+  border-bottom: 1px solid var(--bevel-dark);
+}
+
+/* ---------------------------------------------------------------- menu bar */
+
+.menubar {
+  flex: 0 0 auto;
+  height: 25px;                        /* 24px + 1px separator */
+  border-bottom: 1px solid var(--sep);
+  padding-left: 4.5px;                 /* puts "File"'s F at x=12, as measured */
+  display: flex;
+  align-items: stretch;
+  /* The menu bar is not flat: it warms and darkens slightly toward its bottom
+   * edge. Measured at x=700, an empty stretch of bar, rows y49..y72 — five
+   * plateaus, again because the source framebuffer was 16-bit. */
+  background: linear-gradient(to bottom,
+      #e8e8e0  0px, #e8e8e0  7px, #e8e4e0  7px, #e8e4e0 13px,
+      #e8e4d8 13px, #e8e4d8 16px, #e8e0d8 16px, #e8e0d8 20px,
+      #e0e0d8 20px);
+}
+/* Firefox 3's idle throbber lived at the right end of the MENU bar, not the
+ * navigation toolbar. 20x20, 6px from the frame. */
+.menubar .throbber {
+  flex: 0 0 auto;
+  width: 20px; height: 20px;
+  margin-left: auto;
+  margin-right: 6px;
+  align-self: center;
+}
+
+.menu { position: relative; display: flex; }
+.menu > .label {
+  display: flex; align-items: center;
+  padding: 0 5.5px;                    /* 11.17px between labels, measured */
+  cursor: default;
+  white-space: nowrap;
+  list-style: none;                    /* kills the disclosure triangle */
+}
+.menu > .label::-webkit-details-marker { display: none; }
+.menu > .label::marker { content: ""; }
+.menu > .label:focus-visible {
+  outline: 1px dotted var(--ink);
+  outline-offset: -2px;
+}
+.menu[open] > .label { background: #f8b078; }
+
+.menu > .drop { display: none; }
+.menu[open] > .drop { display: block; }
+.menu > .drop {
+  position: absolute;
+  top: 100%; left: 0;
+  z-index: 20;
+  min-width: 200px;
+  margin: 0;
+  padding: 2px 0;
+  list-style: none;
+  background: var(--panel-bg);
+  border: 1px solid #a09888;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, .35);
+}
+.menu .drop li { display: block; }
+.menu .drop a,
+.menu .drop span.off {
+  display: block;
+  padding: 2px 10px;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.menu .drop a:hover, .menu .drop a:focus { background: #f8b078; outline: none; }
+.menu .drop a[aria-current="page"] { font-weight: 700; }
+.menu .drop span.off { color: var(--ink-dim); }
+.menu .drop li.rule { border-top: 1px solid #c0b8a8; margin: 2px 0; }
+.menu .drop .key { float: right; margin-left: 2em; color: var(--ink-dim); }
+
+/* ------------------------------------------------------ navigation toolbar */
+
+/* The reference has NO back, forward, reload or stop button and no search
+ * box: the user had customised them away before taking the screenshot, and
+ * the screenshot is authoritative. Do not "restore" them. */
+.navbar {
+  flex: 0 0 auto;
+  height: 40px;                        /* 1px lit + 38px + 1px separator */
+  border-top: 1px solid var(--sep-lit);
+  border-bottom: 1px solid var(--sep);
+  display: flex;
+  align-items: center;
+  padding: 0 8px 0 6px;
+  gap: 6px;
+}
+.navbar .home {
+  flex: 0 0 auto;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+.navbar .home:hover, .navbar .home:focus {
+  border-color: #c09060;
+  background: linear-gradient(to bottom, #fbe4cc, #f4c99f);
+  outline: none;
+}
+.navbar .home img { display: block; width: 24px; height: 24px; }
+
+.urlwrap {
+  flex: 1 1 auto;
+  display: flex;
+  height: 25px;                        /* y82..y106 in the reference */
+  min-width: 0;
+  /* GTK sinks an entry into its toolbar with one dark row above it and one
+   * light row below — hence on the group rather than on .urlbar. */
+  box-shadow: 0 -1px 0 #e0e0d8, 0 1px 0 #f0f4f0;
+}
+.urlbar {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  background: var(--urlbar-bg);
+  border: 1px solid var(--urlbar-border);
+  border-right: 0;                     /* the dropdown's left border serves as
+                                        * this edge, exactly as in Firefox 3 */
+  box-shadow: inset 1px 0 0 var(--urlbar-lit),
+              inset -1px 0 0 var(--urlbar-lit),
+              inset 0 1px 0 var(--urlbar-lit),
+              inset 0 -1px 0 var(--urlbar-lit);
+}
+.urlbar .identity {
+  flex: 0 0 auto;
+  width: 25px; height: 23px;
+  display: flex; align-items: center; justify-content: center;
+  border-right: 1px solid var(--frame-top);
+}
+.urlbar .identity img { display: block; width: 16px; height: 16px; }
+/* Read-only and selectable, not typeable — there is nothing to submit to. */
+.urlbar .loc {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-left: 4px;                   /* URL text starts at x=77, measured */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink);
+  -webkit-user-select: all;
+  user-select: all;
+}
+.urlbar .loc .short { display: none; }
+.urlbar .star {
+  flex: 0 0 auto;
+  width: 24px; height: 23px;
+  margin-right: 1px;
+  display: flex; align-items: center; justify-content: center;
+}
+.urlbar .star svg { display: block; }
+.urldrop {
+  flex: 0 0 auto;
+  width: 26px;
+  border: 1px solid var(--btn-border);
+  background: linear-gradient(to bottom, #f8f4f0, #f0ece8);
+  display: flex; align-items: center; justify-content: center;
+}
+.urldrop svg { display: block; }
+
+/* ------------------------------------------- bookmarks toolbar = site nav */
+
+/* The page's own <header>, re-cast. display:contents dissolves the <nav>
+ * inside it so its links become flex items of this bar directly, which is
+ * what lets a two-element header (nav + switcher) lay out as one toolbar. */
+.site-header {
+  flex: 0 0 auto;
+  height: 33px;                        /* 1px lit + 31px + 1px separator */
+  border-top: 1px solid var(--sep-lit);
+  border-bottom: 1px solid var(--sep);
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  gap: 2px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+.site-header::-webkit-scrollbar { height: 0; }
+.site-nav { display: contents; }
+.site-nav a {
+  flex: 0 0 auto;
+  display: flex; align-items: center; gap: 4px;
+  height: 25px;
+  padding: 0 5px;
+  text-decoration: none;
+  color: var(--ink);
+  border: 1px solid transparent;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+/* The emoji each nav link already starts with does the job the 16x16 favicon
+ * does on a real bookmarks toolbar, so no icon is added here. */
+.site-nav a:hover, .site-nav a:focus {
+  border-color: #c09060;
+  background: linear-gradient(to bottom, #fbe4cc, #f4c99f);
+  outline: none;
+}
+
+/* ---------------------------------------------------- the theme switcher */
+
+/* base.css pins this to the top-right corner of the viewport, which under
+ * this theme is the middle of the GNOME panel. Put it back in the flow and
+ * let it ride the right end of the bookmarks toolbar instead — a toolbar
+ * widget, which is what it is. base.css says a theme may override this. */
+#theme-switcher {
+  position: static;
+  flex-wrap: nowrap;   /* up to three forms; the toolbar is one row high,
+                          and .site-header scrolls sideways if they overflow */
+  margin-left: auto;
+  padding-left: 8px;
+  flex: 0 0 auto;
+}
+/* Human was Clearlooks with a warmer palette: one flat-ish vertical gradient,
+ * a mid-grey border, 2px corners, and a white top edge inside the border. */
+#theme-switcher select,
+#theme-switcher button {
+  font: 400 12px var(--chrome-stack);
+  color: var(--ink);
+  height: 22px;
+  border: 1px solid #a09888;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, #f6f5f2 0, #eae7e0 50%, #e2ded6 50%, #e8e5df 100%);
+  box-shadow: inset 0 1px 0 #fff;
+  padding: 0 4px;
+}
+#theme-switcher button {
+  padding: 0 9px;
+  cursor: pointer;
+}
+#theme-switcher button:hover,
+#theme-switcher select:hover {
+  border-color: #c09060;
+  background: linear-gradient(to bottom, #fbe4cc, #f4c99f);
+}
+#theme-switcher button:active {
+  background: linear-gradient(to bottom, #d8d4cc, #e6e2da);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .2);
+}
+#theme-switcher select:focus-visible,
+#theme-switcher button:focus-visible {
+  outline: 1px dotted var(--ink);
+  outline-offset: 1px;
+}
+
+/* ---------------------------------------------------------------- viewport */
+
+/* 3px of toolbar grey either side, then the page. In the reference the page
+ * starts at x=5: 1px frame + 1px bevel + 3px gutter. */
+.viewport {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0 3px;
+  overflow-y: auto;
+  overflow-x: hidden;                  /* the body must never scroll sideways;
+                                        * wide children get their own scroller */
+  background: var(--content-bg);
+  scrollbar-color: #e8dcc8 var(--panel-bg);
+}
+.viewport::-webkit-scrollbar { width: 15px; height: 13px; }
+.viewport::-webkit-scrollbar-track { background: var(--panel-bg); }
+.viewport::-webkit-scrollbar-thumb {
+  border: 1px solid var(--frame-grey);
+  background: linear-gradient(to right, #f0f4f0, #e0d8d0);
+}
+.viewport::-webkit-scrollbar-corner { background: var(--panel-bg); }
+
+/* ------------------------------------------------------ masthead + content */
+
+#mastwrap {
+  /* Verbatim from ubuntu.css. header.webp is 10x90 and effectively a flat
+   * #dbba75 field with a 4px bevel along its bottom edge, so tiling it on x
+   * both fills the band and draws the rule under the masthead. */
+  background: url(ubuntu804/i/header.png) bottom left repeat-x var(--header-tan);
+  /* A background can't use <picture>; image-set() with type() is its
+   * equivalent — first decodable type wins, so the list is smallest first,
+   * like the chrome icons'. A browser without type() support drops this
+   * whole declaration and keeps the PNG above. */
+  background-image: image-set(url(ubuntu804/i/header.jxl) type("image/jxl"),
+                              url(ubuntu804/i/header.webp) type("image/webp"),
+                              url(ubuntu804/i/header.png) type("image/png"),
+                              url(ubuntu804/i/header.avif) type("image/avif"));
+}
+#masthead {
+  position: relative;
+  height: var(--masthead-h);
+  /* The reference's light wash is not a separate effect: headerlogo.png is a
+   * fully opaque 454x90 bitmap whose own background is this gradient, peaking
+   * white around x=110-180 and settling into #dbba75 by x=410. Sampled off
+   * that file at 1px steps and rebuilt here as a gradient, which is why no
+   * headerlogo.png ships (and it could not — the Ubuntu wordmark and Circle
+   * of Friends on it are Canonical trademarks). 86px tall, not 90px, so
+   * header.webp's bottom bevel still shows through underneath. */
+  background: linear-gradient(to right,
+      #f0e2c5   0px, #f1e5cb  10px, #f7f0e2  50px, #fdfcf9  90px,
+      #ffffff 110px, #fefdfa 180px, #fcfaf4 200px, #f1e6cb 260px,
+      #eadab1 300px, #e7d2a4 320px, #e3c993 350px, #dec081 380px, #dbba75 410px)
+      no-repeat left top;
+  background-size: var(--logo-w) 86px;
+}
+#masthead > a {
+  display: block; width: 100%; height: 100%;
+  text-decoration: none;
+  position: relative;
+}
+/* The replacement logotype. Same 454x90 slot as headerlogo.png, same left
+ * offsets (mark at x=19, wordmark at x=99), same optical weight — but an
+ * original mark, and live text in the font this theme already ships. */
+#logo-mark {
+  position: absolute; left: 19px; top: 11px;
+  width: 62px; height: 62px;
+  background: url(ubuntu804/i/mark.svg) no-repeat center / contain;
+}
+#logo-text {
+  position: absolute; left: 99px; bottom: 22px;
+  font: 400 30px/1 var(--chrome-stack);
+  letter-spacing: .005em;
+  color: #2a2a2a;
+  white-space: nowrap;
+}
+#logo-text .tld { color: #c0400f; }
+
+#page {
+  /* ubuntu.css: html { font-size: 0.90em; line-height: 1.75em } against a 16px
+   * default. Scoped to the page rather than to html, because html here also
+   * carries the chrome, which is 13.33px. */
+  font: 400 14.4px/1.75 var(--chrome-stack);
+  color: var(--text);
+}
+
+/* The page's <main>. Verbatim from ubuntu.css, margin-right included: that
+ * 15em is what holds the measure — it is why the reference's text column stops
+ * well short of the window edge — so it stays, and only relaxes on narrow
+ * screens where it is actively harmful. */
+main {
+  margin-top: 2em;
+  margin-left: 3em;
+  margin-right: 15em;
+  padding-bottom: 2.5em;
+}
+
+/* --------------------------------------------------------------- content */
+
+main :link, main :visited { color: var(--brown); }
+main h1, main h2, main h3, main h4, main h5, main h6 {
+  font-weight: normal;
+  color: var(--brown);
+  line-height: 1.2em;
+}
+main h1 { font-size: 1.6em; border-bottom: 2px solid var(--brown); }
+main h2 { font-size: 1.4em; }
+main h3 { font-size: 1.3em; }
+main h4 { font-size: 1.2em; }
+main h5, main h6 { font-size: 1em; }
+main dl { margin-top: 0; margin-bottom: .5em; }
+main dt { margin-top: 1em; }
+main ul { margin-right: 25%; }         /* ubuntu.css, kept */
+
+/* ubuntu.css restyles <strong> as a 1.3em brown pseudo-heading — a Plone quirk
+ * that made sense for its own markup and would turn every bold word on these
+ * pages into a subheading. Normalised, deliberately. */
+main strong { font-weight: 700; color: inherit; font-size: inherit; }
+
+main code, main pre, main kbd, main samp, main .samples {
+  font-family: var(--mono-stack);
+  font-size: .92em;
+}
+main pre, main .samples {
+  background: #f4f0e4;
+  border: 1px solid #d8ccb0;
+  padding: .6em .8em;
+  overflow-x: auto;                    /* wide code scrolls inside itself */
+  line-height: 1.45;
+}
+main code { background: #f4f0e4; padding: 0 .25em; }
+main pre code { background: none; padding: 0; }
+main blockquote {
+  margin: 1em 0 1em 1.5em;
+  padding-left: .9em;
+  border-left: 3px solid #dbba75;
+  color: #26485a;
+}
+main hr { border: 0; border-top: 1px solid #dbba75; margin: 1.75em 0; }
+main img { max-width: 100%; height: auto; }
+main table { border-collapse: collapse; }
+main th, main td {
+  border: 1px solid #d8ccb0;
+  padding: .25em .6em;
+  text-align: left;
+  vertical-align: top;
+}
+main th { background: #f4ecd8; font-weight: 700; }
+main figure { margin: 1.2em 0; }
+main figcaption { font-size: .92em; color: #26485a; }
+main video, main .sixel, main .screencast { max-width: 100%; height: auto; }
+
+/* The home and blog lists. Link lists rather than prose, so they lose the
+ * marker — and they opt out of ubuntu.css's 25% right margin above, which is
+ * there to hold the measure on a bulleted paragraph and only crowds a column
+ * of link-plus-description lines that main's own 15em has already narrowed. */
+main .projects, main .contact, main .posts {
+  list-style: none;
+  padding-left: 0;
+  margin-right: 0;
+}
+main .projects li, main .posts li { padding: 2px 0; }
+main .posts time { color: #4a6b7a; }
+main .sep { color: #a08850; margin: 0 .4em; }
+main .contact .label {
+  display: inline-block;
+  min-width: 4.5em;
+  color: #4a6b7a;
+}
+main .quote-title { font-weight: 700; margin: .2em 0 .4em; }
+main .samples { display: block; font-size: .85em; color: #40606f; margin: .4em 0; }
+
+/* -------------------------------------------------------------- status bar */
+
+.statusbar {
+  flex: 0 0 auto;
+  height: 28px;                        /* 1px rule + 2px bevel + 25px field */
+  border-top: 1px solid var(--frame-grey);
+  background: linear-gradient(to bottom,
+      #b8bcb8 0, #b8bcb8 1px, #f8f8f8 1px, #f8f8f8 2px,
+      var(--panel-bg) 2px);
+  display: flex;
+  align-items: center;
+  padding: 2px 6px 0 14px;             /* "Done" starts at x=14, measured */
+  gap: 10px;
+}
+.statusbar .done { flex: 1 1 auto; }
+.statusbar .grip {
+  flex: 0 0 auto;
+  width: 12px; height: 12px;
+  /* The metacity resize grip: a 4px dot grid. Two hard stops, not a ramp. */
+  background-image: radial-gradient(circle closest-side at 50% 50%, #a09890 0 60%, transparent 60%);
+  background-size: 4px 4px;
+  opacity: .8;
+}
+
+/* ------------------------------------------------ the wallpaper strip */
+
+/* The exposed desktop along the bottom, and the page's <footer> doing the job.
+ * position:fixed lifts it out of the viewport's scroller — it has to leave,
+ * because the badge shelf sits OUTSIDE the window and the footer's place in
+ * the markup is inside it, and no include split can move an element that is
+ * in the middle of the page. Fixed descendants are not clipped by an
+ * ancestor's overflow, so the shelf stays put while the page scrolls behind
+ * it, which is the behaviour wanted anyway. No background of its own: body's
+ * wallpaper shows through, and that is the point. */
+footer {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: var(--strip-h);
+  display: flex;
+  align-items: center;
+  z-index: 3;
+}
+/* One row, scrolling sideways. Not wrapping and not growing: this band is a
+ * picture of bare desktop, and a second row of it is a second row of window
+ * that is missing. */
+footer .badges {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* No visible scrollbar, for the same reason the bookmarks row has none: a
+   * scrollbar drawn across the bottom 6px of this band is 6px of wallpaper you
+   * cannot see. Wheel, trackpad and swipe still scroll it, and Tab still walks
+   * the badges and scrolls them into view. */
+  scrollbar-width: none;
+}
+footer .badges::-webkit-scrollbar { height: 0; }
+footer .badges li {
+  flex: 0 0 auto;
+  display: block;
+  line-height: 0;
+  border: 1px solid rgba(0, 0, 0, .45);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .22);
+}
+footer .badges img {
+  display: block;
+  width: 88px; height: 31px;
+  max-width: none;
+  image-rendering: pixelated;          /* 88x31 badges are pixel art */
+}
+footer .badges a { display: block; line-height: 0; }
+footer .badges a:focus { outline: 2px solid #fff; outline-offset: 1px; }
+/* The old template ended this row with a line of white text explaining that
+ * the window stops short of the screen on purpose. Not carried over: there it
+ * was a note on a template being shown off, and here the desktop is just how
+ * the site looks. The strip reads as wallpaper without being told it is. */
+
+/* -------------------------------------------------------- skip link (a11y) */
+
+/* Six menus and a nav row stand between a keyboard user and the actual page,
+ * so give them a way past. Visible only when focused. */
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 50;
+  background: #fff; color: #000; padding: 6px 10px;
+  border: 2px solid var(--urlbar-border);
+}
+.skip:focus { left: 6px; top: 6px; }
+
+/* The same trick for the note that offers a way out of the chrome entirely.
+ * Off-screen rather than display:none or visibility:hidden, because those two
+ * take it out of the accessibility tree as well and it exists ONLY for that
+ * tree (and for text browsers, which read the markup and ignore all of this).
+ *
+ * focus-within, not focus: the focusable thing is the link inside, but the
+ * sentence around it is what makes the link make sense, so the whole note
+ * travels on-screen together. It cannot collide with .skip at the same
+ * coordinates — only one of the two can hold focus. */
+.themenote {
+  position: absolute; left: -9999px; top: 0; z-index: 50;
+  margin: 0; max-width: 34em;
+  background: #fff; color: #000; padding: 6px 10px;
+  border: 2px solid var(--urlbar-border);
+}
+.themenote:focus-within { left: 6px; top: 6px; }
+
+/* ------------------------------------------------------------- responsive */
+
+/* The illusion has to survive every width. It degrades by dropping chrome
+ * that cannot fit, never by unpinning the layout. */
+
+@media (max-width: 1100px) { main { margin-right: 8em; } }
+@media (max-width: 900px)  { main { margin-right: 4em; } }
+
+@media (max-width: 720px) {
+  .menubar { display: none; }
+  .urlbar .loc .full { display: none; }
+  .urlbar .loc .short { display: inline; }
+  .titlebar .wbtns { display: none; }
+  .navbar { height: 36px; padding: 0 5px; gap: 4px; }
+  .navbar .home { width: 28px; height: 28px; }
+  .menubar .throbber { display: none; }
+  .site-header { padding: 0 3px; }
+  .statusbar { padding-left: 8px; }
+  main { margin: 1.5em 1.5em 0; padding-bottom: 2em; }
+  main ul { margin-right: 0; }
+  #logo-mark { left: 10px; top: 14px; width: 48px; height: 48px; }
+  #logo-text { left: 66px; bottom: 18px; font-size: 22px; }
+}
+
+@media (max-width: 480px) {
+  /* Centring a long name between a 24px icon and a clock stops being possible
+   * long before 480px. Below it, let the name follow the icon and take the
+   * slack instead. */
+  .panel { grid-template-columns: auto 1fr auto; column-gap: 6px; }
+  .panel .who { text-align: left; }
+  .panel .clock .zone { display: none; }   /* the " UTC" suffix, not the time */
+  #masthead { height: 64px; background-size: 300px 60px; }
+  #logo-mark { left: 8px; top: 10px; width: 40px; height: 40px; }
+  #logo-text { left: 54px; bottom: 12px; font-size: 17px; }
+  main { margin: 1.25em 1em 0; }
+  #page { font-size: 14px; }
+  footer .badges { gap: 6px; padding: 0 6px; }
+}
+
+/* ------------------------------------------------------------------ print */
+
+/* The File menu's "Print…" is inert: printing needs print(), print() needs
+ * JavaScript, and /personal/ has none. This does the work instead — the
+ * browser's own Ctrl+P gives you the page without a picture of a desktop
+ * around it. The footer needs position:static back or a fixed element repeats
+ * on every sheet. */
+@media print {
+  body { background: #fff; overflow: visible; }
+  .panel, .titlebar, .menubar, .navbar, .site-header,
+  .statusbar, .skip, .themenote { display: none !important; }
+  .desktop, .window, .client { display: block; height: auto; border: 0; }
+  .viewport { overflow: visible; margin: 0; background: #fff; }
+  #mastwrap { background: none; }
+  #masthead { background: none; height: auto; }
+  #logo-mark { display: none; }
+  #logo-text { position: static; font-size: 20px; }
+  main { margin: 1em 0 0; }
+  main :link, main :visited { color: #000; text-decoration: underline; }
+  footer { position: static; height: auto; margin-top: 2em; }
+  footer .badges { overflow: visible; flex-wrap: wrap; padding: 0; }
+}
+
+/* ------------------------------------------------------ reduced motion etc */
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* ------------------------------------------------------------ vitals box */
+
+/* Human-theme GtkFrame holding two Human progress bars: tan trough, orange
+ * fill. Colours are this file's own (header tan, url bar orange), not new
+ * measurements. Its own font size: #page's 14.4px would make it too large. */
+main .statbox {
+  padding: 6px 10px 8px;
+  font: 400 12px/1.5 var(--chrome-stack);
+  background: var(--panel-bg);
+  border: 1px solid var(--frame-grey);
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 var(--bevel-dark);
+}
+
+main .statbox .bar {
+  height: 12px;
+  background: #f4f0e4;
+  border: 1px solid var(--btn-border);
+  border-radius: 2px;
+  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.15);
+}
+
+main .statbox .bar i {
+  background: linear-gradient(to bottom, var(--urlbar-lit) 0%, #e8883a 55%, #d0701f 100%);
+  box-shadow: inset 0 0 0 1px rgba(136, 72, 24, 0.55);
+}
+
+main .statbox .bar u {
+  background: linear-gradient(to bottom, #fbe6cf, #f2cfa6);
+}
+
+main .statbox .sbmore {
+  border-top: 1px solid var(--sep);
+  box-shadow: inset 0 1px 0 var(--sep-lit);
+  padding-top: 4px;
+}

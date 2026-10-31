@@ -4,13 +4,13 @@
 #
 #   /srv/httpstaging -> /srv/http           nginx docroot (content, no executables)
 #   cgi/             -> /srv/cgi            CGI scripts run by fcgiwrap
-#   gopher/          -> /srv/gopher         gophernicus doc root
-#   gemini/          -> /srv/gemini         molly-brown doc root (Spartan too)
-#   modernmotherfuckingwebsite/ -> /srv/modernmotherfuckingwebsite  its own vhost
-#   hansendiscountelectronics.com/site/ -> /srv/hansendiscountelectronics.com  its own vhost
+#   staticish/gopher/dreamstation.systems/          -> /srv/gopher         gophernicus doc root
+#   staticish/gemini/dreamstation.systems/          -> /srv/gemini         molly-brown doc root (Spartan too)
+#   staticish/http/modernmotherfuckingwebsite.dreamstation.systems/ -> /srv/modernmotherfuckingwebsite  its own vhost
+#   staticish/http/hansendiscountelectronics.com/site/ -> /srv/hansendiscountelectronics.com  its own vhost
 #   statusSample/    -> /usr/local/bin + units  the status page's other half
 #   statusSample/starport/ -> starport, over SSH  the second host's sampler
-#   nginx/           -> /etc/nginx          vhosts and snippets
+#   fhs/etc/nginx/           -> /etc/nginx          vhosts and snippets
 #
 # Web content comes from the staging tree so the live docroot matches what was
 # previewed; everything else comes from the repo since it has no staging copy.
@@ -64,7 +64,7 @@ NGINX_SNIPPETS=(
 	wkd.conf
 )
 
-# etc/ mirrors real /etc paths, installed by name like the nginx lists: these
+# fhs/etc/ mirrors real /etc paths, installed by name like the nginx lists: these
 # dirs hold files this repo does not own, so a new file does nothing until
 # listed. jail.local is DELIBERATELY absent — it carries ignoreip lines with a
 # home IP and an institutional range, and this repo is public. See githooks.txt
@@ -86,13 +86,13 @@ if [ ! -d "$STAGING" ] || [ -z "$(ls -A "$STAGING" 2>/dev/null)" ]; then
 	exit 1
 fi
 
-# Uncommitted edits to rootdomain/ are not staged (the hook fires on commit),
+# Uncommitted edits to staticish/http/dreamstation.systems/ are not staged (the hook fires on commit),
 # so what you previewed is the last commit, not your working tree. Asked of
 # git rather than diffing the trees, since stageSite.sh's chown/chmod makes
 # any tree-diff approach fight false positives. See githooks.txt.
-dirty="$(git -C "$ROOT" status --porcelain -- rootdomain 2>/dev/null || true)"
+dirty="$(git -C "$ROOT" status --porcelain -- staticish/http/dreamstation.systems 2>/dev/null || true)"
 if [ -n "$dirty" ]; then
-	echo "NOTE: rootdomain/ has uncommitted changes. Staging is the last COMMIT," >&2
+	echo "NOTE: staticish/http/dreamstation.systems/ has uncommitted changes. Staging is the last COMMIT," >&2
 	echo "      so the following are NOT in it and will not go live:" >&2
 	printf '%s\n' "$dirty" | sed 's/^/      /' >&2
 	echo "      Commit (which re-stages), or run ./stageSite.sh by hand." >&2
@@ -135,8 +135,8 @@ for f in "$ROOT"/statusSample/*.sh "$ROOT"/statusSample/starport/*.sh; do
 	fi
 done
 
-# lawaPage/: the two Perl scripts behind /personal/lawa.html's live numbers.
-for f in "$ROOT"/lawaPage/*.pl; do
+# buildTimeTools/lawaPage/: the two Perl scripts behind /personal/lawa.html's live numbers.
+for f in "$ROOT"/buildTimeTools/lawaPage/*.pl; do
 	[ -f "$f" ] || continue
 	if ! perl -c "$f" >/dev/null 2>&1; then
 		echo "ABORT: ${f#"$ROOT"/} fails syntax check — nothing promoted." >&2
@@ -145,28 +145,28 @@ for f in "$ROOT"/lawaPage/*.pl; do
 	fi
 done
 
-# etc/ gates. Unlike nginx there is no one `-t` for these, so each file gets
+# fhs/etc/ gates. Unlike nginx there is no one `-t` for these, so each file gets
 # the best offline check its own tool offers, BEFORE anything is installed.
 # molly-brown is the one that really needs it: it has no config-test flag and
 # no second instance, so a bad config is a genuine outage rather than a
 # refused reload. See nginx.txt for why the nginx block cannot work this way.
-if [ -d "$ROOT/etc" ]; then
+if [ -d "$ROOT/fhs/etc" ]; then
 	# /etc/default/gophernicus is a systemd EnvironmentFile: KEY=VALUE only.
-	f="$ROOT/etc/default/gophernicus"
+	f="$ROOT/fhs/etc/default/gophernicus"
 	if [ -f "$f" ] && grep -vE '^\s*(#|$)' "$f" | grep -qvE '^[A-Za-z_][A-Za-z0-9_]*='; then
-		echo "ABORT: etc/default/gophernicus has a line that is not KEY=VALUE." >&2
+		echo "ABORT: fhs/etc/default/gophernicus has a line that is not KEY=VALUE." >&2
 		grep -vE '^\s*(#|$)' "$f" | grep -vE '^[A-Za-z_][A-Za-z0-9_]*=' | sed 's/^/      /' >&2
 		exit 1
 	fi
 
 	# logrotate reads a config only if root owns it, so validate a root-owned
 	# copy rather than the repo file. --debug parses and changes nothing.
-	f="$ROOT/etc/logrotate.d/gophernicus"
+	f="$ROOT/fhs/etc/logrotate.d/gophernicus"
 	if [ -f "$f" ]; then
 		lr_tmp="$(mktemp -d)"
 		sudo install -m644 -o root -g root "$f" "$lr_tmp/lr"
 		if sudo logrotate --debug "$lr_tmp/lr" 2>&1 | grep -qi '^error'; then
-			echo "ABORT: etc/logrotate.d/gophernicus fails logrotate parsing." >&2
+			echo "ABORT: fhs/etc/logrotate.d/gophernicus fails logrotate parsing." >&2
 			sudo logrotate --debug "$lr_tmp/lr" 2>&1 | grep -i '^error' | sed 's/^/      /' >&2
 			sudo rm -rf "$lr_tmp"
 			exit 1
@@ -180,7 +180,7 @@ if [ -d "$ROOT/etc" ]; then
 	# opened). Requiring that exact message — not just a zero exit — is what
 	# catches the ErrorLog="-" footgun, where errors go to a file named "-" and
 	# a broken config fails silently. See gemini.txt CONFIG.
-	f="$ROOT/etc/molly-brown/dreamstation.conf"
+	f="$ROOT/fhs/etc/molly-brown/dreamstation.conf"
 	if [ -f "$f" ] && command -v molly-brown >/dev/null 2>&1; then
 		# Run it from a throwaway cwd, never the repo. An ErrorLog of "-" makes
 		# molly create a file literally named "-" in the working directory, and
@@ -194,7 +194,7 @@ if [ -d "$ROOT/etc" ]; then
 		sudo rm -rf "$mb_tmp"
 		if systemctl is-active --quiet molly-brown@dreamstation; then
 			if ! printf '%s' "$mb_out" | grep -q 'address already in use'; then
-				echo "ABORT: etc/molly-brown/dreamstation.conf did not validate." >&2
+				echo "ABORT: fhs/etc/molly-brown/dreamstation.conf did not validate." >&2
 				echo "       Expected it to reach a bind conflict on the live port;" >&2
 				echo "       got this instead:" >&2
 				printf '%s\n' "${mb_out:-(no output — check for ErrorLog = \"-\")}" | sed 's/^/      /' >&2
@@ -205,7 +205,7 @@ if [ -d "$ROOT/etc" ]; then
 			# valid config would just start serving. Fall back to the weaker
 			# check: it must at least not be a TOML parse error.
 			if printf '%s' "$mb_out" | grep -q 'toml:'; then
-				echo "ABORT: etc/molly-brown/dreamstation.conf fails to parse." >&2
+				echo "ABORT: fhs/etc/molly-brown/dreamstation.conf fails to parse." >&2
 				printf '%s\n' "$mb_out" | sed 's/^/      /' >&2
 				exit 1
 			fi
@@ -274,33 +274,33 @@ promote_retro() { # <repo subdir> <doc root> <generated file to protect>...
 	echo "Promoted $sub/ → $dest"
 }
 
-promote_retro gopher /srv/gopher ntpstats.txt lawa.txt tok/lawa.txt
-promote_retro gemini /srv/gemini ntpstats.gmi lawa.gmi tok/lawa.gmi
+promote_retro staticish/gopher/dreamstation.systems /srv/gopher ntpstats.txt lawa.txt tok/lawa.txt
+promote_retro staticish/gemini/dreamstation.systems /srv/gemini ntpstats.gmi lawa.gmi tok/lawa.gmi
 
 # ------------------------------------------------- modernmotherfuckingwebsite
 #
 # One static page and its OpenGraph image, served by its own vhost
-# (nginx/sites-available/modernmotherfuckingwebsite.dreamstation.systems).
+# (fhs/etc/nginx/sites-available/modernmotherfuckingwebsite.dreamstation.systems).
 # Straight from the repo like the retro roots — it has no staging copy — but
 # root-owned like /srv/http, since nothing writes there at runtime.
 if [ -d "$ROOT/modernmotherfuckingwebsite" ]; then
 	sudo rsync -a --delete \
 		--chown=root:root --chmod=D755,F644 \
-		"$ROOT/modernmotherfuckingwebsite/" /srv/modernmotherfuckingwebsite/
-	echo "Promoted modernmotherfuckingwebsite/ → /srv/modernmotherfuckingwebsite"
+		"$ROOT/staticish/http/modernmotherfuckingwebsite.dreamstation.systems/" /srv/modernmotherfuckingwebsite/
+	echo "Promoted staticish/http/modernmotherfuckingwebsite.dreamstation.systems/ → /srv/modernmotherfuckingwebsite"
 fi
 
 # ------------------------------------------------- hansendiscountelectronics.com
 #
 # A small static storefront, served by its own vhost
-# (nginx/sites-available/hansendiscountelectronics.com). Same deal as
+# (fhs/etc/nginx/sites-available/hansendiscountelectronics.com). Same deal as
 # modernmotherfuckingwebsite above. Only site/ is deployed — the JPEGs beside
 # it are reference screenshots, not part of the site.
-if [ -d "$ROOT/hansendiscountelectronics.com/site" ]; then
+if [ -d "$ROOT/staticish/http/hansendiscountelectronics.com/site" ]; then
 	sudo rsync -a --delete \
 		--chown=root:root --chmod=D755,F644 \
-		"$ROOT/hansendiscountelectronics.com/site/" /srv/hansendiscountelectronics.com/
-	echo "Promoted hansendiscountelectronics.com/site/ → /srv/hansendiscountelectronics.com"
+		"$ROOT/staticish/http/hansendiscountelectronics.com/site/" /srv/hansendiscountelectronics.com/
+	echo "Promoted staticish/http/hansendiscountelectronics.com/site/ → /srv/hansendiscountelectronics.com"
 fi
 
 # --------------------------------------------------------------- statusSample
@@ -390,18 +390,18 @@ fi
 # deliberately NOT created here (secrets/identity; this repo is public) — see
 # ~/configNotes/lawa.txt, "The public page". Without that user the timer is
 # installed but every run fails harmlessly and the page shows its stub.
-if [ -d "$ROOT/lawaPage" ]; then
+if [ -d "$ROOT/buildTimeTools/lawaPage" ]; then
 	lp_changed=0
 	for s in lawaPage.pl lawaPublish.pl; do
-		if ! sudo cmp -s "$ROOT/lawaPage/$s" "/usr/local/bin/$s"; then
-			sudo install -m755 -o root -g root "$ROOT/lawaPage/$s" "/usr/local/bin/$s"
+		if ! sudo cmp -s "$ROOT/buildTimeTools/lawaPage/$s" "/usr/local/bin/$s"; then
+			sudo install -m755 -o root -g root "$ROOT/buildTimeTools/lawaPage/$s" "/usr/local/bin/$s"
 			lp_changed=1
 		fi
 	done
 	lp_units=0
 	for u in lawaPage.service lawaPage.timer; do
-		if ! sudo cmp -s "$ROOT/lawaPage/$u" "/etc/systemd/system/$u"; then
-			sudo install -m644 -o root -g root "$ROOT/lawaPage/$u" "/etc/systemd/system/$u"
+		if ! sudo cmp -s "$ROOT/buildTimeTools/lawaPage/$u" "/etc/systemd/system/$u"; then
+			sudo install -m644 -o root -g root "$ROOT/buildTimeTools/lawaPage/$u" "/etc/systemd/system/$u"
 			lp_units=1
 		fi
 	done
@@ -412,7 +412,7 @@ if [ -d "$ROOT/lawaPage" ]; then
 		# Render now rather than in five minutes. A failure here (starport
 		# down) must not stop a promote: the page says its numbers are old.
 		sudo systemctl start lawaPage.service || echo "WARNING: first lawaPage run failed — see journalctl -u lawaPage" >&2
-		echo "Promoted lawaPage/ → /usr/local/bin + systemd (timer restarted)"
+		echo "Promoted buildTimeTools/lawaPage/ → /usr/local/bin + systemd (timer restarted)"
 	fi
 fi
 
@@ -422,7 +422,7 @@ fi
 # installed, so the sequence here is install -> `nginx -t` -> roll back on
 # failure. A pre-existing failure is reported and skipped, not "fixed". See
 # nginx.txt.
-if [ -d "$ROOT/nginx" ]; then
+if [ -d "$ROOT/fhs/etc/nginx" ]; then
 	if ! sudo nginx -t >/dev/null 2>&1; then
 		echo "SKIP: /etc/nginx is already failing nginx -t before this promote touched it." >&2
 		sudo nginx -t || true
@@ -439,7 +439,7 @@ if [ -d "$ROOT/nginx" ]; then
 		shift 2
 		mkdir -p "$backup/$dest"
 		for f in "$@"; do
-			if ! sudo cmp -s "$ROOT/nginx/$sub/$f" "/etc/nginx/$dest/$f"; then
+			if ! sudo cmp -s "$ROOT/fhs/etc/nginx/$sub/$f" "/etc/nginx/$dest/$f"; then
 				if [ -f "/etc/nginx/$dest/$f" ]; then
 					sudo cp -p "/etc/nginx/$dest/$f" "$backup/$dest/$f"
 				else
@@ -448,7 +448,7 @@ if [ -d "$ROOT/nginx" ]; then
 					touch "$backup/$dest/$f.ABSENT"
 				fi
 				sudo install -m644 -o root -g root \
-					"$ROOT/nginx/$sub/$f" "/etc/nginx/$dest/$f"
+					"$ROOT/fhs/etc/nginx/$sub/$f" "/etc/nginx/$dest/$f"
 				nginx_changed=1
 			fi
 		done
@@ -480,7 +480,7 @@ if [ -d "$ROOT/nginx" ]; then
 	if [ "$nginx_changed" = 1 ]; then
 		if sudo nginx -t >/dev/null 2>&1; then
 			sudo systemctl reload nginx
-			echo "Promoted nginx/ → /etc/nginx (reloaded)"
+			echo "Promoted fhs/etc/nginx/ → /etc/nginx (reloaded)"
 		else
 			echo "ABORT: new nginx config fails nginx -t — rolling back." >&2
 			sudo nginx -t || true # show the user why
@@ -495,7 +495,7 @@ if [ -d "$ROOT/nginx" ]; then
 	fi
 fi
 
-# ----------------------------------------------------------------------- etc/
+# ----------------------------------------------------------------------- fhs/etc/
 #
 # Single files across five /etc locations, all gated offline earlier. Remaining
 # risk here is behavioural, not syntactic, so each service is restarted, PROBED
@@ -503,7 +503,7 @@ fi
 # probe can only run post-restart (no config test, no second instance), so a
 # bad config costs seconds of downtime. See githooks.txt, "promote: the rest
 # of the tree".
-if [ -d "$ROOT/etc" ]; then
+if [ -d "$ROOT/fhs/etc" ]; then
 	etc_backup="$(mktemp -d)"
 	# Keeps the nginx block's backup dir in the trap too — a bare `trap ... EXIT`
 	# here would REPLACE that handler and leak it.
@@ -511,9 +511,9 @@ if [ -d "$ROOT/etc" ]; then
 	etc_changed=()
 
 	for rel in "${ETC_FILES[@]}"; do
-		src="$ROOT/etc/$rel"
+		src="$ROOT/fhs/etc/$rel"
 		if [ ! -f "$src" ]; then
-			echo "ABORT: etc/$rel is in ETC_FILES but missing from the repo." >&2
+			echo "ABORT: fhs/etc/$rel is in ETC_FILES but missing from the repo." >&2
 			exit 1
 		fi
 		if ! sudo cmp -s "$src" "/etc/$rel"; then
@@ -580,7 +580,7 @@ if [ -d "$ROOT/etc" ]; then
 	if etc_did_change default/gophernicus; then
 		sudo systemctl restart gophernicus.socket
 		if probe_gopher; then
-			echo "Promoted etc/default/gophernicus (gophernicus.socket restarted)"
+			echo "Promoted fhs/etc/default/gophernicus (gophernicus.socket restarted)"
 		else
 			echo "ABORT: gopher :70 stopped answering after the config change —" >&2
 			echo "       rolling back and restarting." >&2
@@ -596,7 +596,7 @@ if [ -d "$ROOT/etc" ]; then
 	if etc_did_change molly-brown/dreamstation.conf; then
 		sudo systemctl restart molly-brown@dreamstation
 		if probe_gemini; then
-			echo "Promoted etc/molly-brown/dreamstation.conf (molly-brown@dreamstation restarted)"
+			echo "Promoted fhs/etc/molly-brown/dreamstation.conf (molly-brown@dreamstation restarted)"
 		else
 			echo "ABORT: gemini :1965 did not come back after the config change —" >&2
 			echo "       rolling back and restarting." >&2
@@ -615,7 +615,7 @@ if [ -d "$ROOT/etc" ]; then
 		etc_did_change fail2ban/filter.d/molly-brown.conf; then
 		if sudo fail2ban-client --test >/dev/null 2>&1; then
 			sudo systemctl reload fail2ban
-			echo "Promoted etc/fail2ban/filter.d/* (fail2ban reloaded)"
+			echo "Promoted fhs/etc/fail2ban/filter.d/* (fail2ban reloaded)"
 		else
 			echo "ABORT: fail2ban-client --test fails with the new filters — rolling back." >&2
 			sudo fail2ban-client --test 2>&1 | tail -5 | sed 's/^/      /' >&2
@@ -630,6 +630,6 @@ if [ -d "$ROOT/etc" ]; then
 	# -- logrotate: nothing runs it on our behalf and nothing needs reloading;
 	# the parse gate above is the whole check.
 	if etc_did_change logrotate.d/gophernicus; then
-		echo "Promoted etc/logrotate.d/gophernicus"
+		echo "Promoted fhs/etc/logrotate.d/gophernicus"
 	fi
 fi

@@ -1259,7 +1259,7 @@ CSS
 # (the two .tok home pages), so it is the one part with a second language.
 # STATUS_LANG=tok, set by nginx on /professional/status-box.tok, picks the
 # toki pona strings; anything else is English. CPU and RAM are names and stay
-# (content/tok/README.md); the bar tooltips are formulas and stay too. The
+# (unbuiltContent/triptychContent/tok/README.md); the bar tooltips are formulas and stay too. The
 # full page remains English-only: its lang="en" is correct.
 my %BOX_STR = (
 	en  => { vitals => 'Server vitals',     more => '→ full status page' },

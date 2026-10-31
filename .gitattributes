@@ -1,11 +1,11 @@
-rootdomain/mspajamrepo.tar.gz filter=lfs diff=lfs merge=lfs -text
-rootdomain/miscStuff/openget-archive-20261030.db.zstd filter=lfs diff=lfs merge=lfs -text
+staticish/http/dreamstation.systems/mspajamrepo.tar.gz filter=lfs diff=lfs merge=lfs -text
+staticish/http/dreamstation.systems/miscStuff/openget-archive-20261030.db.zstd filter=lfs diff=lfs merge=lfs -text
 
 # Old shit
-rootdomain/old/** linguist-detectable=false
-rootdomain/oldsite/** linguist-detectable=false
-rootdomain/personal/sophiagame/** linguist-detectable=false
-rootdomain/personal/wiktionaryRacingV2 linguist-detectable=false
+staticish/http/dreamstation.systems/old/** linguist-detectable=false
+staticish/http/dreamstation.systems/oldsite/** linguist-detectable=false
+staticish/http/dreamstation.systems/personal/sophiagame/** linguist-detectable=false
+staticish/http/dreamstation.systems/personal/wiktionaryRacingV2 linguist-detectable=false
 
 # webBadges.csv is RFC 4180, which specifies CRLF
-webBadges.csv text eol=crlf
+unbuiltContent/webBadges.csv text eol=crlf

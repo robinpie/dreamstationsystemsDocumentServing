@@ -1,0 +1,143 @@
+dreamstation.systems — the "Ubuntu 8.04" theme for /personal/
+Attribution and licensing.
+
+Choosing "Ubuntu 8.04" in the theme switcher draws an Ubuntu 8.04 LTS "Hardy
+Heron" desktop running Firefox 3 around the page. Most of it is hand-written
+CSS. The parts that are not are listed here.
+
+This file covers the artwork that ships under /personal/themes/ubuntu804/, and
+is the only attribution for it.
+
+NOT AFFILIATED WITH ANYBODY
+---------------------------
+"Ubuntu" is a registered trademark of Canonical Ltd. This site is not
+affiliated with, endorsed by, sponsored by or connected to Canonical in any
+way. The Ubuntu wordmark and the Circle of Friends logo are NOT used anywhere:
+the masthead carries an original logotype, and the light wash behind it —
+which in Ubuntu 8.04 was part of the opaque headerlogo.png bitmap that also
+carried those marks — was measured off that file and rebuilt as a CSS gradient
+specifically so the bitmap itself would not have to ship.
+
+"Firefox" and the Firefox logo are trademarks of the Mozilla Foundation. This
+site is not Firefox and is not affiliated with, endorsed by or connected to
+Mozilla. The Firefox logo and toolbar throbber below are used unaltered as
+artwork — re-encoding to WebP changes the container, not a pixel — and only to
+depict the browser this desktop is a picture of.
+
+THIRD-PARTY ARTWORK THAT SHIPS HERE
+-----------------------------------
+i/heron.webp
+    "warty-final-ubuntu.png", the Ubuntu 8.04 LTS default desktop wallpaper —
+    the one with the heron. (Ubuntu kept the historical Warty filename for the
+    default background; heron-simple.png, despite its name, is the plain
+    variant with no bird.)
+    (c) Canonical Ltd. Ubuntu artwork, CC-BY-SA. Re-encoded to WebP at quality
+    78; not otherwise altered, cropped or recoloured. From
+    /usr/share/backgrounds/ on the Ubuntu 8.04.4 desktop-amd64 install image.
+
+i/header.webp
+    The masthead gradient from /usr/share/ubuntu-artwork/img/header.png,
+    10x90, tiled on x. (c) Canonical Ltd., Ubuntu artwork. Re-encoded to
+    lossless WebP; not otherwise altered. The PNG carried a 2639-byte embedded
+    ICC profile around 74 bytes of image data, which is most of why this went
+    2863 -> 90 bytes.
+
+i/go-home.webp
+    "go-home" from the Human icon theme, 24x24.
+    (c) Canonical Ltd. Human icon theme, CC-BY-SA 3.0 / GPL. Re-encoded to
+    lossless WebP; not otherwise altered.
+
+i/wb-minimize.webp, i/wb-maximize.webp, i/wb-close.webp
+    icon_minimize.png, icon_maximize.png and icon_close.png from the Human
+    Metacity theme, 10x10 each.
+    (c) Canonical Ltd. Human theme, CC-BY-SA 3.0 / GPL. Re-encoded to lossless
+    WebP; not otherwise altered.
+
+i/firefox16.png, i/firefox24.webp
+    Mozilla Firefox 3's window icon (default16.png and default32.png).
+    (c) Mozilla Foundation; MPL 1.1 / GPL 2.0 / LGPL 2.1 tri-license, and the
+    logo is additionally a Mozilla trademark. firefox24.webp is default32.png
+    resampled to 24x24, then re-encoded to lossless WebP; firefox16.png is
+    unmodified artwork, losslessly recompressed as a PNG. Its WebP, AVIF and
+    JPEG XL siblings (see below) are the same pixels in other containers —
+    no alteration of the logo, any more than the PNG recompression was.
+
+i/throbber.webp
+    Firefox 3's idle toolbar throbber (Throbber.png, 20x20), from
+    chrome/classic.jar. (c) Mozilla Foundation, MPL/GPL/LGPL tri-license.
+    Re-encoded to lossless WebP; not otherwise altered.
+
+f/dejavu.woff2, f/dejavu-bold.woff2
+    DejaVu Sans and DejaVu Sans Bold, a Bitstream Vera derivative.
+    Bitstream Vera Fonts Copyright (c) 2003 Bitstream, Inc.; DejaVu changes in
+    the public domain. The licence permits redistribution and modification;
+    subsetting and container changes are explicitly allowed. The name
+    "Bitstream Vera" is not used, as the licence requires.
+
+    MODIFIED: these are SUBSETS, not the complete faces. Each carries the
+    characters these pages actually use plus a margin of Latin-1, punctuation,
+    arrows and box drawing — about 45 kB for the pair against 382 kB for the
+    full faces. Rebuilt from the upstream TTFs on every commit by
+    buildTimeTools/assetsBuild/makeFontSubset.py; glyph metrics are unchanged, so this is
+    a reduction in coverage and nothing else. The unmodified originals are in
+    the repo at buildTimeTools/assetsBuild/fontsSrc/.
+
+CSS DERIVED FROM SOMEBODY ELSE'S STYLESHEET
+-------------------------------------------
+The content column's typography — the 0.90em/1.75em body, the #002B3D text,
+the #6d4c07 headings and links, the 1.6em h1 with its 2px rule, the 3em/15em
+margins and the 90px masthead — is taken from
+/usr/share/ubuntu-artwork/ubuntu.css, which is a Plone stylesheet:
+
+    Copyright Alexander Limi, http://www.plonesolutions.com
+    Additional Plone 2 work: Joe Geldart, Tom Croucher, Michael Zeltner,
+    Geir Baekholt.
+
+That file's own header says: "Feel free to use whole or parts of this for your
+own designs, but give credit where credit is due." Credit is hereby given.
+One rule was deliberately not carried over: ubuntu.css restyles <strong> as a
+1.3em brown pseudo-heading, which would turn every bold word on this site into
+a subheading.
+
+WHERE THE ORIGINALS ARE
+-----------------------
+The unmodified extracted originals and the 1280x720 screenshot the design was
+measured against are archived off the server, not in this site's public git
+repository. Every file listed above carries its own copyrights, licences and
+attribution, and the per-file notes say which Ubuntu 8.04.4 desktop image,
+Human theme and Firefox 3 chrome each one came out of. Regenerating any of them
+means going back to those sources.
+
+THE BITMAPS WERE RE-ENCODED TO LOSSLESS WEBP ON 2026-09-07, except firefox16
+(see its note) and heron (already WebP, and lossy — re-encoding it again would
+only add generation loss). 8154 -> 3891 bytes. Every one was verified
+pixel-for-pixel identical to the PNG it replaced, so "not otherwise altered"
+above is a literal claim about the decoded image and not a figure of speech.
+Where a note still says a file is unmodified from its upstream source, that is
+about the artwork; the container changed and nothing else did.
+
+ORIGINAL TO THIS SITE
+---------------------
+The logotype (i/mark.svg, i/favicon16.webp) and the location bar's bookmark
+star and autocomplete arrow (inline SVG in /personal/chrome/top.html, drawn to
+match the reference rather than reusing the Human theme's differently-shaped
+bookmark-new icon) were made for this site. So was every line of
+/personal/themes/ubuntu804.css that is not described above, including the
+title bar gradient, the window frame, the toolbars, the status bar and the
+masthead's light wash, all reconstructed from measurements of a screenshot
+rather than copied from any file.
+
+The 88x31 badges on the shelf along the bottom are the ones /personal/ already
+carried in its own footer; they are not part of this theme and are credited
+wherever they came from.
+
+FILES THIS THEME SHIPS
+----------------------
+  /personal/themes/ubuntu804.css
+  /personal/chrome/top.html, mid.html, bottom.html
+  i/heron.webp, i/mark.svg
+  i/header, i/favicon16, i/firefox16, i/firefox24, i/go-home, i/throbber,
+  i/wb-minimize, i/wb-maximize, i/wb-close — each as .jxl, .webp, .png and
+  .avif, all four lossless and pixel-identical; the browser picks one via
+  <picture> (or image-set() for the header).
+  f/dejavu.woff2, f/dejavu-bold.woff2

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Porting Hypnospace Outlaw’s webpages to the real Web</title>
+  <meta name="description" content="Decompiling Hypnospace Outlaw and porting its webpages from the game’s .hsp format to the real Web.">
+  <meta name="author" content="robin">
+  <link rel="canonical" href="https://dreamstation.systems/personal/hypnospace.html">
+  <link rel="alternate" hreflang="en" href="https://dreamstation.systems/personal/hypnospace.html">
+  <link rel="alternate" hreflang="tok" href="https://dreamstation.systems/personal/hypnospace.tok.html">
+  <link rel="alternate" hreflang="x-default" href="https://dreamstation.systems/personal/hypnospace.html">
+
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+  <!-- Follows the server-selected theme: nginx maps $theme to a colour and
+       SSI stamps it in, the same way the stylesheet above it is chosen. Four
+       of the five themes are fixed-appearance, so their two values are equal
+       on purpose; only `plain` (browser defaults) really differs. The maps
+       are in fhs/etc/nginx/sites-available/dreamstation.systems. -->
+  <meta name="theme-color" content="<!--# echo var="theme_color_light" -->" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="<!--# echo var="theme_color_dark" -->" media="(prefers-color-scheme: dark)">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Porting Hypnospace Outlaw’s webpages to the real Web">
+  <meta property="og:description" content="Decompiling Hypnospace Outlaw and porting its webpages from the game’s .hsp format to the real Web.">
+  <meta property="og:url" content="https://dreamstation.systems/personal/hypnospace.html">
+  <meta property="og:site_name" content="robin’s page">
+  <meta property="og:locale" content="en_US">
+  <meta property="article:published_time" content="2026-08-27">
+  <meta property="article:modified_time" content="2026-08-29">
+  <meta property="article:author" content="https://dreamstation.systems/professional/">
+  <meta name="twitter:card" content="summary">
+
+  <!-- JSON-LD. Every claim here mirrors something stated in the body below.
+       Part of the site-wide graph rooted at /professional/index.html and
+       joined to it by @id; nodes defined in full there appear here with
+       identity only. See that file, and index.html in this directory. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        "@id": "https://dreamstation.systems/personal/hypnospace.html#post",
+        "mainEntityOfPage": "https://dreamstation.systems/personal/hypnospace.html",
+        "url": "https://dreamstation.systems/personal/hypnospace.html",
+        "headline": "Porting Hypnospace Outlaw’s webpages to the real Web",
+        "description": "Decompiling Hypnospace Outlaw and porting its webpages from the game’s .hsp format to the real Web.",
+        "inLanguage": "en",
+        "datePublished": "2026-08-27",
+        "dateModified": "2026-08-29",
+        "author": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "publisher": { "@id": "https://dreamstation.systems/professional/#robin" },
+        "isPartOf": { "@id": "https://dreamstation.systems/personal/blog.html#blog" }
+      },
+      {
+        "@type": "Blog",
+        "@id": "https://dreamstation.systems/personal/blog.html#blog",
+        "name": "robin’s blog",
+        "url": "https://dreamstation.systems/personal/blog.html"
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="themes/<!--# echo var="theme" -->.css">
+</head>
+<body>
+  <!-- FIRST thing in the document, so it is the first tab stop under every
+       theme. It used to live in chrome/top.html, which meant it existed only
+       under ubuntu804 and the other four themes shipped no skip link at all —
+       while the accessibilitySummary on the #website node in
+       /professional/index.html claims one for the whole site. Being here it
+       also precedes the chrome include below, so it stays ahead of the
+       desktop's six menus and the nav row.
+
+       base.css holds it off-screen until focus; ubuntu804.css restyles it to
+       match the desktop. Geometry is unchanged by the move: it is absolutely
+       positioned against the initial containing block either way, since
+       neither .desktop nor body is positioned. -->
+  <a class="skip" href="#content">Skip to page content</a>
+  <!-- The ubuntu804 theme wraps this page in a picture of an Ubuntu 8.04
+       desktop. The chrome is three fragments under chrome/, pulled in by
+       nginx; every other theme expands these to nothing. chrome/top.html
+       explains the split, and why the title and path are handed in by hand. -->
+<!--# if expr="$theme = ubuntu804" --><!--# set var="wtitle" value="Porting Hypnospace Outlaw’s webpages to the real Web" --><!--# set var="path" value="$document_uri" --><!--# include virtual="/personal/chrome/top.html" --><!--# endif -->
+  <header class="site-header">
+    <nav class="site-nav">
+      <a href="index.html">🏠 home</a>
+      <a href="blog.html">📓 blog</a>
+      <a href="/professional">💼 my professional site</a>
+      <a href="https://grandexchange.dreamstation.systems">📈 OpenGET</a>
+
+    </nav>
+    <div id="theme-switcher" class="theme-switcher">
+      <!-- Language switcher. Only on a page that exists in more than one
+           language, and only listing the languages it exists in. A plain GET
+           form like the two after it; see lang_vars in triptych.pl. -->
+      <form method="get" action="/personal/lang/personal/hypnospace.html">
+        <select name="lang" aria-label="Language">
+          <option value="en" lang="en" selected>English</option>
+          <option value="tok" lang="tok">toki pona</option>
+        </select>
+        <button type="submit">Go</button>
+      </form>
+      <!-- Protocol switcher: the same page over HTTP, HTTPS or the onion
+           service. Also a plain GET form with no JavaScript; nginx answers it
+           with a redirect (the /personal/proto/ location in
+           fhs/etc/nginx/snippets/theme.conf). The hidden field carries the current
+           theme across, since the cookie does not follow to another origin. -->
+      <form method="get" action="/personal/proto<!--# echo var="document_uri" -->">
+        <input type="hidden" name="theme" value="<!--# echo var="theme" -->">
+        <select name="to" aria-label="Protocol">
+          <option value="https"<!--# if expr="$proto_now = https" --> selected<!--# endif -->>HTTPS</option>
+          <option value="http"<!--# if expr="$proto_now = http" --> selected<!--# endif -->>HTTP</option>
+          <option value="onion"<!--# if expr="$proto_now = onion" --> selected<!--# endif -->>.onion (Tor)</option>
+        </select>
+        <button type="submit">Go</button>
+      </form>
+      <!-- A GET form, so switching themes is a plain form submission to
+           ?theme=<id> and needs no JavaScript. nginx reads the parameter and
+           SSI stamps the choice back in below - see fhs/etc/nginx/snippets/theme.conf. -->
+      <form method="get">
+        <select name="theme" aria-label="Theme">
+          <option value="gtk2"<!--# if expr="$theme = gtk2" --> selected<!--# endif -->>GTK2</option>
+          <option value="motif"<!--# if expr="$theme = motif" --> selected<!--# endif -->>Motif</option>
+          <option value="skeuslop"<!--# if expr="$theme = skeuslop" --> selected<!--# endif -->>skeuslop</option>
+          <option value="ubuntu804"<!--# if expr="$theme = ubuntu804" --> selected<!--# endif -->>Ubuntu 8.04</option>
+          <option value="plain"<!--# if expr="$theme = plain" --> selected<!--# endif -->>Plain</option>
+        </select>
+        <button type="submit">Apply</button>
+      </form>
+    </div>
+  </header>
+<!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/mid.html" --><!--# endif -->
+
+  <main id="content">
+    <h1 class="post-title"><span>Porting Hypnospace Outlaw’s webpages to the real Web</span><a href="https://www.pangram.com/history/37299923-a4a2-4516-8f67-2feb6337d916?ucc=tp64Jv2K7C4"><img src="pangramHumanBadge.webp" alt="Pangram 100% Human badge" width="88" height="31"></a></h1>
+    <!-- The post's own dateline. Cross-checked against the list in
+         blog.html by buildTimeTools/assetsBuild/makeMeta.py, along with the dates in
+         the JSON-LD above. -->
+    <p class="dateline"><time datetime="2026-08-27">2026-08-27</time>, edited <time datetime="2026-08-29">2026-08-29</time></p>
+
+    <p>Also see <a href="../hsptohtml/README/pages/README.html">the README page</a> for the tool’s download link and how to use it.</p>
+
+    <hr>
+
+    <p><em><a href="https://www.hypnospace.net/">Hypnospace Outlaw</a></em> is a video game that takes place mainly in “hypnospace”, a fictional version of the late‐’90s Web that you access while sleeping. Hypnospace Outlaw was built in <a href="https://www.construct.net/en">Construct 2</a>, a game engine that exports to HTML5 + JavaScript. I love the aesthetic of the game’s webpages (which are built in a custom <code>.hsp</code> format, which the game also ships a page builder for). Given that the game already builds to web technologies, I decided to port the format to the real Web.</p>
+
+    <h2>Decompiling</h2>
+
+    <p><code>data/read this.txt</code> says that “we decided not to hide anything from players via encryption or whatever”. They weren’t kidding; <code>package.nw</code> is a plain zip containing a Construct 2 HTML5 export, unobfuscated save for Construct 2’s built‐in minification.</p>
+
+    <p><code>package.nw</code> contains the following, among several more files:</p>
+
+    <ul>
+      <li><code>c2runtime.js</code>, which is the Construct 2 engine.</li>
+      <li><code>data.js</code>, which is Hypnospace Outlaw’s project model as JSON, including object types, layouts, and compiled event sheets. This is our reference for how <code>.hsp</code> files are parsed.</li>
+    </ul>
+
+    <p>Construct 2 minifies object‐type names, but luckily keeps every string literal, numeric constant, and ACE reference. In <code>data.js</code>, <code>project[5]</code> contains 9 layouts (<code>BootScreen</code>, <code>Menu</code>, <code>HypnOS</code>, <code>Highway</code>, <code>Dummy</code>, <code>RSOD</code>, <code>BIOS</code>, <code>Y2K</code>, <code>ModIO</code>). <code>project[6]</code> also contains 16 event sheets. Since object‐type names are minified, we understand them via their string literals and numeric constants. <code>c2runtime.js</code> ends with a <code>cr.getObjectRefTable()</code> that maps the numeric references in <code>data.js</code> back to real plugin/behaviour methods. In the repo, I wrote <code>tools/c2decomp.py</code> to join the two and print pseudo‐code:</p>
+
+    <pre><code class="language-bash">$ python3 tools/c2decomp.py work/pkg all | head -9</code></pre>
+
+    <pre>######## SHEET: BootScreen ########
+INCLUDE sheet#INILoader
+INCLUDE sheet#Debug
+INCLUDE sheet#GlobalFuncs
+VAR AppData = "" (type 1, static=False)
+VAR AppRoot = "" (type 1, static=False)
+VAR FilePrefix = "file:\\\\" (type 1, static=False)
+VAR UserData = "" (type 1, static=False)
+VAR OldUserData = "" (type 1, static=False)</pre>
+
+    <p>Most of the functions that define the <code>.hsp</code> format are in the <code>HypnOS</code> sheet:</p>
+
+    <pre><code class="language-bash">$ python3 tools/c2decomp.py work/pkg HypnOS | grep LoadElement -A 10</code></pre>
+
+    <pre>                  DO t2&lt;Function&gt;.Function.prototype.acts.CallFunction("LoadElement", ((($SlowLoadX + $loadOffset) % t149&lt;Arr&gt;.Arr.prototype.exps.Width()) + 1))
+                  DO t2&lt;Function&gt;.Function.prototype.acts.CallFunction("UpdateZOrder", )
+                  DO System.sys.acts.AddVar(var:SlowLoadX, 1)
+                IF System.sys.cnds.Compare($SlowLoadX, combo:5, t149&lt;Arr&gt;.Arr.prototype.exps.Width())
+                  DO System.sys.acts.SetGroupActive("Slow-load Webpage", combo:0)
+                  DO t2&lt;Function&gt;.Function.prototype.acts.CallFunction("SyncGifs", )
+                  DO t2&lt;Function&gt;.Function.prototype.acts.CallFunction("UpdateZOrder", )
+                  DO t188&lt;Sprite&gt;.Sprite.prototype.acts.SetWidth(427)
+                  DO t188&lt;Sprite&gt;.Fade.Fade.prototype.acts.SetFadeOutTime(0.5)
+                  DO t188&lt;Sprite&gt;.Fade.Fade.prototype.acts.StartFade()
+                  DO t192&lt;Sprite&gt;.Sprite.prototype.acts.SetAnim("Default", combo:0)</pre>
+
+    <p>The notable functions I found were:</p>
+
+    <table>
+      <thead>
+        <tr><th>function / group</th><th>purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>LoadWebpage</code></td><td>path resolution</td></tr>
+        <tr><td><code>URLtoCurrent</code></td><td>links are authored against a logical root</td></tr>
+        <tr><td><code>BuildWebpage</code>, <code>UpdatePage</code></td><td>the <code>Webpage</code> (x=0) fields: <code>title</code>, <code>author</code>, <code>height×32</code>, <code>music</code>, <code>background</code>, <code>cursor</code></td></tr>
+        <tr><td><code>LoadElement</code>, <code>UpdateElement</code></td><td>every <code>Gif</code> and <code>Text</code> property</td></tr>
+        <tr><td><code>Element Animations and Effects</code></td><td>the animation formulas</td></tr>
+        <tr><td><code>Load Gif</code> / <code>LoadGifs</code></td><td>the image registry: <code>gifs/</code>, <code>static/</code>, <code>shapes/</code>, <code>wordart/</code>, and <code>.speed</code> files</td></tr>
+        <tr><td><code>UpdateZOrder</code></td><td>z-order is the array order reversed</td></tr>
+        <tr><td><code>ElementEventWeb</code></td><td>conditional state selection</td></tr>
+        <tr><td><code>ColorToRGB</code></td><td>colours are packed BGR</td></tr>
+        <tr><td><code>Scripts</code></td><td>the <code>cmd:param|cmd:param</code> mini‐language used by links and page onload</td></tr>
+      </tbody>
+    </table>
+
+    <p><code>ReplaceText</code>, which handles the <code>/n</code>, <code>/t</code>, <code>/p</code>, and <code>#VAR#</code> escapes, is native JavaScript (<code>HypnoSpecial_ReplaceText</code> in <code>c2runtime.js</code>) and not in the event sheet. Additionally, font geometry is stored as editor properties on <code>Spritefontanim</code> objects in the layout instance data in <code>data.js</code>.</p>
+
+    <h2>Converting</h2>
+
+    <p>Finally, I built the converter. <code>tools/hspconv.py</code> the game’s <code>.hsp</code> files and <code>data/</code> directory and generates a static site:</p>
+
+    <pre><code class="language-bash">$ python3 tools/hspconv.py --data "Hypnospace Outlaw/data" --out site</code></pre>
+
+    <p><code>hsp.js</code> reproduces HypnOS’s rendering behavior using browser‐friendly techniques: the Construct 2 Spritefont rendering is replaced with my own implementation, and text is rendered to canvas. GIF playback uses a looping image player, and it implements sway/spin/marquee/typewriter/color-cycle effects. As a result, the pages behave like they do in the game. Modern browsers won’t autoplay audio without user interaction, so on initial load the user needs to click or interact with the page for audio playback to become available.</p>
+
+    <p><code>.hsp</code> files are serialized Construct 2 object data: a 300px‐wide page, metadata, and a collection of Gif and Text elements. Every element can have up to 20 events/actions (the game’s scripting language triggers them). Consequently, two visually identical elements can behave differently and produce different game outcomes. For every element, the converter implements a version of the <code>ElementEventWeb</code> logic. It looks for the image or text of the element in the same asset locations used by <code>LoadGifs</code> when the game starts (<code>gifs/</code>, <code>static/</code>, <code>shapes/</code>, <code>wordart/</code>). It resolves navigation in the same way as <code>URLtoCurrent</code> (which resolves URLs relative to the page being opened) and converts them into links to the generated local page. It writes one HTML file per page. Every element is a <code class="language-html">&lt;div&gt;</code>. Their positioning and z-ordering (back‐to‐front stacking) match the game.</p>
+
+    <p>By default, <code>site/assets</code> is a symlink pointing to the game’s <code>data/</code> directory. This keeps the generated site very small, but doesn’t provide what you need to host it without Hypnospace Outlaw installed (please don’t install random video games on servers). Use <code class="language-bash">--copy-assets</code> if you need an actual copy of the required assets.</p>
+
+    <p><code>tools/hspaudit.py</code> re‐scans the generated site and reports anything that could not be resolved. For example, I ran it against the entire game:</p>
+
+    <pre><code class="language-bash">$ python3 tools/hspaudit.py --site site --data "Hypnospace Outlaw/data"</code></pre>
+
+    <pre>pages: 1292   elements: {'text': 11979, 'gif': 14668}
+unresolved images: 0 distinct, 0 references
+unresolved fonts:  0 distinct, 0 references
+links that resolve to no exported page: 13 distinct, 48 references</pre>
+
+    <p>The 48 dead links are dead in‐game too, I think they’re pages that were cut from the shipped data but are still linked from somewhere (a <code>the comic shop</code> zone that doesn’t exist, a couple of <code>template2.hsp</code> placeholders, one <code>~truetranquilityno.hsp</code>).</p>
+
+    <h3>Music</h3>
+
+    <p>The pages contain music in two formats. 450 pages refer to <code>.ogg</code> files. Every <code>.ogg</code> file has a corresponding <code>.txt</code> file containing <code>name|author</code>. Modern audio players can read these directly. The converter preserves both pieces of information. The browser plays them using an <code class="language-html">&lt;audio&gt;</code> element with looping enabled.</p>
+
+    <p>Another 527 pages refer to <code>.hsm</code> files. These are also Construct 2 data files, but they contain small tracker‐style compositions made from short audio samples. The music logic is in the <code>HypnOS</code> event sheet alongside the rest of the page logic. Therefore, the same reverse‐engineering approach works: the <code>Play Music Sounds</code> group sends music information to a three‐dimensional sequence <code>(step, pattern×track, parameter)</code>. The <code>BPM Timer</code> event group calculates <code>secPerStep = 1 / (BPM/60) / 4</code> — one step is a 1/16th note. The <code>FREQOUT</code> object at ID 60 converts pitch numbers into audio frequencies (using a different method for long notes).</p>
+
+    <p><code>tools/hsmrender.py</code> converts all of the music data into looping audio files. It does this offline. It extracts all of the short samples using <code>ffmpeg</code>, then combines them with NumPy into a single waveform containing all of the short sounds. Audio that would otherwise continue past the end of the sequence is wrapped around to the beginning. This makes the resulting audio loop cleanly.</p>
+  </main>
+  <footer>
+    <ul class="badges">
+    <!-- badges:start GENERATED by buildTimeTools/assetsBuild/badgeBuild.pl from unbuiltContent/webBadges.csv - do not edit -->
+        <li><a href="https://eightyeightthirty.one/"><picture><source srcset="badges/88x31.webp" type="image/webp"><source srcset="badges/88x31.jxl" type="image/jxl"><source srcset="badges/88x31.png" type="image/png"><source srcset="badges/88x31.avif" type="image/avif"><img src="badges/88x31.png" alt="eightyeightthirty.one" width="88" height="31" loading="lazy"></picture></a></li>
+        <li><picture><source srcset="badges/zero-javascript.jxl" type="image/jxl"><source srcset="badges/zero-javascript.webp" type="image/webp"><source srcset="badges/zero-javascript.png" type="image/png"><source srcset="badges/zero-javascript.avif" type="image/avif"><img src="badges/zero-javascript.png" alt="Proudly ZERO JavaScript!" width="88" height="31" loading="lazy"></picture></li>
+        <li><a href="https://debian.org/"><picture><source srcset="badges/debian-powered.webp" type="image/webp"><source srcset="badges/debian-powered.gif" type="image/gif"><source srcset="badges/debian-powered.jxl" type="image/jxl"><source srcset="badges/debian-powered.avif" type="image/avif"><img src="badges/debian-powered.gif" alt="debian POWERED" width="88" height="31" loading="lazy"></picture></a></li>
+        <li><picture><source srcset="badges/trans-flag.webp" type="image/webp"><source srcset="badges/trans-flag.gif" type="image/gif"><source srcset="badges/trans-flag.avif" type="image/avif"><img src="badges/trans-flag.gif" alt="Transgender pride flag" width="88" height="31" loading="lazy"></picture></li>
+        <li><a href="https://nginx.org"><picture><source srcset="badges/nginx.jxl" type="image/jxl"><source srcset="badges/nginx.png" type="image/png"><source srcset="badges/nginx.webp" type="image/webp"><source srcset="badges/nginx.avif" type="image/avif"><img src="badges/nginx.png" alt="nginx powered" width="88" height="31" loading="lazy"></picture></a></li>
+        <li><a href="https://xkcd.com"><picture><source srcset="badges/xkcd.jxl" type="image/jxl"><source srcset="badges/xkcd.webp" type="image/webp"><source srcset="badges/xkcd.png" type="image/png"><source srcset="badges/xkcd.avif" type="image/avif"><img src="badges/xkcd.png" alt="xkcd" width="88" height="31" loading="lazy"></picture></a></li>
+        <li><a href="https://www.getmonero.org/"><picture><source srcset="badges/monero.webp" type="image/webp"><source srcset="badges/monero.jxl" type="image/jxl"><source srcset="badges/monero.png" type="image/png"><source srcset="badges/monero.avif" type="image/avif"><img src="badges/monero.png" alt="I ❤️ MONERO" width="88" height="31" loading="lazy"></picture></a></li>
+        <li><a href="https://homestuck.com/"><picture><source srcset="badges/mspaintadventures.webp" type="image/webp"><source srcset="badges/mspaintadventures.jxl" type="image/jxl"><source srcset="badges/mspaintadventures.png" type="image/png"><source srcset="badges/mspaintadventures.avif" type="image/avif"><img src="badges/mspaintadventures.png" alt="MS Paint Adventures" width="88" height="31" loading="lazy"></picture></a></li>
+        <li><a href="https://archlinux.org"><picture><source srcset="badges/Arch.jxl" type="image/jxl"><source srcset="badges/Arch.webp" type="image/webp"><source srcset="badges/Arch.png" type="image/png"><source srcset="badges/Arch.avif" type="image/avif"><img src="badges/Arch.png" alt="Arch Linux" width="88" height="31" loading="lazy"></picture></a></li>
+        <li><a href="https://www.sbnation.com/a/17776-football"><picture><source srcset="badges/17776.jxl" type="image/jxl"><source srcset="badges/17776.webp" type="image/webp"><source srcset="badges/17776.png" type="image/png"><source srcset="badges/17776.avif" type="image/avif"><img src="badges/17776.png" alt="17776" width="88" height="31" loading="lazy"></picture></a></li>
+        <li><a href="https://pi.dev/"><picture><source srcset="badges/pi.jxl" type="image/jxl"><source srcset="badges/pi.webp" type="image/webp"><source srcset="badges/pi.png" type="image/png"><source srcset="badges/pi.avif" type="image/avif"><img src="badges/pi.png" alt="pi agent harness" width="88" height="31" loading="lazy"></picture></a></li>
+        <li><a href="https://ristar.itch.io/secret-little-haven"><picture><source srcset="badges/secretlittlehaven.jxl" type="image/jxl"><source srcset="badges/secretlittlehaven.webp" type="image/webp"><source srcset="badges/secretlittlehaven.png" type="image/png"><source srcset="badges/secretlittlehaven.avif" type="image/avif"><img src="badges/secretlittlehaven.png" alt="Secret Little Haven" width="88" height="31" loading="lazy"></picture></a></li>
+        <li><picture><source srcset="badges/ipv6now.webp" type="image/webp"><source srcset="badges/ipv6now.jxl" type="image/jxl"><source srcset="badges/ipv6now.gif" type="image/gif"><source srcset="badges/ipv6now.avif" type="image/avif"><img src="badges/ipv6now.gif" alt="IPv6 Now! (parody of Netscape Now!)" width="88" height="31" loading="lazy"></picture></li>
+    <!-- badges:end -->
+    </ul>
+  </footer>
+<!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/bottom.html" --><!--# endif -->
+</body>
+</html>
