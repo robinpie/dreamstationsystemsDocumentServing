@@ -90,6 +90,9 @@ func (s *Server) routes() {
 	m.HandleFunc("GET /sitemap.xml", s.sitemap)
 	m.HandleFunc("GET /speculationrules.json", speculationRules)
 	m.HandleFunc("GET /static/", s.static)
+	// Copies of the main site's files, held in static/ with the Sitemap and Canonical lines pointed at this host. They live at fixed well-known paths, not under /static/.
+	m.HandleFunc("GET /robots.txt", staticText("robots.txt"))
+	m.HandleFunc("GET /.well-known/security.txt", staticText("security.txt"))
 	m.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		fmt.Fprintln(w, "ok")
@@ -417,12 +420,28 @@ func (s *Server) static(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "image/jxl")
 	case strings.HasSuffix(name, ".woff2"):
 		w.Header().Set("Content-Type", "font/woff2")
+	case strings.HasSuffix(name, ".txt"):
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	default:
 		w.Header().Set("Content-Type", "application/octet-stream")
 	}
 	// Assets are embedded in the binary, so they only ever change on deploy.
 	w.Header().Set("Cache-Control", "public, max-age=3600")
 	w.Write(b)
+}
+
+// staticText serves one embedded plain-text file at a fixed path, for files such as robots.txt and security.txt whose location is set by convention.
+func staticText(name string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		b, err := staticFS.ReadFile("static/" + name)
+		if err != nil {
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.Header().Set("Cache-Control", "public, max-age=3600")
+		w.Write(b)
+	}
 }
 
 // speculationRulesJSON lets Chromium prerender a same-origin page once the reader hovers a link for a moment or presses on it ("moderate"), so navigation is instant on a site with no client-side code to make it so. Browsers without support ignore the header.
@@ -435,7 +454,8 @@ const speculationRulesJSON = `{
       {"not": {"href_matches": [
         "/restore/*", "/u/*", "/forget", "/tracker/clear",
         "/api", "/api/*", "/static/*", "/chart/*", "/retro/*",
-        "/sitemap.xml", "/healthz", "/speculationrules.json"
+        "/sitemap.xml", "/healthz", "/speculationrules.json",
+        "/robots.txt", "/.well-known/*"
       ]}},
       {"not": {"selector_matches": "[rel~=nofollow]"}}
     ]},
