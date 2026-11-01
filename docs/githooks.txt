@@ -192,6 +192,33 @@ After the web content, promoteSite.sh installs everything else in dependency ord
 
   jail.local IS DELIBERATELY NOT in ETC_FILES. It holds every fail2ban jail on the box, and its [DEFAULT]/[sshd] ignoreip lines carry a home IP and an institutional range; this repo is public on GitHub. The filter regexes carry nothing and are installed; the jails that reference them stay out of git. See fail2ban.txt.
 
+Every "is it already installed?" check uses the same() helper: plain cmp, not sudo cmp. All the targets (/usr/local/bin, /etc/systemd/system, /etc/nginx, /etc/default, ...) are world-readable, and the ~50 sudo round trips were most of a no-op promote's runtime. same() falls back to sudo only for a target that exists but is unreadable, so a tightened mode never reads as "changed" (which would mean a reinstall and a restart on every promote).
+
+
+promote stamps
+--------------
+
+Two per-clone state files under .git/ (never committed) let a run with nothing new skip the slow parts. A no-op dangerouslyDeployImmediately.sh went from ~10s to ~2s, nearly all of it the pre-commit hook.
+
+  .git/promote-last            the commit the last promote made live. Written by
+                               promoteSite.sh as its very last step, so only after
+                               a fully successful promote, and only from a CLEAN
+                               tree: gopher/gemini/cgi/fhs come from the working
+                               tree, so a dirty promote is not "HEAD" and deletes
+                               the stamp instead. dangerouslyDeployImmediately.sh
+                               skips promoteSite.sh when HEAD matches and the tree
+                               is clean.
+
+  .git/promote-starport.sha256 hash of statusSample/starport/ (names, modes,
+                               contents) as of the last SUCCESSFUL ship to
+                               starport. promoteSite.sh skips the ~1.2s ssh when
+                               it matches. A failed ship writes nothing, so the
+                               next promote retries it.
+
+dangerouslyDeployImmediately.sh no longer passes --allow-empty. git runs pre-commit BEFORE it decides there is nothing to commit, so the hooks still run every time (a moved NTP figure or a new day's datestamp still gets committed and deployed). If they change nothing, there is no commit, so stageSite.sh does not run either. It also skips `git push` when @{u} already equals HEAD (a local check, no network).
+
+WHAT THE STAMPS CANNOT SEE: drift made outside the repo, such as a hand edit under /srv or /etc, or on starport. Both scripts take --force for that: dangerouslyDeployImmediately.sh --force promotes regardless and passes --force on, and promoteSite.sh --force re-ships starport. A plain ./promoteSite.sh run by hand always does the full promote except for the starport ship.
+
 
 staging vhost
 -------------

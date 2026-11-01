@@ -16,10 +16,44 @@
 # previewed; everything else comes from the repo since it has no staging copy.
 # Order matters: content, then the things that read it, then nginx last.
 # Full rationale in githooks.txt and nginx.txt.
+#
+#   ./promoteSite.sh [--force]
+#
+# --force re-ships statusSample/starport/ even when its hash matches the last
+# successful ship (see "starport stamp" below). Everything else here already
+# compares against the live copy and is unaffected.
 set -eu
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 STAGING=/srv/httpstaging
+
+FORCE=0
+for arg in "$@"; do
+	case "$arg" in
+	--force) FORCE=1 ;;
+	*)
+		echo "usage: $0 [--force]" >&2
+		exit 2
+		;;
+	esac
+done
+
+# Per-clone state, kept in .git so it is never committed. See githooks.txt,
+# "promote stamps".
+GITDIR="$(git -C "$ROOT" rev-parse --absolute-git-dir)"
+
+# same <repo file> <installed file>: true if identical. Plain cmp, not sudo
+# cmp: everything this compares against is world-readable, and ~50 sudo
+# round trips were most of a no-op promote's runtime. Falls back to sudo for
+# a target that exists but is not readable, so a tightened mode can never
+# read as "changed" and trigger a needless install + restart every promote.
+same() {
+	if [ -e "$2" ] && [ ! -r "$2" ]; then
+		sudo cmp -s "$1" "$2"
+	else
+		cmp -s "$1" "$2"
+	fi
+}
 
 # Named lists, not an rsync: both destination dirs hold files this repo does
 # not own. Adding a file here is the only way to deploy it. See nginx.txt.
@@ -310,14 +344,14 @@ if [ -d "$ROOT/statusSample" ]; then
 	sample_changed=0
 	units_changed=0
 
-	if ! sudo cmp -s "$ROOT/statusSample/statusSample.sh" /usr/local/bin/statusSample.sh; then
+	if ! same "$ROOT/statusSample/statusSample.sh" /usr/local/bin/statusSample.sh; then
 		sudo install -m755 -o root -g root \
 			"$ROOT/statusSample/statusSample.sh" /usr/local/bin/statusSample.sh
 		sample_changed=1
 	fi
 
 	for u in statusSample.service statusSample.timer; do
-		if ! sudo cmp -s "$ROOT/statusSample/$u" "/etc/systemd/system/$u"; then
+		if ! same "$ROOT/statusSample/$u" "/etc/systemd/system/$u"; then
 			sudo install -m644 -o root -g root \
 				"$ROOT/statusSample/$u" "/etc/systemd/system/$u"
 			units_changed=1
@@ -338,12 +372,12 @@ if [ -d "$ROOT/statusSample" ]; then
 	# The statuspull user, its key and its pinned known_hosts are one-time
 	# setup and deliberately NOT created here — see status.txt.
 	pull_changed=0
-	if ! sudo cmp -s "$ROOT/statusSample/statusPull.sh" /usr/local/bin/statusPull.sh; then
+	if ! same "$ROOT/statusSample/statusPull.sh" /usr/local/bin/statusPull.sh; then
 		sudo install -m755 -o root -g root \
 			"$ROOT/statusSample/statusPull.sh" /usr/local/bin/statusPull.sh
 		pull_changed=1
 	fi
-	if ! sudo cmp -s "$ROOT/statusSample/statusPull.tmpfiles.conf" /etc/tmpfiles.d/statusPull.conf; then
+	if ! same "$ROOT/statusSample/statusPull.tmpfiles.conf" /etc/tmpfiles.d/statusPull.conf; then
 		sudo install -m644 -o root -g root \
 			"$ROOT/statusSample/statusPull.tmpfiles.conf" /etc/tmpfiles.d/statusPull.conf
 		sudo systemd-tmpfiles --create /etc/tmpfiles.d/statusPull.conf
@@ -351,7 +385,7 @@ if [ -d "$ROOT/statusSample" ]; then
 	fi
 	pull_units=0
 	for u in statusPull.service statusPull.timer; do
-		if ! sudo cmp -s "$ROOT/statusSample/$u" "/etc/systemd/system/$u"; then
+		if ! same "$ROOT/statusSample/$u" "/etc/systemd/system/$u"; then
 			sudo install -m644 -o root -g root \
 				"$ROOT/statusSample/$u" "/etc/systemd/system/$u"
 			pull_units=1
@@ -370,12 +404,27 @@ if [ -d "$ROOT/statusSample" ]; then
 	# A FAILURE HERE WARNS AND CARRIES ON. starport being unreachable must not
 	# stop a promote of this box's website; the page reports starport as
 	# unknown on its own if the sampler there is really broken.
+	#
+	# STARPORT STAMP: the ssh round trip is ~1.2s, so it is skipped when the
+	# directory hashes (names, modes, contents) the same as at the last
+	# SUCCESSFUL ship. The stamp is only written on success, so a failed ship
+	# is retried by the next promote. It cannot see drift made on starport
+	# itself; --force ships regardless.
 	if [ -d "$ROOT/statusSample/starport" ]; then
-		if ! tar -C "$ROOT/statusSample/starport" -cf - . |
+		sp_stamp="$GITDIR/promote-starport.sha256"
+		sp_hash="$(cd "$ROOT/statusSample/starport" &&
+			find . -type f -printf '%P %m\n' | LC_ALL=C sort &&
+			find . -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum)"
+		sp_hash="$(printf '%s' "$sp_hash" | sha256sum | cut -d' ' -f1)"
+		if [ "$FORCE" = 0 ] && [ "$(cat "$sp_stamp" 2>/dev/null)" = "$sp_hash" ]; then
+			: # unchanged since the last successful ship
+		elif tar -C "$ROOT/statusSample/starport" -cf - . |
 			ssh -o BatchMode=yes -o ConnectTimeout=8 robin@starport.dreamstation.systems \
 				'rm -rf ~/.statusSample.deploy && mkdir ~/.statusSample.deploy &&
 				 tar -C ~/.statusSample.deploy -xf - &&
 				 sudo bash ~/.statusSample.deploy/install.sh'; then
+			printf '%s\n' "$sp_hash" >"$sp_stamp"
+		else
 			echo "WARNING: could not deploy statusSample/starport to starport — skipped." >&2
 		fi
 	fi
@@ -392,14 +441,14 @@ fi
 if [ -d "$ROOT/buildTimeTools/lawaPage" ]; then
 	lp_changed=0
 	for s in lawaPage.pl lawaPublish.pl; do
-		if ! sudo cmp -s "$ROOT/buildTimeTools/lawaPage/$s" "/usr/local/bin/$s"; then
+		if ! same "$ROOT/buildTimeTools/lawaPage/$s" "/usr/local/bin/$s"; then
 			sudo install -m755 -o root -g root "$ROOT/buildTimeTools/lawaPage/$s" "/usr/local/bin/$s"
 			lp_changed=1
 		fi
 	done
 	lp_units=0
 	for u in lawaPage.service lawaPage.timer; do
-		if ! sudo cmp -s "$ROOT/buildTimeTools/lawaPage/$u" "/etc/systemd/system/$u"; then
+		if ! same "$ROOT/buildTimeTools/lawaPage/$u" "/etc/systemd/system/$u"; then
 			sudo install -m644 -o root -g root "$ROOT/buildTimeTools/lawaPage/$u" "/etc/systemd/system/$u"
 			lp_units=1
 		fi
@@ -438,7 +487,7 @@ if [ -d "$ROOT/fhs/etc/nginx" ]; then
 		shift 2
 		mkdir -p "$backup/$dest"
 		for f in "$@"; do
-			if ! sudo cmp -s "$ROOT/fhs/etc/nginx/$sub/$f" "/etc/nginx/$dest/$f"; then
+			if ! same "$ROOT/fhs/etc/nginx/$sub/$f" "/etc/nginx/$dest/$f"; then
 				if [ -f "/etc/nginx/$dest/$f" ]; then
 					sudo cp -p "/etc/nginx/$dest/$f" "$backup/$dest/$f"
 				else
@@ -515,7 +564,7 @@ if [ -d "$ROOT/fhs/etc" ]; then
 			echo "ABORT: fhs/etc/$rel is in ETC_FILES but missing from the repo." >&2
 			exit 1
 		fi
-		if ! sudo cmp -s "$src" "/etc/$rel"; then
+		if ! same "$src" "/etc/$rel"; then
 			sudo mkdir -p "$etc_backup/$(dirname "$rel")"
 			if sudo test -f "/etc/$rel"; then
 				sudo cp -p "/etc/$rel" "$etc_backup/$rel"
@@ -631,4 +680,18 @@ if [ -d "$ROOT/fhs/etc" ]; then
 	if etc_did_change logrotate.d/gophernicus; then
 		echo "Promoted fhs/etc/logrotate.d/gophernicus"
 	fi
+fi
+
+# ------------------------------------------------------------ promote stamp
+#
+# Reached only if everything above succeeded. Records the commit that is now
+# live, which dangerouslyDeployImmediately.sh compares against to skip a
+# no-op promote. Written only from a CLEAN tree: gopher/gemini/cgi/etc. come
+# from the working tree, so a dirty promote is not "HEAD" and must not claim
+# to be — otherwise reverting those edits would leave a clean tree, a matching
+# stamp, and uncommitted bytes live. See githooks.txt, "promote stamps".
+if [ -z "$(git -C "$ROOT" status --porcelain 2>/dev/null)" ]; then
+	git -C "$ROOT" rev-parse HEAD >"$GITDIR/promote-last"
+else
+	rm -f "$GITDIR/promote-last"
 fi
