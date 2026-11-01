@@ -169,7 +169,7 @@ THE 88x31 WALL
 
   LOSSLESS IS CHECKED, NOT ASSUMED. After each encode, the builder decodes the file again (WebP via ImageMagick, AVIF via avifdec --index all, JXL via djxl --output_frames, because ImageMagick reads only the first frame of an AVIF or JXL sequence), composites every frame, and compares the RGBA bytes with the source. The colour under fully transparent pixels is zeroed on both sides. A mismatch stops the build before anything is installed.
 
-  The build prints what the wall costs each kind of browser. On 2026-10-19: 23854 B as originals, 15884 B with WebP+AVIF (Chrome, Firefox), 15532 B with JXL as well (Safari).
+  The build prints what the wall costs as originals and re-encoded (the latter counts a browser that decodes WebP, AVIF and JXL; wall_bytes() in badgeBuild.pl can price any other mix). On 2026-10-19: 23854 B as originals, 15884 B with WebP+AVIF (Chrome, Firefox), 15532 B with JXL as well (Safari).
 
   GOTCHAS
     - PACKAGES: webp (cwebp, gif2webp), libavif-bin (avifenc, avifdec), libjxl-tools (cjxl, djxl; installed 2026-10-19), imagemagick. On a rebuild of the box, install them before the first commit, or the pre-commit hook dies at the first badge whose source changed.

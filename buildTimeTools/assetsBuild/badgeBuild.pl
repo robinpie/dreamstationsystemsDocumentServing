@@ -596,8 +596,7 @@ sub wall_bytes {
 }
 my $orig_total = wall_bytes();
 
-printf "badgeBuild: %d badges, %d re-encoded, %d files installed, %d pages\n",
+printf "badgeBuild: %d badges, %d re‐encoded, %d files installed, %d pages\n",
     scalar @badges, $rebuilt, $installed, $pages;
-printf "badgeBuild: wall is %d B as originals; %d B with WebP+AVIF; "
-     . "%d B with JXL too\n",
-    $orig_total, wall_bytes(qw(webp avif)), wall_bytes(qw(webp avif jxl));
+printf "badgeBuild: wall is %d B as originals; %d B re‐encoded\n",
+    $orig_total, wall_bytes(qw(webp avif jxl));
