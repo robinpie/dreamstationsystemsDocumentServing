@@ -396,3 +396,57 @@ ul:not(.projects):not(.contact):not(.posts):not(.samples) {
 
 .statbox .sbrow > span:first-child { color: var(--gtk-dim); }
 .statbox .sbmore { border-top: 1px solid var(--gtk-line-soft); padding-top: 4px; }
+
+/* ---- Christmas lights ------------------------------------------------ */
+
+/* Garish on purpose: ../christmasLights.gif strung along every horizontal
+   edge. ::before hangs from an element's top edge, inside it, under its
+   content; ::after hangs from a bottom edge into the gap beneath. The same
+   block is in every theme but plain (gtk2, motif, skeuslop, ubuntu804) —
+   only the selector lists differ — so delete all four to take them down.
+
+   WCAG 2.2.2 (Pause, Stop, Hide): the GIF loops forever, so after 5s the
+   keyframe swaps it for christmasLightsStill.png, its first frame. The still
+   is also the bottom layer from the start, so it is already fetched when the
+   swap happens. The GIF blinks ~1.1/s, well under 2.3.1's three flashes.
+   Reduced motion gets the still from the outset.
+
+   position goes through :where() so it never beats a theme's own (skeuslop's
+   sticky header). .site-header is NOT isolated: that would trap the fixed
+   theme switcher's z-index inside it, and main would scroll over it. */
+:where(main, hr, pre, blockquote, .statbox, .site-header) { position: relative; }
+:where(main, hr, pre, blockquote, .statbox) { isolation: isolate; }
+hr { overflow: visible; }
+pre, blockquote, .statbox { padding-top: 20px; }   /* room for the bulbs */
+
+:is(main, hr, pre, blockquote, .statbox)::before,
+:is(main, .site-header)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 18px;
+  pointer-events: none;
+  background: url(../christmasLights.gif) left top / auto 100% repeat-x,
+              url(../christmasLightsStill.png) left top / auto 100% repeat-x;
+  animation: xmas-lights-stop 0s 5s forwards;
+}
+:is(main, hr, pre, blockquote, .statbox)::before { top: 0; z-index: -1; }
+:is(main, .site-header)::after { top: calc(100% - 2px); z-index: 0; }  /* wire on the edge */
+
+@keyframes xmas-lights-stop {
+  to { background-image: url(../christmasLightsStill.png); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(main, hr, pre, blockquote, .statbox)::before,
+  :is(main, .site-header)::after {
+    animation: none;
+    background-image: url(../christmasLightsStill.png);
+  }
+}
+
+@media print {
+  :is(main, hr, pre, blockquote, .statbox)::before,
+  :is(main, .site-header)::after { display: none; }
+}

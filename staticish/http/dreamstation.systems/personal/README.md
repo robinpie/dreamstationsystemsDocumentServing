@@ -28,6 +28,12 @@ and are not themed.
   and the badge shelf on the exposed wallpaper. **Default.** The only theme
   that is more than a stylesheet — see **A theme that needs markup**, below.
 
+**Christmas lights (seasonal).** Every theme but `plain` ends with a
+"Christmas lights" block that hangs `christmasLights.gif` along horizontal
+edges via `::before`/`::after`, and swaps it for `christmasLightsStill.png`
+(the GIF's first frame) after 5 seconds, for WCAG 2.2.2. CSS only, no markup.
+To take them down, delete the block from all four themes plus the two images.
+
 The index pages (`index.html`, `index.tok.html`) also carry a server vitals
 box — CPU and RAM bars — at the top right of `<main>`, pulled in by SSI from
 the same CGI fragment as the corner of `/professional/`. Its structure is in
