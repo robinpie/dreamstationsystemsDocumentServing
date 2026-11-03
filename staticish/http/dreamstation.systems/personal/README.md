@@ -30,9 +30,11 @@ and are not themed.
 
 **Christmas lights (seasonal).** Every theme but `plain` ends with a
 "Christmas lights" block that hangs `christmasLights.gif` along horizontal
-edges via `::before`/`::after`, and swaps it for `christmasLightsStill.png`
-(the GIF's first frame) after 5 seconds, for WCAG 2.2.2. CSS only, no markup.
-To take them down, delete the block from all four themes plus the two images.
+edges via `::before`/`::after`, and swaps it for `christmasLightsStill.*`
+(the GIF's first frame) after 5 seconds, for WCAG 2.2.2. The still ships as
+lossless WebP, JXL, PNG and AVIF, offered smallest first through `image-set()`.
+CSS only, no markup. To take them down, delete the block from all four themes,
+plus `christmasLights.gif` and the four `christmasLightsStill.*` files.
 
 The index pages (`index.html`, `index.tok.html`) also carry a server vitals
 box — CPU and RAM bars — at the top right of `<main>`, pulled in by SSI from

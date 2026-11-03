@@ -894,10 +894,13 @@ main .statbox .sbmore {
    all four to take them down.
 
    WCAG 2.2.2 (Pause, Stop, Hide): the GIF loops forever, so after 5s the
-   keyframe swaps it for christmasLightsStill.png, its first frame. The still
+   keyframe swaps it for christmasLightsStill, its first frame. The still
    is also the bottom layer from the start, so it is already fetched when the
    swap happens. The GIF blinks ~1.1/s, well under 2.3.1's three flashes.
-   Reduced motion gets the still from the outset (the `*` rule above does not
+   The still is lossless WebP, JXL, PNG and AVIF (4494, 5352, 5531 and
+   21353 B), offered smallest first via image-set(); a browser without
+   image-set() type() drops that declaration and keeps the plain PNG before
+   it. Reduced motion gets the still from the outset (the `*` rule above does not
    reach pseudo-elements).
 
    Chrome bars get a smaller string (12px) than the page (18px). footer is
@@ -918,6 +921,11 @@ main pre, main .statbox { padding-top: 20px; }   /* room for the bulbs */
   pointer-events: none;
   background: url(../christmasLights.gif) left top / auto 100% repeat-x,
               url(../christmasLightsStill.png) left top / auto 100% repeat-x;
+  background-image: url(../christmasLights.gif),
+                    image-set(url(../christmasLightsStill.webp) type("image/webp"),
+                              url(../christmasLightsStill.jxl) type("image/jxl"),
+                              url(../christmasLightsStill.png) type("image/png"),
+                              url(../christmasLightsStill.avif) type("image/avif"));
   animation: xmas-lights-stop 0s 5s forwards;
 }
 :is(.panel, .titlebar, .menubar, .navbar, .site-header, .statusbar, footer,
@@ -928,7 +936,13 @@ main pre, main .statbox { padding-top: 20px; }   /* room for the bulbs */
 #mastwrap::after { top: calc(100% - 2px); z-index: 9999; }
 
 @keyframes xmas-lights-stop {
-  to { background-image: url(../christmasLightsStill.png); }
+  to {
+    background-image: url(../christmasLightsStill.png);
+    background-image: image-set(url(../christmasLightsStill.webp) type("image/webp"),
+                                url(../christmasLightsStill.jxl) type("image/jxl"),
+                                url(../christmasLightsStill.png) type("image/png"),
+                                url(../christmasLightsStill.avif) type("image/avif"));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -937,6 +951,10 @@ main pre, main .statbox { padding-top: 20px; }   /* room for the bulbs */
   #mastwrap::after {
     animation: none;
     background-image: url(../christmasLightsStill.png);
+    background-image: image-set(url(../christmasLightsStill.webp) type("image/webp"),
+                                url(../christmasLightsStill.jxl) type("image/jxl"),
+                                url(../christmasLightsStill.png) type("image/png"),
+                                url(../christmasLightsStill.avif) type("image/avif"));
   }
 }
 
