@@ -886,10 +886,12 @@ main .statbox .sbmore {
 /* ------------------------------------------------------- Christmas lights */
 
 /* Garish on purpose: ../christmasLights.gif strung along every horizontal
-   edge. ::before hangs from an element's top edge, inside it, under its
-   content; ::after hangs from a bottom edge into the gap beneath. The same
-   block is in every theme but plain (gtk2, motif, skeuslop, ubuntu804) —
-   only the selector lists differ — so delete all four to take them down.
+   edge, on top of everything else (z-index 9999; pointer-events:none, so
+   nothing under them stops being clickable). ::before hangs from an
+   element's top edge, inside it; ::after hangs from a bottom edge into
+   the gap beneath. The same block is in every theme but plain (gtk2,
+   motif, skeuslop, ubuntu804) — only the selector lists differ — so delete
+   all four to take them down.
 
    WCAG 2.2.2 (Pause, Stop, Hide): the GIF loops forever, so after 5s the
    keyframe swaps it for christmasLightsStill.png, its first frame. The still
@@ -898,16 +900,10 @@ main .statbox .sbmore {
    Reduced motion gets the still from the outset (the `*` rule above does not
    reach pseudo-elements).
 
-   Chrome bars get a smaller string (12px) than the page (18px). The menu bar
-   is NOT isolated: its drop-downs' z-index:20 has to reach .window's stacking
-   context, or the navbar below would paint over an open menu. Its lights sit
-   at z-index 0 instead, which is still under the labels — .menu is positioned
-   and comes later in the tree. footer is position:fixed already, so it is
-   left out of the position rule. */
+   Chrome bars get a smaller string (12px) than the page (18px). footer is
+   position:fixed already, so it is left out of the position rule. */
 :where(.panel, .titlebar, .menubar, .navbar, .site-header, .statusbar,
        #mastwrap, main hr, main pre, main .statbox) { position: relative; }
-:where(.panel, .titlebar, .navbar, .site-header, .statusbar, footer,
-       main hr, main pre, main .statbox) { isolation: isolate; }
 main hr { overflow: visible; }
 main pre, main .statbox { padding-top: 20px; }   /* room for the bulbs */
 
@@ -925,12 +921,11 @@ main pre, main .statbox { padding-top: 20px; }   /* room for the bulbs */
   animation: xmas-lights-stop 0s 5s forwards;
 }
 :is(.panel, .titlebar, .menubar, .navbar, .site-header, .statusbar, footer,
-    main hr, main pre, main .statbox)::before { top: 0; z-index: -1; }
+    main hr, main pre, main .statbox)::before { top: 0; z-index: 9999; }
 :is(.panel, .titlebar, .menubar, .navbar, .site-header, .statusbar,
     footer)::before { height: 12px; }
-.menubar::before { z-index: 0; }
 /* Under the masthead's bevel, into main's top margin: the top of the page. */
-#mastwrap::after { top: calc(100% - 2px); z-index: 0; }
+#mastwrap::after { top: calc(100% - 2px); z-index: 9999; }
 
 @keyframes xmas-lights-stop {
   to { background-image: url(../christmasLightsStill.png); }
