@@ -483,6 +483,10 @@ body {
   padding: 0 9px;
   cursor: pointer;
 }
+#theme-switcher .xmas-toggle {
+  font: 400 12px var(--chrome-stack);
+  color: var(--ink);
+}
 #theme-switcher button:hover,
 #theme-switcher select:hover {
   border-color: #c09060;
@@ -908,7 +912,8 @@ main .statbox .sbmore {
 :where(.panel, .titlebar, .menubar, .navbar, .site-header, .statusbar,
        #mastwrap, main hr, main pre, main .statbox) { position: relative; }
 main hr { overflow: visible; }
-main pre, main .statbox { padding-top: 20px; }   /* room for the bulbs */
+:where(:root:not(:has(#xmas-lights:not(:checked)))) main pre,
+:where(:root:not(:has(#xmas-lights:not(:checked)))) main .statbox { padding-top: 20px; }   /* room for the bulbs */
 
 :is(.panel, .titlebar, .menubar, .navbar, .site-header, .statusbar, footer,
     main hr, main pre, main .statbox)::before,
@@ -934,6 +939,15 @@ main pre, main .statbox { padding-top: 20px; }   /* room for the bulbs */
     footer)::before { height: 12px; }
 /* Under the masthead's bevel, into main's top margin: the top of the page. */
 #mastwrap::after { top: calc(100% - 2px); z-index: 9999; }
+
+/* The "lights" checkbox in #theme-switcher (default ticked): untick it and
+   they come down for as long as the page is open. Pure CSS via :has(), so
+   it does not follow you to the next page. The 20px of bulb room above is
+   dropped along with them (:where() keeps that rule at its old
+   specificity). A browser without :has() keeps the lights but not the room. */
+:root:has(#xmas-lights:not(:checked)) :is(.panel, .titlebar, .menubar, .navbar, .site-header, .statusbar, footer,
+    main hr, main pre, main .statbox)::before,
+:root:has(#xmas-lights:not(:checked)) #mastwrap::after { display: none; }
 
 @keyframes xmas-lights-stop {
   to {

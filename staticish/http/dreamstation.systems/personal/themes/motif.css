@@ -460,7 +460,9 @@ ul:not(.projects):not(.contact):not(.posts):not(.samples) {
    sticky header). */
 :where(main, hr, pre, blockquote, .statbox, .site-header) { position: relative; }
 hr { overflow: visible; }
-pre, blockquote, .statbox { padding-top: 20px; }   /* room for the bulbs */
+:where(:root:not(:has(#xmas-lights:not(:checked)))) pre,
+:where(:root:not(:has(#xmas-lights:not(:checked)))) blockquote,
+:where(:root:not(:has(#xmas-lights:not(:checked)))) .statbox { padding-top: 20px; }   /* room for the bulbs */
 
 :is(main, hr, pre, blockquote, .statbox)::before,
 :is(main, .site-header)::after {
@@ -481,6 +483,14 @@ pre, blockquote, .statbox { padding-top: 20px; }   /* room for the bulbs */
 }
 :is(main, hr, pre, blockquote, .statbox)::before { top: 0; z-index: 9999; }
 :is(main, .site-header)::after { top: calc(100% - 2px); z-index: 9999; }  /* wire on the edge */
+
+/* The "lights" checkbox in #theme-switcher (default ticked): untick it and
+   they come down for as long as the page is open. Pure CSS via :has(), so
+   it does not follow you to the next page. The 20px of bulb room above is
+   dropped along with them (:where() keeps that rule at its old
+   specificity). A browser without :has() keeps the lights but not the room. */
+:root:has(#xmas-lights:not(:checked)) :is(main, hr, pre, blockquote, .statbox)::before,
+:root:has(#xmas-lights:not(:checked)) :is(main, .site-header)::after { display: none; }
 
 @keyframes xmas-lights-stop {
   to {

@@ -20,6 +20,12 @@
   gap: 4px;
   margin: 0;
 }
+#theme-switcher .xmas-toggle {   /* lights checkbox; see the themes */
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
 
 /* Stop oversized media from blowing out the layout. */
 img {
