@@ -78,6 +78,7 @@ NGINX_CONFD=(
 	logFormat.conf
 	mimeTypes.conf
 	onionLocation.conf
+	quicAltSvc.conf
 	robotsTag.conf
 	serverNamesHash.conf
 )

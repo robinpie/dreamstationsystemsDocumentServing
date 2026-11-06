@@ -69,6 +69,8 @@ server {
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
+    listen 443 quic;
+    listen [::]:443 quic;
     http2 on;
     server_name pool-ntp.tesla.com;
 

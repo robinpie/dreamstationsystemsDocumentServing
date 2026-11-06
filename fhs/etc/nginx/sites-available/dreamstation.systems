@@ -198,6 +198,8 @@ server {
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
+    listen 443 quic reuseport;
+    listen [::]:443 quic reuseport;
     include snippets/onionLocation.conf;
     http2 on;
     server_name dreamstation.systems www.dreamstation.systems;
@@ -231,6 +233,8 @@ server {
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
+    listen 443 quic;
+    listen [::]:443 quic;
     server_name openpgpkey.dreamstation.systems;
 
     ssl_certificate     /etc/letsencrypt/live/dreamstation.systems/fullchain.pem;
@@ -261,6 +265,8 @@ server {
     include snippets/accessLog.conf;
     listen 443 ssl;
     listen [::]:443 ssl;
+    listen 443 quic;
+    listen [::]:443 quic;
     server_name mta-sts.dreamstation.systems;
 
     ssl_certificate     /etc/letsencrypt/live/dreamstation.systems/fullchain.pem;

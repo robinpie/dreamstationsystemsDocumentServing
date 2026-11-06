@@ -41,6 +41,8 @@ server {
     listen [::]:80;
     listen 443 ssl;
     listen [::]:443 ssl;
+    listen 443 quic;
+    listen [::]:443 quic;
     http2 on;
     server_name hansendiscountelectronics.com;
 
