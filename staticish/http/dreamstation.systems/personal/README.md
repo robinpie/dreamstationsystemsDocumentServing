@@ -33,11 +33,11 @@ and are not themed.
 edges via `::before`/`::after`, and swaps it for `christmasLightsStill.*`
 (the GIF's first frame) after 5 seconds, for WCAG 2.2.2. The still ships as
 lossless WebP, JXL, PNG and AVIF, offered smallest first through `image-set()`.
-The bulbs themselves are CSS only. A visitor can take them down with the
-"🎄 lights" checkbox at the end of `#theme-switcher` (in the four
+The bulbs themselves are CSS only. They start OFF: a visitor turns them on with the
+"🎄 lights" checkbox (unticked by default) at the end of `#theme-switcher` (in the four
 `triptychTemplates/html/*.tpl`, SSI-hidden under `plain`; string `lights` in
 `triptych.conf`): each block ends with a `:root:has(#xmas-lights:not(:checked))`
-rule that hides them. No JS and no cookie, so it lasts only for that page.
+rule that hides them while it is unticked. No JS and no cookie, so it lasts only for that page.
 To take them down for everyone, delete the block from all four themes, the
 checkbox from the templates, the `.xmas-toggle` rules in `base.css` and
 `ubuntu804.css`, plus `christmasLights.gif` and the four `christmasLightsStill.*` files.

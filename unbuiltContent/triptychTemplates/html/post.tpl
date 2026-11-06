@@ -133,8 +133,8 @@
       </form>
       <!-- Christmas lights off-switch. Not a form: the themes hide the bulbs
            with :root:has(#xmas-lights:not(:checked)), so it is CSS only and
-           lasts until you leave the page. plain has no lights, so no box. -->
-<!--# if expr="$theme != plain" -->      <label class="xmas-toggle"><input type="checkbox" id="xmas-lights" checked> {{s_lights}}</label>
+           lasts until you leave the page. Unticked by default: lights off. plain has no lights, so no box. -->
+<!--# if expr="$theme != plain" -->      <label class="xmas-toggle"><input type="checkbox" id="xmas-lights"> {{s_lights}}</label>
 <!--# endif -->    </div>
   </header>
 <!--# if expr="$theme = ubuntu804" --><!--# include virtual="/personal/chrome/mid.html" --><!--# endif -->

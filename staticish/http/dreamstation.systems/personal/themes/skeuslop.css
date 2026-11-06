@@ -498,8 +498,9 @@ hr { overflow: visible; }
 :is(main, hr, pre, blockquote, .statbox)::before { top: 0; z-index: 9999; }
 :is(main, .site-header)::after { top: calc(100% - 2px); z-index: 9999; }  /* wire on the edge */
 
-/* The "lights" checkbox in #theme-switcher (default ticked): untick it and
-   they come down for as long as the page is open. Pure CSS via :has(), so
+/* The "lights" checkbox in #theme-switcher (unticked by default, so
+   the lights start off): tick it and they go up for as long as the page is
+   open. Pure CSS via :has(), so
    it does not follow you to the next page. The 20px of bulb room above is
    dropped along with them (:where() keeps that rule at its old
    specificity). A browser without :has() keeps the lights but not the room. */
