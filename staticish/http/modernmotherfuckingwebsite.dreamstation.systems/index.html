@@ -263,13 +263,38 @@ cwebp -q 80 hero.png -o hero.webp</code></pre>
 </section>
 
 <section>
-  <h2>You don’t need a build system to write tags</h2>
+  <h2>HTTP/3: stop making your packets wait</h2>
+  <p>We talked about the content, now let’s talk about moving it.</p>
+  <p>HTTP/2 was a big fucking deal: one connection, lots of requests multiplexed over it at once, no more opening six sockets per webpage like an animal. But it all still rides on the TCP from 1974, and TCP has one rule it will die on: <strong>bytes arrive in order</strong>. So when a single packet gets lost, <em>every</em> stream on that connection stops and waits for the retransmit, including the CSS, the font, and the HTML that has already arrived and is stuck in the kernel’s buffer. That’s head‐of‐line blocking. HTTP/2 tried to pave over it, but only by shoving it down a layer.</p>
+  <p>HTTP/3 runs on QUIC, which runs on UDP and handles reliability <em>per stream</em>. Lose a packet carrying your image and your image waits. Your stylesheet doesn’t give a shit. No, you won’t notice on your 10GbE office line, but on Wi‐Fi across the house or spotty mobile data (<em>where your users actually fucking are</em>) it handles loss far better than TCP.</p>
+  <p>And it’s faster before you’ve even sent your payload:</p>
+  <ul>
+    <li>HTTP/1.1 and HTTP/2 pay for a TCP handshake and then a TLS handshake: two round trips before your first byte of data (three on old TLS). QUIC folds TLS 1.3 into its own handshake: one round trip. Been to the server before? It can be zero, with the request riding along in the very first packet. (0‐RTT data can be replayed, so it’s for safe requests like <code>GET</code>. Don’t let anyone mint an API key with it, genius.)</li>
+    <li>A TCP connection is welded to your four‐tuple. Hop from cellular to Wi‐Fi, or get a different IP from DHCP, and every connection dies. QUIC identifies connections by an ID, not your address and port, so it just keeps fucking going.</li>
+  </ul>
+  <p>So what framework do you need for this? None, obviously. It’s server config:</p>
+<pre tabindex="0" aria-label="Example: enabling HTTP/3 in nginx"><code># nginx 1.25 or newer
+server {
+    listen 443 quic reuseport;   # HTTP/3
+    listen 443 ssl;              # fallback for old clients and bad firewalls
+    http2 on;
+
+    # Tell browsers HTTP/3 is available
+    add_header Alt-Svc 'h3=":443"; ma=86400';
+    …
+}</code></pre>
+  <p>On corporate networks that block UDP 443 because of nonsensical threat models, browsers automagically fall back to HTTP/2 over TCP. Same deal as speculation rules: nothing breaks, and the people who can get the good thing get the good thing. Just don’t expect it to save you from yourself: no transport protocol fixes chatty JavaScript, and it sure as hell won’t fix your 4 MB PNG.</p>
+</section>
+
+<section>
+  <h2>You don’t need a build system to write tags and configuration files</h2>
   <p>Let’s review what you thought required a toolchain:</p>
   <ul>
     <li><strong>Accessibility landmarks:</strong> element names.</li>
     <li><strong>Structured data:</strong> a script tag with JSON in it.</li>
     <li><strong>Social cards:</strong> meta tags.</li>
     <li><strong>Performance hints:</strong> link tags and two attributes.</li>
+    <li><strong>A modern transport protocol:</strong> nginx and LiteSpeed support it out of the box, and Caddy turns it on by default.</li>
     <li><strong>Next‐gen responsive images:</strong> a picture tag.</li>
     <li><strong>Dark mode:</strong> one media query. This page has it. Go flip your OS setting, I’ll wait.</li>
   </ul>
