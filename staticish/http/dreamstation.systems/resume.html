@@ -353,6 +353,9 @@ td {
   <div class="entry">
     <h3>OpenEMR</h3> <span class="sep">—</span> <span class="desc">Independently discovered and reported <strong><a href="https://github.com/openemr/openemr/security/advisories/GHSA-phvv-q7m7-8mc2">GHSA-phvv-q7m7-8mc2</a></strong>, a broken access‐control bug where low‐privilege users can change or destroy document templating, allowing them to wipe the profile setup or push bogus documents to patients.</span>
   </div>
+ <div class="entry">
+   <h3>Vulnerable DKIM key scanning project</h3> <span class="sep">—</span> <span class="desc">I scraped DKIM records using the Tranco top million domains list and lists of common DKIM selectors. I then ran them through <a href="https://github.com/badkeys/badkeys">badkeys</a>, identifying 92 CVE-2008-0166‐affected keys, hundreds of sub‐1024‐bit keys, a key that had appeared in a public GitHub repo, and 20 published private keys. I reported all issues to each domain’s RFC 9116 contact, or where not available, their postmaster email address.</span>
+ </div>
   <div class="entry">
     <h3>Arch User Repository</h3> <span class="sep">—</span> <span class="desc">Maintainer for seven packages; writing build scripts with signature verification to distribute software to Arch Linux users via Git</span>
   </div>
@@ -374,10 +377,6 @@ td {
 
   <div class="entry">
     <h3>Homelab: home network</h3> <span class="sep">—</span> <span class="desc">I configured a segmented home network using VLANs. It uses a Wazuh SIEM instance to gather logs and flag anomalous traffic. It uses dual‐stack IPv4 and IPv6 (with IPv6 in a SLEEPTIME-NETWORK prefix). I also automated parsing and summarization of unsupported log sources using Perl scripts, Bash scripts, and local LLMs (Qwen models).</span>
-  </div>
-
-  <div class="entry">
-    <h3>Vulnerable DKIM key scanning project</h3> <span class="sep">—</span> <span class="desc">I scraped DKIM records using the Tranco top million domains list and lists of common DKIM selectors. I then ran them through <a href="https://github.com/badkeys/badkeys">badkeys</a>, identifying >50 CVE-2008-0166‐affected keys, hundreds of legacy bruteforceable 512‐bit keys, and >20 inadvertently published private keys. I reported all issues to each domain’s RFC 9116 contact, or where not available, their postmaster email address.</span>
   </div>
   
   <div class="entry">
