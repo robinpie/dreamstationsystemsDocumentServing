@@ -164,3 +164,13 @@ ubuntu804.css overrides both states to place and paint it against the desktop. *
     margin: 0 0 1rem;
   }
 }
+
+/* U+1CEB0 (Unicode 16) is in none of the themes' fonts. A one-glyph subset of
+   GNU Unifont Upper covers it; see fonts/CREDITS.txt. Wrap the character in
+   <span class="glyph-1ceb0">. Not a unicode-range on a theme's own face: this
+   is a separate family used only where the span says so. */
+@font-face {
+  font-family: "Glyph 1CEB0"; font-style: normal; font-weight: 400;
+  font-display: swap; src: url(fonts/unifont-1ceb0.woff2) format("woff2");
+}
+.glyph-1ceb0 { font-family: "Glyph 1CEB0", sans-serif; font-weight: 400; }

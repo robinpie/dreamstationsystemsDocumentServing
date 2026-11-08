@@ -113,9 +113,9 @@ THINGS THAT WILL BITE
 
     Fidelity was measured, not assumed: zero advance-width differences against the full faces, identical hhea and OS/2 metrics, GPOS kerning retained (--layout-features='' would save another 1.6 kB and drop it, which would move spacing this theme was measured against). The subsets are a reduction in coverage and nothing else.
 
-    IF A CHARACTER EVER COMES OUT IN THE WRONG FONT, this is the first thing to suspect — but the symptom is a style mismatch, not tofu, and the margin in makeFontSubset.py (Latin-1, General Punctuation, arrows, box drawing) is sized to make it unlikely. DO NOT FIX IT BY ADDING A unicode-range; the emoji go with it. Add to the margin, or to THEMED if a page was added to theme.conf's regex and not to the script.
+    IF A CHARACTER EVER COMES OUT IN THE WRONG FONT, this is the first thing to suspect — but the symptom is a style mismatch, not tofu, and the margin in makeFontSubset.py (Latin-1, General Punctuation, arrows, box drawing) is sized to make it unlikely. DO NOT FIX IT BY ADDING A unicode-range; the emoji go with it. Add to the margin. (THEMED is read from theme.conf's regex, so a new page is picked up by itself.)
 
-    CHECK THEMED WHENEVER THE REGEX CHANGES rather than waiting for a glyph to look wrong. A page on the regex but not in THEMED sits uncensused without a word, and whether that costs anything is luck, not design.
+    THEMED is no longer hand-kept: makeFontSubset.py reads it from theme.conf's regex, which triptych.pl regenerates, so the two cannot drift.
 
 WHAT CAME FROM THE TEMPLATE'S CHROME
 ------------------------------------

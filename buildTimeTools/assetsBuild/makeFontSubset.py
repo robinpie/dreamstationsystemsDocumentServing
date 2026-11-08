@@ -21,6 +21,7 @@ cannot drift from the content. Full rationale — why subsetting is safe, what
 the margin is for — in ubuntu804theme.txt, "SUBSET FONTS SHIP".
 """
 
+import re
 import subprocess
 import sys
 import tempfile
@@ -33,11 +34,21 @@ SRC = ROOT / "buildTimeTools/assetsBuild" / "fontsSrc"
 PERSONAL = ROOT / "staticish/http/dreamstation.systems" / "personal"
 OUT = PERSONAL / "themes" / "ubuntu804" / "f"
 
-# The pages nginx serves with the chrome. KEEP THIS IN SYNC WITH theme.conf's
-# location regex — a page in the regex but not here gets the theme without its
-# characters. See ubuntu804theme.txt ("SUBSET FONTS SHIP").
-THEMED = ["index", "blog", "hypnospace", "lanfalsehoods",
-          "ntppool", "ntppost", "ntpuserinfo", "slowqotd", "gzipt", "tesla"]
+# The pages nginx serves with the chrome, read from theme.conf's location regex
+# so the two cannot drift. triptych.pl rewrites that alternation on every run
+# (triptych.md section 8); a hand-kept copy here had already fallen behind it.
+# See ubuntu804theme.txt ("SUBSET FONTS SHIP").
+THEME_CONF = ROOT / "fhs/etc/nginx/snippets/theme.conf"
+
+
+def themed_pages() -> list[str]:
+    m = re.search(r"location ~ \^/personal/\(([^)]*)\)", THEME_CONF.read_text(encoding="utf-8"))
+    if not m:
+        sys.exit(f"makeFontSubset: no /personal/(...) page list in {THEME_CONF}")
+    return m.group(1).split("|")
+
+
+THEMED = themed_pages()
 
 FACES = [
     ("DejaVuSans.ttf", "dejavu.woff2"),

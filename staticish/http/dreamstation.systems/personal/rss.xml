@@ -5,8 +5,98 @@
     <link>https://dreamstation.systems/personal/blog.html</link>
     <description>the least consistent blog on the W3</description>
     <language>en</language>
-    <lastBuildDate>Sat, 31 Oct 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 08 Nov 2026 00:00:00 +0000</lastBuildDate>
     <atom:link rel="self" type="application/rss+xml" href="https://dreamstation.systems/personal/rss.xml"/>
+    <item>
+      <title>Just Fucking Use IPv6</title>
+      <link>https://dreamstation.systems/personal/justuseipv6.html</link>
+      <pubDate>Sun, 08 Nov 2026 00:00:00 +0000</pubDate>
+      <guid isPermaLink="true">https://dreamstation.systems/personal/justuseipv6.html</guid>
+      <description>IPv4 ran out of numbers, NAT is the workaround, and the fix is to use bigger numbers.</description>
+      <content:encoded>&lt;p class="dateline"&gt;&lt;time datetime="2026-11-08"&gt;2026-11-08&lt;/time&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;i&gt;Lovingly inspired by &lt;a href="https://justfuckingusehtml.com/"&gt;https://justfuckingusehtml.com&lt;/a&gt;, &lt;a href="https://justfuckingusereact.com/"&gt;https://justfuckingusereact.com&lt;/a&gt;, and &lt;a href="https://justfuckingusetailwind.com/"&gt;https://justfuckingusetailwind.com&lt;/a&gt;&lt;/i&gt;&lt;/p&gt;
+
+    &lt;p&gt;Here’s what the path from your users to your service probably looks like:&lt;/p&gt;
+
+    &lt;table&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;&lt;th&gt;# of translations&lt;/th&gt;&lt;th&gt;IP&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;&lt;td&gt;0&lt;/td&gt;&lt;td&gt;192.168.0.67&lt;/td&gt;&lt;td&gt;RFC 1918 IP, client’s router&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;100.69.4.13&lt;/td&gt;&lt;td&gt;CGNAT IP, ISP hackery&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;203.0.113.27&lt;/td&gt;&lt;td&gt;the first real IP&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;&lt;span class="glyph-1ceb0"&gt;𜺰&lt;/span&gt;&lt;/td&gt;&lt;td&gt;BGP magic&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;198.51.100.0&lt;/td&gt;&lt;td&gt;your edge&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;3&lt;/td&gt;&lt;td&gt;10.11.11.11&lt;/td&gt;&lt;td&gt;your box, behind NAT&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;4&lt;/td&gt;&lt;td&gt;172.16.4.20&lt;/td&gt;&lt;td&gt;probably some bullshit Docker container&lt;/td&gt;&lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+
+    &lt;p&gt;Four layers of translation, for something that was designed to be an end‐to‐end connection between peers on the global internetwork. What the fuck? And good luck if anything inside your edge uses the same private ranges for different things, or if you’re a large enough company that 10.0.0.0/8 is getting tight (&lt;a href="https://labs.ripe.net/author/mirjam/ipv6-only-at-microsoft/"&gt;Microsoft has been struggling with both of these things, which is one of the reasons they’re moving to IPv6 internally&lt;/a&gt;).&lt;/p&gt;
+
+    &lt;p&gt;There are a few problems caused by IPv4’s lack of addresses, but I’m leading with &lt;a href="https://dreamstation.systems/personal/ntppost.html"&gt;NAT as the enemy&lt;/a&gt; because it’s the clearest example of nonsensical workarounds to &lt;em&gt;running out of fucking &lt;strong&gt;numbers&lt;/strong&gt;&lt;/em&gt;.&lt;/p&gt;
+
+    &lt;p&gt;IPv4 has 3.7 billion addresses dedicated to global unicast, a hell of a lot less than the number of networked devices in the world. This has led to both NAT, and a &lt;em&gt;scarcity&lt;/em&gt; of &lt;em&gt;fucking &lt;strong&gt;numbers&lt;/strong&gt;&lt;/em&gt;; an IPv4 /24 costs about $5,000–$10,000 (&lt;a href="https://dreamstation.systems/personal/arin410.html"&gt;except…&lt;/a&gt;), meanwhile RIRs are still handing out gobs of IPv6 for no charge on top of your annual service fee.&lt;/p&gt;
+
+    &lt;p&gt;What do you do? The correct answer is to use bigger numbers!&lt;/p&gt;
+
+    &lt;h2&gt;IPv6&lt;/h2&gt;
+
+    &lt;h3&gt;Why it’s great&lt;/h3&gt;
+
+    &lt;p&gt;NAT is gone, every device gets a real address. &lt;code&gt;traceroute&lt;/code&gt; tells the truth, and IPs are one‐to‐one actual clients.&lt;/p&gt;
+
+    &lt;p&gt;It has a modern packet structure. There’s a fixed 40 byte header, there’s no router‐side fragmentation, there’s no checksum because five hundred other fucking layers already do that.&lt;/p&gt;
+
+    &lt;p&gt;There’s plenty of room for design. Every site gets a /48, a /48 contains 65,536 /64 subnets, and a /64 can contain practically infinite hosts. Stick to that, sparsely allocate, and:&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;you will never ever need to renumber&lt;/li&gt;
+      &lt;li&gt;absolutely no VLSM soup (and you were about to tell me &lt;em&gt;IPv6&lt;/em&gt; addresses are hard to remember!)&lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;p&gt;Neighbor Discovery replaces ARP, and your switches stop spamming everyone to find one guy.&lt;/p&gt;
+
+    &lt;p&gt;&lt;strong&gt;And it’s fucking cheap!!&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;h3&gt;“But nobody uses it!”&lt;/h3&gt;
+
+    &lt;p&gt;APNIC estimates global end user capability is around 43%, and 50% of Google clients are on IPv6.&lt;/p&gt;
+
+    &lt;p&gt;Basically every mobile network is IPv6‐only to the handset, with NAT64 and 464XLAT carrying your laggard service.&lt;/p&gt;
+
+    &lt;h3&gt;“But NAT is my firewall!”&lt;/h3&gt;
+
+    &lt;p&gt;NAT only drops unsolicited inbound packets because it doesn’t know where to take them. Set up an actual IPv6 firewall, or better yet, &lt;a href="https://en.wikipedia.org/wiki/End-to-end_principle"&gt;have actual host‐level security on every device&lt;/a&gt;.&lt;/p&gt;
+
+    &lt;h3&gt;“But the addresses are too long to remember!”&lt;/h3&gt;
+    &lt;ul&gt;
+      &lt;li&gt;DNS exists for a reason. Hell, we’ve had the hosts file for as long as we’ve had IP.&lt;/li&gt;
+      &lt;li&gt;You can compress zeros, and you can pick your own hex. My most important box is [&lt;a href="https://bgp.tools/prefix/2620:c5:d000::/48"&gt;&lt;code&gt;2620:c5:d000::1&lt;/code&gt;&lt;/a&gt;].&lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;h3&gt;“I don’t understand it!”&lt;/h3&gt;
+
+    &lt;p&gt;It’s IP. Same TCP, same UDP, same TLS. DNS records are exactly the same except that they’re called AAAA records instead of A records.&lt;/p&gt;
+
+    &lt;p&gt;If you work with computers, you understand hex, you can read the addresses.&lt;/p&gt;
+
+    &lt;p&gt;Also — the protocol was published in the ’90s. You have learned and forgotten ten programming languages since then. But 128 bits instead of 32 is too much? Sure.&lt;/p&gt;
+
+    &lt;h3&gt;“But my ISP doesn’t support it!”&lt;/h3&gt;
+
+    &lt;p&gt;That may very well be true at home, and if so, that’s something to consider on your next renewal. Very likely false at work: almost every major CDN, transit provider and colo has had IPv6 for years and charges &lt;em&gt;much&lt;/em&gt; less for it. Give them a call before blaming them.&lt;/p&gt;
+
+    &lt;h3&gt;“But half of our users are IPv4‐only!”&lt;/h3&gt;
+
+    &lt;p&gt;Yes. That’s why you keep one dual‐stack edge. Cloudflare, Fastly, Akamai, Amazon CloudFront, and most CDNs can present an IPv4 face to your IPv6‐only backend, and can do so with only a few IPv4 addresses to your ~unlimited IPv6 backend logic.&lt;/p&gt;
+
+    &lt;h3&gt;“Wait, did you just imply that we should go IPv6‐only?? But we have IPv4‐only cloud dependencies!”&lt;/h3&gt;
+
+    &lt;p&gt;Don’t worry, this side is solved too. NAT64 and 464XLAT make IPv4 services transparently accessible from an IPv6 network. Again, this is how mobile data has worked for years.&lt;/p&gt;</content:encoded>
+    </item>
     <item>
       <title>How you can still get a brand new IPv4 /24 from ARIN for $275 ⅌ year, with some strings attached</title>
       <link>https://dreamstation.systems/personal/arin410.html</link>

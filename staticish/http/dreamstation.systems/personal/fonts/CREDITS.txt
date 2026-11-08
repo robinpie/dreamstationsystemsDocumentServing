@@ -1,0 +1,10 @@
+unifont-1ceb0.woff2 -- a one-glyph subset (U+1CEB0) of GNU Unifont Upper 18.0.01
+(https://unifoundry.com/unifont/), cut because none of the site's other fonts
+have that codepoint (Unicode 16). Used by the .glyph-1ceb0 class in base.css.
+Modified: subset to a single glyph, converted to WOFF2, hinting and layout
+tables dropped.
+
+Copyright (C) 1998-2026 Roman Czyborra, Paul Hardy, Qianqian Fang, Andrew
+Miller, Johnnie Weaver, David Corbett, Aella Chiana Moskopp, Rebecca Bettencourt,
+Ho-Seok Ee, et al. Dual-licensed: SIL Open Font License 1.1, and GNU GPL v2+ with
+the GNU Font Embedding Exception.
