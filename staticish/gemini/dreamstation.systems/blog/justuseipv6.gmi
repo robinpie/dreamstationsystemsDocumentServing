@@ -92,3 +92,5 @@ Don’t worry, this side is solved too. NAT64 and 464XLAT make IPv4 services tra
 
 => /blog/   back to blog
 => /        back to home
+
+=> /tok/blog/justuseipv6.gmi   toki pona

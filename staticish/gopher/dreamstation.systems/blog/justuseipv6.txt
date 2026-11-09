@@ -97,3 +97,5 @@ Yes. That’s why you keep one dual‐stack edge. Cloudflare, Fastly, Akamai, Am
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Don’t worry, this side is solved too. NAT64 and 464XLAT make IPv4 services transparently accessible from an IPv6 network. Again, this is how mobile data has worked for years.
+
+toki pona: /0/tok/blog/justuseipv6.txt

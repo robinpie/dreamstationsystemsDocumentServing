@@ -1,0 +1,101 @@
+pakala a, o kepeken nasin IPv6
+==============================
+
+mi olin e lipu ni. ona li pana e wile tawa lipu mi: https://justfuckingusehtml.com, https://justfuckingusereact.com, https://justfuckingusetailwind.com
+
+https://justfuckingusehtml.com: <https://justfuckingusehtml.com/>
+https://justfuckingusereact.com: <https://justfuckingusereact.com/>
+https://justfuckingusetailwind.com: <https://justfuckingusetailwind.com/>
+
+ken la nasin tan jan kepeken sina tawa ilo pana sina li sama ni:
+
+    nanpa ante nanpa IP     sona
+    ---------- --------     ----
+    0          192.168.0.67 nanpa IP RFC 1918, ilo nasin pi jan kepeken
+    1          100.69.4.13  nanpa IP CGNAT, nasa pi kulupu ISP
+    2          203.0.113.27 nanpa IP lon nanpa wan
+    2          𜺰            wawa nasa pi nasin BGP
+    2          198.51.100.0 ilo selo sina
+    3          10.11.11.11  ilo sona sina, lon monsi pi nasin NAT
+    4          172.16.4.20  ken la poki jaki pi ilo Docker
+
+nanpa ante li 4 a. taso jan li pali e nasin ni tawa ijo ni: ilo wan li toki lon tawa ilo ante lon linluwi suli pi ma ale. seme a, pakala? ilo lon insa pi ilo selo sina li kepeken kulupu sama pi nanpa IP insa tawa ijo ante la, mi pana e pona tawa sina. sina wile e ona. sina kulupu esun suli la, 10.0.0.0/8 li ken kama lili tawa sina. ni kin li ike. (kulupu Microsoft li jo e ike tu ni. tan ni la ona li tawa nasin IPv6 lon insa ona.)
+
+kulupu Microsoft li jo e ike tu ni. tan ni la ona li tawa nasin IPv6 lon insa ona: <https://labs.ripe.net/author/mirjam/ipv6-only-at-microsoft/>
+
+nanpa IP pi nasin IPv4 li lili la, ike mute li kama. taso mi open e toki kepeken ike suli pi nasin NAT. tan ni: nasin NAT li sitelen pona nanpa wan pi nasin nasa. jan li kepeken nasin nasa ni tan ni: *nanpa pakala li kama pini*.
+
+ike suli pi nasin NAT: /tok/blog/ntppost.txt
+
+nasin IPv4 li jo e nanpa IP 3,700,000,000 tawa ilo wan lon linluwi suli (nasin “global unicast”). ilo linluwi lon ma ale li mute mute a. nanpa IP li mute lili tawa ona. tan ni la nasin NAT li kama. kin la *nanpa pakala* li *mute lili*. esun la kulupu /24 pi nasin IPv4 li wile e mani $5,000–$10,000 (taso…). tenpo sama la kulupu RIR li awen pana e nanpa IPv6 mute mute. sina pana e mani pi tenpo sike ale tawa ona. taso ona li wile ala e mani namako tawa nanpa IPv6.
+
+taso…: /blog/arin410.txt
+
+sina pali e seme? nasin pona li ni: o kepeken nanpa suli!
+
+nasin IPv6
+----------
+
+ona li pona tan seme
+~~~~~~~~~~~~~~~~~~~~
+
+nasin NAT li weka. ilo ale li kama jo e nanpa IP lon. ilo traceroute li toki lon. nanpa IP wan li sama ilo kute lon wan.
+
+nasin pi poki lili ona li sin. nimi sewi li jo e suli sama: 40 byte. ilo nasin li kipisi ala e poki lili. nanpa pi alasa pakala (checksum) li lon ala. tan seme? pakala a, nasin ante 500 li pali e ni lon tenpo pini.
+
+ma mute li lon tawa pali sina. ma pali ale li kama jo e kulupu /48. kulupu /48 li jo e kulupu /64 65,536. kulupu /64 li ken jo e ilo mute mute, sama ale. sina awen e nasin ni, sina pana e kulupu lon weka mute la:
+
+- tenpo ala la sina wile ante e nanpa ale
+- ko jaki pi nasin VLSM li lon ala a (sina wile toki e ni tawa mi: nanpa IP pi nasin *IPv6* li ike tawa awen lon lawa!)
+
+nasin Neighbor Discovery li kama lon ma pi nasin ARP. ilo linja sina li alasa e jan wan la, ona li mu ala tawa jan ale.
+
+kin la, pakala a, ona li wile e mani lili!!
+
+“taso jan ala li kepeken ona!”
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kulupu APNIC li pilin e ni: lon ma ale la, jan kepeken 43% li ken kepeken nasin IPv6. kin la ilo kute 50% pi kulupu Google li lon nasin IPv6.
+
+linluwi pi ilo toki lili la, mute ale li kepeken nasin IPv6 taso tawa ilo lon luka. nasin NAT64 en nasin 464XLAT li jo e ilo pana sina pi tenpo pini, li pana e ona tawa jan.
+
+“taso nasin NAT li sinpin awen mi!”
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+poki lili li kama tan weka, li kama ala tan wile sina la, nasin NAT li weka e ona. taso tan ni taso: nasin NAT li sona ala e ma tawa pi poki ni. o pali e sinpin awen lon pi nasin IPv6. anu pona mute: ilo ale o jo e nasin awen lon insa ona.
+
+ilo ale o jo e nasin awen lon insa ona: <https://en.wikipedia.org/wiki/End-to-end_principle>
+
+“taso nanpa IP li suli ike. mi ken ala awen e ona lon lawa!”
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- nasin DNS li lon tan ni. pakala a, nasin IP li lon la, lipu hosts li lon sama.
+- sina ken weka e nanpa 0 mute. sina ken kin wile e nanpa sina. ilo sona mi pi suli nanpa wan li [2620:c5:d000::1].
+
+2620:c5:d000::1: <https://bgp.tools/prefix/2620:c5:d000::/48>
+
+“mi sona ala e ona!”
+~~~~~~~~~~~~~~~~~~~~
+
+ona li nasin IP. nasin TCP li sama. nasin UDP li sama. nasin TLS li sama. lipu DNS li sama ale. ante wan taso: nimi ona li lipu AAAA, li lipu A ala.
+
+sina pali kepeken ilo sona la, sina sona e nanpa pi nasin 16. sina ken lukin e nanpa IP.
+
+kin — nasin toki ni li kama lon tenpo pi sike 1990. tan tenpo ni la, sina kama sona e toki ilo 10, li weka e sona ona. taso 128 bit li mute ike, 32 bit li pona? a, lon.
+
+“taso kulupu ISP mi li pana ala e ona!”
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+lon tomo sina la, ken suli la ni li lon. ni li lon la, o pilin e ni lon tenpo kama pi esun sin sina. lon tomo pali la, ken suli la ni li lon ala: kulupu CDN suli en kulupu pi linja suli en tomo pi ilo pana mute li jo e nasin IPv6 lon tenpo sike mute. ona li wile e mani *lili mute* tawa ona. o toki tawa ona kepeken ilo toki. ni li pini la, o toki ike e ona.
+
+“taso 50% pi jan kepeken mi li ken kepeken nasin IPv4 taso!”
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+lon. tan ni la sina awen e ilo selo wan pi nasin tu (IPv4 en IPv6). kulupu Cloudflare en kulupu Fastly en kulupu Akamai en ilo Amazon CloudFront en kulupu CDN mute li ken pana e sinpin IPv4 tawa ilo monsi sina pi nasin IPv6 taso. ona li ken pali e ni kepeken nanpa IPv4 lili taso, tawa ilo monsi sina pi nanpa IPv6 ~ale.
+
+“o awen. sina toki ala toki e ni: mi mute o kepeken nasin IPv6 taso?? taso mi mute li wile e ilo kon pi nasin IPv4 taso!”
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+o pilin ike ala. poka ni li pona kin. nasin NAT64 en nasin 464XLAT la, linluwi IPv6 li ken toki tawa ilo pana pi nasin IPv4, li lukin ala e ante. sin la, linluwi pi ilo toki lili li pali sama lon tenpo sike mute.
+
+English: /0/blog/justuseipv6.txt
