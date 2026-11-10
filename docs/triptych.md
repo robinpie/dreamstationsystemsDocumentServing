@@ -288,7 +288,7 @@ A promote does carry the draft *file* to the live docroot, where it is reachable
 
 **Not done yet**, deliberately — none of it blocks translating:
 
-- JSON-LD for translated `index`/`blog` (posts have it; `inLanguage` follows the page). Needs a decision about `@id`s, and `makeMeta.py` only knows `blog.html`.
+- JSON-LD for translated `index`/`blog` (posts have it: `inLanguage` follows the page, and the BlogPosting carries `translationOfWork` on a translation / `workTranslation` on its source, from `ld_translation` in `lang_vars`; a draft is left out of the source's list, as its `hreflang` line is, but without the SSI gate — a gated array element would leave a trailing comma). Needs a decision about `@id`s, and `makeMeta.py` only knows `blog.html`.
 - The feeds are English‐only. (The sitemap is not: `makeMeta.py` lists the published translation of every page it already lists, skipping drafts by their `noindex`.)
 - `chrome/*.html` (the ubuntu804 desktop’s menus) is English. (The generated body of `lawa.tok.html` is not: `lawaPage.pl` renders a toki pona fragment, `lawa-data.tok.html`, from the translations in its own `__DATA__` — see `~/configNotes/lawa.txt`.)
 - `ntpuserinfo`’s hand‐written JSON-LD head block is left off its translation, for the same `@id` reason.

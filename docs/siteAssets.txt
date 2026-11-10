@@ -92,7 +92,14 @@ STRUCTURED DATA (JSON-LD)
                               is listed there and nowhere else
     personal/blog.html        #blog and the blogPost array — GENERATED, see
                               below
-    personal/<post>.html      that post's BlogPosting
+    personal/<post>.html      that post's BlogPosting. A translated post's
+                              node (gzipt.tok.html#post) is its own node with
+                              inLanguage set, and the two point at each other:
+                              translationOfWork on the translation,
+                              workTranslation on the source (published
+                              translations only — drafts are omitted, see
+                              triptych.md §9). Both lines come from
+                              lang_vars in triptych.pl via post.tpl.
     personal/ntpuserinfo.html #ntp, the NTP/NTS service, and the TechArticle
                               about using it
 

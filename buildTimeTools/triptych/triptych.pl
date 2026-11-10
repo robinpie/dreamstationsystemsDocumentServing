@@ -1326,9 +1326,27 @@ sub lang_vars {
 
 	# Every version of this page, itself included, in a fixed order.
 	my @ver = ($of, map { $TR{ $of->{fm}{id} }{$_} // () } @XLANGS);
-	$v->{alternates} = $v->{langswitch} = '';
+	$v->{alternates} = $v->{langswitch} = $v->{ld_translation} = '';
 	return if @ver < 2;
 	my $me = $doc->{lang} // $SRCLANG;    # NOT a ref compare: render_page copies $doc
+
+	# JSON-LD (post.tpl): a translated post's BlogPosting names the post it
+	# translates, and the source post names its published translations, so
+	# the graph says what hreflang says. One property each, comma included,
+	# dropped in after inLanguage. A draft is left out of the source's list —
+	# the hreflang rule, minus the SSI gate, because a gated array element
+	# would leave a trailing comma behind on the live site. The draft's own
+	# block still points at its source; a draft is noindex anyway.
+	if ($doc->{fm}{kind} eq 'post') {
+		if ($doc->{lang}) {
+			$v->{ld_translation} = sprintf '"translationOfWork": { "@id": "%s#post" },',
+				public_url($of);
+		} else {
+			my @tr = map { sprintf '{ "@id": "%s#post" }', public_url($_) }
+				grep { $_->{lang} && !$_->{fm}{draft} } @ver;
+			$v->{ld_translation} = '"workTranslation": [ ' . join(', ', @tr) . ' ],' if @tr;
+		}
+	}
 
 	# The retro targets have no forms, so there the switcher is a link per
 	# other version, in each protocol's idiom. No SSI either, hence no staging

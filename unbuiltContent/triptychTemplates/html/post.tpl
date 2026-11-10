@@ -49,7 +49,8 @@
         "url": "{{url}}",
         "headline": "{{title}}",
         "description": "{{description}}",
-        "inLanguage": "{{lang}}",
+        "inLanguage": "{{lang}}",{{?ld_translation}}
+        {{ld_translation}}{{/ld_translation}}
         "datePublished": "{{date}}",
         "dateModified": "{{updated}}",
         "author": { "@id": "https://dreamstation.systems/professional/#robin" },
