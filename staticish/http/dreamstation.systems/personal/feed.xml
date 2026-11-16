@@ -3,13 +3,42 @@
   <title>robin’s blog</title>
   <subtitle>the least consistent blog on the W3</subtitle>
   <id>https://dreamstation.systems/personal/blog.html</id>
-  <updated>2026-11-08T00:00:00Z</updated>
+  <updated>2026-11-16T00:00:00Z</updated>
   <link rel="alternate" type="text/html" href="https://dreamstation.systems/personal/blog.html"/>
   <link rel="self" type="application/atom+xml" href="https://dreamstation.systems/personal/feed.xml"/>
   <author>
     <name>robin</name>
     <email>robin@dreamstation.systems</email>
   </author>
+  <entry>
+    <title>Please help Ruby register for her final year</title>
+    <id>https://dreamstation.systems/personal/ebeg.html</id>
+    <link rel="alternate" type="text/html" href="https://dreamstation.systems/personal/ebeg.html"/>
+    <published>2026-11-16T00:00:00Z</published>
+    <updated>2026-11-16T00:00:00Z</updated>
+    <summary type="text">Please consider donating to Ruby’s GoFundMe</summary>
+    <content type="html">&lt;p class="dateline"&gt;&lt;time datetime="2026-11-16"&gt;2026-11-16&lt;/time&gt;&lt;/p&gt;
+
+    &lt;p&gt;A friend of a friend of mine is unable to register for her last year of school because of an unpaid balance on her account that she can’t pay. Please consider donating to &lt;a href="https://gofund.me/47b233987"&gt;her GoFundMe&lt;/a&gt; if you have any extra cash:&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;Hi! my name is Ruby. I'm a Graphic Design Major at Missouri State University. I am currently a part on my dorm's hall council, and in my free time, I like making jewelry. After this semester, I have one more year left of school before I graduate. That is if I can register for classes for the next semester.&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;Because of mistakes made during the first year of school dealing with my medical issues, my school account has had a late fee that keeps growing. Right now it's at $2,400, and because it's over $1,000 my account is on hold, which means I cannot register for classes.&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;The reason it has been so hard for me to pay it off is because I am disabled with early onset of arthritis in my back and my knee. I can no longer do the retail jobs that I used to be able to work. Now I'm working as an usher for the school, which is unstable work at minimum wage. I can barely pay for food much less pay on my bill. There have been times where I'm only getting one meal a day because I can't afford to eat.&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;Now the reason I need to graduate as soon as possible is because my dad has cancer. He has lymphoma and he's not doing well. I don't think he has long left to live, and I want him to see me graduate. If I push my graduation off by even a year, he may not be able to watch his own child get their diploma. It has taken so long to get to this point in my education, and I need to see this through to the end.&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;p&gt;Thank you.&lt;/p&gt;</content>
+  </entry>
   <entry>
     <title>Just Fucking Use IPv6</title>
     <id>https://dreamstation.systems/personal/justuseipv6.html</id>
