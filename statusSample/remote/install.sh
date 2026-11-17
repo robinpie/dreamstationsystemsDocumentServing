@@ -1,8 +1,9 @@
 #!/bin/bash
-# install.sh (STARPORT) — run ON starport, as root, from a directory holding
-# the rest of statusSample/starport/. dreamstation's promoteSite.sh ships the
-# directory over and runs this; it is idempotent and only restarts the timer
-# when something actually changed. See status.txt ("The second host").
+# install.sh (REMOTE HOSTS) — run ON each remote host (starport, thecomicshop),
+# as root, from a directory holding the rest of statusSample/remote/.
+# dreamstation's promoteSite.sh ships the directory over and runs this; it is
+# idempotent and only restarts the timer when something actually changed.
+# Nothing in this directory is host-specific. See status.txt ("Remote hosts").
 set -eu
 cd "$(dirname "$0")"
 
@@ -21,7 +22,7 @@ install -d -m755 -o root -g root /var/lib/statuspull/.ssh
 printf 'restrict,command="/usr/local/bin/statusExport.sh" %s\n' "$(cat statuspull.pub)" >authorized_keys.new
 if ! cmp -s authorized_keys.new /var/lib/statuspull/.ssh/authorized_keys; then
 	install -m644 -o root -g root authorized_keys.new /var/lib/statuspull/.ssh/authorized_keys
-	echo "starport: installed statuspull authorized_keys"
+	echo "$(hostname): installed statuspull authorized_keys"
 fi
 rm -f authorized_keys.new
 
@@ -43,5 +44,5 @@ done
 systemctl is-enabled --quiet statusSample.timer || systemctl enable --quiet statusSample.timer
 if [ "$changed" = 1 ] || [ "$units" = 1 ] || ! systemctl is-active --quiet statusSample.timer; then
 	systemctl restart statusSample.timer
-	echo "starport: statusSample installed (timer restarted)"
+	echo "$(hostname): statusSample installed (timer restarted)"
 fi

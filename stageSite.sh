@@ -21,8 +21,8 @@ if compgen -G "$ROOT/cgi/*.cgi" >/dev/null; then
 	done
 fi
 
-# Every script under statusSample/, including the half that runs on starport.
-for f in "$ROOT"/statusSample/*.sh "$ROOT"/statusSample/starport/*.sh; do
+# Every script under statusSample/, including the half that runs on the remote hosts.
+for f in "$ROOT"/statusSample/*.sh "$ROOT"/statusSample/remote/*.sh; do
 	[ -f "$f" ] || continue
 	if ! bash -n "$f" 2>/dev/null; then
 		echo "ABORT: ${f#"$ROOT"/} fails syntax check — nothing staged." >&2

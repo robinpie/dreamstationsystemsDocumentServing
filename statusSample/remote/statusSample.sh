@@ -1,11 +1,12 @@
 #!/bin/bash
-# statusSample.sh (STARPORT) — collects host vitals on starport for the status
-# page served by dreamstation. Runs every 30s via statusSample.timer.
+# statusSample.sh (REMOTE HOSTS) — collects host vitals on a remote host
+# (starport, thecomicshop) for the status page served by dreamstation. Runs
+# every 30s via statusSample.timer. Identical on every remote host.
 #
 # This is the remote half of a pull: NOTHING here talks to the network.
-# dreamstation's statusPull.timer SSHes in as the `statuspull` user, whose key
+# dreamstation's statusPull@<host>.timer SSHes in as the `statuspull` user, whose key
 # is locked to statusExport.sh, and reads what this writes. See status.txt on
-# dreamstation ("The second host") for the design.
+# dreamstation ("Remote hosts") for the design.
 #
 # THE FILE FORMATS ARE A CONTRACT with cgi/status.cgi, which parses them with
 # the same readers it uses for dreamstation's own files. cpu.hist and disk.txt

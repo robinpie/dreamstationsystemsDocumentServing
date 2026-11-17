@@ -1,14 +1,19 @@
 [Unit]
-Description=Pull starport's host vitals for the status page
+Description=Pull %i's host vitals for the status page
 Documentation=file:/home/robin/configNotes/status.txt
 After=network-online.target
 Wants=network-online.target
+
+# One instance per remote host: statusPull@starport, statusPull@thecomicshop.
+# %i is validated again by the script (it becomes a path and a hostname).
+# Separate instances, not one unit looping over hosts, so one dead box fails
+# only its own unit and never delays the other's pull.
 
 [Service]
 Type=oneshot
 User=statuspull
 Group=statuspull
-ExecStart=/usr/local/bin/statusPull.sh
+ExecStart=/usr/local/bin/statusPull.sh %i
 
 # Never compete with chronyd. Same posture as statusSample.service.
 Nice=10
@@ -20,7 +25,7 @@ TimeoutStartSec=30
 # root. ProtectHome is fine because the key lives in /var/lib/statuspull.
 NoNewPrivileges=true
 ProtectSystem=strict
-ReadWritePaths=/run/status/starport
+ReadWritePaths=/run/status/%i
 ProtectHome=true
 PrivateTmp=true
 PrivateDevices=true

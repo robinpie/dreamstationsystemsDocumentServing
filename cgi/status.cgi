@@ -58,13 +58,14 @@ use constant {
 	SEEN_SET    => '/var/lib/dashboard/ntp_clients_seen.bin',
 	SEEN6_SET   => '/var/lib/dashboard/ntp_clients_seen6.bin',   # IPv6 twin, 16 bytes/entry (ntpset.txt)
 
-	# The second host. statusPull.service leaves starport's vitals here, in the
-	# same formats as our own files, once a minute. See read_remote().
-	REMOTE_DIR   => '/run/status/starport',
+	# The remote hosts (@REMOTES below). statusPull@<host>.service leaves each
+	# one's vitals in REMOTE_ROOT/<host>, in the same formats as our own
+	# files, once a minute. See read_remote().
+	REMOTE_ROOT  => '/run/status',
 	REMOTE_STALE => 200,   # seconds; ~3 missed pulls. Older than this is "unknown"
-	# starport's NTP figures ride the same pull but are written on starport
-	# every 5 minutes (ntpstatscollect.timer), so they get ntpstatsgen's
-	# threshold rather than REMOTE_STALE. See read_remote_ntp().
+	# Their NTP figures ride the same pull but are written on each host every
+	# 5 minutes (ntpstatscollect.timer), so they get ntpstatsgen's threshold
+	# rather than REMOTE_STALE. See read_remote_ntp().
 	REMOTE_NTP_STALE  => 900,
 	REMOTE_NTP_SCHEMA => 1,     # must match SCHEMA in /usr/local/bin/ntpstatsgen (seen6 is optional: no bump)
 
@@ -76,6 +77,20 @@ use constant {
 
 	POOL_URL => 'https://www.ntppool.org/scores/67.215.249.229',
 };
+
+# The remote hosts, in page order. `name` is the short hostname: the pull
+# writes /run/status/<name>, and it is used in element ids (host-<name>,
+# ntp-<name>, time-<name>), so renaming one breaks links to its sections.
+# Adding a host also needs promoteSite.sh's PULL_HOSTS and the tmpfiles line
+# (status.txt, "Remote hosts"). `hw` is trusted HTML (it holds &nbsp;s);
+# `pool` is the NTP Pool score page, for hosts that are in the pool.
+my @REMOTES = (
+	{ name => 'starport',
+	  hw   => 'RackNerd 2&nbsp;vCPU, 2&nbsp;GB RAM' },
+	{ name => 'thecomicshop',
+	  hw   => 'bare metal, Intel Celeron 3215U (2&nbsp;cores), 4&nbsp;GB RAM',
+	  pool => 'https://www.ntppool.org/scores/23.167.20.225' },
+);
 
 # Disk graph geometry, in user units of a fixed viewBox. The rendered SVG is
 # width:100% / height:auto, so these are proportions rather than pixels — but
@@ -426,7 +441,7 @@ sub read_disk {
 	return \%o;
 }
 
-# The second host, starport. NOTHING HERE TOUCHES THE NETWORK: statusPull.service
+# A remote host (@REMOTES). NOTHING HERE TOUCHES THE NETWORK: statusPull@<host>
 # fetches these files over SSH once a minute, and this is five small reads of
 # tmpfs through the same parsers as our own figures. An SSH handshake on the
 # request path would cost more than the entire sweep. See status.txt.
@@ -438,11 +453,12 @@ sub read_disk {
 #
 # The age is (now - pulled_at) + sample_age: how long ago we fetched, plus how
 # old the sample already was when we fetched it. Each term is a difference of
-# two readings of the SAME clock (ours, then starport's), so skew between the
+# two readings of the SAME clock (ours, then the host's), so skew between the
 # two boxes cancels instead of making old data look new. See statusPull.sh.
 sub read_remote {
+	my $dir = REMOTE_ROOT . '/' . shift;
 	my %r = (fresh => 0);
-	open my $fh, '<', REMOTE_DIR . '/meta' or return \%r;
+	open my $fh, '<', "$dir/meta" or return \%r;
 	my %m;
 	while (<$fh>) { $m{$1} = $2 if /^(\w+) (\d+)/ }
 	close $fh;
@@ -454,16 +470,16 @@ sub read_remote {
 	return \%r if $age > REMOTE_STALE;
 
 	$r{fresh} = 1;
-	$r{cpu}   = read_cpu(REMOTE_DIR . '/cpu.hist');
-	$r{mem}   = read_mem(REMOTE_DIR . '/meminfo');
-	$r{disk}  = read_disk(REMOTE_DIR . '/disk.txt');
+	$r{cpu}   = read_cpu("$dir/cpu.hist");
+	$r{mem}   = read_mem("$dir/meminfo");
+	$r{disk}  = read_disk("$dir/disk.txt");
 	# The snapshot's uptime, carried forward by the snapshot's age.
-	my $up = read_uptime(REMOTE_DIR . '/uptime');
+	my $up = read_uptime("$dir/uptime");
 	$r{uptime} = $up + $age if defined $up;
 	return \%r;
 }
 
-# starport's time-service figures: ntp.json, written on starport by
+# A remote host's time-service figures: ntp.json, written on the host by
 # `ntpstatsgen --collect` and carried here by the same pull (ntpstatsgen.txt).
 # Same honesty rule as read_remote(): stale, missing, or a different schema
 # returns NO figures, and the section says "unknown".
@@ -475,10 +491,11 @@ sub read_remote {
 # changes, SCHEMA is bumped there, and this shows "unknown" until updated.
 #
 # Age = (now - pulled_at) + ntp_age, each term one clock, as in read_remote().
-# chronyd's uptime is collected_at - started, both starport's clock.
+# chronyd's uptime is collected_at - started, both the host's clock.
 sub read_remote_ntp {
+	my $dir = REMOTE_ROOT . '/' . shift;
 	my %r = (fresh => 0);
-	open my $fh, '<', REMOTE_DIR . '/meta' or return \%r;
+	open my $fh, '<', "$dir/meta" or return \%r;
 	my %m;
 	while (<$fh>) { $m{$1} = $2 if /^(\w+) (\d+)/ }
 	close $fh;
@@ -489,7 +506,7 @@ sub read_remote_ntp {
 	$r{age} = $age;
 	return \%r if $age > REMOTE_NTP_STALE;
 
-	open $fh, '<', REMOTE_DIR . '/ntp.json' or return \%r;
+	open $fh, '<', "$dir/ntp.json" or return \%r;
 	my $j = do { local $/; <$fh> };
 	close $fh;
 	my %v;
@@ -511,13 +528,14 @@ sub read_remote_ntp {
 	return \%r;
 }
 
-# starport's Services row: the NTP query statusPull.sh makes of starport:123
+# A remote host's Services row: the NTP query statusPull.sh makes of <host>:123
 # over the internet once a minute (the CGI itself never touches the network).
 # `at` is OUR clock, so the age is a plain subtraction. Older than
 # REMOTE_STALE means the probe itself stopped running: "unknown", never the
 # last verdict carried forward.
 sub read_remote_probe {
-	open my $fh, '<', REMOTE_DIR . '/ntpprobe'
+	my $dir = REMOTE_ROOT . '/' . shift;
+	open my $fh, '<', "$dir/ntpprobe"
 		or return { state => 'unknown', detail => 'no probe result yet' };
 	my %p;
 	while (<$fh>) { $p{$1} = $2 if /^(\w+) (.+)$/ }
@@ -1065,36 +1083,39 @@ CSS
 	$out .= host_body($d, '', 'dreamstation');
 	$out .= qq{</section>\n};
 
-	# ----- second host
+	# ----- remote hosts
 	#
-	# Same block, fed from files statusPull.service fetched — see read_remote().
+	# Same block, fed from files statusPull@<host> fetched — see read_remote().
 	# Stale or missing data is never drawn: a bar is a claim about now, and the
 	# honest thing to say about a box we have not heard from is that we have not
 	# heard from it. "unknown", not "down" — a failed pull says the PULL failed.
-	my $sp = $d->{starport} || { fresh => 0 };
-	$out .= qq{<section aria-labelledby="host-starport"><h2 id="host-starport">starport</h2>\n};
-	$out .= qq{<p><span class="koo" aria-hidden="true">꩜</span> Debian 13 @ }
-	      . qq{RackNerd 2&nbsp;vCPU, 2&nbsp;GB RAM</p>\n};
-	if ($sp->{fresh}) {
-		$out .= host_body($sp, '-starport', 'starport');
-	} else {
-		$out .= qq{<p class="unknown"><span aria-hidden="true">$MARK{unknown}</span> unknown — }
-		      . (defined $sp->{age}
-		         ? qq{last heard from } . esc(dur($sp->{age})) . qq{ ago.}
-		         : qq{no figures have been received from this host.})
-		      . qq{</p>\n};
+	for my $rh (@REMOTES) {
+		my $n  = $rh->{name};
+		my $sp = $d->{remote}{$n}{host} || { fresh => 0 };
+		$out .= qq{<section aria-labelledby="host-$n"><h2 id="host-$n">$n</h2>\n};
+		$out .= qq{<p><span class="koo" aria-hidden="true">꩜</span> Debian 13 @ $rh->{hw}</p>\n};
+		if ($sp->{fresh}) {
+			$out .= host_body($sp, "-$n", $n);
+		} else {
+			$out .= qq{<p class="unknown"><span aria-hidden="true">$MARK{unknown}</span> unknown — }
+			      . (defined $sp->{age}
+			         ? qq{last heard from } . esc(dur($sp->{age})) . qq{ ago.}
+			         : qq{no figures have been received from this host.})
+			      . qq{</p>\n};
+		}
+		$out .= qq{</section>\n};
 	}
-	$out .= qq{</section>\n};
 
 	# ----- services
-	# starport's row is not in @SERVICES: it is not swept (no network from
-	# here) but read from statusPull's probe, fresh on every request, and it
-	# goes second so the two time servers lead the table. It has no unit
-	# column because we cannot see starport's systemd from here.
+	# The remote hosts' rows are not in @SERVICES: they are not swept (no
+	# network from here) but read from statusPull's probes, fresh on every
+	# request, and they go right after ours so the time servers lead the
+	# table. They have no unit column because we cannot see those boxes'
+	# systemd from here.
 	my @rows = map { [ @{$_}[0, 1, 5], $d->{svc}{ $_->[0] } ] } @SERVICES;
-	splice @rows, 1, 0, [ 'time-starport', 'Time: starport',
-	                      'NTP on 123/udp · queried from dreamstation',
-	                      $d->{starport_probe} ];
+	splice @rows, 1, 0, map { [ "time-$_->{name}", "Time: $_->{name}",
+	                            'NTP on 123/udp · queried from dreamstation',
+	                            $d->{remote}{ $_->{name} }{probe} ] } @REMOTES;
 	my ($n_up, $n_tot) = (0, scalar @rows);
 	$n_up += (($_->[3] || {})->{state} // '') eq 'up' ? 1 : 0 for @rows;
 
@@ -1127,7 +1148,7 @@ CSS
 		my $word  = $state eq 'up' ? 'up' : $state eq 'down' ? 'DOWN' : 'unknown';
 
 		my @notes = grep { length } ($note, $r->{detail});
-		# length(): starport's row has no unit (we cannot see its systemd).
+		# length(): the remote hosts' rows have no unit (we cannot see their systemd).
 		push @notes, "unit $r->{unit}" if length($r->{unit} // '') && $r->{unit} ne 'active' && $r->{unit} ne 'unknown';
 
 		$out .= qq{<tr><th scope="row">} . esc($label) . qq{</th>};
@@ -1174,60 +1195,71 @@ CSS
 	$out .= qq{<dt>External pool monitoring</dt><dd><a href="} . POOL_URL . qq{">ntppool.org</a></dd>\n};
 	$out .= qq{</dl>\n</section>\n};
 
-	# ----- starport's time service
+	# ----- the remote hosts' time services
 	#
-	# Its own section rather than a second column: the two servers are not
-	# peers. starport is stratum 3, syncs only to dreamstation, serves plain NTP
-	# (no NTS) and is not in the pool, and the figures come from a different
-	# collector (ntpstatsgen via the pull, not a local sweep). Only figures that
-	# collector actually measures are shown; no pool link, because there is no
-	# pool score to link to.
-	my $sn = $d->{starport_ntp} || { fresh => 0 };
-	$out .= qq{<section aria-labelledby="ntp-starport"><h2 id="ntp-starport">Time service: starport</h2>\n};
-	if ($sn->{fresh}) {
-		$out .= qq{<dl>\n};
-		if (defined $sn->{stratum}) {
-			$out .= qq{<dt>Stratum</dt><dd>} . esc($sn->{stratum})
-			      . ($sn->{ref} ? qq{, synced to } . esc($sn->{ref}) : '') . qq{</dd>\n};
+	# One section each rather than extra columns: the servers are not peers
+	# (starport is stratum 3, syncs only to dreamstation, is not in the pool;
+	# thecomicshop syncs to the public pool and is in it), and the figures
+	# come from a different collector (ntpstatsgen via the pull, not a local
+	# sweep). Only figures that collector actually measures are shown. The
+	# pool link only for hosts that have a pool score to link to.
+	for my $rh (@REMOTES) {
+		my $n  = $rh->{name};
+		my $sn = $d->{remote}{$n}{ntp} || { fresh => 0 };
+		$out .= qq{<section aria-labelledby="ntp-$n"><h2 id="ntp-$n">Time service: $n</h2>\n};
+		if ($sn->{fresh}) {
+			$out .= qq{<dl>\n};
+			if (defined $sn->{stratum}) {
+				$out .= qq{<dt>Stratum</dt><dd>} . esc($sn->{stratum})
+				      . ($sn->{ref} ? qq{, synced to } . esc($sn->{ref}) : '') . qq{</dd>\n};
+			}
+			$out .= sprintf qq{<dt>RMS offset from reference</dt><dd>%.0f µs</dd>\n}, $sn->{rms} * 1_000_000
+				if defined $sn->{rms};
+			if ($sn->{qps_now}) {
+				$out .= qq{<dt>Queries per second</dt><dd>} . commify(sprintf '%.0f', $sn->{qps_now}) . qq{ now};
+				# Only claim a 24h average once there is a day of history behind it.
+				$out .= sprintf qq{, %s average over 24h}, commify(sprintf '%.0f', $sn->{qps_24h})
+					if $sn->{qps_24h} && ($sn->{history_s} // 0) >= 86400;
+				$out .= qq{</dd>\n};
+			}
+			if ($sn->{seen}) {
+				$out .= qq{<dt>Distinct IPv4 clients seen</dt><dd>} . commify($sn->{seen})
+				      . sprintf(qq{ — about one in every %.1f routable IPv4 addresses}, 3_700_000_000 / $sn->{seen})
+				      . qq{</dd>\n};
+			}
+			$out .= qq{<dt>Distinct IPv6 clients seen</dt><dd>} . commify($sn->{seen6}) . qq{ addresses</dd>\n}
+				if $sn->{seen6};
+			$out .= qq{<dt>chronyd running for</dt><dd>} . esc(dur($sn->{uptime})) . qq{</dd>\n}
+				if $sn->{uptime};
+			$out .= qq{<dt>External pool monitoring</dt><dd><a href="$rh->{pool}">ntppool.org</a></dd>\n}
+				if $rh->{pool};
+			$out .= qq{</dl>\n};
+		} else {
+			$out .= qq{<p class="unknown"><span aria-hidden="true">$MARK{unknown}</span> unknown — }
+			      . (($sn->{why} // '') eq 'schema'
+			         ? qq{the figures from this host are in a format this page does not recognise.}
+			         : defined $sn->{age} && $sn->{age} > REMOTE_NTP_STALE
+			         ? qq{the latest figures are } . esc(dur($sn->{age})) . qq{ old.}
+			         : qq{no time-service figures have been received from this host.})
+			      . qq{</p>\n};
 		}
-		$out .= sprintf qq{<dt>RMS offset from reference</dt><dd>%.0f µs</dd>\n}, $sn->{rms} * 1_000_000
-			if defined $sn->{rms};
-		if ($sn->{qps_now}) {
-			$out .= qq{<dt>Queries per second</dt><dd>} . commify(sprintf '%.0f', $sn->{qps_now}) . qq{ now};
-			# Only claim a 24h average once there is a day of history behind it.
-			$out .= sprintf qq{, %s average over 24h}, commify(sprintf '%.0f', $sn->{qps_24h})
-				if $sn->{qps_24h} && ($sn->{history_s} // 0) >= 86400;
-			$out .= qq{</dd>\n};
-		}
-		if ($sn->{seen}) {
-			$out .= qq{<dt>Distinct IPv4 clients seen</dt><dd>} . commify($sn->{seen})
-			      . sprintf(qq{ — about one in every %.1f routable IPv4 addresses}, 3_700_000_000 / $sn->{seen})
-			      . qq{</dd>\n};
-		}
-		$out .= qq{<dt>Distinct IPv6 clients seen</dt><dd>} . commify($sn->{seen6}) . qq{ addresses</dd>\n}
-			if $sn->{seen6};
-		$out .= qq{<dt>chronyd running for</dt><dd>} . esc(dur($sn->{uptime})) . qq{</dd>\n}
-			if $sn->{uptime};
-		$out .= qq{</dl>\n};
-	} else {
-		$out .= qq{<p class="unknown"><span aria-hidden="true">$MARK{unknown}</span> unknown — }
-		      . (($sn->{why} // '') eq 'schema'
-		         ? qq{the figures from this host are in a format this page does not recognise.}
-		         : defined $sn->{age} && $sn->{age} > REMOTE_NTP_STALE
-		         ? qq{the latest figures are } . esc(dur($sn->{age})) . qq{ old.}
-		         : qq{no time-service figures have been received from this host.})
-		      . qq{</p>\n};
+		$out .= qq{</section>\n};
 	}
-	$out .= qq{</section>\n};
 
 	$out .= qq{</main>\n<footer>\n};
-	$out .= qq{<p>Probes run from the server against loopback, except starport’s time service, }
-	      . qq{which dreamstation queries over the internet once a minute.</p>\n};
-	$out .= qq{<p>starport’s figures are collected over SSH once a minute}
-	      . ($sp->{fresh} ? qq{ (these are } . esc(dur($sp->{age})) . qq{ old)} : '')
-	      . qq{; its time-service figures are gathered on starport every 5 minutes}
-	      . ($sn->{fresh} ? qq{ (} . esc(dur($sn->{age})) . qq{ old)} : '')
-	      . qq{.</p>\n};
+	my @rn = map { $_->{name} } @REMOTES;
+	my $rlist = @rn > 1 ? join(', ', @rn[0 .. $#rn - 1]) . " and $rn[-1]" : $rn[0];
+	$out .= qq{<p>Probes run from the server against loopback, except the time services of }
+	      . qq{$rlist, which dreamstation queries over the internet once a minute.</p>\n};
+	for my $n (@rn) {
+		my $sp = $d->{remote}{$n}{host} || {};
+		my $sn = $d->{remote}{$n}{ntp}  || {};
+		$out .= qq{<p>$n’s figures are collected over SSH once a minute}
+		      . ($sp->{fresh} ? qq{ (these are } . esc(dur($sp->{age})) . qq{ old)} : '')
+		      . qq{; its time-service figures are gathered on $n every 5 minutes}
+		      . ($sn->{fresh} ? qq{ (} . esc(dur($sn->{age})) . qq{ old)} : '')
+		      . qq{.</p>\n};
+	}
 	$out .= qq{<p>Generated by <code>status.cgi</code>, at most once every } . CACHE_TTL . qq{ seconds.</p>\n};
 	$out .= qq{<p class="stamp">Measured <strong>} . esc(dur($age)) . qq{</strong> ago};
 	$out .= sprintf ' · sweep took %.0fms', ($d->{took} // 0) * 1000 if $d->{took};
@@ -1339,11 +1371,20 @@ eval {
 	# one small tmpfs read, cheaper than round-tripping through cache.txt, and
 	# it means the figures are never up to CACHE_TTL stale. See status.txt.
 	$data->{disk} = read_disk();
-	# So does the second host, for the same reason: five small tmpfs reads, and
-	# its freshness verdict must be made NOW, not up to CACHE_TTL ago.
-	$data->{starport} = read_remote();
-	$data->{starport_ntp} = read_remote_ntp();
-	$data->{starport_probe} = read_remote_probe();
+	# So do the remote hosts, for the same reason: five small tmpfs reads each,
+	# and their freshness verdict must be made NOW, not up to CACHE_TTL ago.
+	# A NAMED loop variable, not `... for @REMOTES`: the readers loop with
+	# while (<$fh>), which assigns $_ — and $_ would be an alias for the
+	# @REMOTES element itself, so the first read would overwrite the host's
+	# entry (found the hard way, 2026-11-11).
+	for my $rh (@REMOTES) {
+		my $n = $rh->{name};
+		$data->{remote}{$n} = {
+			host  => read_remote($n),
+			ntp   => read_remote_ntp($n),
+			probe => read_remote_probe($n),
+		};
+	}
 	$body = render($data, $stale, $err);
 	1;
 } or do {

@@ -9,7 +9,7 @@
 #   staticish/http/modernmotherfuckingwebsite.dreamstation.systems/ -> /srv/modernmotherfuckingwebsite  its own vhost
 #   staticish/http/hansendiscountelectronics.com/ -> /srv/hansendiscountelectronics.com  its own vhost
 #   statusSample/    -> /usr/local/bin + units  the status page's other half
-#   statusSample/starport/ -> starport, over SSH  the second host's sampler
+#   statusSample/remote/ -> each PULL_HOSTS box, over SSH  the remote hosts' sampler
 #   fhs/etc/nginx/           -> /etc/nginx          vhosts and snippets
 #
 # Web content comes from the staging tree so the live docroot matches what was
@@ -19,8 +19,8 @@
 #
 #   ./promoteSite.sh [--force]
 #
-# --force re-ships statusSample/starport/ even when its hash matches the last
-# successful ship (see "starport stamp" below). Everything else here already
+# --force re-ships statusSample/remote/ to every remote host even when its hash
+# matches the last successful ship (see "remote stamp" below). Everything else here already
 # compares against the live copy and is unaffected.
 set -eu
 
@@ -160,8 +160,8 @@ if compgen -G "$ROOT/cgi/*.cgi" >/dev/null; then
 	done
 fi
 
-# Every script under statusSample/, including the half that runs on starport.
-for f in "$ROOT"/statusSample/*.sh "$ROOT"/statusSample/starport/*.sh; do
+# Every script under statusSample/, including the half that runs on the remote hosts.
+for f in "$ROOT"/statusSample/*.sh "$ROOT"/statusSample/remote/*.sh; do
 	[ -f "$f" ] || continue
 	if ! bash -n "$f" 2>/dev/null; then
 		echo "ABORT: ${f#"$ROOT"/} fails syntax check — nothing promoted." >&2
@@ -367,11 +367,16 @@ if [ -d "$ROOT/statusSample" ]; then
 		echo "Promoted statusSample/ → /usr/local/bin + systemd (timer restarted)"
 	fi
 
-	# ---- the second host (starport). Two halves; see status.txt.
+	# ---- the remote hosts (PULL_HOSTS). Two halves; see status.txt.
 	#
-	# Here: statusPull, which fetches starport's figures over SSH once a minute.
-	# The statuspull user, its key and its pinned known_hosts are one-time
-	# setup and deliberately NOT created here — see status.txt.
+	# A host is added by: a line here, a line in statusPull.tmpfiles.conf,
+	# its pinned key in ~statuspull/.ssh/known_hosts (one-time, by hand), and
+	# a section in status.cgi's @REMOTES. ntpstatsgen has its own list.
+	PULL_HOSTS="starport thecomicshop"
+
+	# Here: statusPull@<host>, which fetches each host's figures over SSH once
+	# a minute. The statuspull user, its key and its pinned known_hosts are
+	# one-time setup and deliberately NOT created here — see status.txt.
 	pull_changed=0
 	if ! same "$ROOT/statusSample/statusPull.sh" /usr/local/bin/statusPull.sh; then
 		sudo install -m755 -o root -g root \
@@ -385,49 +390,65 @@ if [ -d "$ROOT/statusSample" ]; then
 		pull_changed=1
 	fi
 	pull_units=0
-	for u in statusPull.service statusPull.timer; do
+	for u in statusPull@.service statusPull@.timer; do
 		if ! same "$ROOT/statusSample/$u" "/etc/systemd/system/$u"; then
 			sudo install -m644 -o root -g root \
 				"$ROOT/statusSample/$u" "/etc/systemd/system/$u"
 			pull_units=1
 		fi
 	done
-	[ "$pull_units" = 1 ] && sudo systemctl daemon-reload
-	if [ "$pull_changed" = 1 ] || [ "$pull_units" = 1 ]; then
-		sudo systemctl enable --quiet statusPull.timer
-		sudo systemctl restart statusPull.timer
-		echo "Promoted statusSample/statusPull → /usr/local/bin + systemd (timer restarted)"
+	# Before 2026-11-11 there was one non-template statusPull.{service,timer}
+	# for starport alone. Retire it, or it would pull starport a second time
+	# and fail every run (its script now insists on a host argument).
+	if [ -e /etc/systemd/system/statusPull.timer ] || [ -e /etc/systemd/system/statusPull.service ]; then
+		sudo systemctl disable --now --quiet statusPull.timer 2>/dev/null || true
+		sudo rm -f /etc/systemd/system/statusPull.timer /etc/systemd/system/statusPull.service
+		pull_units=1
 	fi
+	[ "$pull_units" = 1 ] && sudo systemctl daemon-reload
+	for h in $PULL_HOSTS; do
+		if [ "$pull_changed" = 1 ] || [ "$pull_units" = 1 ] ||
+			! systemctl is-enabled --quiet "statusPull@$h.timer"; then
+			sudo systemctl enable --quiet "statusPull@$h.timer"
+			sudo systemctl restart "statusPull@$h.timer"
+			echo "Promoted statusSample/statusPull → statusPull@$h (timer restarted)"
+		fi
+	done
 
-	# There: the sampler, shipped over robin's SSH and installed by its own
-	# idempotent install.sh, which prints only when it changed something.
+	# There: the sampler, shipped over robin's SSH to every host and installed
+	# by its own idempotent install.sh, which prints only when it changed
+	# something. The same directory goes to every host; nothing in it is
+	# host-specific.
 	#
-	# A FAILURE HERE WARNS AND CARRIES ON. starport being unreachable must not
-	# stop a promote of this box's website; the page reports starport as
+	# A FAILURE HERE WARNS AND CARRIES ON. A remote host being unreachable must
+	# not stop a promote of this box's website; the page reports that host as
 	# unknown on its own if the sampler there is really broken.
 	#
-	# STARPORT STAMP: the ssh round trip is ~1.2s, so it is skipped when the
-	# directory hashes (names, modes, contents) the same as at the last
-	# SUCCESSFUL ship. The stamp is only written on success, so a failed ship
-	# is retried by the next promote. It cannot see drift made on starport
-	# itself; --force ships regardless.
-	if [ -d "$ROOT/statusSample/starport" ]; then
-		sp_stamp="$GITDIR/promote-starport.sha256"
-		sp_hash="$(cd "$ROOT/statusSample/starport" &&
+	# REMOTE STAMP: the ssh round trip is ~1.2s per host, so each host is
+	# skipped when the directory hashes (names, modes, contents) the same as
+	# at that host's last SUCCESSFUL ship. The stamp is per host and only
+	# written on success, so a failed ship is retried by the next promote. It
+	# cannot see drift made on the host itself; --force ships regardless.
+	if [ -d "$ROOT/statusSample/remote" ]; then
+		rm_hash="$(cd "$ROOT/statusSample/remote" &&
 			find . -type f -printf '%P %m\n' | LC_ALL=C sort &&
 			find . -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum)"
-		sp_hash="$(printf '%s' "$sp_hash" | sha256sum | cut -d' ' -f1)"
-		if [ "$FORCE" = 0 ] && [ "$(cat "$sp_stamp" 2>/dev/null)" = "$sp_hash" ]; then
-			: # unchanged since the last successful ship
-		elif tar -C "$ROOT/statusSample/starport" -cf - . |
-			ssh -o BatchMode=yes -o ConnectTimeout=8 robin@starport.dreamstation.systems \
-				'rm -rf ~/.statusSample.deploy && mkdir ~/.statusSample.deploy &&
-				 tar -C ~/.statusSample.deploy -xf - &&
-				 sudo bash ~/.statusSample.deploy/install.sh'; then
-			printf '%s\n' "$sp_hash" >"$sp_stamp"
-		else
-			echo "WARNING: could not deploy statusSample/starport to starport — skipped." >&2
-		fi
+		rm_hash="$(printf '%s' "$rm_hash" | sha256sum | cut -d' ' -f1)"
+		for h in $PULL_HOSTS; do
+			rm_stamp="$GITDIR/promote-$h.sha256"
+			if [ "$FORCE" = 0 ] && [ "$(cat "$rm_stamp" 2>/dev/null)" = "$rm_hash" ]; then
+				continue # unchanged since the last successful ship
+			fi
+			if tar -C "$ROOT/statusSample/remote" -cf - . |
+				ssh -o BatchMode=yes -o ConnectTimeout=8 "robin@$h.dreamstation.systems" \
+					'rm -rf ~/.statusSample.deploy && mkdir ~/.statusSample.deploy &&
+					 tar -C ~/.statusSample.deploy -xf - &&
+					 sudo bash ~/.statusSample.deploy/install.sh'; then
+				printf '%s\n' "$rm_hash" >"$rm_stamp"
+			else
+				echo "WARNING: could not deploy statusSample/remote to $h — skipped." >&2
+			fi
+		done
 	fi
 fi
 

@@ -18,7 +18,7 @@ Nice=10
 IOSchedulingClass=idle
 TimeoutStartSec=120
 
-# Same posture as statusPull.service: it needs the network, so it gets no root.
+# Same posture as statusPull@.service: it needs the network, so it gets no root.
 # The key lives in /var/lib/lawapull, so ProtectHome costs nothing.
 NoNewPrivileges=true
 ProtectSystem=strict

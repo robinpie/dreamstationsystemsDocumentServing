@@ -1,22 +1,24 @@
 #!/bin/bash
-# statusPull.sh — fetches starport's vitals for status.cgi. Runs every 60s via
-# statusPull.timer as the unprivileged `statuspull` user. See status.txt
-# ("The second host").
+# statusPull.sh <host> — fetches one remote host's vitals for status.cgi.
+# <host> is a short name (starport, thecomicshop): the box is reached as
+# <host>.dreamstation.systems and its files land in /run/status/<host>.
+# Runs every 60s per host via statusPull@<host>.timer as the unprivileged
+# `statuspull` user. See status.txt ("Remote hosts").
 #
 # One SSH connection, whose key is locked on the far side to statusExport.sh:
 # it can print the sampler's files and nothing else. The CGI never does this
 # itself — an SSH handshake on the request path would wreck the cost budget
 # the whole page is built around — it only reads what this leaves in tmpfs.
 #
-# Output, /run/status/starport/:
-#   cpu.hist meminfo uptime disk.txt   as written by starport's sampler
-#   ntp.json                           starport's NTP server stats, for ntpstatsgen
+# Output, /run/status/<host>/:
+#   cpu.hist meminfo uptime disk.txt   as written by the host's sampler
+#   ntp.json                           the host's NTP server stats, for ntpstatsgen
 #                                      (meta gains "ntp_age <s>" when present)
-#   ntpprobe                           our own NTP query of starport:123, made
+#   ntpprobe                           our own NTP query of <host>:123, made
 #                                      here, NOT over SSH (see below)
 #   meta                               "pulled_at <epoch, OUR clock>"
 #                                      "sample_age <s>"  age of the sample at
-#                                      the moment of export, by STARPORT's
+#                                      the moment of export, by THE HOST's
 #                                      clock on both sides of the subtraction
 #
 # The CGI's age for the data is (now - pulled_at) + sample_age. Each term is a
@@ -27,10 +29,18 @@
 # failure path here that can make old data look new.
 set -euo pipefail
 
-HOST=statuspull@starport.dreamstation.systems
+# The name becomes a path and a hostname, so it is held to a strict shape
+# rather than trusted: no dots, no slashes, nothing a unit file typo could
+# turn into somewhere else.
+NAME=${1:-}
+if ! [[ $NAME =~ ^[a-z0-9][a-z0-9-]*$ ]]; then
+	echo "usage: statusPull.sh <host>   (e.g. starport)" >&2
+	exit 2
+fi
+HOST=statuspull@$NAME.dreamstation.systems
 KEY=/var/lib/statuspull/.ssh/id_ed25519
 KNOWN=/var/lib/statuspull/.ssh/known_hosts
-OUT=/run/status/starport
+OUT=/run/status/$NAME
 MAX=262144 # bytes accepted; real output is ~6KB
 
 [ -d "$OUT" ] || { echo "statusPull: $OUT missing (tmpfiles.d/statusPull.conf)" >&2; exit 1; }
@@ -38,22 +48,23 @@ MAX=262144 # bytes accepted; real output is ~6KB
 work=$(mktemp -d "$OUT/.pull.XXXXXX")
 trap 'rm -rf "$work"' EXIT
 
-# ---- starport's NTP service, probed from HERE over the internet.
+# ---- the host's NTP service, probed from HERE over the internet.
 #
-# The Services-table row for starport. The CGI may not touch the network and
-# starport's own figures (ntp.json) only show that packets ARRIVE, so this is
+# The host's Services-table row. The CGI may not touch the network and the
+# host's own figures (ntp.json) only show that packets ARRIVE, so this is
 # the one direct answer to "does it serve time": a single mode-3 client query
 # to UDP/123, up to 3 tries of 1.5s. Runs BEFORE the SSH pull and is written
 # whatever the pull does, because it is independent evidence — a broken SSH key
 # says nothing about NTP. Uses only our clock: `at` is ours, so the CGI's age
-# check needs no skew handling. One query a minute against ~6k/s is noise, and
-# well inside starport's `ratelimit interval 2 burst 32`.
+# check needs no skew handling. One query a minute against thousands/s is
+# noise, and well inside every host's ratelimit (starport `interval 2 burst
+# 32`, thecomicshop `interval 1 burst 16`).
 #
 # up      = a mode-4 reply echoing our transmit timestamp, stratum 1-15
 # down    = no reply / refused / stratum 16 (unsynchronised)
 # unknown = could not resolve, or a kiss-o'-death (alive but refusing US,
 #           which is not evidence either way about everyone else)
-NTP_HOST=starport.dreamstation.systems
+NTP_HOST=$NAME.dreamstation.systems
 {
 	printf 'at %s\n' "$(date +%s)"
 	timeout 8 perl - "$NTP_HOST" <<'PERL' || printf 'state unknown\ndetail probe failed\n'
@@ -100,7 +111,7 @@ timeout 20 ssh -i "$KEY" -o BatchMode=yes -o IdentitiesOnly=yes \
 	-o UserKnownHostsFile="$KNOWN" -o StrictHostKeyChecking=yes \
 	-o ConnectTimeout=8 -o ServerAliveInterval=5 -o ServerAliveCountMax=2 \
 	"$HOST" export 2>"$work/err" | head -c "$MAX" >"$work/raw" || {
-	echo "statusPull: ssh failed: $(tr '\n' ' ' <"$work/err")" >&2
+	echo "statusPull: $NAME: ssh failed: $(tr '\n' ' ' <"$work/err")" >&2
 	exit 1
 }
 
@@ -119,7 +130,7 @@ awk -v dir="$work" '
 rnow=$(head -n1 "$work/f.now" 2>/dev/null || true)
 stamp=$(head -n1 "$work/f.stamp" 2>/dev/null || true)
 if ! [[ $rnow =~ ^[0-9]+$ && $stamp =~ ^[0-9]+$ ]]; then
-	echo "statusPull: export had no usable now/stamp" >&2
+	echo "statusPull: $NAME: export had no usable now/stamp" >&2
 	exit 1
 fi
 age=$((rnow - stamp))
@@ -131,11 +142,11 @@ for f in cpu.hist meminfo uptime disk.txt; do
 	mv -f "$work/f.$f" "$OUT/$f"
 done
 
-# ntp.json is for ntpstatsgen, not the CGI: starport's own NTP server stats,
-# collected there every 5 minutes. Its age gets the same one-clock treatment
-# as the sample's (starport's `now` minus starport's collected_at), recorded
-# as ntp_age. No usable ntp.json -> no ntp_age line -> ntpstatsgen shows "?"
-# for starport rather than trusting whatever older copy is lying here.
+# ntp.json is for ntpstatsgen and the CGI's Time service section: the host's
+# own NTP server stats, collected there every 5 minutes. Its age gets the same
+# one-clock treatment as the sample's (the host's `now` minus its
+# collected_at), recorded as ntp_age. No usable ntp.json -> no ntp_age line ->
+# readers show "?" / "unknown" rather than trusting an older copy lying here.
 ntp_age=
 if [ -s "$work/f.ntp.json" ]; then
 	cat=$(grep -o '"collected_at": *[0-9]\+' "$work/f.ntp.json" | head -n1 | grep -o '[0-9]\+$' || true)
