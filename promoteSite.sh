@@ -73,6 +73,7 @@ NGINX_SITES=(
 	staging.dreamstation.systems
 )
 NGINX_CONFD=(
+	charset.conf
 	compression.conf
 	csp.conf
 	logFormat.conf

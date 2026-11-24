@@ -430,6 +430,14 @@ Same certificate, same content, same blast radius (deliberately NOT merged with 
                                                        baseline elsewhere). Also
                                                        map_hash_bucket_size 128.
                                                        See COMMON HEADERS.
+  /etc/nginx/conf.d/charset.conf                     — `charset utf-8;` http-wide,
+                                                       so text/plain (.txt) and
+                                                       text/html go out as
+                                                       charset=utf-8 instead of
+                                                       being guessed as
+                                                       windows-1252 under nosniff.
+                                                       Everything served MUST
+                                                       stay UTF-8.
   /etc/nginx/conf.d/mimeTypes.conf                   — types mime.types lacks:
                                                        image/jxl for the badge
                                                        wall's .jxl files. An
@@ -446,6 +454,7 @@ Content is SERVED from /srv/http/ but its SOURCE OF TRUTH is the monorepo at ~/c
 
 THE CONFIG ITSELF IS ALSO VERSIONED, and the same rule applies to it. Every hand-authored file above lives in ~/configNotes/documentServing/fhs/etc/nginx/ and is installed by promoteSite.sh:
 
+    fhs/etc/nginx/conf.d/charset.conf
     fhs/etc/nginx/conf.d/compression.conf
     fhs/etc/nginx/conf.d/csp.conf
     fhs/etc/nginx/conf.d/logFormat.conf
