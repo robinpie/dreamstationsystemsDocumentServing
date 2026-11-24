@@ -1,20 +1,21 @@
 # blog
 
-=> ebeg.gmi          Please help Ruby register for her final year | 2026-11-16
-=> justuseipv6.gmi   Just Fucking Use IPv6 | 2026-11-08
-=> arin410.gmi       How you can still get a brand new IPv4 /24 from ARIN for $275 ⅌ year, with some strings attached | 2026-10-29 | edited 2026-10-31
-=> blackjack1025.gmi “1025/tcp network blackjack”: who deals blackjack on port 1025? | 2026-10-26
-=> ipod.gmi          Photos from my 4th generation iPod Touch | 2026-10-19
-=> crypto30years.gmi Has mainstream cryptography provided 30 years of protection? (Mostly not, but we’re getting way better) | 2026-10-11
-=> earlylawa.gmi     Early insights from lawa, my web crawler | 2026-09-22
-=> factors.gmi       [fiction] Ten years since the factors | 2026-09-21
-=> tesla.gmi         I’m being cyberattacked by Tesla, Inc. | 2026-09-13
-=> ntppool.gmi       Please consider running a NTP server in the NTP Pool | 2026-09-08
-=> lanfalsehoods.gmi Falsehoods Programmers Believe About LANs | 2026-09-05
-=> ntppost.gmi       Internet centralization and the original sin of NAT | 2026-08-30
-=> hypnospace.gmi    Porting Hypnospace Outlaw’s webpages to the real Web | 2026-08-27 | edited 2026-08-29
-=> slowqotd.gmi      Quirky but compliant QOTDs; or, a really slow QOTD server | 2026-06-22
-=> gzipt.gmi         Playing with the language modeling abilities of gzip | 2026-06-17
+=> modernplaintext.gmi Modern Motherfucking Plaintext | 2026-11-24
+=> ebeg.gmi            Please help Ruby register for her final year | 2026-11-16
+=> justuseipv6.gmi     Just Fucking Use IPv6 | 2026-11-08
+=> arin410.gmi         How you can still get a brand new IPv4 /24 from ARIN for $275 ⅌ year, with some strings attached | 2026-10-29 | edited 2026-10-31
+=> blackjack1025.gmi   “1025/tcp network blackjack”: who deals blackjack on port 1025? | 2026-10-26
+=> ipod.gmi            Photos from my 4th generation iPod Touch | 2026-10-19
+=> crypto30years.gmi   Has mainstream cryptography provided 30 years of protection? (Mostly not, but we’re getting way better) | 2026-10-11
+=> earlylawa.gmi       Early insights from lawa, my web crawler | 2026-09-22
+=> factors.gmi         [fiction] Ten years since the factors | 2026-09-21
+=> tesla.gmi           I’m being cyberattacked by Tesla, Inc. | 2026-09-13
+=> ntppool.gmi         Please consider running a NTP server in the NTP Pool | 2026-09-08
+=> lanfalsehoods.gmi   Falsehoods Programmers Believe About LANs | 2026-09-05
+=> ntppost.gmi         Internet centralization and the original sin of NAT | 2026-08-30
+=> hypnospace.gmi      Porting Hypnospace Outlaw’s webpages to the real Web | 2026-08-27 | edited 2026-08-29
+=> slowqotd.gmi        Quirky but compliant QOTDs; or, a really slow QOTD server | 2026-06-22
+=> gzipt.gmi           Playing with the language modeling abilities of gzip | 2026-06-17
 
 => /            back to home
 
